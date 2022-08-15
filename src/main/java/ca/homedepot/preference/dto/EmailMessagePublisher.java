@@ -51,22 +51,15 @@ public class EmailMessagePublisher
 	 */
 	public void publishEmailMessageToTopic(EmailDTO emailDTO)
 	{
-		Publisher publisher = null;
-		try
-		{
-			publisher = getPublisher(getProjectTopicName());
-			ByteString data = encodePayload(getEmailMessageToPublish(emailDTO));
-			PubsubMessage emailMessage = PubsubMessage.newBuilder().setData(data)
-					.putAttributes(MESSAGE_ATTRIBUTE_KEY, MESSAGE_ATTRIBUTE_VALUE).build();
-			publisher.publish(emailMessage).get();
-		}
-		catch (Exception e)
-		{
-			log.error("Exception {} while publishing email message to PubSub for Removing Notification {}", e,
-					emailDTO.getCustomerId());
-			throw new PreferenceCenterCustomException(
-					"Exception while publishing email message to PubSub for Removing Notification " + emailDTO.getCustomerId());
-		}
+		/*
+		 * Publisher publisher = null; try { publisher = getPublisher(getProjectTopicName()); ByteString data =
+		 * encodePayload(getEmailMessageToPublish(emailDTO)); PubsubMessage emailMessage =
+		 * PubsubMessage.newBuilder().setData(data) .putAttributes(MESSAGE_ATTRIBUTE_KEY, MESSAGE_ATTRIBUTE_VALUE).build();
+		 * publisher.publish(emailMessage).get(); } catch (Exception e) {
+		 * log.error("Exception {} while publishing email message to PubSub for Removing Notification {}", e,
+		 * emailDTO.getCustomerId()); throw new PreferenceCenterCustomException(
+		 * "Exception while publishing email message to PubSub for Removing Notification " + emailDTO.getCustomerId()); }
+		 */
 
 	}
 
@@ -99,11 +92,10 @@ public class EmailMessagePublisher
 	 * @return
 	 * @throws java.io.IOException
 	 */
-	@Bean
-	public Publisher getPublisher(ProjectTopicName topicName) throws IOException
-	{
-		return Publisher.newBuilder(topicName).build();
-	}
+	/*
+	 * @Bean public Publisher getPublisher(ProjectTopicName topicName) throws IOException { return
+	 * Publisher.newBuilder(topicName).build(); }
+	 */
 
 
 	/**
@@ -111,12 +103,12 @@ public class EmailMessagePublisher
 	 *
 	 * @return
 	 */
-	@PostConstruct
-	@Bean
-	public ProjectTopicName getProjectTopicName()
-	{
-		return ProjectTopicName.of(ServiceOptions.getDefaultProjectId(), topic);
-	}
+	//	@PostConstruct
+	//	@Bean
+	//	public ProjectTopicName getProjectTopicName()
+	//	{
+	//		return ProjectTopicName.of(ServiceOptions.getDefaultProjectId(), topic);
+	//	}
 
 
 	/**

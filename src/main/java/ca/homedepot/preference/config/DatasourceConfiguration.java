@@ -40,11 +40,11 @@ public class DatasourceConfiguration
 	/**
 	 * The Model.
 	 */
-	private static final String MODEL = "ca.homedepot.preferencecentre.repositories.entities";
+	private static final String MODEL = "ca.homedepot.preference.repositories.entities";
 	/**
 	 * The Repository.
 	 */
-	public static final String REPOSITORY = "ca.homedepot.preferencecentre.repositories";
+	public static final String REPOSITORY = "ca.homedepot.preference.repositories.entities";
 
 	/**
 	 * Method to build a data source pointing to preference centre batch schema

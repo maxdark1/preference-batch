@@ -42,7 +42,7 @@ public class BatchTasklet implements Tasklet
 	/**
 	 * The Email message publisher.
 	 */
-	private final EmailMessagePublisher emailMessagePublisher;
+	//private final EmailMessagePublisher emailMessagePublisher;
 
 	/**
 	 * The Purge days.
