@@ -51,9 +51,9 @@ import ca.homedepot.preference.tasklet.BatchTasklet;
 
 @Configuration
 
- @EnableBatchProcessing
+@EnableBatchProcessing
 
- @RequiredArgsConstructor
+@RequiredArgsConstructor
 public class SchedulerConfig extends DefaultBatchConfigurer
 {
 	/**
@@ -128,12 +128,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		 * FlatFileHeaderCallback() { public void writeHeader(Writer writer) throws IOException {
 		 * writer.write("DATE | ARTICLE | ACTION | KEY"); } }); DelimitedLineAggregator<Registration> lineAggregator = new
 		 * DelimitedLineAggregator<Registration>(); lineAggregator.setDelimiter("|");
-		 * 
+		 *
 		 * BeanWrapperFieldExtractor<Registration> fieldExtractor = new BeanWrapperFieldExtractor<Registration>();
 		 * fieldExtractor.setNames(new String[] { PreferenceBatchConstants.CREATEDTS, PreferenceBatchConstants.ARTICLE_ID,
 		 * PreferenceBatchConstants.ACTION_TYPE, PreferenceBatchConstants.EMAIL_ID });
 		 * lineAggregator.setFieldExtractor(fieldExtractor);
-		 * 
+		 *
 		 * writer.setLineAggregator(lineAggregator);
 		 */
 		return writer;
@@ -148,12 +148,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		 * FlatFileHeaderCallback() { public void writeHeader(Writer writer) throws IOException {
 		 * writer.write("DATE | ARTICLE | INVENTORY | EMAILTYPE | KEY"); } }); DelimitedLineAggregator<EmailAnalytics>
 		 * lineAggregator = new DelimitedLineAggregator<EmailAnalytics>(); lineAggregator.setDelimiter("|");
-		 * 
+		 *
 		 * BeanWrapperFieldExtractor<EmailAnalytics> fieldExtractor = new BeanWrapperFieldExtractor<EmailAnalytics>();
 		 * fieldExtractor.setNames(new String[] { PreferenceBatchConstants.CREATEDTS, PreferenceBatchConstants.ARTICLE_ID,
 		 * PreferenceBatchConstants.INVENTORY, PreferenceBatchConstants.EMAIL_TYPE, PreferenceBatchConstants.EMAIL_ID });
 		 * lineAggregator.setFieldExtractor(fieldExtractor);
-		 * 
+		 *
 		 * writer.setLineAggregator(lineAggregator);
 		 */
 		return writer;
@@ -179,8 +179,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	/*
 	 * @Qualifier("visitorTransactionManager") private final PlatformTransactionManager transactionManager;
-	 * 
-	 * 
+	 *
+	 *
 	 *//**
 		 * Process job.
 		 *
@@ -188,14 +188,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		 */
 	/*
 	 * @Bean public Job processJob() {
-	 * 
+	 *
 	 * return jobBuilderFactory.get("processJob").incrementer(new
 	 * RunIdIncrementer()).listener(jobListener).start(orderStep1())
 	 *//* .on("*").to(orderStep2()).on("*").to(orderStep3()).next(orderStep4()).build() *//*
 																													   * .build();
-																													   * 
+																													   *
 																													   * }
-																													   * 
+																													   *
 																													   *//**
 																														   * Order step 1 step.
 																														   *
@@ -208,19 +208,19 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		 * .processor(processor()).writer(writer()).build();
 		 *//*
 			 * }
-			 * 
+			 *
 			 * @Bean public Step orderStep2() { return stepBuilderFactory.get("orderStep2").<EmailAnalytics, EmailAnalytics>
 			 * chunk(chunkValue).reader(emailreader()) .processor(emailprocessor()).writer(emailwriter()).build(); }
-			 * 
+			 *
 			 * @Bean public Step orderStep3() { return
 			 * stepBuilderFactory.get("orderStep3").tasklet(uploadTasklet).transactionManager(transactionManager).build(); }
-			 * 
+			 *
 			 * @Bean public Step orderStep4() { return
 			 * stepBuilderFactory.get("orderStep4").tasklet(batchTasklet).transactionManager(transactionManager).build();
-			 * 
+			 *
 			 * }
-			 * 
-			 * 
+			 *
+			 *
 			 *//**
 				 * {@inheritDoc}
 				 *
@@ -229,7 +229,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				 */
 	/*
 	 * @Override public void setDataSource(DataSource dataSource) { }
-	 * 
+	 *
 	 *//**
 		 * Getting actual date for processing.
 		 */
@@ -237,7 +237,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * private String getActualDate() { SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); Instant now =
 	 * Instant.now(); Instant yesterday = now.minus(subactivity, ChronoUnit.DAYS); return sdf.format(Date.from(yesterday));
 	 * }
-	 * 
+	 *
 	 *//**
 		 * Gets file name.
 		 *
