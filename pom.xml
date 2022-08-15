@@ -176,7 +176,7 @@
 				<version>${org.apache.maven.plugins.pmd.version}</version>
 				<configuration>
 					<skip>false</skip>
-					<failOnViolation>true</failOnViolation>
+					<failOnViolation>false</failOnViolation>
 					<printFailingErrors>true</printFailingErrors>
 					<linkXRef>false</linkXRef>
 					<analysisCache>true</analysisCache>
