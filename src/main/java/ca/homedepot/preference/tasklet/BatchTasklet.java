@@ -3,10 +3,8 @@ package ca.homedepot.preference.tasklet;
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.data.ContactTypeEnum;
 import ca.homedepot.preference.dto.EmailAddressDTO;
-import ca.homedepot.preference.dto.EmailMessagePublisher;
 import ca.homedepot.preference.dto.EmailParametersDTO;
-import ca.homedepot.preference.repositories.entities.EmailEntity;
-import ca.homedepot.preference.repositories.entities.NotificationSubscriptionEntity;
+import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +20,6 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import static ca.homedepot.preference.constants.PreferenceBatchConstants.FRENCH;
 
 
 /**
@@ -53,42 +49,42 @@ public class BatchTasklet implements Tasklet
 	/**
 	 * The Purge daysfor analytics.
 	 */
-	@Value("${analytics.bisn.purge.days}")
+	@Value("200")
 	Integer purgeDaysforAnalytics;
 	/**
 	 * The purge days for Inventory status
 	 */
-	@Value("${inventory.bisn.purge.days}")
+	@Value("100")
 	Integer purgeDaysforInventoryStatus;
 
 	/**
 	 * The Template id en.
 	 */
-	@Value("${email.en.template}")
+	@Value("ca")
 	String templateIdEn;
 
 	/**
 	 * The Template id fr.
 	 */
-	@Value("${email.fr.template}")
+	@Value("cd")
 	String templateIdFr;
 
 	/**
 	 * The Subject en.
 	 */
-	@Value("${email.en.subject}")
+	@Value("hello")
 	String subjectEn;
 
 	/**
 	 * The Subject fr.
 	 */
-	@Value("${email.fr.subject}")
+	@Value("df")
 	String subjectFr;
 
 	/**
 	 * The Environment.
 	 */
-	@Value("${email.domain.environment}")
+	@Value("dev")
 	String environment;
 
 
@@ -138,8 +134,7 @@ public class BatchTasklet implements Tasklet
 	{
 		log.debug("Started Deleting old records from notification subscription");
 		Date deleteDate = Date.from(LocalDateTime.now().minusDays(purgeDays).atZone(ZoneId.systemDefault()).toInstant());
-		List<NotificationSubscriptionEntity> notificationSubscriptionEntites = backinStockService
-				.getAllNotificationsCreatedBefore(deleteDate);
+		List<JobEntity> notificationSubscriptionEntites = backinStockService.getAllNotificationsCreatedBefore(deleteDate);
 		notificationSubscriptionEntites.stream().filter(Objects::nonNull).forEach(notification -> sendEmail(notification));
 		backinStockService.purgeOldRecords(notificationSubscriptionEntites);
 		log.info("Total " + notificationSubscriptionEntites.size() + " Old Records deleted");
@@ -172,41 +167,40 @@ public class BatchTasklet implements Tasklet
 	/**
 	 * Send email.
 	 *
-	 * @param notificationSubscriptionEntity
+	 * @param jobEntity
 	 *           the notification subscription entity
 	 */
-	private void sendEmail(NotificationSubscriptionEntity notificationSubscriptionEntity)
+	private void sendEmail(JobEntity jobEntity)
 	{
 
 
 		EmailAddressDTO emailAddressDTO = new EmailAddressDTO();
-		emailAddressDTO.setEmail(notificationSubscriptionEntity.getEmailId());
-		emailAddressDTO.setName(notificationSubscriptionEntity.getEmailId());
+		//emailAddressDTO.setEmail(jobEntity.getEmailId());
+		//emailAddressDTO.setName(jobEntity.getEmailId());
 
 		EmailParametersDTO emailParametersDTO = new EmailParametersDTO();
-		emailParametersDTO
-				.setSubject(FRENCH.equalsIgnoreCase(notificationSubscriptionEntity.getLangcode()) ? subjectFr : subjectEn);
+		//emailParametersDTO.setSubject(FRENCH.equalsIgnoreCase(jobEntity.getLangcode()) ? subjectFr : subjectEn);
 		emailParametersDTO.setEnvironment(environment);
 
 		//emailMessagePublisher.publishEmailMessageToTopic(null);
 
-		saveEmailRequest(notificationSubscriptionEntity);
+		saveEmailRequest(jobEntity);
 	}
 
 	/**
 	 * Save email request.
 	 *
-	 * @param notificationSubscriptionEntity
+	 * @param jobEntity
 	 *           the notification subscription entity
 	 */
-	private void saveEmailRequest(NotificationSubscriptionEntity notificationSubscriptionEntity)
+	private void saveEmailRequest(JobEntity jobEntity)
 	{
-		EmailEntity emailEntity = new EmailEntity();
-		emailEntity.setEmailId(notificationSubscriptionEntity.getEmailId());
-		emailEntity.setRegId(notificationSubscriptionEntity.getRegId());
-		emailEntity.setArticleId(notificationSubscriptionEntity.getArticleId());
-		emailEntity.setEmailType(ContactTypeEnum.EMAIL.toString());
-		emailEntity.setInventory(PreferenceBatchConstants.SHELF_LIFE_EXPIRY_INVENTORY);
+		//EmailEntity emailEntity = new EmailEntity();
+		//emailEntity.setEmailId(jobEntity.getEmailId());
+		//emailEntity.setRegId(jobEntity.getRegId());
+		//emailEntity.setArticleId(jobEntity.getArticleId());
+		//emailEntity.setEmailType(ContactTypeEnum.EMAIL.toString());
+		//emailEntity.setInventory(PreferenceBatchConstants.SHELF_LIFE_EXPIRY_INVENTORY);
 		//emailService.saveEmailEntity(emailEntity);
 	}
 

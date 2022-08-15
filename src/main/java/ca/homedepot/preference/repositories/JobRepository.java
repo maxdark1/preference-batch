@@ -5,31 +5,31 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ca.homedepot.preference.repositories.entities.NotificationSubscriptionEntity;
+import ca.homedepot.preference.repositories.entities.JobEntity;
 
 /**
  * The interface Preference Center repository.
  */
 @Repository
 @Transactional
-public interface PreferenceCenterRepository extends JpaRepository<NotificationSubscriptionEntity, String>
+public interface JobRepository extends JpaRepository<JobEntity, String>
 {
 
 	/**
 	 * Find all by created on less than list.
 	 *
-	 * @param createdOn
+	 * @param startTime
 	 *           the created on
 	 * @return the list
 	 */
-	List<NotificationSubscriptionEntity> findAllByCreatedOnLessThan(Date createdOn);
+	List<JobEntity> findAllByStartTimeLessThan(Date startTime);
 
 	/**
 	 * Delete all by created on less than integer.
 	 *
-	 * @param createdOn
+	 * @param startTime
 	 *           the created on
 	 * @return the integer
 	 */
-	Integer deleteAllByCreatedOnLessThan(Date createdOn);
+	Integer deleteAllByStartTimeLessThan(Date startTime);
 }

@@ -2,40 +2,19 @@ package ca.homedepot.preference.config;
 
 
 
-import ca.homedepot.preference.tasklet.UploadTasklet;
-import ca.homedepot.preference.util.FileUtil;
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
-import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.transaction.PlatformTransactionManager;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.model.EmailAnalytics;
 import ca.homedepot.preference.model.Registration;
@@ -51,9 +30,9 @@ import ca.homedepot.preference.tasklet.BatchTasklet;
 
 @Configuration
 
- @EnableBatchProcessing
+@EnableBatchProcessing
 
- @RequiredArgsConstructor
+@RequiredArgsConstructor
 public class SchedulerConfig extends DefaultBatchConfigurer
 {
 	/**
@@ -169,10 +148,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	private BatchTasklet batchTasklet;
 
-	/**
-	 * The Upload tasklet.
-	 */
-	private UploadTasklet uploadTasklet;
 
 	/**
 	 * The Transaction manager./*

@@ -1,6 +1,6 @@
 package ca.homedepot.preference.service;
 
-import ca.homedepot.preference.repositories.entities.NotificationSubscriptionEntity;
+import ca.homedepot.preference.repositories.entities.JobEntity;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface PreferenceService
 	 * @param notificationSubscriptionEntities
 	 *           the notification subscription entities
 	 */
-	void purgeOldRecords(List<NotificationSubscriptionEntity> notificationSubscriptionEntities);
+	void purgeOldRecords(List<JobEntity> notificationSubscriptionEntities);
 
 	/**
 	 * Gets all notifications created before given date.
@@ -27,7 +27,7 @@ public interface PreferenceService
 	 *           the created date
 	 * @return the all notifications created before given date
 	 */
-	List<NotificationSubscriptionEntity> getAllNotificationsCreatedBefore(Date createdDate);
+	List<JobEntity> getAllNotificationsCreatedBefore(Date createdDate);
 
 	/**
 	 * Purge old records from notification registration.

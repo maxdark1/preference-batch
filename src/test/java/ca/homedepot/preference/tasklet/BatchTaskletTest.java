@@ -1,7 +1,6 @@
 package ca.homedepot.preference.tasklet;
 
-import ca.homedepot.preference.dto.EmailMessagePublisher;
-import ca.homedepot.preference.repositories.entities.NotificationSubscriptionEntity;
+import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.service.PreferenceService;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,11 +40,7 @@ public class BatchTaskletTest
 	@Mock
 	PreferenceService preferenceService;
 
-	/**
-	 * The Email message publisher.
-	 */
-	@Mock
-	EmailMessagePublisher emailMessagePublisher;
+
 
 	StepContribution stepContribution;
 
@@ -57,7 +52,7 @@ public class BatchTaskletTest
 	/**
 	 * The Notification subscription entity.
 	 */
-	NotificationSubscriptionEntity notificationSubscriptionEntity;
+	JobEntity jobEntity;
 
 
 
@@ -73,16 +68,14 @@ public class BatchTaskletTest
 		stepContribution = Mockito.mock(StepContribution.class);
 		chunkContext = Mockito.mock(ChunkContext.class);
 
-		notificationSubscriptionEntity = new NotificationSubscriptionEntity();
-		notificationSubscriptionEntity.setRegId("876bd496-4712-4499-a236-e86be5a6ed2c");
-		notificationSubscriptionEntity.setNotificationType("EMAIL");
-		notificationSubscriptionEntity.setArticleId("1000834262");
-		notificationSubscriptionEntity.setEmailId("naruto_uzumaki9@homedepot.com");
-		notificationSubscriptionEntity.setLangcode("fr");
-		notificationSubscriptionEntity.setSubscriptionType("EMAIL");
-		notificationSubscriptionEntity.setUom("02521474-1a85-44d2-8c57-12e456a53608");
-		notificationSubscriptionEntity.setCreatedOn(new Date());
-		notificationSubscriptionEntity.setPhoneNo("+1-613-555-0121");
+		jobEntity = new JobEntity();
+		/*
+		 * jobEntity.setRegId("876bd496-4712-4499-a236-e86be5a6ed2c"); jobEntity.setNotificationType("EMAIL");
+		 * jobEntity.setArticleId("1000834262"); jobEntity.setEmailId("naruto_uzumaki9@homedepot.com");
+		 * jobEntity.setLangcode("fr"); jobEntity.setSubscriptionType("EMAIL");
+		 * jobEntity.setUom("02521474-1a85-44d2-8c57-12e456a53608"); jobEntity.setCreatedOn(new Date());
+		 * jobEntity.setPhoneNo("+1-613-555-0121");
+		 */
 
 
 
@@ -103,8 +96,7 @@ public class BatchTaskletTest
 	//@Test
 	public void testExecute()
 	{
-		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class)))
-				.thenReturn(Arrays.asList(notificationSubscriptionEntity));
+		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
 
 
 		when(preferenceService.purgeOldRecordsfromInventory(any())).thenReturn(4);
@@ -121,9 +113,8 @@ public class BatchTaskletTest
 	//@Test
 	public void testExecuteWithEnglish()
 	{
-		notificationSubscriptionEntity.setLangcode("en");
-		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class)))
-				.thenReturn(Arrays.asList(notificationSubscriptionEntity));
+		//jobEntity.setLangcode("en");
+		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
 
 
 		when(preferenceService.purgeOldRecordsfromInventory(any())).thenReturn(4);
@@ -140,8 +131,7 @@ public class BatchTaskletTest
 	//@Test
 	public void testExecuteWithException()
 	{
-		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class)))
-				.thenReturn(Arrays.asList(notificationSubscriptionEntity));
+		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
 
 
 		batchTasklet.execute(stepContribution, chunkContext);

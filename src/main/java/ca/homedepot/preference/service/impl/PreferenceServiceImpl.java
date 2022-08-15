@@ -1,12 +1,14 @@
 package ca.homedepot.preference.service.impl;
 
-import ca.homedepot.preference.repositories.entities.NotificationSubscriptionEntity;
+import ca.homedepot.preference.repositories.entities.JobEntity;
 import java.util.Date;
 
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ca.homedepot.preference.repositories.PreferenceCenterRepository;
+import ca.homedepot.preference.repositories.JobRepository;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +25,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	/**
 	 * The notification subscription repository.
 	 */
-	private final PreferenceCenterRepository preferenceCenterRepository;
+	private final JobRepository jobRepository;
 
 
 	/**
@@ -33,9 +35,9 @@ public class PreferenceServiceImpl implements PreferenceService
 	 *           the notification subscription entities
 	 */
 	@Override
-	public void purgeOldRecords(List<NotificationSubscriptionEntity> notificationSubscriptionEntities)
+	public void purgeOldRecords(List<JobEntity> notificationSubscriptionEntities)
 	{
-		preferenceCenterRepository.deleteAll(notificationSubscriptionEntities);
+		jobRepository.deleteAll(notificationSubscriptionEntities);
 	}
 
 	/**
@@ -46,9 +48,9 @@ public class PreferenceServiceImpl implements PreferenceService
 	 * @return the all notifications created before given date
 	 */
 	@Override
-	public List<NotificationSubscriptionEntity> getAllNotificationsCreatedBefore(Date createdDate)
+	public List<JobEntity> getAllNotificationsCreatedBefore(Date createdDate)
 	{
-		return preferenceCenterRepository.findAllByCreatedOnLessThan(createdDate);
+		return jobRepository.findAllByStartTimeLessThan(createdDate);
 	}
 
 	/**
