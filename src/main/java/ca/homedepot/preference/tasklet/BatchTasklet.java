@@ -121,7 +121,9 @@ public class BatchTasklet implements Tasklet
 
 		return RepeatStatus.FINISHED;
 	}
-	public void getPreferences(){
+
+	public void getPreferences()
+	{
 		String email = "email@example";
 		log.debug("Started get prefereces ");
 		PreferenceItemList response = backinStockService.getPreferences(email);

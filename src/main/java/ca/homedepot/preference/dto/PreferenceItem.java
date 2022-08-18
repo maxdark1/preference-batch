@@ -9,14 +9,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PreferenceItem {
+public class PreferenceItem
+{
 
-    @JsonProperty("id")
-    private String id;
+	@JsonProperty("id")
+	private String id;
 
-    @JsonProperty("type")
-    private String type;
+	@JsonProperty("type")
+	private String type;
 
-    @JsonProperty("value")
-    private String value;
+	@JsonProperty("value")
+	private String value;
 }

@@ -34,16 +34,16 @@ import static org.mockito.Mockito.*;
 //public class PreferenceServiceImplTest
 //{
 
-	/**
-	 * The BackinStockRepository repository.
-	 */
+/**
+ * The BackinStockRepository repository.
+ */
 //	@Mock
 //	JobRepository jobRepository;
 
-	/**
-	 * The Preference service.
-	 */
-	//@InjectMocks
+/**
+ * The Preference service.
+ */
+//@InjectMocks
 //	@MockBean
 //	PreferenceServiceImpl preferenceServiceImpl;
 //
