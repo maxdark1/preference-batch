@@ -1,6 +1,8 @@
 package ca.homedepot.preference.service;
 
+import ca.homedepot.preference.dto.PreferenceItemList;
 import ca.homedepot.preference.repositories.entities.JobEntity;
+
 import java.util.Date;
 import java.util.List;
 
@@ -58,4 +60,5 @@ public interface PreferenceService
 
 	Integer purgeOldRecordsfromInventory(Date createdDate);
 
+	PreferenceItemList getPreferences(String id);
 }

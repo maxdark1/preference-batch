@@ -4,6 +4,8 @@ import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.data.ContactTypeEnum;
 import ca.homedepot.preference.dto.EmailAddressDTO;
 import ca.homedepot.preference.dto.EmailParametersDTO;
+import ca.homedepot.preference.dto.PreferenceItem;
+import ca.homedepot.preference.dto.PreferenceItemList;
 import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -105,6 +108,7 @@ public class BatchTasklet implements Tasklet
 		log.debug("Tasklet is executing");
 		try
 		{
+			getPreferences();
 			purgeOldRecords();
 			purgeOldRecordsfromRegistration();
 			purgeOldRecordsfromEmail();
@@ -116,6 +120,12 @@ public class BatchTasklet implements Tasklet
 		}
 
 		return RepeatStatus.FINISHED;
+	}
+	public void getPreferences(){
+		String email = "email@example";
+		log.debug("Started get prefereces ");
+		PreferenceItemList response = backinStockService.getPreferences(email);
+		log.info(" Preferences of user {}" + email, response);
 	}
 
 	private void purgeOldRecordsfromInventory()
