@@ -17,8 +17,9 @@
 	<properties>
 		<java.version>11</java.version>
 		<log4j2.version>2.17.1</log4j2.version>
-		<org.projectlombok.lombok.version>1.18.12</org.projectlombok.lombok.version>
-		<!--		<org.postgresql.version>42.2.18</org.postgresql.version>-->
+		<spring-boot.version>2.5.12</spring-boot.version>
+		<org.projectlombok.lombok.version>1.18.24</org.projectlombok.lombok.version>
+		<org.postgresql.version>42.2.18</org.postgresql.version>
 		<org.apache.maven.plugins.pmd.version>3.13.0</org.apache.maven.plugins.pmd.version>
 		<net.revelc.code.formatter.version>2.11.0</net.revelc.code.formatter.version>
 		<org.apache.maven.plugins.surefire.version>2.22.2</org.apache.maven.plugins.surefire.version>
@@ -48,16 +49,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<!--		<dependency>-->
-		<!--			<groupId>org.postgresql</groupId>-->
-		<!--			<artifactId>postgresql</artifactId>-->
-		<!--			<version>${org.postgresql.version}</version>-->
-		<!--			<scope>runtime</scope>-->
-		<!--		</dependency>-->
-		<dependency>
+				<dependency>
+					<groupId>org.postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+					<version>${org.postgresql.version}</version>
+					<scope>runtime</scope>
+				</dependency>
+		<!--<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -165,6 +166,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>

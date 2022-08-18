@@ -7,10 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class PreferenceItemList {
-    @JsonProperty("items")
-    List<PreferenceItem> items;
-    public PreferenceItemList(){
-        items = new ArrayList<>();
-    }
+public class PreferenceItemList
+{
+	@JsonProperty("items")
+	List<PreferenceItem> items;
+
+	public PreferenceItemList()
+	{
+		items = new ArrayList<>();
+	}
 }

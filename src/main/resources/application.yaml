@@ -1,13 +1,23 @@
 spring:
-  #  datasource:
-  #    url:
-  #    username:
-  #    password:
-  #    driverClassName: org.postgresql.Driver
-  #  jpa:
-  #    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/preference-centre-db
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+    batch:
+      initialize-schema: always
+    hikari:
+      maximum-pool-size: 500
+      connection-timeout: 120000
+      idle-timeout: 600000
+      max-lifetime: 2000000
+      leak-detection-threshold: 1200000
+      pool-name: PreferenceDBPool
+      validation-timeout: 60000
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   application:
-    name: product-notification
+    name: preference-batch
 #  h2:
 #    console:
 #      enabled: false
