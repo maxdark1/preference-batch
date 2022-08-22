@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
@@ -45,7 +47,7 @@ email:
 analytics:
   bisn:
     purge:
-      days: 2
+      days: 1
 
 inventory:
   bisn:

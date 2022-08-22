@@ -1,6 +1,7 @@
 package ca.homedepot.preference.config;
 
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -11,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -24,6 +22,7 @@ import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +35,7 @@ import ca.homedepot.preference.processor.EmailAnalyticsItemProcessor;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.io.File;
@@ -51,24 +51,23 @@ import java.util.Date;
  * The type Scheduler config.
  */
 @Slf4j
-
 @Configuration
-
 @EnableBatchProcessing
-
 @RequiredArgsConstructor
 public class SchedulerConfig extends DefaultBatchConfigurer {
     /**
      * The Job builder factory.
      */
+    @Autowired
     private final JobBuilderFactory jobBuilderFactory;
 
     /**
      * The Step builder factory.
      */
+    @Autowired
     private final StepBuilderFactory stepBuilderFactory;
 
-    //Autowired
+    @Autowired
     private DataSource dataSource;
 
     @Value("${analytic.file.registration}")
@@ -172,6 +171,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer {
     /**
      * The Job listener.
      */
+    @Autowired
     private JobListener jobListener;
 
     /**
@@ -193,11 +193,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer {
      * @return the job
      */
 
-
     @Bean
     public Job processJob() {
+        System.out.println("\n JOB IN PROGRESS \n ");
 
-        return jobBuilderFactory.get("processJob").incrementer(new RunIdIncrementer()).listener(jobListener).start(orderStep1())
+        return jobBuilderFactory.get("processJob")
+                .incrementer(new RunIdIncrementer())
+                .listener(jobListener)
+                .start(orderStep1())
                 .build();
 
     }
@@ -209,12 +212,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer {
      */
 
     @Bean
+    @JobScope
     public Step orderStep1() {
         return stepBuilderFactory.get("orderStep1").<Registration, Registration>chunk(chunkValue).reader(reader())
                 .processor(processor()).writer(writer()).build();
     }
 
     @Bean
+    @JobScope
     public Step orderStep4() {
 
         return stepBuilderFactory.get("orderStep4").tasklet(batchTasklet).transactionManager(transactionManager).build();
@@ -223,6 +228,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer {
 
 
     @Bean
+    @JobScope
     public Step orderStep2() {
         return stepBuilderFactory.get("orderStep2").<EmailAnalytics, EmailAnalytics>
                 chunk(chunkValue).reader(emailreader()).processor(emailprocessor()).writer(emailwriter()).build();
