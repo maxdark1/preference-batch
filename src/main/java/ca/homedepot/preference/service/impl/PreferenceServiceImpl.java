@@ -1,6 +1,10 @@
 package ca.homedepot.preference.service.impl;
 
+import ca.homedepot.preference.constants.PreferenceBatchConstant;
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.PreferenceItemList;
+import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.dto.Response;
 import ca.homedepot.preference.repositories.entities.JobEntity;
 
 import java.net.URI;
@@ -16,6 +20,8 @@ import ca.homedepot.preference.repositories.JobRepository;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import javax.persistence.PersistenceContext;
 
 
 /**
@@ -51,6 +57,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 
+
 	public PreferenceItemList getPreferences(String id)
 	{
 		String path = baseUrl + "{id}/preferences";
@@ -63,6 +70,22 @@ public class PreferenceServiceImpl implements PreferenceService
 		log.info("Response {} ", response);
 		return response;
 
+	}
+
+	public Response preferencesRegistration(RegistrationRequest registration){
+
+		String path = baseUrl + PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
+
+		return webClient.post().uri( uriBuilder -> {
+							URI uri = uriBuilder.path(path).build();
+							return uri;
+						})
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(registration, RegistrationRequest.class)
+				.retrieve()
+				.bodyToMono(Response.class)
+				.block();
 	}
 
 	/**

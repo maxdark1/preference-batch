@@ -56,4 +56,6 @@ public interface PreferenceBatchConstants
 	 */
 	int SHELF_LIFE_EXPIRY_INVENTORY = 0;
 
+	String PREFERENCE_CENTER_REGISTRATION_URL = "preferences/registration";
+
 }

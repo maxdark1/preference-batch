@@ -60,7 +60,7 @@ public class DatasourceConfiguration
 	}
 
 	/**
-	 * Method to return the data source properties of preference centre batch schema.
+	 * Method to return the data source properties of back in stock batch schema.
 	 *
 	 * @return DataSourceProperties. data source properties
 	 */
@@ -83,7 +83,7 @@ public class DatasourceConfiguration
 	 */
 	@Bean(name = ENTITYMANAGERFACTORY)
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(final EntityManagerFactoryBuilder builder,
-			final @Qualifier(DATASOURCE) DataSource dataSource)
+																	   final @Qualifier(DATASOURCE) DataSource dataSource)
 	{
 		return builder.dataSource(dataSource).packages(MODEL).persistenceUnit(DATASOURCE).build();
 	}
@@ -101,5 +101,4 @@ public class DatasourceConfiguration
 	{
 		return new JpaTransactionManager(entityManagerFactory);
 	}
-
 }

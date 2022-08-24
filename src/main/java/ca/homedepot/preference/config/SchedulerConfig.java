@@ -34,6 +34,7 @@ import ca.homedepot.preference.model.Registration;
 import ca.homedepot.preference.processor.EmailAnalyticsItemProcessor;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -52,19 +53,18 @@ import java.util.Date;
  */
 @Slf4j
 @Configuration
+//@Import({DatasourceConfiguration.class})
 @EnableBatchProcessing
 @RequiredArgsConstructor
 public class SchedulerConfig extends DefaultBatchConfigurer {
     /**
      * The Job builder factory.
      */
-    @Autowired
     private final JobBuilderFactory jobBuilderFactory;
 
     /**
      * The Step builder factory.
      */
-    @Autowired
     private final StepBuilderFactory stepBuilderFactory;
 
     @Autowired
@@ -171,13 +171,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer {
     /**
      * The Job listener.
      */
-    @Autowired
-    private JobListener jobListener;
+    private final JobListener jobListener;
 
     /**
      * The Batch tasklet.
      */
-    private BatchTasklet batchTasklet;
+    //private final BatchTasklet batchTasklet;
 
 
     /**
@@ -218,13 +217,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer {
                 .processor(processor()).writer(writer()).build();
     }
 
-    @Bean
-    @JobScope
-    public Step orderStep4() {
-
-        return stepBuilderFactory.get("orderStep4").tasklet(batchTasklet).transactionManager(transactionManager).build();
-
-    }
+//    @Bean
+//    @JobScope
+//    public Step orderStep4() {
+//
+//        return stepBuilderFactory.get("orderStep4").tasklet(batchTasklet).transactionManager(transactionManager).build();
+//
+//    }
 
 
     @Bean
