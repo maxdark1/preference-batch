@@ -9,11 +9,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 @SpringBootApplication
-@ComponentScan(
-value = { "ca.homedepot.preference.*","ca.homedepot.preference.dto", "ca.homedepot.preference.data",
-		"ca.homedepot.preference.listener", "ca.homedepot.preference.model", "ca.homedepot.preference.processor",
-		"ca.homedepot.preference.tasklet", "ca.homedepot.preference.dto", "ca.homedepot.preference.util", "ca.homedepot.preference.config",})
-@EntityScan("ca.homedepot.preference.repositories.entities")
+//@ComponentScan(value =
+//{ "ca.homedepot.preference.*", "ca.homedepot.preference.dto", "ca.homedepot.preference.data", "ca.homedepot.preference.listener",
+//		"ca.homedepot.preference.model", "ca.homedepot.preference.processor", "ca.homedepot.preference.tasklet",
+//		"ca.homedepot.preference.dto", "ca.homedepot.preference.util", "ca.homedepot.preference.config", })
+//@EntityScan("ca.homedepot.preference.repositories.entities")
 public class PreferenceBatchApplication
 {
 
