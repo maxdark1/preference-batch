@@ -1,24 +1,27 @@
 package ca.homedepot.preference.config;
 
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
 import ca.homedepot.preference.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
-import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,10 +30,14 @@ import org.springframework.context.annotation.Configuration;
 
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.model.EmailAnalytics;
-import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.model.Registration;
+import ca.homedepot.preference.processor.EmailAnalyticsItemProcessor;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
-import org.springframework.core.io.ClassPathResource;
+import ca.homedepot.preference.tasklet.BatchTasklet;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.io.File;
@@ -40,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.function.Function;
 
 
 /**
@@ -75,6 +81,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer {
 
     @Autowired
     private DataSource dataSource;
+	@Autowired
+	private DataSource dataSource;
 
     @Value("${analytic.file.registration}")
     String registrationAnalyticsFile;

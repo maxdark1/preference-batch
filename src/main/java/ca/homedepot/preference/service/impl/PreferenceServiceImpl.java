@@ -1,6 +1,5 @@
 package ca.homedepot.preference.service.impl;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstant;
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.PreferenceItemList;
 import ca.homedepot.preference.dto.RegistrationRequest;
@@ -16,12 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import ca.homedepot.preference.repositories.JobRepository;
+import ca.homedepot.preference.repositories.JobRepo;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import javax.persistence.PersistenceContext;
 
 
 /**
@@ -36,16 +33,16 @@ public class PreferenceServiceImpl implements PreferenceService
 	/**
 	 * The notification subscription repository.
 	 */
-	private final JobRepository jobRepository;
+	private final JobRepo jobRepo;
 
 	private WebClient webClient;
 
 	@Value("${service.preference.baseurl}")
 	public String baseUrl;
 
-	public PreferenceServiceImpl(JobRepository jobRepository)
+	public PreferenceServiceImpl(JobRepo jobRepo)
 	{
-		this.jobRepository = jobRepository;
+		this.jobRepo = jobRepo;
 		this.webClient = WebClient.builder().baseUrl(baseUrl).build();
 
 
@@ -72,20 +69,16 @@ public class PreferenceServiceImpl implements PreferenceService
 
 	}
 
-	public Response preferencesRegistration(RegistrationRequest registration){
+	public Response preferencesRegistration(RegistrationRequest registration)
+	{
 
 		String path = baseUrl + PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
 
-		return webClient.post().uri( uriBuilder -> {
-							URI uri = uriBuilder.path(path).build();
-							return uri;
-						})
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.body(registration, RegistrationRequest.class)
-				.retrieve()
-				.bodyToMono(Response.class)
-				.block();
+		return webClient.post().uri(uriBuilder -> {
+			URI uri = uriBuilder.path(path).build();
+			return uri;
+		}).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).body(registration, RegistrationRequest.class)
+				.retrieve().bodyToMono(Response.class).block();
 	}
 
 	/**
@@ -97,7 +90,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	@Override
 	public void purgeOldRecords(List<JobEntity> notificationSubscriptionEntities)
 	{
-		jobRepository.deleteAll(notificationSubscriptionEntities);
+		jobRepo.deleteAll(notificationSubscriptionEntities);
 	}
 
 	/**
@@ -110,7 +103,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	@Override
 	public List<JobEntity> getAllNotificationsCreatedBefore(Date createdDate)
 	{
-		return jobRepository.findAllByStartTimeLessThan(createdDate);
+		return jobRepo.findAllByStartTimeLessThan(createdDate);
 	}
 
 	/**

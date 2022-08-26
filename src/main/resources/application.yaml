@@ -6,8 +6,10 @@ spring:
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
-    batch:
-      initialize-schema: always
+  batch:
+    job:
+      enabled: false
+    initialize-schema: always
     hikari:
       maximum-pool-size: 500
       connection-timeout: 120000
@@ -17,7 +19,18 @@ spring:
       pool-name: PreferenceDBPool
       validation-timeout: 60000
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernateDialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        generate_statistics: false
+        jdbc:
+          batch_size: 25
+        order_inserts: true
+        order_updates: true
+    hibernate:
+      ddl-auto: update
+  jdbc:
+    batch-size: 25
   application:
     name: preference-batch
 #  h2:
