@@ -4,46 +4,47 @@ package ca.homedepot.preference.model;
 import lombok.Data;
 
 @Data
-public class InboundRegistration {
+public class InboundRegistration
+{
 
-    private String language_pref;
-    private String asOfDate;
-    private String emailAddr;
-    private String emailPermission;
-    private String phonePermission;
-    private String phoneNum;
-    private String phoneExt;
-    private String title;
-    private String firstName;
-    private String lastName;
-    private String addr1;
-    private String addr2;
-    private String city;
-    private String province;
-    private String postalCode;
-    private String mailPermission;
-    private String emailPrefHdCa;
-    private String emailPrefGardenClub;
-    private String emailPrefPro;
-    private String emailPrefNewMover;
-    private String filler3;
-    private String sourceId;
-    private String smsFlag;
-    private String faxNumber;
-    private String faxExtension;
-    ///----------------------
-    // Content - value pair
-    //-----------------------
-    private String content1;
-    private String value1;
-    private String content2;
-    private String value2;
-    private String content3;
-    private String value3;
-    private String content4;
-    private String value4;
-    private String content5;
-    private String value5;
+	private String languagePref;
+	private String asOfDate;
+	private String emailAddr;
+	private String emailPermission;
+	private String phonePermission;
+	private String phoneNum;
+	private String phoneExt;
+	private String title;
+	private String firstName;
+	private String lastName;
+	private String addr1;
+	private String addr2;
+	private String city;
+	private String province;
+	private String postalCode;
+	private String mailPermission;
+	private String emailPrefHdCa;
+	private String emailPrefGardenClub;
+	private String emailPrefPro;
+	private String emailPrefNewMover;
+	private String filler3;
+	private String sourceId;
+	private String smsFlag;
+	private String faxNumber;
+	private String faxExtension;
+	///----------------------
+	// Content - value pair
+	//-----------------------
+	private String content1;
+	private String value1;
+	private String content2;
+	private String value2;
+	private String content3;
+	private String value3;
+	private String content4;
+	private String value4;
+	private String content5;
+	private String value5;
 	private String content6;
 	private String value6;
 	private String content7;

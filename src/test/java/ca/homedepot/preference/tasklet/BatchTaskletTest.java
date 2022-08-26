@@ -128,7 +128,7 @@ public class BatchTaskletTest
 	/**
 	 * Test execute with exception.
 	 */
-	//@Test
+	@Test
 	public void testExecuteWithException()
 	{
 		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
