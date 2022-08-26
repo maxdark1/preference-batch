@@ -71,6 +71,10 @@ analytic:
     bucket:
     path:
 
+inbound:
+  file:
+    registration: OPTIN_STANDARD_FLEX_YYYYMMDD.pgp
+
 process:
   analytics:
     chunk: 100
