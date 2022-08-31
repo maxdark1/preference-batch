@@ -8,6 +8,7 @@ import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.model.OutboundRegistration;
 import ca.homedepot.preference.util.FileUtil;
+import ca.homedepot.preference.util.validation.InboundValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -19,10 +20,12 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.*;
+import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +44,7 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
 
 
@@ -63,15 +67,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	private final StepBuilderFactory stepBuilderFactory;
 
-	private static final String[] FIELD_NAMES = new String[]
-	{ "Language_Preference", "AsOfDate", "Email_Address", "Email_Permission", "Phone_Permission", "Phone_Number",
-			"Phone_Extension", "Title", "First_Name", "Last_Name", "Address_1", "Address_2", "City", "Province", "Postal_Code",
-			"Mail_Permission", "EmailPrefHDCA", "GardenClub", "EmailPrefPRO", "NewMover", "For_Future_Use", "Source_ID", "SMS_Flag",
-			"Fax_Number", "Fax_Extension", "Content_1", "Value_1", "Content_2", "Value_2", "Content_3", "Value_3", "Content_4",
-			"Value_4", "Content_5", "Value_5", "Content_6", "Value_6", "Content_7", "Value_7", "Content_8", "Value_8", "Content_9",
-			"Value_9", "Content_10", "Value_10", "Content_11", "Value_11", "Content_12", "Value_12", "Content_13", "Value_13",
-			"Content_14", "Value_14", "Content_15", "Value_15", "Content_16", "Value_16", "Content_17", "Value_17", "Content_18",
-			"Value_18", "Content_19", "Value_19", "Content_20", "Value_20" };
+
 
 	@Autowired
 	private DataSource dataSource;
@@ -110,17 +106,21 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Bean
 	public FlatFileItemReader<InboundRegistration> inboundFileReader()
 	{
+
 		return new FlatFileItemReaderBuilder<InboundRegistration>()
 				.name("inboundFileReader")
 				.resource(new FileSystemResource(fileinRegistration))
 				.delimited()
 				.delimiter("|")
-				.names(FIELD_NAMES)
+				.names(InboundValidator.FIELD_NAMES)
 				.targetType(InboundRegistration.class)
 				.linesToSkip(1)
+				/* Validation file's header */
+				.skippedLinesCallback(InboundValidator.lineCallbackHandler())
 				.build();
-
 	}
+
+
 
 	@Bean
 	public RegistrationItemProcessor inboundFileProcessor()

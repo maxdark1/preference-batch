@@ -1,23 +1,22 @@
 package ca.homedepot.preference.processor;
 
-import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.util.validation.InboundValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import ca.homedepot.preference.model.InboundRegistration;
 import org.springframework.batch.item.validator.ValidationException;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.model.OutboundRegistration;
+import static ca.homedepot.preference.util.validation.InboundValidator.*;
+
 import java.util.Date;
 
 public class RegistrationItemProcessor implements ItemProcessor<InboundRegistration, OutboundRegistration> {
 
     private final Logger LOG = LoggerFactory.getLogger(RegistrationItemProcessor.class);
-    private final String VALID_EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
 
     @Override
     public OutboundRegistration process(InboundRegistration item) throws Exception {
@@ -26,15 +25,18 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
         OutboundRegistration.OutboundRegistrationBuilder builder = OutboundRegistration.builder();
 
         LOG.info("item in process{} :" + item.toString());
+        Date asOfDate = null;
         try{
             validate(item, builder);
-        }catch (ValidationException e){
-            LOG.debug(" Validation error {}: " + e.getMessage());
-        }
-        LOG.debug(" Processing inbound item {}: " + item);
+            asOfDate= validateDateFormat(item.getAsOfDate());
 
+        }catch (ValidationException e){
+            LOG.debug(" Validation error {}: ", e.getMessage());
+        }
+        LOG.debug(" Processing inbound item {}: " , item);
         builder
                 .credit_language_cd(item.getLanguage_Preference().trim())
+                .updated_date(asOfDate)
                 .src_email_address(item.getEmail_Address())
                 .email_address_1_pref(item.getEmail_Permission())
                 .phone_1_pref(item.getPhone_Permission())
@@ -100,6 +102,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
                 .inserted_by("test_batch")
                 .inserted_date(new Date());
 
+
         return builder.build();
     }
 
@@ -108,7 +111,6 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
         validateMaxLength(item);
         validateMaxLengthReqField(item);
         validateNumberFormat(item, builder);
-        validateDateFormat(item, builder);
         validateEmailFormat(item);
         validateLanguagePref(item);
 
@@ -117,19 +119,19 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
     private void validateMaxLengthReqField(InboundRegistration item) {
 
-        validateMaxLength("language_pref", item.getLanguage_Preference(), 2);
-        validateMaxLength("as_of_date", item.getAsOfDate(), 19);
-        validateMaxLength("email_permission", item.getEmail_Permission(), 2);
-        validateMaxLength("mail_permission", item.getMail_Permission(), 2);
-        validateMaxLength("email_pref_hd_ca", item.getEmailPrefHDCA(), 2);
-        validateMaxLength("email_pref_garden_club", item.getGardenClub(), 2);
-        validateMaxLength("email_pref_pro", item.getEmailPrefPRO(), 2);
-        validateMaxLength("email_pref_new_mover", item.getNewMover(), 2);
-        validateMaxLength("content1", item.getContent_1(), 30);
-        validateMaxLength("content2", item.getContent_2(), 30);
-        validateMaxLength("content3", item.getContent_3(), 30);
-        validateMaxLength("content5", item.getContent_5(), 30);
-        validateMaxLength("content6", item.getContent_6(), 30);
+        InboundValidator.validateMaxLength("language_pref", item.getLanguage_Preference(), 2);
+        InboundValidator.validateMaxLength("as_of_date", item.getAsOfDate(), 19);
+        InboundValidator.validateMaxLength("email_permission", item.getEmail_Permission(), 2);
+        InboundValidator.validateMaxLength("mail_permission", item.getMail_Permission(), 2);
+        InboundValidator.validateMaxLength("email_pref_hd_ca", item.getEmailPrefHDCA(), 2);
+        InboundValidator.validateMaxLength("email_pref_garden_club", item.getGardenClub(), 2);
+        InboundValidator.validateMaxLength("email_pref_pro", item.getEmailPrefPRO(), 2);
+        InboundValidator.validateMaxLength("email_pref_new_mover", item.getNewMover(), 2);
+        InboundValidator.validateMaxLength("content1", item.getContent_1(), 30);
+        InboundValidator.validateMaxLength("content2", item.getContent_2(), 30);
+        InboundValidator.validateMaxLength("content3", item.getContent_3(), 30);
+        InboundValidator.validateMaxLength("content5", item.getContent_5(), 30);
+        InboundValidator.validateMaxLength("content6", item.getContent_6(), 30);
     }
 
     private void validateMaxLength(InboundRegistration item) {
@@ -167,123 +169,6 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
     }
 
-    private void validateMaxLengthNotReq(String field, String value, int maxLength) {
-        if (value != null)
-            validateMaxLength(field, value, maxLength);
-    }
 
-    private void validateMaxLength(String field, String value, int maxLength) {
-        if (value.length() > maxLength)
-            throw new ValidationException(String.format("The length of %s field  must be %d caracters or fewer.", field, maxLength));
-
-
-    }
-
-    private void validateLanguagePref(InboundRegistration item) {
-
-        if (!item.getLanguage_Preference().trim().matches("e|E|f|F|fr|FR|en|EN"))
-            throw new ValidationException("invalid value for language_pref {}: " + item.getLanguage_Preference() + " not matches with: E, EN, F, FR");
-    }
-
-    private void validateEmailFormat(InboundRegistration item) {
-
-        if (item.getEmail_Address() != null)
-            if (!item.getEmail_Address().matches(VALID_EMAIL_PATTERN))
-                throw new ValidationException(" email address does not have a valid format {}: " + item.getEmail_Address());
-
-    }
-
-    private void validateDateFormat(InboundRegistration item, OutboundRegistration.OutboundRegistrationBuilder builder) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
-        try {
-            Date asOfDate = simpleDateFormat.parse(item.getAsOfDate());
-            builder.updated_date(asOfDate);
-        } catch (ParseException ex) {
-            throw new ValidationException("invalid date format");
-        }
-
-
-    }
-
-    private void validateNumberFormat(InboundRegistration item, OutboundRegistration.OutboundRegistrationBuilder builder) {
-        Integer value = null;
-        value = validateIsNumber(item.getEmail_Permission());
-        validValue_Number(value, "email_permission");
-
-        if (item.getPhone_Permission() != null) {
-            value = validateIsNumber(item.getPhone_Permission());
-            validValue_Number(value, "phone_permission");
-        }
-
-        value = validateIsNumber(item.getMail_Permission());
-        validValue_Number(value, "mail_permission");
-
-        value = validateIsNumber(item.getEmailPrefHDCA());
-        validValue_Number(value, "email_pref_hd_ca");
-
-        value = validateIsNumber(item.getGardenClub());
-        validValue_Number(value, "email_pref_garden_club");
-
-        value = validateIsNumber(item.getEmailPrefPRO());
-        validValue_Number(value, "email_pref_pro");
-
-        value = validateIsNumber(item.getNewMover());
-        validValue_Number(value, "email_pref_new_mover");
-
-        if (item.getValue_5() != null) {
-            value = validateIsNumber(item.getValue_5());
-            if (value != 1 && value != 2 && value != 5)
-                throw new ValidationException("invalid value for field {}: value5");
-        }
-
-        if(item.getSource_ID() != null && !item.getSource_ID().isBlank()){
-            value = validateIsNumber(item.getSource_ID().trim());
-            builder.source_id(value != null ? Long.valueOf(value): 0L);
-        }else{
-            builder.source_id(0L);
-        }
-    }
-
-    private Integer validateIsNumber(String number) {
-        Integer value = null;
-        try {
-            value = Integer.parseInt(number);
-        } catch (NumberFormatException ex) {
-            throw new ValidationException("invalid number format");
-        }
-
-        return value;
-    }
-
-    private void validValue_Number(Integer value, String field) {
-        if (value < -1 || value > 1)
-            throw new ValidationException("invalid value for field {}: " + field);
-    }
-
-    private void validateIsRequired(InboundRegistration item) {
-        if (item == null) {
-            throw new ValidationException(" Item should be present");
-        }
-        validateRequired(item.getLanguage_Preference(), "language_pref");
-        validateRequired(item.getAsOfDate(), "as_of_date");
-        validateRequired(item.getEmail_Permission(), "email_permission");
-        validateRequired(item.getMail_Permission(), "mail_permission");
-        validateRequired(item.getEmailPrefHDCA(), "email_pref_hd_ca");
-        validateRequired(item.getGardenClub(), "email_pref_garden_club");
-        validateRequired(item.getEmailPrefPRO(), "email_pref_pro");
-        validateRequired(item.getNewMover(), "email_pref_new_mover");
-        validateRequired(item.getSource_ID(), "source_id");
-        validateRequired(item.getContent_1(), "content1");
-        validateRequired(item.getContent_2(), "content2");
-        validateRequired(item.getContent_3(), "content3");
-        validateRequired(item.getContent_5(), "content5");
-        validateRequired(item.getContent_6(), "content6");
-    }
-
-    public void validateRequired(String value, String field) {
-        if (value == null || value.isBlank()) {
-            throw new ValidationException(field + " should be present");
-        }
-    }
 
 }
