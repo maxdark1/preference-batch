@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * The type Job listener test.
  */
-@SpringBootTest
+//@SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JobListenerTest
 {

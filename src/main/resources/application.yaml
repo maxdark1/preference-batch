@@ -8,7 +8,7 @@ spring:
     driverClassName: org.postgresql.Driver
   batch:
     job:
-      enabled: false
+      enabled: true
     initialize-schema: always
     hikari:
       maximum-pool-size: 500
@@ -27,6 +27,7 @@ spring:
           batch_size: 25
         order_inserts: true
         order_updates: true
+        default_schema: pcam
     hibernate:
       ddl-auto: update
   jdbc:
@@ -86,7 +87,7 @@ analytic:
 
 inbound:
   file:
-    registration: OPTIN_STANDARD_FLEX_YYYYMMDD.pgp
+    registration: OPTIN_STANDARD_FLEX_YYYYMMDD.txt
 
 process:
   analytics:

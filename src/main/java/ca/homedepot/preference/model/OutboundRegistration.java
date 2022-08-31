@@ -10,7 +10,7 @@ public class OutboundRegistration
 {
 	String credit_language_cd;
 	Date updated_date;
-	String src_email_adddress;
+	String src_email_address;
 	String email_address_1_pref;
 	String phone_1_pref;
 	String src_phone_number;
@@ -28,8 +28,14 @@ public class OutboundRegistration
 	String email_pref_garden_club;
 	String email_pref_pro;
 	String email_pref_new_mover;
-	String source_id;
+	private String inserted_by;
+	private Date inserted_date;
+	Long source_id;
 	String cell_sms_flag;
+	String customer_nbr;
+	String org_name;
+	String store_nbr;
+	String cust_type_cd;
 
 	//----------------------
 	// Content - Value pair

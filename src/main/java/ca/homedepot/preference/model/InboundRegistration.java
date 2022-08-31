@@ -1,79 +1,80 @@
 package ca.homedepot.preference.model;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class InboundRegistration
 {
 
-	private String languagePref;
-	private String asOfDate;
-	private String emailAddr;
-	private String emailPermission;
-	private String phonePermission;
-	private String phoneNum;
-	private String phoneExt;
-	private String title;
-	private String firstName;
-	private String lastName;
-	private String addr1;
-	private String addr2;
-	private String city;
-	private String province;
-	private String postalCode;
-	private String mailPermission;
-	private String emailPrefHdCa;
-	private String emailPrefGardenClub;
-	private String emailPrefPro;
-	private String emailPrefNewMover;
-	private String filler3;
-	private String sourceId;
-	private String smsFlag;
-	private String faxNumber;
-	private String faxExtension;
+	private String Language_Preference;
+	private String AsOfDate;
+	private String Email_Address;
+	private String Email_Permission;
+	private String Phone_Permission;
+	private String Phone_Number;
+	private String Phone_Extension;
+	private String Title;
+	private String First_Name;
+	private String Last_Name;
+	private String Address_1;
+	private String Address_2;
+	private String City;
+	private String Province;
+	private String Postal_Code;
+	private String Mail_Permission;
+	private String EmailPrefHDCA;
+	private String GardenClub;
+	private String EmailPrefPRO;
+	private String NewMover;
+	private String For_Future_Use;
+	private String Source_ID;
+	private String SMS_Flag;
+	private String Fax_Number;
+	private String Fax_Extension;
 	///----------------------
-	// Content - value pair
+	// Content_ - Value_ pair
 	//-----------------------
-	private String content1;
-	private String value1;
-	private String content2;
-	private String value2;
-	private String content3;
-	private String value3;
-	private String content4;
-	private String value4;
-	private String content5;
-	private String value5;
-	private String content6;
-	private String value6;
-	private String content7;
-	private String value7;
-	private String content8;
-	private String value8;
-	private String content9;
-	private String value9;
-	private String content10;
-	private String value10;
-	private String content11;
-	private String value11;
-	private String content12;
-	private String value12;
-	private String content13;
-	private String value13;
-	private String content14;
-	private String value14;
-	private String content15;
-	private String value15;
-	private String content16;
-	private String value16;
-	private String content17;
-	private String value17;
-	private String content18;
-	private String value18;
-	private String content19;
-	private String value19;
-	private String content20;
-	private String value20;
+	private String Content_1;
+	private String Value_1;
+	private String Content_2;
+	private String Value_2;
+	private String Content_3;
+	private String Value_3;
+	private String Content_4;
+	private String Value_4;
+	private String Content_5;
+	private String Value_5;
+	private String Content_6;
+	private String Value_6;
+	private String Content_7;
+	private String Value_7;
+	private String Content_8;
+	private String Value_8;
+	private String Content_9;
+	private String Value_9;
+	private String Content_10;
+	private String Value_10;
+	private String Content_11;
+	private String Value_11;
+	private String Content_12;
+	private String Value_12;
+	private String Content_13;
+	private String Value_13;
+	private String Content_14;
+	private String Value_14;
+	private String Content_15;
+	private String Value_15;
+	private String Content_16;
+	private String Value_16;
+	private String Content_17;
+	private String Value_17;
+	private String Content_18;
+	private String Value_18;
+	private String Content_19;
+	private String Value_19;
+	private String Content_20;
+	private String Value_20;
 
 }
