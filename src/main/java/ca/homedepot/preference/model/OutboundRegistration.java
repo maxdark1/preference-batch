@@ -2,12 +2,15 @@ package ca.homedepot.preference.model;
 
 import lombok.Builder;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @Builder
 public class OutboundRegistration
 {
+	BigDecimal file_id;
 	String credit_language_cd;
 	Date updated_date;
 	String src_email_address;

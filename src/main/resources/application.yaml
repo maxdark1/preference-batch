@@ -27,7 +27,6 @@ spring:
           batch_size: 25
         order_inserts: true
         order_updates: true
-        default_schema: pcam
     hibernate:
       ddl-auto: update
   jdbc:

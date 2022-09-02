@@ -90,6 +90,9 @@ public class BatchTasklet implements Tasklet
 	@Value("dev")
 	String environment;
 
+	public PreferenceService getBackinStockService() {
+		return backinStockService;
+	}
 
 	/**
 	 * Execute repeat status.

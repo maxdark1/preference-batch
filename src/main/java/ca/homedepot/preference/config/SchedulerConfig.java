@@ -5,8 +5,14 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.FileDTO;
+import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.listener.RegistrationItemReaderListener;
+import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.repositories.entities.FileEntity;
+import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.*;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
@@ -36,6 +46,7 @@ import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.io.File;
@@ -46,6 +57,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -66,8 +78,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * The Step builder factory.
 	 */
 	private final StepBuilderFactory stepBuilderFactory;
-
-
 
 	@Autowired
 	private DataSource dataSource;
@@ -99,13 +109,35 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${sub.activity.days}")
 	Integer subactivity;
 
+	@Autowired
+	private RegistrationItemWriterListener writerListener;
 
+	private RegistrationItemReaderListener registrationItemReaderListener;
+	private static final String JOB_NAME_REGISTRATION_INBOUND = "registrationInbound";
+
+	@Autowired
+	public void setRegistrationItemReaderListener(){
+		registrationItemReaderListener = new RegistrationItemReaderListener();
+		registrationItemReaderListener.setDataSource(dataSource);
+		registrationItemReaderListener.setPreferenceService(batchTasklet.getBackinStockService());
+
+	}
+
+	@Autowired
+	public void setListener(){
+		jobListener.setDataSource(dataSource);
+		jobListener.setPreferenceService(batchTasklet.getBackinStockService());
+		writerListener.setFileRegistration(fileinRegistration);
+		writerListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
+		writerListener.setJobListener(jobListener);
+		writerListener.setDataSource(dataSource);
+	}
 	/*
 	 * Read inbound file
 	 */
 	@Bean
-	public FlatFileItemReader<InboundRegistration> inboundFileReader()
-	{
+	public FlatFileItemReader<InboundRegistration> inboundFileReader() throws Exception {
+
 
 		return new FlatFileItemReaderBuilder<InboundRegistration>()
 				.name("inboundFileReader")
@@ -120,7 +152,16 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
+	@Bean
+	public JdbcCursorItemReader<RegistrationRequest> inboundDBReader() {
+		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
+		reader.setDataSource(dataSource);
+		reader.setSql("SELECT * FROM pcam.hdpc_inbound_stg_table WHERE file_id = " + writerListener.getFile_id());
+		reader.setRowMapper(new RegistrationrowMapper());
+
+		return reader;
+	}
 
 	@Bean
 	public RegistrationItemProcessor inboundFileProcessor()
@@ -140,7 +181,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 
-
 	/**
 	 * The Transaction manager./*
 	 */
@@ -154,13 +194,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return the job
 	 */
 
+
 	@Bean
-	public Job processJob()
-	{
-		return jobBuilderFactory.get("processJob")
+	public Job registrationInbound() throws Exception {
+		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND)
 				.incrementer(new RunIdIncrementer())
 				.listener(jobListener)
-				.start(readInboundCSVFileStep())
+				.start(readInboundCSVFileStep1())
 				.build();
 
 	}
@@ -172,11 +212,28 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 
 	@Bean
-	public Step readInboundCSVFileStep()
-	{
-		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, OutboundRegistration> chunk(chunkValue)
-				.reader(inboundFileReader()).processor(inboundFileProcessor()).writer(inboundRegistrationDBWriter()).build();
+	public Step readInboundCSVFileStep1() throws Exception {
+		return stepBuilderFactory.get("readInboundCSVFileStep")
+				.<InboundRegistration, OutboundRegistration> chunk(chunkValue)
+				.listener(registrationItemReaderListener)
+				.reader(inboundFileReader())
+				.processor(inboundFileProcessor())
+				.listener(writerListener)
+				.writer(inboundRegistrationDBWriter())
+				.build();
 	}
+
+//	@Bean
+//	public Step readInboundBDStep2() throws Exception{
+//		return stepBuilderFactory.get("readInboundBDStep")
+//				.<OutboundRegistration, RegistrationRequest> chunk(chunkValue)
+//				.reader(inboundDBReader())
+//				.processor()
+//				.writer()
+//				.build();
+//	}
+
+
 
 	@Bean
 	public Step orderStep4()

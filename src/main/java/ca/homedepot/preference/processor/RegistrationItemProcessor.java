@@ -22,6 +22,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
     public OutboundRegistration process(InboundRegistration item) throws Exception {
         System.out.println(" IN PROCESS");
 
+
         OutboundRegistration.OutboundRegistrationBuilder builder = OutboundRegistration.builder();
 
         LOG.info("item in process{} :" + item.toString());

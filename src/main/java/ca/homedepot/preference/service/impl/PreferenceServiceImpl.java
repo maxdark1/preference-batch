@@ -1,6 +1,8 @@
 package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
+import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.Job;
 import ca.homedepot.preference.dto.PreferenceItemList;
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.Response;
@@ -11,14 +13,18 @@ import java.util.Date;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import ca.homedepot.preference.repositories.JobRepo;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import javax.transaction.Transactional;
 
 
 /**
@@ -30,6 +36,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class PreferenceServiceImpl implements PreferenceService
 {
 
+	private JdbcTemplate jdbcTemplate;
+
+
+	@Autowired
+	public  void setJdbcTemplate(JdbcTemplate jdbcTemplate){
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
 	/**
 	 * The notification subscription repository.
 	 */
@@ -40,6 +54,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	@Value("${service.preference.baseurl}")
 	public String baseUrl;
 
+	@Autowired
 	public PreferenceServiceImpl(JobRepo jobRepo)
 	{
 		this.jobRepo = jobRepo;
@@ -52,7 +67,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	{
 		this.webClient = webClient;
 	}
-
 
 
 	public PreferenceItemList getPreferences(String id)
@@ -150,4 +164,18 @@ public class PreferenceServiceImpl implements PreferenceService
 		return 1;//inventoryStatusMessagesRepository.deleteAllByCreatedTsLessThan(createdDate);
 	}
 
+	public void saveJob(Job job){
+		JobEntity jobEntity = new JobEntity();
+		jobEntity.setJobName(job.getJob_name());
+		jobEntity.setStatus(job.getStatus());
+		jobEntity.setStartTime(job.getStart_time());
+		jobEntity.setInsertedBy(job.getInserted_by());
+		jobEntity.setInserted_date(job.getInserted_date());
+		jobRepo.insert(job.getJob_name(), job.getStatus(), job.getStart_time(), job.getInserted_by(), job.getInserted_date());
+	}
+
+	@Override
+	public int insert(String job_name, Boolean status, Date start_time, String inserted_by, Date inserted_date) {
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_JOB, job_name, status, start_time, inserted_by, inserted_date);
+	}
 }

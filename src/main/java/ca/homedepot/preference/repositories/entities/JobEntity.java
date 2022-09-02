@@ -1,23 +1,22 @@
 package ca.homedepot.preference.repositories.entities;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "hdpc_job")
+@Table(name = "hdpc_job", schema = "pcam")
 public class JobEntity
 {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "job_id")
-	private Long jobId;
+	private BigDecimal jobId;
 
 	/**
 	 * The article id.
@@ -42,4 +41,16 @@ public class JobEntity
 	 */
 	@Column(name = "end_time")
 	private Date endTime;
+
+	@Column(name = "inserted_by")
+	private String insertedBy;
+
+	@Column(name = "inserted_date")
+	private Date inserted_date;
+
+	@Column(name = "updated_by")
+	private String updatedBy;
+
+	@Column(name = "updated_date")
+	private Date updatedDate;
 }
