@@ -38,18 +38,29 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		Address address = new Address();
 		address.setSrcAddress1(rs.getString(PreferenceBatchConstants.SRC_ADDRESS1));
 		address.setSrcAddress2(rs.getString(PreferenceBatchConstants.SRC_ADDRESS2));
+		address.setSrcCity(rs.getString(PreferenceBatchConstants.SRC_CITY));
 		address.setState(rs.getString(PreferenceBatchConstants.SRC_STATE));
 		address.setSrcZipcode(rs.getString(PreferenceBatchConstants.SRC_ZIPCODE));
 		address.setSrcPostalCode(rs.getString(PreferenceBatchConstants.SRC_POSTAL_CODE));
 
 		registrationRequest.setSrcAddress(address);
+		registrationRequest.setSrcSystem(rs.getString(PreferenceBatchConstants.SRC_SYSTEM));
+		registrationRequest.setCreditPrin(rs.getString(PreferenceBatchConstants.CREDIT_PRIN));
+		registrationRequest.setSrcAgent(rs.getString(PreferenceBatchConstants.SRC_AGENT));
+		registrationRequest.setSrcLastBalanceAmt(rs.getString(PreferenceBatchConstants.SRC_LAST_BALANCE_AMT));
+		registrationRequest.setCreditAcctOpenDt(rs.getString(PreferenceBatchConstants.CREDIT_ACCT_OPEN_DT));
+		registrationRequest.setSrcLastTransDt(rs.getString(PreferenceBatchConstants.SRC_LAST_TRANS_DT));
+		registrationRequest.setCreditStoreOrigin(rs.getString(PreferenceBatchConstants.CREDIT_STORE_ORIGIN));
 		registrationRequest.setMailAddress1pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.MAIL_ADDRESS_1_PREF)));
 		registrationRequest.setEmailPrefHdCa(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_HD_CA)));
 		registrationRequest.setEmailPrefGardenClub(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_GARDEN_CLUB)));
 		registrationRequest.setEmailPrefPro(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_PRO)));
 		registrationRequest.setEmailPrefNewMover(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_NEW_MOVER)));
+		registrationRequest.setEmailStatus(rs.getInt(PreferenceBatchConstants.EMAIL_STATUS));
+		registrationRequest.setPhone1Pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.PHONE_1_PREF)));
 		registrationRequest.setInsertedBy(rs.getString(PreferenceBatchConstants.INSERTED_BY));
 		registrationRequest.setInsertedDate(rs.getDate(PreferenceBatchConstants.INSERTED_DATE));
+		registrationRequest.setUpdatedDate(rs.getDate(PreferenceBatchConstants.UPDATED_DATE));
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
 
 		Map<String, String> contentValue = new HashMap<>();
@@ -77,21 +88,6 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 
 
 		registrationRequest.setContentValue(contentValue);
-
-
-/* RegistrationRequest.builder()
-
-								.inserted_date()
-								.source_id()
-								.cell_sms_flag(rs.getString(PreferenceBatchConstants.CELL_SMS_FLAG))
-								.customer_nbr(rs.getString(PreferenceBatchConstants.CUSTOMER_NBR))
-								.org_name(rs.getString(PreferenceBatchConstants.ORG_NAME))
-								.store_nbr(rs.getString(PreferenceBatchConstants.STORE_NBR))
-								.cust_type_cd(rs.getString(PreferenceBatchConstants.CUST_TYPE_CD))
-
-
-									content-value
-								* */
 
 
 

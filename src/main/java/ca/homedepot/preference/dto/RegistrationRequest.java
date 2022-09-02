@@ -1,6 +1,7 @@
 package ca.homedepot.preference.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
@@ -70,7 +71,7 @@ public class RegistrationRequest
 	private String srcTitleName;
 
 	@JsonProperty("phone_1_pref")
-	private String phone1Pref;
+	private int phone1Pref;
 
 	@JsonProperty("email_address_1_pref")
 	private int emailAddress1Pref;

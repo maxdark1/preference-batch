@@ -46,6 +46,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<Outboun
     public void beforeWrite(List<? extends OutboundRegistration> items) {
         file_id = writeFile();
 
+        System.out.println(file_id);
         items.forEach(item -> item.setFile_id(file_id));
     }
 

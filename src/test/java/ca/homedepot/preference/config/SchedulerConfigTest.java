@@ -78,7 +78,7 @@ public class SchedulerConfigTest {
     }
 
     @Test
-    public void testInboundFileReader() {
+    public void testInboundFileReader() throws Exception {
         schedulerConfig.fileinRegistration = "OPTIN_STANDARD_FLEX_YYYYMMDD";
         assertNotNull(schedulerConfig);
         assertNotNull(schedulerConfig.inboundFileReader());

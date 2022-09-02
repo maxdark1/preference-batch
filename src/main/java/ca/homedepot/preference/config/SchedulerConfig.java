@@ -15,6 +15,7 @@ import ca.homedepot.preference.repositories.entities.FileEntity;
 import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.InboundValidator;
+import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -116,6 +117,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private static final String JOB_NAME_REGISTRATION_INBOUND = "registrationInbound";
 
 	@Autowired
+	private RegistrationAPIWriter apiWriter;
+
+	@Autowired
 	public void setRegistrationItemReaderListener(){
 		registrationItemReaderListener = new RegistrationItemReaderListener();
 		registrationItemReaderListener.setDataSource(dataSource);
@@ -124,7 +128,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@Autowired
-	public void setListener(){
+	public void setUpListener(){
 		jobListener.setDataSource(dataSource);
 		jobListener.setPreferenceService(batchTasklet.getBackinStockService());
 		writerListener.setFileRegistration(fileinRegistration);
@@ -132,6 +136,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		writerListener.setJobListener(jobListener);
 		writerListener.setDataSource(dataSource);
 	}
+
 	/*
 	 * Read inbound file
 	 */
@@ -157,7 +162,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql("SELECT * FROM pcam.hdpc_inbound_stg_table WHERE file_id = " + writerListener.getFile_id());
+		reader.setSql("SELECT * FROM pcam.hdpc_file_inbound_stg ORDER BY file_id DESC");
 		reader.setRowMapper(new RegistrationrowMapper());
 
 		return reader;
@@ -201,6 +206,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.incrementer(new RunIdIncrementer())
 				.listener(jobListener)
 				.start(readInboundCSVFileStep1())
+				.next(readInboundBDStep2())
 				.build();
 
 	}
@@ -223,15 +229,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
-//	@Bean
-//	public Step readInboundBDStep2() throws Exception{
-//		return stepBuilderFactory.get("readInboundBDStep")
-//				.<OutboundRegistration, RegistrationRequest> chunk(chunkValue)
-//				.reader(inboundDBReader())
-//				.processor()
-//				.writer()
-//				.build();
-//	}
+	@Bean
+	public Step readInboundBDStep2() throws Exception{
+		return stepBuilderFactory.get("readInboundBDStep")
+				.<RegistrationRequest, RegistrationRequest> chunk(chunkValue)
+				.reader(inboundDBReader())
+				.writer(apiWriter)
+				.build();
+	}
 
 
 
