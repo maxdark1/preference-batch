@@ -6,6 +6,8 @@ package ca.homedepot.preference.constants;
 public interface PreferenceBatchConstants
 {
 
+	// Step status
+	String COMPLETED_STATUS = "COMPLETED";
 	String FILE_ID = "file_id";
 
 	String STATUS = "status";

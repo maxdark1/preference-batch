@@ -8,7 +8,7 @@ spring:
     driverClassName: org.postgresql.Driver
   batch:
     job:
-      enabled: true
+      enabled: false
     initialize-schema: always
     hikari:
       maximum-pool-size: 500
@@ -36,6 +36,10 @@ spring:
 #  h2:
 #    console:
 #      enabled: false
+cron:
+  job:
+    registration: 30 * * * * *
+
 server:
   port: 8080
 

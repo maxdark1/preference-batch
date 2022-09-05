@@ -46,7 +46,8 @@ public class FileServiceImpl implements FileService {
         fileEntity.setJob(fileEntity.getJob());
         fileEntity.setInsertedDate(file.getInserted_date());
         fileEntity.setInsertedBy(file.getInserted_by());
-        fileRepo.insert(file);
+       fileRepo.insert(file);
+       // fileRepo.save(fileEntity);
         return fileEntity;
     }
 

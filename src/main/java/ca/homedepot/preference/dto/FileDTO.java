@@ -1,6 +1,7 @@
 package ca.homedepot.preference.dto;
 
 import ca.homedepot.preference.repositories.entities.JobEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;

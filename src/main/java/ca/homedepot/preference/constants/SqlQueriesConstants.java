@@ -11,6 +11,11 @@ public interface SqlQueriesConstants {
     String SQL_INSERT_HDPC_FILE = "INSERT INTO pcam.hdpc_file (file_name, job_id, file_source_id, " +
             "status,start_time, inserted_by, inserted_date) " +
             "VALUES (? , ? , ?, ?, ? , ?, ?); ";
+
+    String SQL_INSERT_HDPC_FILE_OBJ = "INSERT INTO pcam.hdpc_file (file_name, job_id, file_source_id, " +
+            "status,start_time, inserted_by, inserted_date) " +
+            "VALUES (? , ? , ?, ?, ? , ?, ?); ";
+
     String SQL_INSERT_FILE_INBOUND_STG_REGISTRATION= "INSERT INTO pcam.hdpc_file_inbound_stg " +
             "(file_id, source_id, src_phone_number, src_first_name,  src_last_name," +
             "src_address1, src_address2, src_city, src_state, src_postal_code, credit_language_cd," +

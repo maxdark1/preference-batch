@@ -103,25 +103,17 @@ public class JobListener implements JobExecutionListener
 	@Override
 	public void afterJob(JobExecution jobExecution)
 	{
-		int exit;
-		if (jobExecution.getStatus() == BatchStatus.COMPLETED)
-		{
-			log.debug("Batch Executed Successfully!");
-			exit = SpringApplication.exit(applicationContext, () -> 0);
-		}
-		else
-		{
-			List exceptions = jobExecution.getAllFailureExceptions();
-			exceptions.stream().forEach(e -> log.error("Job Failed With Error {}", e));
-			exit = SpringApplication.exit(applicationContext, () -> -1);
-		}
+
+		if(jobExecution.getStatus() == BatchStatus.COMPLETED)
+			log.info(" Job {} ends with completes status: ", jobExecution.getJobInstance().getJobName() );
+
 		JobEntity jobEntity = new JobEntity();
 		jobEntity.setJobName(jobExecution.getJobConfigurationName());
 		jobEntity.setStatus(jobExecution.getStatus().isRunning());
 		jobEntity.setStartTime(jobExecution.getStartTime());
 		jobEntity.setInsertedBy("BATCH");
 		jobEntityList.remove(jobEntity);
-		System.exit(exit);
+
 	}
 
 }

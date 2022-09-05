@@ -5,38 +5,23 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.RegistrationRequest;
-import ca.homedepot.preference.listener.RegistrationItemReaderListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.model.OutboundRegistration;
-import ca.homedepot.preference.repositories.entities.FileEntity;
-import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
-import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.*;
-import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,18 +32,17 @@ import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.batch.core.launch.JobLauncher;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -67,6 +51,7 @@ import java.util.List;
 @Slf4j
 @Configuration
 @EnableBatchProcessing
+@EnableScheduling
 @RequiredArgsConstructor
 public class SchedulerConfig extends DefaultBatchConfigurer
 {
@@ -79,6 +64,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * The Step builder factory.
 	 */
 	private final StepBuilderFactory stepBuilderFactory;
+
+
 
 	@Autowired
 	private DataSource dataSource;
@@ -94,6 +81,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Autowired
 	private JobListener jobListener;
+
+	@Autowired
+	private JobLauncher jobLauncher;
 
 	@Value("${analytic.file.registration}")
 	String registrationAnalyticsFile;
@@ -113,19 +103,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private RegistrationItemWriterListener writerListener;
 
-	private RegistrationItemReaderListener registrationItemReaderListener;
 	private static final String JOB_NAME_REGISTRATION_INBOUND = "registrationInbound";
 
 	@Autowired
 	private RegistrationAPIWriter apiWriter;
 
-	@Autowired
-	public void setRegistrationItemReaderListener(){
-		registrationItemReaderListener = new RegistrationItemReaderListener();
-		registrationItemReaderListener.setDataSource(dataSource);
-		registrationItemReaderListener.setPreferenceService(batchTasklet.getBackinStockService());
-
-	}
 
 	@Autowired
 	public void setUpListener(){
@@ -136,6 +118,21 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		writerListener.setJobListener(jobListener);
 		writerListener.setDataSource(dataSource);
 	}
+
+	/*
+	* 	SCHEDULING JOBS
+	* */
+
+	@Scheduled(cron = "${cron.job.registration}")
+	public void processRegistrationInbound() throws Exception
+	{
+		log.info(" Registration Inbound : Registration Job started at :"+ new Date());
+		JobParameters param = new JobParametersBuilder().addString(JOB_NAME_REGISTRATION_INBOUND,
+				String.valueOf(System.currentTimeMillis())).toJobParameters();
+		JobExecution execution = jobLauncher.run(registrationInbound(), param);
+		log.info("Registration Inbound finished with status :" + execution.getStatus());
+	}
+	///***************************************************
 
 	/*
 	 * Read inbound file
@@ -206,7 +203,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.incrementer(new RunIdIncrementer())
 				.listener(jobListener)
 				.start(readInboundCSVFileStep1())
-				.next(readInboundBDStep2())
+				.on("*")
+				.to(readInboundBDStep2())
+				.build()
 				.build();
 
 	}
@@ -221,7 +220,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readInboundCSVFileStep1() throws Exception {
 		return stepBuilderFactory.get("readInboundCSVFileStep")
 				.<InboundRegistration, OutboundRegistration> chunk(chunkValue)
-				.listener(registrationItemReaderListener)
 				.reader(inboundFileReader())
 				.processor(inboundFileProcessor())
 				.listener(writerListener)

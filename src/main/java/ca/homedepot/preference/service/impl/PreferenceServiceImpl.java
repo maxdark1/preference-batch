@@ -96,73 +96,11 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 	/**
-	 * Purge old records from notification subscription.
+	 * Save Job Information on persistence
 	 *
-	 * @param notificationSubscriptionEntities
-	 *           the notification subscription entities
+	 * @param job
+	 *           the job notification entity
 	 */
-	@Override
-	public void purgeOldRecords(List<JobEntity> notificationSubscriptionEntities)
-	{
-		jobRepo.deleteAll(notificationSubscriptionEntities);
-	}
-
-	/**
-	 * Gets all notifications created before given date.
-	 *
-	 * @param createdDate
-	 *           the created date
-	 * @return the all notifications created before given date
-	 */
-	@Override
-	public List<JobEntity> getAllNotificationsCreatedBefore(Date createdDate)
-	{
-		return jobRepo.findAllByStartTimeLessThan(createdDate);
-	}
-
-	/**
-	 * Purge old records integer.
-	 *
-	 * @param createdDate
-	 *           the created date
-	 * @return the integer
-	 */
-
-	@Override
-	public Integer purgeOldRecordsfromRegistration(Date createdDate)
-	{
-
-		return 1;// registrationRepository.deleteAllByCreatedOnLessThan(createdDate);
-	}
-
-	/**
-	 * Purge old records integer.
-	 *
-	 * @param createdDate
-	 *           the created date
-	 * @return the integer
-	 */
-
-	@Override
-	public Integer purgeOldRecordsfromEmail(Date createdDate)
-	{
-
-		return 1;//emailRepository.deleteAllByCreatedOnLessThan(createdDate);
-	}
-
-	/**
-	 * Purge old records from inventory status.
-	 *
-	 * @param createdDate
-	 *           the created date
-	 * @return the integer
-	 */
-
-	@Override
-	public Integer purgeOldRecordsfromInventory(Date createdDate)
-	{
-		return 1;//inventoryStatusMessagesRepository.deleteAllByCreatedTsLessThan(createdDate);
-	}
 
 	public void saveJob(Job job){
 		JobEntity jobEntity = new JobEntity();

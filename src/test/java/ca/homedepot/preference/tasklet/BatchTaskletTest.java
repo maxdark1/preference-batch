@@ -96,10 +96,10 @@ public class BatchTaskletTest
 	//@Test
 	public void testExecute()
 	{
-		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
+		//when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
 
 
-		when(preferenceService.purgeOldRecordsfromInventory(any())).thenReturn(4);
+		//when(preferenceService.purgeOldRecordsfromInventory(any())).thenReturn(4);
 
 		batchTasklet.execute(stepContribution, chunkContext);
 
@@ -114,10 +114,10 @@ public class BatchTaskletTest
 	public void testExecuteWithEnglish()
 	{
 		//jobEntity.setLangcode("en");
-		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
+		//when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
 
 
-		when(preferenceService.purgeOldRecordsfromInventory(any())).thenReturn(4);
+		//when(preferenceService.purgeOldRecordsfromInventory(any())).thenReturn(4);
 
 		batchTasklet.execute(stepContribution, chunkContext);
 
@@ -131,12 +131,12 @@ public class BatchTaskletTest
 	@Test
 	public void testExecuteWithException()
 	{
-		when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
+		//when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
 
 
 		batchTasklet.execute(stepContribution, chunkContext);
 
-		verify(preferenceService).getAllNotificationsCreatedBefore(any(Date.class));
+		//verify(preferenceService).getAllNotificationsCreatedBefore(any(Date.class));
 	}
 
 }
