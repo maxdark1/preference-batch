@@ -20,21 +20,19 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
     @Override
     public OutboundRegistration process(InboundRegistration item) throws Exception {
-        System.out.println(" IN PROCESS");
-
-
         OutboundRegistration.OutboundRegistrationBuilder builder = OutboundRegistration.builder();
 
         LOG.info("item in process{} :" + item.toString());
         Date asOfDate = null;
+        String asOfDateStr = item.getAsOfDate();
         try{
             validate(item, builder);
-            asOfDate= validateDateFormat(item.getAsOfDate());
+            asOfDate= validateDateFormat(asOfDateStr);
 
         }catch (ValidationException e){
-            LOG.debug(" Validation error {}: ", e.getMessage());
+            LOG.error(" Validation error {}: ", e.getMessage());
         }
-        LOG.debug(" Processing inbound item {}: " , item);
+        LOG.info(" Processing inbound item {}: " , item);
         builder
                 .credit_language_cd(item.getLanguage_Preference().trim())
                 .updated_date(asOfDate)
@@ -119,7 +117,6 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
     }
 
     private void validateMaxLengthReqField(InboundRegistration item) {
-
         InboundValidator.validateMaxLength("language_pref", item.getLanguage_Preference(), 2);
         InboundValidator.validateMaxLength("as_of_date", item.getAsOfDate(), 19);
         InboundValidator.validateMaxLength("email_permission", item.getEmail_Permission(), 2);
@@ -133,6 +130,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
         InboundValidator.validateMaxLength("content3", item.getContent_3(), 30);
         InboundValidator.validateMaxLength("content5", item.getContent_5(), 30);
         InboundValidator.validateMaxLength("content6", item.getContent_6(), 30);
+
     }
 
     private void validateMaxLength(InboundRegistration item) {

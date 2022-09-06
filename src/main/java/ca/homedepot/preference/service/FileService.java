@@ -18,5 +18,9 @@ public interface FileService {
 
     BigDecimal getJobId(String job_name);
 
-    BigDecimal getLastFile(String fileRegistration, BigDecimal job_id);
+    BigDecimal getFile(String fileRegistration, BigDecimal job_id);
+
+    BigDecimal getLasFile();
+
+
 }

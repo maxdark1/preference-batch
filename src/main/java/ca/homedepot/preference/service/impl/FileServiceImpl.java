@@ -2,21 +2,16 @@ package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.FileDTO;
-import ca.homedepot.preference.dto.Job;
 import ca.homedepot.preference.repositories.FileRepo;
 import ca.homedepot.preference.repositories.entities.FileEntity;
-import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Service
@@ -67,8 +62,16 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public BigDecimal getLastFile(String file_name, BigDecimal job_id) {
+    public BigDecimal getFile(String file_name, BigDecimal job_id) {
         return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE_INSERT,
                 new Object[]{file_name, job_id}, (rs, RowNum) -> rs.getBigDecimal("file_id"));
     }
+
+    @Override
+    public BigDecimal getLasFile() {
+        return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE,
+                (rs, RowNum) -> rs.getBigDecimal("file_id"));
+    }
+
+
 }

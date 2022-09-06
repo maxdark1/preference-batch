@@ -2,6 +2,7 @@ package ca.homedepot.preference.constants;
 
 public interface SqlQueriesConstants {
 
+    String SQL_SELECT_LAST_FILE = "SELECT file_id FROM pcam.hdpc_file_inbound_stg ORDER BY file_id DESC LIMIT 1 ";
     String SQL_SELECT_LAST_FILE_INSERT = "SELECT file_id FROM pcam.hdpc_file WHERE file_name = ? AND job_id = ? LIMIT 1";
     String SQL_SELECT_LAST_JOB_W_NAME = "SELECT job_id FROM pcam.hdpc_job WHERE job_name = %param% ORDER BY job_id DESC LIMIT 1";
     String SQL_INSERT_HDPC_JOB =

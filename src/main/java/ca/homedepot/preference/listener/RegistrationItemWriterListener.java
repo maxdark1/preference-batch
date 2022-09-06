@@ -54,19 +54,9 @@ public class RegistrationItemWriterListener implements ItemWriteListener<Outboun
 
         BigDecimal job_id = fileService.getJobId(jobName);
 
-//        FileDTO file = new FileDTO();
-
-//        file.setJob(job_id);
-//        file.setStatus(false);
-//        file.setFile_source_id(new BigDecimal("20220902122936254875"));
-//        file.setStart_time(new Date());
-//        file.setInserted_date(new Date());
-//        file.setInserted_by("BATCH");
-
-//        fileService.saveFile(file);
 
         fileService.insert(fileRegistration, true, new BigDecimal("20220902122936254875"), new Date(), fileService.getJobId(jobName), new Date(), "BATCH");
-        return fileService.getLastFile(fileRegistration, job_id);
+        return fileService.getFile(fileRegistration, job_id);
     }
 
     @Override

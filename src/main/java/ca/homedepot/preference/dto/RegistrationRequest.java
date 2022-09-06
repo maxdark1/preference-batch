@@ -80,7 +80,7 @@ public class RegistrationRequest
 	private int mailAddress1pref;
 
 	@JsonProperty("src_date")
-	private Date srcDate;
+	private String srcDate;
 
 	@JsonProperty("email_status")
 	private int emailStatus;
@@ -107,11 +107,11 @@ public class RegistrationRequest
 	private String insertedBy;
 
 	@JsonProperty("inserted_date")
-	private Date insertedDate;
+	private String insertedDate;
 
 	@JsonProperty("updated_by")
 	private String updatedBy;
 
 	@JsonProperty("updated_date")
-	private Date updatedDate;
+	private String updatedDate;
 }

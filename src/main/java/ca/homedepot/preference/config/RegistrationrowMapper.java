@@ -2,6 +2,7 @@ package ca.homedepot.preference.config;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,9 +60,15 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setEmailStatus(rs.getInt(PreferenceBatchConstants.EMAIL_STATUS));
 		registrationRequest.setPhone1Pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.PHONE_1_PREF)));
 		registrationRequest.setInsertedBy(rs.getString(PreferenceBatchConstants.INSERTED_BY));
-		registrationRequest.setInsertedDate(rs.getDate(PreferenceBatchConstants.INSERTED_DATE));
-		registrationRequest.setUpdatedDate(rs.getDate(PreferenceBatchConstants.UPDATED_DATE));
+
+		Date insertedDate = rs.getDate(PreferenceBatchConstants.INSERTED_DATE);
+		Date updatedDate = rs.getDate(PreferenceBatchConstants.UPDATED_DATE);
+
+		registrationRequest.setInsertedDate(insertedDate.toString());
+		registrationRequest.setUpdatedDate(updatedDate.toString());
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
+
+		System.out.println(registrationRequest.getInsertedDate());
 
 		Map<String, String> contentValue = new HashMap<>();
 

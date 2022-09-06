@@ -69,7 +69,8 @@ public class InboundValidator {
     }
 
     public static Date validateDateFormat(String date) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss");
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         try {
             Date asOfDate = simpleDateFormat.parse(date);
             return asOfDate;

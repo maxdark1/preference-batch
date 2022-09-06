@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.listener.RegistrationDBRederListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.model.OutboundRegistration;
@@ -103,6 +104,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private RegistrationItemWriterListener writerListener;
 
+	@Autowired
+	private RegistrationDBRederListener readerListenerDB;
+
 	private static final String JOB_NAME_REGISTRATION_INBOUND = "registrationInbound";
 
 	@Autowired
@@ -113,6 +117,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public void setUpListener(){
 		jobListener.setDataSource(dataSource);
 		jobListener.setPreferenceService(batchTasklet.getBackinStockService());
+
 		writerListener.setFileRegistration(fileinRegistration);
 		writerListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
 		writerListener.setJobListener(jobListener);
@@ -159,7 +164,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql("SELECT * FROM pcam.hdpc_file_inbound_stg ORDER BY file_id DESC");
+		reader.setSql( "SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = " + readerListenerDB.getFile_id());
 		reader.setRowMapper(new RegistrationrowMapper());
 
 		return reader;
@@ -203,7 +208,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.incrementer(new RunIdIncrementer())
 				.listener(jobListener)
 				.start(readInboundCSVFileStep1())
-				.on("*")
+				.on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readInboundBDStep2())
 				.build()
 				.build();
@@ -231,6 +236,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readInboundBDStep2() throws Exception{
 		return stepBuilderFactory.get("readInboundBDStep")
 				.<RegistrationRequest, RegistrationRequest> chunk(chunkValue)
+				.listener(readerListenerDB)
 				.reader(inboundDBReader())
 				.writer(apiWriter)
 				.build();
