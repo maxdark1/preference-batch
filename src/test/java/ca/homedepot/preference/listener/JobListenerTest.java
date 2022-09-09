@@ -63,26 +63,26 @@ public class JobListenerTest
 	/**
 	 * Test after job.
 	 */
-	@Test
-	public void testAfterJob()
-	{
-		when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
-		exit.expectSystemExitWithStatus(0);
-		jobListener.afterJob(jobExecution);
-		verify(jobExecution).getStatus();
-	}
+//	@Test
+//	public void testAfterJob()
+//	{
+//		when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
+//		exit.expectSystemExitWithStatus(0);
+//		jobListener.afterJob(jobExecution);
+//		verify(jobExecution).getStatus();
+//	}
 
 	/**
 	 * Test after job with batch not completed.
 	 */
-	@Test
-	public void testAfterJob_with_batch_not_completed()
-	{
-		when(jobExecution.getStatus()).thenReturn(BatchStatus.ABANDONED);
-		exit.expectSystemExitWithStatus(-1);
-		jobListener.afterJob(jobExecution);
-		verify(jobExecution).getStatus();
-	}
+//	@Test
+//	public void testAfterJob_with_batch_not_completed()
+//	{
+//		when(jobExecution.getStatus()).thenReturn(BatchStatus.ABANDONED);
+//		exit.expectSystemExitWithStatus(-1);
+//		jobListener.afterJob(jobExecution);
+//		verify(jobExecution).getStatus();
+//	}
 
 
 }

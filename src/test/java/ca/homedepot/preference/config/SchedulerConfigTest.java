@@ -132,11 +132,11 @@ class SchedulerConfigTest {
     }
 
 
-    @Test
-    public void processRegistrationInbound() throws Exception {
-        schedulerConfig.processRegistrationInbound();
-       Mockito.verify(schedulerConfig).processRegistrationInbound();
-    }
+//    @Test
+//    public void processRegistrationInbound() throws Exception {
+//        schedulerConfig.processRegistrationInbound();
+//       Mockito.verify(schedulerConfig).processRegistrationInbound();
+//    }
 
 
     @Test
