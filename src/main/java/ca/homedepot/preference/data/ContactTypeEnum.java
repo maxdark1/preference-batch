@@ -35,17 +35,6 @@ public enum ContactTypeEnum
 	}
 
 	/**
-	 * To string.
-	 *
-	 * @return the string
-	 */
-	@Override
-	public String toString()
-	{
-		return String.valueOf(value);
-	}
-
-	/**
 	 * From value email type enum.
 	 *
 	 * @param value
@@ -62,5 +51,16 @@ public enum ContactTypeEnum
 			}
 		}
 		throw new IllegalArgumentException("Unexpected value '" + value + "'");
+	}
+
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
+	@Override
+	public String toString()
+	{
+		return String.valueOf(value);
 	}
 }

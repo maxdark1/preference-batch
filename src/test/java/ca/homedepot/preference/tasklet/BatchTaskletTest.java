@@ -1,7 +1,5 @@
 package ca.homedepot.preference.tasklet;
 
-import ca.homedepot.preference.repositories.entities.JobEntity;
-import ca.homedepot.preference.service.PreferenceService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,12 +12,8 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Arrays;
-import java.util.Date;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import ca.homedepot.preference.repositories.entities.JobEntity;
+import ca.homedepot.preference.service.PreferenceService;
 
 
 /**

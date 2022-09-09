@@ -1,167 +1,178 @@
 package ca.homedepot.preference.util.validation;
 
-import ca.homedepot.preference.model.InboundRegistration;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.batch.item.file.LineCallbackHandler;
-import org.springframework.batch.item.validator.ValidationException;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.validation.Validation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.batch.item.file.LineCallbackHandler;
+import org.springframework.batch.item.validator.ValidationException;
 
-class InboundValidatorTest {
+import ca.homedepot.preference.model.InboundRegistration;
 
-    InboundRegistration input;
+class InboundValidatorTest
+{
 
-    @BeforeEach
-    public void setup(){
-        input = new InboundRegistration();
-        input.setAsOfDate("08-26-2022 10:10:10");
-        input.setLanguage_Preference("E");
-        input.setEmail_Permission("1");
-        input.setMail_Permission("1");
-        input.setEmailPrefHDCA("1");
-        input.setGardenClub("1");
-        input.setEmailPrefPRO("1");
-        input.setNewMover("-1");
-        input.setSource_ID("12345");
-        input.setContent_1("CUSTOMER_NBR");
-        input.setContent_2("STORE_NBR");
-        input.setContent_3("ORG_NAME");
-        input.setContent_5("CUST_TYPE_CODE");
-        input.setContent_6("CELL_PHONE");
-    }
+	InboundRegistration input;
 
-    @Test
-    void lineCallbackHandler() {
-        LineCallbackHandler lineCallbackHandler = InboundValidator.lineCallbackHandler();
+	@BeforeEach
+	public void setup()
+	{
+		input = new InboundRegistration();
+		input.setAsOfDate("08-26-2022 10:10:10");
+		input.setLanguage_Preference("E");
+		input.setEmail_Permission("1");
+		input.setMail_Permission("1");
+		input.setEmailPrefHDCA("1");
+		input.setGardenClub("1");
+		input.setEmailPrefPRO("1");
+		input.setNewMover("-1");
+		input.setSource_ID("12345");
+		input.setContent_1("CUSTOMER_NBR");
+		input.setContent_2("STORE_NBR");
+		input.setContent_3("ORG_NAME");
+		input.setContent_5("CUST_TYPE_CODE");
+		input.setContent_6("CELL_PHONE");
+	}
 
-        ValidationException exception = assertThrows(ValidationException.class, ()-> {
-            lineCallbackHandler.handleLine("Language_Preference|AsOfDate|Email_Address|Email_Permission|Phone_Permission|Phone_Number|Phone_Extension|Title|First_Name|Last_Name|Address_1|Address_2|City|Province|Postal_Code|Mail_Permission|EmailPrefHDCA|GardenClub|EmailPrefPRO|NewMover|For_Future_Use|Source_ID|SMS_Flag|Fax_Number|Fax_Extension|Content_1|Value_1|Content_2|Value_2|Content_3|Value_3|Content_4|Value_4|Content_5|Value_5|Content_6|Value_6|Content_7|Value_7|Content_8|Value_8|Content_9|Value_9|Content_10|Value_10|Content_11|Value_11|Content_12|Value_12|Content_13|Value_13|Content_14|Value_14|Content_15|Value_15|Content_16|Value_16|Content_17|Value_17|Content_18|Value_18|Content_19|Value_19|Content_20");
-        });
+	@Test
+	void lineCallbackHandler()
+	{
+		LineCallbackHandler lineCallbackHandler = InboundValidator.lineCallbackHandler();
 
-        assertTrue(exception.getMessage().contains("Invalid header"));
-    }
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			lineCallbackHandler.handleLine(
+					"Language_Preference|AsOfDate|Email_Address|Email_Permission|Phone_Permission|Phone_Number|Phone_Extension|Title|First_Name|Last_Name|Address_1|Address_2|City|Province|Postal_Code|Mail_Permission|EmailPrefHDCA|GardenClub|EmailPrefPRO|NewMover|For_Future_Use|Source_ID|SMS_Flag|Fax_Number|Fax_Extension|Content_1|Value_1|Content_2|Value_2|Content_3|Value_3|Content_4|Value_4|Content_5|Value_5|Content_6|Value_6|Content_7|Value_7|Content_8|Value_8|Content_9|Value_9|Content_10|Value_10|Content_11|Value_11|Content_12|Value_12|Content_13|Value_13|Content_14|Value_14|Content_15|Value_15|Content_16|Value_16|Content_17|Value_17|Content_18|Value_18|Content_19|Value_19|Content_20");
+		});
 
-    @Test
-    void validateMaxLengthNotReq() {
-        String field = "test_field", value = "Wrong length test";
-        int maxLength = 3;
+		assertTrue(exception.getMessage().contains("Invalid header"));
+	}
 
-        ValidationException exception = assertThrows(ValidationException.class, ()->{
-            InboundValidator.validateMaxLengthNotReq(field, value, maxLength);
-        });
-        assertTrue(exception.getMessage().contains(field));
-    }
+	@Test
+	void validateMaxLengthNotReq()
+	{
+		String field = "test_field", value = "Wrong length test";
+		int maxLength = 3;
 
-    @Test
-    void validateLanguagePref() {
-        input.setLanguage_Preference("ENGLISH");
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validateMaxLengthNotReq(field, value, maxLength);
+		});
+		assertTrue(exception.getMessage().contains(field));
+	}
 
-        ValidationException exception = assertThrows(ValidationException.class, ()->{
-           InboundValidator.validateLanguagePref(input);
-        });
+	@Test
+	void validateLanguagePref()
+	{
+		input.setLanguage_Preference("ENGLISH");
 
-        assertTrue(exception.getMessage().contains(input.getLanguage_Preference()));
-    }
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validateLanguagePref(input);
+		});
 
-    @Test
-    void validateEmailFormat() {
-        input.setEmail_Address("item");
+		assertTrue(exception.getMessage().contains(input.getLanguage_Preference()));
+	}
 
-        ValidationException exception = assertThrows(ValidationException.class, ()->{
-            InboundValidator.validateEmailFormat(input);
-        });
-    }
+	@Test
+	void validateEmailFormat()
+	{
+		input.setEmail_Address("item");
 
-    @Test
-    void validateDateFormatValid() throws ParseException {
-        String date = "09-06-2022 2:23:23";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validateEmailFormat(input);
+		});
+	}
 
-        Date validatedDate = InboundValidator.validateDateFormat(date);
+	@Test
+	void validateDateFormatValid() throws ParseException
+	{
+		String date = "09-06-2022 2:23:23";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
-        assertEquals(validatedDate, simpleDateFormat.parse(date));
-    }
+		Date validatedDate = InboundValidator.validateDateFormat(date);
 
-    @Test
-    void validateDateFormatInvalid() {
-        String date = "09/06/2022 2:23:23";
+		assertEquals(validatedDate, simpleDateFormat.parse(date));
+	}
 
-        ValidationException exception = assertThrows(ValidationException.class, () ->{
-            InboundValidator.validateDateFormat(date);
-        });
-        assertTrue(exception.getMessage().contains("invalid date format"));
-    }
+	@Test
+	void validateDateFormatInvalid()
+	{
+		String date = "09/06/2022 2:23:23";
 
-    @Test
-    void validateNumberFormat() {
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validateDateFormat(date);
+		});
+		assertTrue(exception.getMessage().contains("invalid date format"));
+	}
 
-    }
+	@Test
+	void validateNumberFormat()
+	{
 
-    @Test
-    void validateIsNumber() {
-        String number = "4";
-        Integer value = InboundValidator.validateIsNumber(number);
+	}
 
-        assertEquals(value, Integer.parseInt(number));
+	@Test
+	void validateIsNumber()
+	{
+		String number = "4";
+		Integer value = InboundValidator.validateIsNumber(number);
 
-        number = "a";
+		assertEquals(value, Integer.parseInt(number));
 
-        String finalNumber = number;
-        ValidationException exception = assertThrows(ValidationException.class, ()->{
-           InboundValidator.validateIsNumber(finalNumber);
-        });
+		number = "a";
 
-        assertTrue(exception.getMessage().contains("invalid number format"));
+		String finalNumber = number;
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validateIsNumber(finalNumber);
+		});
 
-    }
+		assertTrue(exception.getMessage().contains("invalid number format"));
 
-    @Test
-    void validValue_Number() {
-        String field = "test_field";
+	}
 
-        ValidationException exception = assertThrows(ValidationException.class, ()->{
-           InboundValidator.validValue_Number(2, field);
-        });
+	@Test
+	void validValue_Number()
+	{
+		String field = "test_field";
 
-        assertTrue(exception.getMessage().contains(field));
-    }
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validValue_Number(2, field);
+		});
 
-    @Test
-    void validateIsRequired() {
+		assertTrue(exception.getMessage().contains(field));
+	}
 
-        ValidationException exception = assertThrows(ValidationException.class, ()->{
-           InboundValidator.validateIsRequired(null);
-        });
+	@Test
+	void validateIsRequired()
+	{
 
-        assertTrue(exception.getMessage().contains("should be present"));
-        input.setLanguage_Preference(null);
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validateIsRequired(null);
+		});
 
-        ValidationException exception1 = assertThrows(ValidationException.class, ()->{
-            InboundValidator.validateIsRequired(input);
-        });
+		assertTrue(exception.getMessage().contains("should be present"));
+		input.setLanguage_Preference(null);
 
-        assertTrue(exception1.getMessage().contains("language_pref"));
-    }
+		ValidationException exception1 = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validateIsRequired(input);
+		});
 
-    @Test
-    void validateRequired() {
-        String value = "", field = "test_field";
+		assertTrue(exception1.getMessage().contains("language_pref"));
+	}
 
-        ValidationException exception = assertThrows(ValidationException.class, ()->{
-            InboundValidator.validateRequired(value, field);
-        });
+	@Test
+	void validateRequired()
+	{
+		String value = "", field = "test_field";
 
-        assertTrue(exception.getMessage().contains(field));
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.validateRequired(value, field);
+		});
+
+		assertTrue(exception.getMessage().contains(field));
 
 
-    }
+	}
 }

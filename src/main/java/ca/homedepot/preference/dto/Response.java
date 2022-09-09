@@ -1,6 +1,7 @@
 package ca.homedepot.preference.dto;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

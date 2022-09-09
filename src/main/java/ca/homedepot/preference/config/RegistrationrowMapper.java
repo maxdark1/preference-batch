@@ -2,23 +2,21 @@ package ca.homedepot.preference.config;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.jdbc.core.RowMapper;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.Address;
 import ca.homedepot.preference.dto.RegistrationRequest;
-import ca.homedepot.preference.model.OutboundRegistration;
-import org.springframework.jdbc.core.RowMapper;
-
-import ca.homedepot.preference.model.InboundRegistration;
 
 public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 {
 
 	@Override
-	public RegistrationRequest mapRow(ResultSet rs, int rowNum) throws SQLException {
+	public RegistrationRequest mapRow(ResultSet rs, int rowNum) throws SQLException
+	{
 
 		RegistrationRequest registrationRequest = new RegistrationRequest();
 
@@ -81,10 +79,9 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT20), rs.getString(PreferenceBatchConstants.VALUE20));
 
 		/*
-		* Deletes any null value before
-		* send it to the service
-		* */
-		contentValue.forEach( (key, value) -> {
+		 * Deletes any null value before send it to the service
+		 */
+		contentValue.forEach((key, value) -> {
 			if (key == null || value == null)
 				contentValue.remove(key, value);
 		});

@@ -1,33 +1,37 @@
 package ca.homedepot.preference.service;
 
-import ca.homedepot.preference.dto.FileDTO;
-import ca.homedepot.preference.repositories.entities.FileEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import ca.homedepot.preference.dto.FileDTO;
+import ca.homedepot.preference.repositories.entities.FileEntity;
+
 
 @Service
-public interface FileService {
+public interface FileService
+{
 
-    JdbcTemplate getJdbcTemplate();
+	JdbcTemplate getJdbcTemplate();
 
-    void setJdbcTemplate(JdbcTemplate jdbcTemplate);
-    FileEntity saveFile(FileDTO file);
+	void setJdbcTemplate(JdbcTemplate jdbcTemplate);
 
-    int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id, Date inserted_date, String inserted_by);
+	FileEntity saveFile(FileDTO file);
 
-    BigDecimal getJobId(String job_name);
+	int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id, Date inserted_date,
+			String inserted_by);
 
-    BigDecimal getFile(String fileRegistration, BigDecimal job_id);
+	BigDecimal getJobId(String job_name);
 
-    BigDecimal getLasFile();
+	BigDecimal getFile(String fileRegistration, BigDecimal job_id);
 
-    /*
-    * Table: pcam.hdpc_master
-    * */
-    BigDecimal getSourceId(String keyVal, String valueVal);
+	BigDecimal getLasFile();
+
+	/*
+	 * Table: pcam.hdpc_master
+	 */
+	BigDecimal getSourceId(String keyVal, String valueVal);
 
 }

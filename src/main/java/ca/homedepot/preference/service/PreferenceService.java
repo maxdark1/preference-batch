@@ -1,9 +1,9 @@
 package ca.homedepot.preference.service;
 
-import ca.homedepot.preference.dto.*;
-
 import java.util.Date;
 import java.util.List;
+
+import ca.homedepot.preference.dto.*;
 
 
 /**

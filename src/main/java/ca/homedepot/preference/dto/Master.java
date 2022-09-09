@@ -1,32 +1,33 @@
 package ca.homedepot.preference.dto;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Master {
+public class Master
+{
 
-    private BigDecimal master_id;
-    
-    private String key_val;
+	private BigDecimal master_id;
 
-    private String value_val;
+	private String key_val;
 
-    private String active;
+	private String value_val;
 
-    private String inserted_by;
+	private String active;
 
-    private Date inserted_date;
+	private String inserted_by;
 
-    private String updated_by;
+	private Date inserted_date;
 
-    private Date updated_date;
+	private String updated_by;
 
-    
+	private Date updated_date;
+
+
 }

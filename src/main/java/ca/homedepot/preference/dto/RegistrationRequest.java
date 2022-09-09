@@ -1,11 +1,13 @@
 package ca.homedepot.preference.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
-import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.Map;
+
+import javax.validation.Valid;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 @Data
 public class RegistrationRequest implements Serializable

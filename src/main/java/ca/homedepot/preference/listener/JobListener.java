@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.Job;
-import ca.homedepot.preference.repositories.entities.JobEntity;
-import ca.homedepot.preference.service.PreferenceService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
+import javax.sql.DataSource;
+
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
@@ -18,7 +15,12 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
+import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.Job;
+import ca.homedepot.preference.repositories.entities.JobEntity;
+import ca.homedepot.preference.service.PreferenceService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -43,19 +45,23 @@ public class JobListener implements JobExecutionListener
 
 	private DataSource dataSource;
 
-	public void setPreferenceService(PreferenceService preferenceService) {
+	public void setPreferenceService(PreferenceService preferenceService)
+	{
 		jobEntityList = new ArrayList<>();
 		this.preferenceService = preferenceService;
 	}
 
-	public void setDataSource(DataSource dataSource) {
+	public void setDataSource(DataSource dataSource)
+	{
 		this.dataSource = dataSource;
 	}
 
-	public JobEntity getJob(String jobName){
+	public JobEntity getJob(String jobName)
+	{
 		System.out.println("\n " + Arrays.toString(jobEntityList.toArray()) + "\n");
 		return jobEntityList.stream().filter(job -> job.getJobName().contains(jobName)).findFirst().get();
 	}
+
 	/**
 	 * Before job.
 	 *
@@ -74,27 +80,31 @@ public class JobListener implements JobExecutionListener
 		job.setInserted_by("BATCH");
 		job.setInserted_date(new Date());
 
-		preferenceService.insert(job.getJob_name(), job.getStatus(), job.getStart_time(), job.getInserted_by(), job.getInserted_date());
+		preferenceService.insert(job.getJob_name(), job.getStatus(), job.getStart_time(), job.getInserted_by(),
+				job.getInserted_date());
 
 	}
 
-	public String status(BatchStatus batchStatus){
+	public String status(BatchStatus batchStatus)
+	{
 
-		switch (batchStatus){
+		switch (batchStatus)
+		{
 			case STARTED:
 				return "G";
 			case COMPLETED:
 				return "C";
 			case FAILED:
 				return "F";
-			case STOPPED :
+			case STOPPED:
 				return "S";
 			default:
-				return  "U";
+				return "U";
 		}
 	}
 
-	public JdbcBatchItemWriter<Job> jobWriter(){
+	public JdbcBatchItemWriter<Job> jobWriter()
+	{
 
 		JdbcBatchItemWriter<Job> writer = new JdbcBatchItemWriter<>();
 		writer.setDataSource(dataSource);
@@ -104,6 +114,7 @@ public class JobListener implements JobExecutionListener
 
 		return writer;
 	}
+
 	/**
 	 * After job.
 	 *
@@ -114,8 +125,8 @@ public class JobListener implements JobExecutionListener
 	public void afterJob(JobExecution jobExecution)
 	{
 
-		if(jobExecution.getStatus() == BatchStatus.COMPLETED)
-			log.info(" Job {} ends with completes status: ", jobExecution.getJobInstance().getJobName() );
+		if (jobExecution.getStatus() == BatchStatus.COMPLETED)
+			log.info(" Job {} ends with completes status: ", jobExecution.getJobInstance().getJobName());
 
 		Job job = new Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());

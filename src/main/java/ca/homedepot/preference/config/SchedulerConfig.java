@@ -1,22 +1,20 @@
 package ca.homedepot.preference.config;
 
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.RegistrationRequest;
-import ca.homedepot.preference.listener.RegistrationItemWriterListener;
-import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.model.OutboundRegistration;
-import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.util.validation.InboundValidator;
-import ca.homedepot.preference.writer.RegistrationAPIWriter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.annotation.*;
+import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -28,23 +26,25 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import ca.homedepot.preference.listener.JobListener;
-import ca.homedepot.preference.processor.RegistrationItemProcessor;
-import ca.homedepot.preference.tasklet.BatchTasklet;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.batch.core.launch.JobLauncher;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
+import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.listener.JobListener;
+import ca.homedepot.preference.listener.RegistrationItemWriterListener;
+import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.processor.MasterProcessor;
+import ca.homedepot.preference.processor.RegistrationItemProcessor;
+import ca.homedepot.preference.tasklet.BatchTasklet;
+import ca.homedepot.preference.util.validation.InboundValidator;
+import ca.homedepot.preference.writer.RegistrationAPIWriter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -57,69 +57,53 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SchedulerConfig extends DefaultBatchConfigurer
 {
+	private static final String JOB_NAME_REGISTRATION_INBOUND = "registrationInbound";
 	/**
 	 * The Job builder factory.
 	 */
 	private final JobBuilderFactory jobBuilderFactory;
-
 	/**
 	 * The Step builder factory.
 	 */
 	private final StepBuilderFactory stepBuilderFactory;
-
-
-
+	private final JobLauncher jobLauncher;
+	/**
+	 * The Transaction manager./*
+	 */
+	@Qualifier("visitorTransactionManager")
+	private final PlatformTransactionManager transactionManager;
+	@Value("${analytic.file.registration}")
+	String registrationAnalyticsFile;
+	@Value("${analytic.file.email}")
+	String emailAnalyticsFile;
+	@Value("${process.analytics.chunk}")
+	Integer chunkValue;
+	@Value("${inbound.file.registration}")
+	String fileinRegistration;
+	@Value("${sub.activity.days}")
+	Integer subactivity;
 	@Autowired
 	private DataSource dataSource;
-
 	/**
 	 * The Batch tasklet.
 	 */
 	@Autowired
 	private BatchTasklet batchTasklet;
-
 	/**
 	 * The Job listener.
 	 */
 	@Autowired
 	private JobListener jobListener;
-
-
-	private final JobLauncher jobLauncher;
-
-	@Value("${analytic.file.registration}")
-	String registrationAnalyticsFile;
-
-	@Value("${analytic.file.email}")
-	String emailAnalyticsFile;
-
-	@Value("${process.analytics.chunk}")
-	Integer chunkValue;
-
-	@Value("${inbound.file.registration}")
-	String fileinRegistration;
-
-	@Value("${sub.activity.days}")
-	Integer subactivity;
-
-
 	@Autowired
 	private RegistrationItemWriterListener writerListener;
-
-
-	private static final String JOB_NAME_REGISTRATION_INBOUND = "registrationInbound";
-
 	@Autowired
 	private RegistrationAPIWriter apiWriter;
-
 	@Autowired
 	private MasterProcessor masterProcessor;
 
-
-
-
 	@Autowired
-	public void setUpListener(){
+	public void setUpListener()
+	{
 		jobListener.setDataSource(dataSource);
 		jobListener.setPreferenceService(batchTasklet.getBackinStockService());
 
@@ -130,59 +114,57 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		apiWriter.setPreferenceService(batchTasklet.getBackinStockService());
 	}
 
-	public void setWriterListener(RegistrationItemWriterListener writerListener){
+	public void setWriterListener(RegistrationItemWriterListener writerListener)
+	{
 		this.writerListener = writerListener;
 	}
 
 
+	/*
+	 * SCHEDULING JOBS
+	 */
+
 	@PostConstruct
-	public void getMasterInfo(){
+	public void getMasterInfo()
+	{
 		masterProcessor.getMasterInfo();
 		writerListener.setMasterProcessor(masterProcessor);
 	}
-
-
-	/*
-	* 	SCHEDULING JOBS
-	* */
+	///***************************************************
 
 	@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationInbound() throws Exception
 	{
-		log.info(" Registration Inbound : Registration Job started at :"+ new Date());
-		JobParameters param = new JobParametersBuilder().addString(JOB_NAME_REGISTRATION_INBOUND,
-				String.valueOf(System.currentTimeMillis())).toJobParameters();
+		log.info(" Registration Inbound : Registration Job started at :" + new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_REGISTRATION_INBOUND, String.valueOf(System.currentTimeMillis())).toJobParameters();
 		JobExecution execution = jobLauncher.run(registrationInbound(), param);
 		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
-	///***************************************************
 
 	/*
 	 * Read inbound file
 	 */
 	@Bean
-	public FlatFileItemReader<InboundRegistration> inboundFileReader() throws Exception {
+	public FlatFileItemReader<InboundRegistration> inboundFileReader() throws Exception
+	{
 
 
-		return new FlatFileItemReaderBuilder<InboundRegistration>()
-				.name("inboundFileReader")
-				.resource(new FileSystemResource(fileinRegistration))
-				.delimited()
-				.delimiter("|")
-				.names(InboundValidator.FIELD_NAMES)
-				.targetType(InboundRegistration.class)
-				.linesToSkip(1)
+		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
+				.resource(new FileSystemResource(fileinRegistration)).delimited().delimiter("|").names(InboundValidator.FIELD_NAMES)
+				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
-				.skippedLinesCallback(InboundValidator.lineCallbackHandler())
-				.build();
+				.skippedLinesCallback(InboundValidator.lineCallbackHandler()).build();
 	}
 
 	@Bean
-	public JdbcCursorItemReader<RegistrationRequest> inboundDBReader() {
+	public JdbcCursorItemReader<RegistrationRequest> inboundDBReader()
+	{
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql( "SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = (" + SqlQueriesConstants.SQL_SELECT_LAST_FILE +")");
+		reader.setSql(
+				"SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = (" + SqlQueriesConstants.SQL_SELECT_LAST_FILE + ")");
 		reader.setRowMapper(new RegistrationrowMapper());
 
 		return reader;
@@ -195,7 +177,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@Bean
-	public JdbcBatchItemWriter<OutboundRegistration> inboundRegistrationDBWriter(){
+	public JdbcBatchItemWriter<OutboundRegistration> inboundRegistrationDBWriter()
+	{
 		JdbcBatchItemWriter<OutboundRegistration> writer = new JdbcBatchItemWriter<>();
 
 		writer.setDataSource(dataSource);
@@ -205,14 +188,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
-
-	/**
-	 * The Transaction manager./*
-	 */
-	@Qualifier("visitorTransactionManager")
-	private final PlatformTransactionManager transactionManager;
-
-
 	/**
 	 * Process job.
 	 *
@@ -221,14 +196,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 
 	@Bean
-	public Job registrationInbound() throws Exception {
-		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND)
-				.incrementer(new RunIdIncrementer())
-				.listener(jobListener)
-				.start(readInboundCSVFileStep1())
-				.on(PreferenceBatchConstants.COMPLETED_STATUS)
-				.to(readInboundBDStep2())
-				.build()
+	public Job registrationInbound() throws Exception
+	{
+		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readInboundCSVFileStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
 				.build();
 
 	}
@@ -240,23 +211,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 
 	@Bean
-	public Step readInboundCSVFileStep1() throws Exception {
-		return stepBuilderFactory.get("readInboundCSVFileStep")
-				.<InboundRegistration, OutboundRegistration> chunk(chunkValue)
- 				.reader(inboundFileReader())
-				.processor(inboundFileProcessor())
-				.listener(writerListener)
-				.writer(inboundRegistrationDBWriter())
-				.build();
+	public Step readInboundCSVFileStep1() throws Exception
+	{
+		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, OutboundRegistration> chunk(chunkValue)
+				.reader(inboundFileReader()).processor(inboundFileProcessor()).listener(writerListener)
+				.writer(inboundRegistrationDBWriter()).build();
 	}
 
 	@Bean
-	public Step readInboundBDStep2() throws Exception{
-		return stepBuilderFactory.get("readInboundBDStep")
-				.<RegistrationRequest, RegistrationRequest> chunk(chunkValue)
-				.reader(inboundDBReader())
-				.writer(apiWriter)
-				.build();
+	public Step readInboundBDStep2() throws Exception
+	{
+		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkValue)
+				.reader(inboundDBReader()).writer(apiWriter).build();
 	}
 
 

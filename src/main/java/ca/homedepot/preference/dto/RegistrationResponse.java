@@ -1,14 +1,15 @@
 package ca.homedepot.preference.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationResponse {
-    private List<Response> registration;
+public class RegistrationResponse
+{
+	private List<Response> registration;
 }

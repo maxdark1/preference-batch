@@ -1,10 +1,13 @@
 package ca.homedepot.preference.exception;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+
+import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
 
 
 /**

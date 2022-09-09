@@ -118,7 +118,7 @@ public interface PreferenceBatchConstants
 
 	String VALUE7 = "value7";
 
-	String CONTENT8= "content8";
+	String CONTENT8 = "content8";
 
 	String VALUE8 = "value8";
 
@@ -130,13 +130,13 @@ public interface PreferenceBatchConstants
 
 	String VALUE10 = "value10";
 
-	String CONTENT11= "content11";
+	String CONTENT11 = "content11";
 
 	String VALUE11 = "value11";
 
 	String CONTENT12 = "content12";
 
-	String VALUE12= "value12";
+	String VALUE12 = "value12";
 
 	String CONTENT13 = "content13";
 
@@ -224,6 +224,6 @@ public interface PreferenceBatchConstants
 
 	String PREFERENCE_CENTER_REGISTRATION_URL = "preferences/registration";
 
-    String SRC_ZIPCODE = "src_zipcode";
-    String SRC_DATE = "src_date";
+	String SRC_ZIPCODE = "src_zipcode";
+	String SRC_DATE = "src_date";
 }

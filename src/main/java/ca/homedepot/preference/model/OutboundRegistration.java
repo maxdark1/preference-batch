@@ -1,10 +1,10 @@
 package ca.homedepot.preference.model;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.Date;
+
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
@@ -32,21 +32,18 @@ public class OutboundRegistration
 	String email_pref_garden_club;
 	String email_pref_pro;
 	String email_pref_new_mover;
-	private String inserted_by;
-	private Date inserted_date;
 	Long source_id;
 	String cell_sms_flag;
 	String customer_nbr;
 	String org_name;
 	String store_nbr;
 	String cust_type_cd;
+	String content1;
+	String value1;
 
 	//----------------------
 	// Content - Value pair
 	//----------------------
-
-	String content1;
-	String value1;
 	String content2;
 	String value2;
 	String content3;
@@ -85,4 +82,6 @@ public class OutboundRegistration
 	String value19;
 	String content20;
 	String value20;
+	private String inserted_by;
+	private Date inserted_date;
 }

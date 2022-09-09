@@ -3,11 +3,11 @@ package ca.homedepot.preference.repositories;
 import java.util.Date;
 import java.util.List;
 
-import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.repositories.entities.JobEntity;
 
 /**

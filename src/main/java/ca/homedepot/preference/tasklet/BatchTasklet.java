@@ -1,11 +1,6 @@
 package ca.homedepot.preference.tasklet;
 
 
-import ca.homedepot.preference.dto.PreferenceItemList;
-import ca.homedepot.preference.repositories.entities.JobEntity;
-import ca.homedepot.preference.service.PreferenceService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -13,10 +8,11 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
+import ca.homedepot.preference.dto.PreferenceItemList;
+import ca.homedepot.preference.repositories.entities.JobEntity;
+import ca.homedepot.preference.service.PreferenceService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -84,7 +80,8 @@ public class BatchTasklet implements Tasklet
 	@Value("dev")
 	String environment;
 
-	public PreferenceService getBackinStockService() {
+	public PreferenceService getBackinStockService()
+	{
 		return backinStockService;
 	}
 
@@ -131,22 +128,22 @@ public class BatchTasklet implements Tasklet
 	 * @param jobEntity
 	 *           the notification subscription entity
 	 */
-//	private void sendEmail(JobEntity jobEntity)
-//	{
-//
-//
-//		EmailAddressDTO emailAddressDTO = new EmailAddressDTO();
-//		//emailAddressDTO.setEmail(jobEntity.getEmailId());
-//		//emailAddressDTO.setName(jobEntity.getEmailId());
-//
-//		EmailParametersDTO emailParametersDTO = new EmailParametersDTO();
-//		//emailParametersDTO.setSubject(FRENCH.equalsIgnoreCase(jobEntity.getLangcode()) ? subjectFr : subjectEn);
-//		emailParametersDTO.setEnvironment(environment);
-//
-//		//emailMessagePublisher.publishEmailMessageToTopic(null);
-//
-//		saveEmailRequest(jobEntity);
-//	}
+	//	private void sendEmail(JobEntity jobEntity)
+	//	{
+	//
+	//
+	//		EmailAddressDTO emailAddressDTO = new EmailAddressDTO();
+	//		//emailAddressDTO.setEmail(jobEntity.getEmailId());
+	//		//emailAddressDTO.setName(jobEntity.getEmailId());
+	//
+	//		EmailParametersDTO emailParametersDTO = new EmailParametersDTO();
+	//		//emailParametersDTO.setSubject(FRENCH.equalsIgnoreCase(jobEntity.getLangcode()) ? subjectFr : subjectEn);
+	//		emailParametersDTO.setEnvironment(environment);
+	//
+	//		//emailMessagePublisher.publishEmailMessageToTopic(null);
+	//
+	//		saveEmailRequest(jobEntity);
+	//	}
 
 	/**
 	 * Save email request.

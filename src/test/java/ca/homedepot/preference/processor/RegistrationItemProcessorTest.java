@@ -1,18 +1,15 @@
 package ca.homedepot.preference.processor;
 
-import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.model.OutboundRegistration;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.contrib.java.lang.system.StandardOutputStreamLog;
 import org.junit.runner.RunWith;
-import org.springframework.batch.item.validator.ValidationException;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.model.OutboundRegistration;
 
 //@SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -49,8 +46,8 @@ public class RegistrationItemProcessorTest
 	public void validateRequired() throws Exception
 	{
 		input.setAsOfDate("02-02-2022 22:22:22");
-		 registrationItemProcessor.process(input);
-		assertEquals("02-02-2022 22:22:22",input.getAsOfDate());
+		registrationItemProcessor.process(input);
+		assertEquals("02-02-2022 22:22:22", input.getAsOfDate());
 		input.setAsOfDate(null);
 
 		OutboundRegistration outboundRegistration = registrationItemProcessor.process(input);
@@ -59,7 +56,8 @@ public class RegistrationItemProcessorTest
 	}
 
 	@Test
-	public void validateIsNumberTest() throws Exception {
+	public void validateIsNumberTest() throws Exception
+	{
 		input.setEmail_Permission("a");
 
 		OutboundRegistration outboundRegistration = registrationItemProcessor.process(input);
