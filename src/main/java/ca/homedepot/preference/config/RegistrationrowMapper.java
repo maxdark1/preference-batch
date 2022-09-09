@@ -27,12 +27,12 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS));
 		registrationRequest.setSequenceNbr(rs.getString(PreferenceBatchConstants.SEQUENCE_NBR));
 		registrationRequest.setCreditLanguageCd(rs.getString(PreferenceBatchConstants.CREDIT_LANGUAGE_CD));
+		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
 		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
 		registrationRequest.setEmailAddress1Pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_1_PREF)));
 		registrationRequest.setSrcPhoneNumber(rs.getString(PreferenceBatchConstants.SRC_PHONE_NUMBER));
 		registrationRequest.setSrcPhoneExtension(rs.getString(PreferenceBatchConstants.SRC_PHONE_EXTENSION));
 		registrationRequest.setSrcTitleName(rs.getString(PreferenceBatchConstants.SRC_TITLE_NAME));
-		registrationRequest.setSrcMiddleInitial(rs.getString(PreferenceBatchConstants.SRC_MIDDLE_INITIAL));
 		registrationRequest.setSrcFirstName(rs.getString(PreferenceBatchConstants.SRC_FIRST_NAME));
 		registrationRequest.setSrcLastName(rs.getString(PreferenceBatchConstants.SRC_LAST_NAME));
 
@@ -41,12 +41,10 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		address.setSrcAddress2(rs.getString(PreferenceBatchConstants.SRC_ADDRESS2));
 		address.setSrcCity(rs.getString(PreferenceBatchConstants.SRC_CITY));
 		address.setState(rs.getString(PreferenceBatchConstants.SRC_STATE));
-		address.setSrcZipcode(rs.getString(PreferenceBatchConstants.SRC_ZIPCODE));
 		address.setSrcPostalCode(rs.getString(PreferenceBatchConstants.SRC_POSTAL_CODE));
 
 		registrationRequest.setSrcAddress(address);
 
-		registrationRequest.setSrcSystem(rs.getString(PreferenceBatchConstants.SRC_SYSTEM));
 		registrationRequest.setCreditPrin(rs.getString(PreferenceBatchConstants.CREDIT_PRIN));
 		registrationRequest.setSrcAgent(rs.getString(PreferenceBatchConstants.SRC_AGENT));
 		registrationRequest.setSrcLastBalanceAmt(rs.getString(PreferenceBatchConstants.SRC_LAST_BALANCE_AMT));
@@ -54,19 +52,8 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setSrcLastTransDt(rs.getString(PreferenceBatchConstants.SRC_LAST_TRANS_DT));
 		registrationRequest.setCreditStoreOrigin(rs.getString(PreferenceBatchConstants.CREDIT_STORE_ORIGIN));
 		registrationRequest.setMailAddress1pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.MAIL_ADDRESS_1_PREF)));
-		registrationRequest.setEmailPrefHdCa(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_HD_CA)));
-		registrationRequest.setEmailPrefGardenClub(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_GARDEN_CLUB)));
-		registrationRequest.setEmailPrefPro(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_PRO)));
-		registrationRequest.setEmailPrefNewMover(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_NEW_MOVER)));
-		registrationRequest.setEmailStatus(rs.getInt(PreferenceBatchConstants.EMAIL_STATUS));
 		registrationRequest.setPhone1Pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.PHONE_1_PREF)));
-		registrationRequest.setInsertedBy(rs.getString(PreferenceBatchConstants.INSERTED_BY));
 
-		Date insertedDate = rs.getDate(PreferenceBatchConstants.INSERTED_DATE);
-		Date updatedDate = rs.getDate(PreferenceBatchConstants.UPDATED_DATE);
-
-		registrationRequest.setInsertedDate(insertedDate.toString());
-		registrationRequest.setUpdatedDate(updatedDate.toString());
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
 
 
@@ -93,6 +80,15 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT19), rs.getString(PreferenceBatchConstants.VALUE19));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT20), rs.getString(PreferenceBatchConstants.VALUE20));
 
+		/*
+		* Deletes any null value before
+		* send it to the service
+		* */
+		contentValue.forEach( (key, value) -> {
+			if (key == null || value == null)
+				contentValue.remove(key, value);
+		});
+
 
 		registrationRequest.setContentValue(contentValue);
 
@@ -103,5 +99,6 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 
 
 	}
+
 
 }

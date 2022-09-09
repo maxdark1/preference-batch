@@ -34,7 +34,7 @@ class FileServiceImplTest {
 
     @Test
     void insert() {
-        Boolean status = true;
+        String status = "G";
         BigDecimal sourceId = new BigDecimal("12345678"), job_id = new BigDecimal("1234567890");
         Date startTime = new Date(), insertedDate = new Date();
         String file_name = "fileName", inserted_by = "test";

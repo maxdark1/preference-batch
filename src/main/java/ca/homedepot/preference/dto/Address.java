@@ -22,9 +22,6 @@ public class Address implements Serializable {
     @JsonProperty("src_state")
     private String state;
 
-    @JsonProperty("src_zipcode")
-    private String srcZipcode;
-
     @JsonProperty("src_postal_code")
     private String srcPostalCode;
 }

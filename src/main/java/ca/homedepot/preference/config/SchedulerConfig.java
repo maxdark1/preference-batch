@@ -6,13 +6,11 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.model.OutboundRegistration;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import lombok.RequiredArgsConstructor;
@@ -296,37 +294,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return sdf.format(Date.from(yesterday));
 	}
 
-	/**
-	 * Gets file name.
-	 *
-	 * @param baseName
-	 *           the base name
-	 * @return the file name
-	 */
-	private String getFile(String baseName)
-	{
-		Date currentDate = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyyhhmmss");
-		String fileName = baseName + "_" + sdf.format(currentDate) + ".csv";
-		if (registrationAnalyticsFile.equals(baseName))
-		{
-			FileUtil.setRegistrationFile(fileName);
-		}
-		else
-		{
-			FileUtil.setEmailanalyticsFile(fileName);
-		}
-		File file = new File(fileName);
-		try
-		{
-			file.createNewFile();
-		}
-		catch (IOException e)
-		{
-			log.error("Error while creating file " + fileName);
-		}
-		return file.getName();
-	}
+
 
 
 }

@@ -1,6 +1,5 @@
 package ca.homedepot.preference.repositories;
 
-import ca.homedepot.preference.dto.EmailAddressDTO;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
@@ -14,13 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JobRepoTest {
 
-    EmailAddressDTO emailAddressDTO;
+
 
     Faker faker;
     @BeforeEach
     void setUp() {
-        emailAddressDTO = new EmailAddressDTO();
-        emailAddressDTO.setEmail(getFakeEmail());
     }
 
     private String getFakeEmail() {
@@ -34,7 +31,7 @@ class JobRepoTest {
 
     @Test
     void testDTO(){
-        assertNotNull(emailAddressDTO.toString());
+
     }
 
     @Test

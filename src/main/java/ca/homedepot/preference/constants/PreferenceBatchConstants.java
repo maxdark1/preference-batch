@@ -225,4 +225,5 @@ public interface PreferenceBatchConstants
 	String PREFERENCE_CENTER_REGISTRATION_URL = "preferences/registration";
 
     String SRC_ZIPCODE = "src_zipcode";
+    String SRC_DATE = "src_date";
 }
