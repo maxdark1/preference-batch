@@ -1,15 +1,17 @@
 package ca.homedepot.preference.config;
 
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.RegistrationRequest;
-import ca.homedepot.preference.listener.RegistrationDBRederListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
@@ -44,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -83,8 +86,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private JobListener jobListener;
 
-	@Autowired
-	private JobLauncher jobLauncher;
+
+	private final JobLauncher jobLauncher;
 
 	@Value("${analytic.file.registration}")
 	String registrationAnalyticsFile;
@@ -101,16 +104,20 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${sub.activity.days}")
 	Integer subactivity;
 
+
 	@Autowired
 	private RegistrationItemWriterListener writerListener;
 
-	@Autowired
-	private RegistrationDBRederListener readerListenerDB;
 
 	private static final String JOB_NAME_REGISTRATION_INBOUND = "registrationInbound";
 
 	@Autowired
 	private RegistrationAPIWriter apiWriter;
+
+	@Autowired
+	private MasterProcessor masterProcessor;
+
+
 
 
 	@Autowired
@@ -122,7 +129,20 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		writerListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
 		writerListener.setJobListener(jobListener);
 		writerListener.setDataSource(dataSource);
+		apiWriter.setPreferenceService(batchTasklet.getBackinStockService());
 	}
+
+	public void setWriterListener(RegistrationItemWriterListener writerListener){
+		this.writerListener = writerListener;
+	}
+
+
+	@PostConstruct
+	public void getMasterInfo(){
+		masterProcessor.getMasterInfo();
+		writerListener.setMasterProcessor(masterProcessor);
+	}
+
 
 	/*
 	* 	SCHEDULING JOBS
@@ -164,7 +184,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql( "SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = " + readerListenerDB.getFile_id());
+		reader.setSql( "SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = (" + SqlQueriesConstants.SQL_SELECT_LAST_FILE +")");
 		reader.setRowMapper(new RegistrationrowMapper());
 
 		return reader;
@@ -225,7 +245,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readInboundCSVFileStep1() throws Exception {
 		return stepBuilderFactory.get("readInboundCSVFileStep")
 				.<InboundRegistration, OutboundRegistration> chunk(chunkValue)
-				.reader(inboundFileReader())
+ 				.reader(inboundFileReader())
 				.processor(inboundFileProcessor())
 				.listener(writerListener)
 				.writer(inboundRegistrationDBWriter())
@@ -236,7 +256,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readInboundBDStep2() throws Exception{
 		return stepBuilderFactory.get("readInboundBDStep")
 				.<RegistrationRequest, RegistrationRequest> chunk(chunkValue)
-				.listener(readerListenerDB)
 				.reader(inboundDBReader())
 				.writer(apiWriter)
 				.build();
@@ -262,6 +281,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Override
 	public void setDataSource(DataSource dataSource)
 	{
+		this.dataSource = dataSource;
 	}
 
 	/**

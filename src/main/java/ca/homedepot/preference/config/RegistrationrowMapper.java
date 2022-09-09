@@ -24,7 +24,7 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 
 
 		registrationRequest.setFileId(rs.getBigDecimal(PreferenceBatchConstants.FILE_ID).toString());
-		registrationRequest.setStatus(rs.getBoolean(PreferenceBatchConstants.STATUS));
+		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS));
 		registrationRequest.setSequenceNbr(rs.getString(PreferenceBatchConstants.SEQUENCE_NBR));
 		registrationRequest.setCreditLanguageCd(rs.getString(PreferenceBatchConstants.CREDIT_LANGUAGE_CD));
 		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
@@ -45,6 +45,7 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		address.setSrcPostalCode(rs.getString(PreferenceBatchConstants.SRC_POSTAL_CODE));
 
 		registrationRequest.setSrcAddress(address);
+
 		registrationRequest.setSrcSystem(rs.getString(PreferenceBatchConstants.SRC_SYSTEM));
 		registrationRequest.setCreditPrin(rs.getString(PreferenceBatchConstants.CREDIT_PRIN));
 		registrationRequest.setSrcAgent(rs.getString(PreferenceBatchConstants.SRC_AGENT));
@@ -68,7 +69,6 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setUpdatedDate(updatedDate.toString());
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
 
-		System.out.println(registrationRequest.getInsertedDate());
 
 		Map<String, String> contentValue = new HashMap<>();
 

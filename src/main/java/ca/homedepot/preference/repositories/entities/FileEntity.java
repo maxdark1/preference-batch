@@ -26,10 +26,10 @@ public class FileEntity {
     private JobEntity job;
 
     /**
-     * The email Id.
+     * The status.
      */
     @Column(name = "status")
-    private Boolean status;
+    private String status;
 
     @Column(name = "file_source_id")
     private BigDecimal fileSourceId;

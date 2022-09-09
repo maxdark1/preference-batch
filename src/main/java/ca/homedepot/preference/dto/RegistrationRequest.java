@@ -1,20 +1,20 @@
 package ca.homedepot.preference.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Data;
 
-import java.util.Date;
+import javax.validation.Valid;
+import java.io.Serializable;
 import java.util.Map;
 
 @Data
-public class RegistrationRequest
+public class RegistrationRequest implements Serializable
 {
 	@JsonProperty("file_id")
 	private String fileId;
 
 	@JsonProperty("status")
-	private boolean status;
+	private String status;
 
 	@JsonProperty("sequence_nbr")
 	private String sequenceNbr;
@@ -35,6 +35,7 @@ public class RegistrationRequest
 	private String srcLastName;
 
 	@JsonProperty("src_address")
+	@Valid
 	private Address srcAddress;
 
 	@JsonProperty("src_system")

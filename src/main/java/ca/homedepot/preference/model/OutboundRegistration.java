@@ -25,6 +25,7 @@ public class OutboundRegistration
 	String src_address2;
 	String src_city;
 	String src_state;
+	Date src_date;
 	String src_postal_code;
 	String mail_address_1_pref;
 	String email_pref_hd_ca;

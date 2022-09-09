@@ -4,12 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import ca.homedepot.preference.config.SchedulerConfig;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.Job;
-import ca.homedepot.preference.model.OutboundRegistration;
 import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +15,6 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -74,14 +68,30 @@ public class JobListener implements JobExecutionListener
 		log.debug("Batch Started.");
 		ca.homedepot.preference.dto.Job job = new ca.homedepot.preference.dto.Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
-		job.setStatus(jobExecution.getStatus().isRunning());
+		job.setStatus(status(jobExecution.getStatus())); // Cambiarle
+
 		job.setStart_time(jobExecution.getStartTime());
 		job.setInserted_by("BATCH");
 		job.setInserted_date(new Date());
 
 		preferenceService.insert(job.getJob_name(), job.getStatus(), job.getStart_time(), job.getInserted_by(), job.getInserted_date());
 
-		//jobEntityList.add(preferenceService.saveJob(job));
+	}
+
+	public String status(BatchStatus batchStatus){
+
+		switch (batchStatus){
+			case STARTED:
+				return "G";
+			case COMPLETED:
+				return "C";
+			case FAILED:
+				return "F";
+			case STOPPED :
+				return "S";
+			default:
+				return  "U";
+		}
 	}
 
 	public JdbcBatchItemWriter<Job> jobWriter(){
@@ -107,12 +117,15 @@ public class JobListener implements JobExecutionListener
 		if(jobExecution.getStatus() == BatchStatus.COMPLETED)
 			log.info(" Job {} ends with completes status: ", jobExecution.getJobInstance().getJobName() );
 
-		JobEntity jobEntity = new JobEntity();
-		jobEntity.setJobName(jobExecution.getJobConfigurationName());
-		jobEntity.setStatus(jobExecution.getStatus().isRunning());
-		jobEntity.setStartTime(jobExecution.getStartTime());
-		jobEntity.setInsertedBy("BATCH");
-		jobEntityList.remove(jobEntity);
+		Job job = new Job();
+		job.setJob_name(jobExecution.getJobInstance().getJobName());
+		job.setStatus(status(jobExecution.getStatus())); //Cambiar
+		job.setUpdated_date(new Date());
+		job.setStart_time(jobExecution.getStartTime());
+
+		int insert = preferenceService.updateJob(job);
+
+		log.info("  {} Job(s) updated", insert);
 
 	}
 

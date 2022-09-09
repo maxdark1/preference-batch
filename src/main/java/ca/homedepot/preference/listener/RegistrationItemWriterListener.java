@@ -3,6 +3,7 @@ package ca.homedepot.preference.listener;
 
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.repositories.entities.FileEntity;
 import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.service.FileService;
@@ -38,6 +39,8 @@ public class RegistrationItemWriterListener implements ItemWriteListener<Outboun
 
     private BigDecimal file_id;
 
+    private MasterProcessor masterProcessor;
+
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -46,16 +49,17 @@ public class RegistrationItemWriterListener implements ItemWriteListener<Outboun
     public void beforeWrite(List<? extends OutboundRegistration> items) {
         file_id = writeFile();
 
-        System.out.println(file_id);
         items.forEach(item -> item.setFile_id(file_id));
     }
 
     public BigDecimal writeFile(){
 
         BigDecimal job_id = fileService.getJobId(jobName);
+        BigDecimal masterId = masterProcessor.getSourceId("SOURCE", "hybris").getMaster_id();
 
-
-        fileService.insert(fileRegistration, true, new BigDecimal("20220902122936254875"), new Date(), fileService.getJobId(jobName), new Date(), "BATCH");
+        System.out.println(masterId);
+        // status: string (STARTED, COMPLETED, ERROR), source_id = read master table (start batch application  "key - value")
+        fileService.insert(fileRegistration, "G", masterId, new Date(), job_id, new Date(), "BATCH");
         return fileService.getFile(fileRegistration, job_id);
     }
 

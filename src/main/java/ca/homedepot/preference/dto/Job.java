@@ -11,14 +11,14 @@ public class Job {
     private BigDecimal job_id;
 
     /**
-     * The article id.
+     * The Job Name
      */
     private String job_name;
 
     /**
-     * The email Id.
+     * The status
      */
-    private Boolean status;
+    private String status;
 
     /**
      * The Phone number.

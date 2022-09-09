@@ -13,7 +13,7 @@ public class FileDTO {
     private String file_name;
     private BigDecimal job;
     private BigDecimal file_source_id;
-    private Boolean status;
+    private String status;
     private Date start_time;
     private Date end_time;
     private String inserted_by;

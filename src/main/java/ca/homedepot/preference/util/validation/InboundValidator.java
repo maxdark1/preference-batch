@@ -31,14 +31,10 @@ public class InboundValidator {
     * */
 
     public static LineCallbackHandler lineCallbackHandler(){
-        return new LineCallbackHandler() {
-            @Override
-            public void handleLine(String line) {
-                String[] header = line.split("\\|");
-                System.out.println(Arrays.toString(header));
-                if(!Arrays.equals(header, FIELD_NAMES))
-                    throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
-            }
+        return line -> {
+            String[] header = line.split("\\|");
+            if(!Arrays.equals(header, FIELD_NAMES))
+                throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
         };
     }
 
@@ -134,7 +130,7 @@ public class InboundValidator {
             throw new ValidationException("invalid value for field {}: " + field);
     }
 
-    public static void validateIsRequired(InboundRegistration item) {
+    public static void  validateIsRequired(InboundRegistration item) {
         if (item == null) {
             throw new ValidationException(" Item should be present");
         }

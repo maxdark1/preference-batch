@@ -2,10 +2,13 @@ package ca.homedepot.preference.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Address {
+public class Address implements Serializable {
 
     @JsonProperty("src_address1")
     private String srcAddress1;

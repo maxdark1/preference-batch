@@ -28,7 +28,7 @@ public class JobEntity
 	 * The email Id.
 	 */
 	@Column(name = "status")
-	private Boolean status;
+	private String status;
 
 	/**
 	 * The Phone number.

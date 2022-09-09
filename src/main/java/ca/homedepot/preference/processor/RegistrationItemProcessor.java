@@ -31,11 +31,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
         }catch (ValidationException e){
             LOG.error(" Validation error {}: ", e.getMessage());
+            return null;
         }
         LOG.info(" Processing inbound item {}: " , item);
         builder
-                .credit_language_cd(item.getLanguage_Preference().trim())
-                .updated_date(asOfDate)
+                .credit_language_cd(item.getLanguage_Preference().trim().toUpperCase())
+                .updated_date(new Date())
+                .src_date(asOfDate)
                 .src_email_address(item.getEmail_Address())
                 .email_address_1_pref(item.getEmail_Permission())
                 .phone_1_pref(item.getPhone_Permission())

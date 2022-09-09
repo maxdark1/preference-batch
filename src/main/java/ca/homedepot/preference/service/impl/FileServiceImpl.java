@@ -21,9 +21,13 @@ public class FileServiceImpl implements FileService {
 
     private FileRepo fileRepo;
 
+
     @Autowired
-    public  void setJdbcTemplate(JdbcTemplate jdbcTemplate){
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
+    }
+    public JdbcTemplate getJdbcTemplate(){
+        return jdbcTemplate;
     }
     @Autowired
     private void setFileRepo(FileRepo fileRepo){
@@ -48,8 +52,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public int insert(String file_name, Boolean status, BigDecimal source_id, Date start_time, BigDecimal job_id, Date inserted_date, String inserted_by){
-
+    public int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id, Date inserted_date, String inserted_by){
         return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE,
                         file_name,job_id, source_id, status,  start_time,
                         inserted_by, inserted_date );
@@ -71,6 +74,13 @@ public class FileServiceImpl implements FileService {
     public BigDecimal getLasFile() {
         return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE,
                 (rs, RowNum) -> rs.getBigDecimal("file_id"));
+    }
+
+    @Override
+    public BigDecimal getSourceId(String keyVal, String valueVal) {
+        return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_MASTER_ID,
+                new Object[]{keyVal, valueVal},
+                (rs, RowNum)-> rs.getBigDecimal("master_id"));
     }
 
 
