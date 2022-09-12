@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import ca.homedepot.preference.model.EmailOptOuts;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -68,7 +69,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private final StepBuilderFactory stepBuilderFactory;
 	private final JobLauncher jobLauncher;
 	/**
-	 * The Transaction manager./*
+	 * The Transaction manager.
 	 */
 	@Qualifier("visitorTransactionManager")
 	private final PlatformTransactionManager transactionManager;
@@ -143,19 +144,30 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	/*
-	 * Read inbound file
+	 * Read inbound files
 	 */
 	@Bean
 	public FlatFileItemReader<InboundRegistration> inboundFileReader() throws Exception
 	{
-
-
 		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
 				.resource(new FileSystemResource(fileinRegistration)).delimited().delimiter("|").names(InboundValidator.FIELD_NAMES)
 				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(InboundValidator.lineCallbackHandler()).build();
 	}
+
+	public FlatFileItemReader<EmailOptOuts> inboundEmailPreferencesSMFCReader(){
+		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundFileReader")
+				.resource(new FileSystemResource(fileinRegistration)).delimited().delimiter("\t")
+				.names(InboundValidator.FIELD_NAMES)
+				.targetType(EmailOptOuts.class).linesToSkip(1)
+				/* Validation file's header */
+				.build();
+	}
+
+
+
+	///****************************************************************************
 
 	@Bean
 	public JdbcCursorItemReader<RegistrationRequest> inboundDBReader()
@@ -193,7 +205,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-
 
 	@Bean
 	public Job registrationInbound() throws Exception
