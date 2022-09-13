@@ -5,18 +5,20 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
 @Data
-public class RegistrationRequest implements Serializable
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class RegistrationRequest
 {
 	@JsonProperty("file_id")
 	private String fileId;
 
 	@JsonProperty("status")
-	private String status;
+	private Boolean status;
 
 	@JsonProperty("sequence_nbr")
 	private String sequenceNbr;
@@ -24,8 +26,11 @@ public class RegistrationRequest implements Serializable
 	@JsonProperty("source_id")
 	private Long sourceId;
 
-	@JsonProperty("src_phone_number")
-	private String srcPhoneNumber;
+	@JsonProperty("language_preference")
+	private String languagePreference;
+
+	@JsonProperty("src_title_name")
+	private String srcTitleName;
 
 	@JsonProperty("src_first_name")
 	private String srcFirstName;
@@ -33,57 +38,54 @@ public class RegistrationRequest implements Serializable
 	@JsonProperty("src_last_name")
 	private String srcLastName;
 
-	@JsonProperty("src_address")
-	@Valid
-	private Address srcAddress;
-
-	@JsonProperty("credit_language_cd")
-	private String creditLanguageCd;
-
 	@JsonProperty("src_email_address")
 	private String srcEmailAddress;
 
-	@JsonProperty("src_title_name")
-	private String srcTitleName;
+	@JsonProperty("email_status")
+	private Integer emailStatus;
 
-	@JsonProperty("phone_1_pref")
-	private int phone1Pref;
-
-	@JsonProperty("email_address_1_pref")
-	private int emailAddress1Pref;
-
-	@JsonProperty("mail_address_1_pref")
-	private int mailAddress1pref;
+	@JsonProperty("email_address_pref")
+	private Integer emailAddressPref;
 
 	@JsonProperty("src_date")
 	private String srcDate;
 
+	@JsonProperty("cell_sms_flag")
+	private Integer cellSmsFlag;
 
-	@JsonProperty("credit_prin")
-	private String creditPrin;
-
-	@JsonProperty("src_agent")
-	private String srcAgent;
-
-	@JsonProperty("src_last_balance_amt")
-	private String srcLastBalanceAmt;
-
-	@JsonProperty("credit_acct_open_dt")
-	private String creditAcctOpenDt;
-
-	@JsonProperty("src_last_trans_dt")
-	private String srcLastTransDt;
+	@JsonProperty("src_phone_number")
+	private String srcPhoneNumber;
 
 	@JsonProperty("src_phone_extension")
 	private String srcPhoneExtension;
 
+	@JsonProperty("phone_pref")
+	private Integer phonePref;
 
+	@JsonProperty("fax_number")
+	private String faxNumber;
 
-	@JsonProperty("credit_store_origin")
-	private String creditStoreOrigin;
+	@JsonProperty("fax_extension")
+	private String faxExtension;
 
-	@JsonProperty("src_suppresion_flag")
-	private String srcSuppresionFlag;
+	@JsonProperty("src_address")
+	@Valid
+	private Address srcAddress;
+
+	@JsonProperty("mail_address_pref")
+	private Integer mailAddresspref;
+
+	@JsonProperty("email_pref_hd_ca")
+	private Integer emailPrefHDCa;
+
+	@JsonProperty("email_pref_garden_club")
+	private Integer emailPrefGardenClub;
+
+	@JsonProperty("email_pref_pro")
+	private Integer emailPrefPro;
+
+	@JsonProperty("email_pref_new_mover")
+	private Integer emailPrefNewMover;
 
 	@JsonProperty("content_value")
 	private Map<String, String> contentValue;
