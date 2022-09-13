@@ -11,6 +11,9 @@ import lombok.Data;
 public class OutboundRegistration
 {
 	BigDecimal file_id;
+
+	String status;
+
 	String credit_language_cd;
 	Date updated_date;
 	String src_email_address;
@@ -38,6 +41,8 @@ public class OutboundRegistration
 	String org_name;
 	String store_nbr;
 	String cust_type_cd;
+	String fax_number;
+	String fax_extension;
 	String content1;
 	String value1;
 

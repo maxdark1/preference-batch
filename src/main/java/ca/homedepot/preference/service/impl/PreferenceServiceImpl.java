@@ -1,13 +1,16 @@
 package ca.homedepot.preference.service.impl;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,6 +22,8 @@ import ca.homedepot.preference.repositories.JobRepo;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 
 /**
@@ -43,7 +48,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	public PreferenceServiceImpl(JobRepo jobRepo)
 	{
 		this.jobRepo = jobRepo;
-		this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+		this.webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection()))).baseUrl(baseUrl).build();
 
 
 	}
@@ -78,6 +83,8 @@ public class PreferenceServiceImpl implements PreferenceService
 	{
 
 		String path = baseUrl + PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
+
+		log.info(" Request Registration {} ", new Gson().toJson(items));
 
 		return webClient.post().uri(uriBuilder -> {
 			URI uri = uriBuilder.path(path).build();

@@ -39,7 +39,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 			return null;
 		}
 		LOG.info(" Processing inbound item {}: ", item);
-		builder.credit_language_cd(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date()).src_date(asOfDate)
+		builder.status("T").credit_language_cd(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date()).src_date(asOfDate)
 				.src_email_address(item.getEmail_Address()).email_address_1_pref(item.getEmail_Permission())
 				.phone_1_pref(item.getPhone_Permission()).src_phone_number(item.getPhone_Number())
 				.src_phone_extension(item.getPhone_Extension()).src_title_name(item.getTitle()).src_first_name(item.getFirst_Name())
@@ -47,7 +47,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 				.src_city(item.getCity()).src_postal_code(item.getPostal_Code()).mail_address_1_pref(item.getMail_Permission())
 				.email_pref_hd_ca(item.getEmailPrefHDCA()).email_pref_garden_club(item.getGardenClub())
 				.email_pref_pro(item.getEmailPrefPRO()).email_pref_new_mover(item.getNewMover()).cell_sms_flag(item.getSMS_Flag())
-				.customer_nbr(item.getContent_1()).content1(item.getContent_1()).value1(item.getValue_1())
+				.customer_nbr(item.getContent_1()).fax_number(item.getFax_Number()).fax_extension(item.getFax_Extension()).content1(item.getContent_1()).value1(item.getValue_1())
 				.content2(item.getContent_2()).store_nbr(item.getContent_2()).value2(item.getValue_2()).content3(item.getContent_3())
 				.org_name(item.getContent_3()).value3(item.getValue_3()).content4(item.getContent_4()).value4(item.getValue_4())
 				.content5(item.getContent_5()).cust_type_cd(item.getContent_5()).value5(item.getValue_5())
@@ -128,8 +128,6 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		validateMaxLengthNotReq("content18", item.getContent_18(), 30);
 		validateMaxLengthNotReq("content19", item.getContent_19(), 30);
 		validateMaxLengthNotReq("content20", item.getContent_20(), 30);
-
-
 	}
 
 

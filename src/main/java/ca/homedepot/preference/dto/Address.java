@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class Address implements Serializable
+public class Address
 {
 
 	@JsonProperty("src_address1")
@@ -21,7 +21,7 @@ public class Address implements Serializable
 	private String srcCity;
 
 	@JsonProperty("src_state")
-	private String state;
+	private String srcState;
 
 	@JsonProperty("src_postal_code")
 	private String srcPostalCode;

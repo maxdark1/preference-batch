@@ -21,39 +21,38 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		RegistrationRequest registrationRequest = new RegistrationRequest();
 
 
-		registrationRequest.setFileId(rs.getBigDecimal(PreferenceBatchConstants.FILE_ID).toString());
-		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS));
-		registrationRequest.setSequenceNbr(rs.getString(PreferenceBatchConstants.SEQUENCE_NBR));
-		registrationRequest.setCreditLanguageCd(rs.getString(PreferenceBatchConstants.CREDIT_LANGUAGE_CD));
-		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
-		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
-		registrationRequest.setEmailAddress1Pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_1_PREF)));
-		registrationRequest.setSrcPhoneNumber(rs.getString(PreferenceBatchConstants.SRC_PHONE_NUMBER));
-		registrationRequest.setSrcPhoneExtension(rs.getString(PreferenceBatchConstants.SRC_PHONE_EXTENSION));
+		registrationRequest.setFileId("12345");
+		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS).equals("T"));
+		registrationRequest.setSequenceNbr("12345");
+		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
+		registrationRequest.setLanguagePreference(rs.getString(PreferenceBatchConstants.CREDIT_LANGUAGE_CD));
 		registrationRequest.setSrcTitleName(rs.getString(PreferenceBatchConstants.SRC_TITLE_NAME));
 		registrationRequest.setSrcFirstName(rs.getString(PreferenceBatchConstants.SRC_FIRST_NAME));
 		registrationRequest.setSrcLastName(rs.getString(PreferenceBatchConstants.SRC_LAST_NAME));
+		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
+
+		String emailStatus = rs.getString(PreferenceBatchConstants.EMAIL_STATUS);
+		registrationRequest.setEmailStatus(emailStatus == null ? 0 : Integer.parseInt(emailStatus));
+		registrationRequest.setEmailAddressPref(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_1_PREF)));
+		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
+		registrationRequest.setCellSmsFlag(Integer.parseInt(rs.getString(PreferenceBatchConstants.CELL_SMS_FLAG)));
+		registrationRequest.setSrcPhoneNumber(rs.getString(PreferenceBatchConstants.SRC_PHONE_NUMBER));
+		registrationRequest.setSrcPhoneExtension(rs.getString(PreferenceBatchConstants.SRC_PHONE_EXTENSION));
+		registrationRequest.setPhonePref(Integer.parseInt(rs.getString(PreferenceBatchConstants.PHONE_1_PREF)));
 
 		Address address = new Address();
 		address.setSrcAddress1(rs.getString(PreferenceBatchConstants.SRC_ADDRESS1));
 		address.setSrcAddress2(rs.getString(PreferenceBatchConstants.SRC_ADDRESS2));
 		address.setSrcCity(rs.getString(PreferenceBatchConstants.SRC_CITY));
-		address.setState(rs.getString(PreferenceBatchConstants.SRC_STATE));
+		address.setSrcState(rs.getString(PreferenceBatchConstants.SRC_STATE));
 		address.setSrcPostalCode(rs.getString(PreferenceBatchConstants.SRC_POSTAL_CODE));
 
 		registrationRequest.setSrcAddress(address);
-
-		registrationRequest.setCreditPrin(rs.getString(PreferenceBatchConstants.CREDIT_PRIN));
-		registrationRequest.setSrcAgent(rs.getString(PreferenceBatchConstants.SRC_AGENT));
-		registrationRequest.setSrcLastBalanceAmt(rs.getString(PreferenceBatchConstants.SRC_LAST_BALANCE_AMT));
-		registrationRequest.setCreditAcctOpenDt(rs.getString(PreferenceBatchConstants.CREDIT_ACCT_OPEN_DT));
-		registrationRequest.setSrcLastTransDt(rs.getString(PreferenceBatchConstants.SRC_LAST_TRANS_DT));
-		registrationRequest.setCreditStoreOrigin(rs.getString(PreferenceBatchConstants.CREDIT_STORE_ORIGIN));
-		registrationRequest.setMailAddress1pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.MAIL_ADDRESS_1_PREF)));
-		registrationRequest.setPhone1Pref(Integer.parseInt(rs.getString(PreferenceBatchConstants.PHONE_1_PREF)));
-
-		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
-
+		registrationRequest.setMailAddresspref(Integer.parseInt(rs.getString(PreferenceBatchConstants.MAIL_ADDRESS_1_PREF)));
+		registrationRequest.setEmailPrefHDCa(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_HD_CA)));
+		registrationRequest.setEmailPrefGardenClub(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_GARDEN_CLUB)));
+		registrationRequest.setEmailPrefPro(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_PRO)));
+		registrationRequest.setEmailPrefNewMover(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_NEW_MOVER)));
 
 		Map<String, String> contentValue = new HashMap<>();
 
