@@ -8,9 +8,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class OutboundRegistration
+public class FileInboundStgTable
 {
 	BigDecimal file_id;
+	String fileName;
 
 	String status;
 
@@ -30,6 +31,7 @@ public class OutboundRegistration
 	String src_state;
 	Date src_date;
 	String src_postal_code;
+	BigDecimal email_status;
 	String mail_address_1_pref;
 	String email_pref_hd_ca;
 	String email_pref_garden_club;

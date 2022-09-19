@@ -1,6 +1,5 @@
 package ca.homedepot.preference.dto;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import javax.validation.Valid;

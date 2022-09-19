@@ -1,8 +1,7 @@
 package ca.homedepot.preference.service.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -10,29 +9,37 @@ import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ca.homedepot.preference.service.FileService;
-
+@Component
+@RunWith(SpringJUnit4ClassRunner.class)
 class FileServiceImplTest
 {
 
 	@Mock
-	FileService fileService;
-	@Mock
 	private JdbcTemplate jdbcTemplate;
+
+	@InjectMocks
+	FileServiceImpl fileService;
 
 	@BeforeEach
 	public void setUp()
 	{
-		fileService = Mockito.mock(FileServiceImpl.class);
 		jdbcTemplate = Mockito.mock(JdbcTemplate.class);
+		fileService = new FileServiceImpl();
+		fileService.setJdbcTemplate(jdbcTemplate);
+	}
 
-		ReflectionTestUtils.setField(fileService, "jdbcTemplate", jdbcTemplate);
+	@Test
+	void testGetJdbcTemplate(){
+		assertNotNull(fileService.getJdbcTemplate());
 	}
 
 	@Test
@@ -88,11 +95,37 @@ class FileServiceImplTest
 
 		when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class))).thenReturn(fileId);
 		when(fileService.getLasFile()).thenReturn(fileId);
+		fileService.setJdbcTemplate(jdbcTemplate);
 
 		BigDecimal resultFileID = fileService.getLasFile();
-		verify(fileService).getLasFile();
-
 		assertEquals(fileId, resultFileID);
 
+	}
+
+	@Test
+	void getSourceId()
+	{
+		String keyVal = "SOURCE",  valueVal = "hybris";
+		BigDecimal masterId = new BigDecimal("123456");
+
+		when(jdbcTemplate.queryForObject( anyString(), eq(new Object[]{ keyVal, valueVal }),  any(RowMapper.class) )).thenReturn(masterId);
+		when(fileService.getSourceId(keyVal, valueVal)).thenReturn(masterId);
+		BigDecimal currentMasterId = fileService.getSourceId(keyVal, valueVal);
+
+		assertEquals(masterId, currentMasterId);
+	}
+
+	@Test
+	void updateFileStatus()
+	{
+		String fileName = "TEST_FILE",  status = "S",  newStatus = "P";
+		Date updatedDate = new Date();
+		int rowAffected = 1;
+
+		when(jdbcTemplate.update( anyString(), eq(newStatus), eq(updatedDate), eq(fileName), eq(status) )).thenReturn(rowAffected);
+
+		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus);
+
+		assertEquals(rowAffected, currentRowAffected);
 	}
 }

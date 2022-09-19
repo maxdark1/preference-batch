@@ -1,0 +1,10 @@
+Email Address	Status	Reason	Date Unsubscribed
+emailTest@email.com	Unsubscribed	Unsubscribed by ExactTarget RMM service based on subscriber Leave/Reply email.	01/17/2022 8 :33
+email_address	held		01/20/2022 7 :13
+email_address	Unsubscribed	Unsubscribed by ExactTarget RMM service based on subscriber Leave/Reply email.	01/14/2022 8 :39
+email_address	Unsubscribed	Unsubscribed by ExactTarget RMM service based on subscriber Leave/Reply email.	01/20/2022 17:34
+email_address	Unsubscribed	Unsubscribed by ExactTarget RMM service based on subscriber Leave/Reply email.	01/20/2022 7 :54
+email_address	Unsubscribed	Unsubscribed by ExactTarget RMM service based on subscriber Leave/Reply email.	01/16/2022 19:7
+email_address	Unsubscribed	Unsubscribed by ExactTarget RMM service based on subscriber Leave/Reply email.	01/15/2022 7 :24
+email_address	Unsubscribed	Unsubscribed by ExactTarget RMM service based on subscriber Leave/Reply email.	01/15/2022 9 :36
+email_address	held		01/19/2022 7 :19

@@ -9,7 +9,11 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import ca.homedepot.preference.listener.ItemReaderListener;
 import ca.homedepot.preference.model.EmailOptOuts;
+import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
+import ca.homedepot.preference.util.FileUtil;
+import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -22,6 +26,7 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +43,7 @@ import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
@@ -59,6 +64,8 @@ import lombok.extern.slf4j.Slf4j;
 public class SchedulerConfig extends DefaultBatchConfigurer
 {
 	private static final String JOB_NAME_REGISTRATION_INBOUND = "registrationInbound";
+
+	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "IngestSFMCOptOuts";
 	/**
 	 * The Job builder factory.
 	 */
@@ -81,6 +88,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	Integer chunkValue;
 	@Value("${inbound.file.registration}")
 	String fileinRegistration;
+
+	@Value("${inbound.file.ingestSFMC}")
+	String fileExtTargetEmail;
 	@Value("${sub.activity.days}")
 	Integer subactivity;
 	@Autowired
@@ -96,7 +106,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private JobListener jobListener;
 	@Autowired
-	private RegistrationItemWriterListener writerListener;
+	private RegistrationItemWriterListener hybrisWriterListener;
+
+	@Autowired
+	private RegistrationItemWriterListener exactTargetEmailWriterListener;
 	@Autowired
 	private RegistrationAPIWriter apiWriter;
 	@Autowired
@@ -105,22 +118,28 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	public void setUpListener()
 	{
-		jobListener.setDataSource(dataSource);
 		jobListener.setPreferenceService(batchTasklet.getBackinStockService());
 
-		writerListener.setFileRegistration(fileinRegistration);
-		writerListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
-		writerListener.setJobListener(jobListener);
-		writerListener.setDataSource(dataSource);
+		hybrisWriterListener.setFileName(fileinRegistration);
+		hybrisWriterListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
+
+
 		apiWriter.setPreferenceService(batchTasklet.getBackinStockService());
+
+
+		exactTargetEmailWriterListener.setFileName(fileExtTargetEmail);
+		//exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
+
 	}
 
-	public void setWriterListener(RegistrationItemWriterListener writerListener)
+	public void setHybrisWriterListener(RegistrationItemWriterListener hybrisWriterListener)
 	{
-		this.writerListener = writerListener;
+		this.hybrisWriterListener = hybrisWriterListener;
 	}
 
-
+	public void setJobListener(JobListener jobListener){
+		this.jobListener = jobListener;
+	}
 	/*
 	 * SCHEDULING JOBS
 	 */
@@ -129,7 +148,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public void getMasterInfo()
 	{
 		masterProcessor.getMasterInfo();
-		writerListener.setMasterProcessor(masterProcessor);
+		hybrisWriterListener.setMaster(masterProcessor.getSourceId("SOURCE", "hybris"));
+		exactTargetEmailWriterListener.setMaster(masterProcessor.getSourceId("SOURCE","SFMC"));
 	}
 	///***************************************************
 
@@ -143,23 +163,34 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
+	//@Scheduled(cron = "${cron.job.ingestSFMC}")
+	public void processsSFMCOptOutsEmail() throws Exception{
+		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis())).toJobParameters();
+		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailClient(), param);
+		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
+	}
+
 	/*
 	 * Read inbound files
 	 */
 	@Bean
-	public FlatFileItemReader<InboundRegistration> inboundFileReader() throws Exception
+	public FlatFileItemReader<InboundRegistration> inboundFileReader()
 	{
 		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
-				.resource(new FileSystemResource(fileinRegistration)).delimited().delimiter("|").names(InboundValidator.FIELD_NAMES)
+				.resource(new FileSystemResource(fileinRegistration)).delimited().delimiter("|").names(InboundValidator.FIELD_NAMES_REGISTRATION)
 				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(InboundValidator.lineCallbackHandler()).build();
 	}
 
 	public FlatFileItemReader<EmailOptOuts> inboundEmailPreferencesSMFCReader(){
-		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundFileReader")
-				.resource(new FileSystemResource(fileinRegistration)).delimited().delimiter("\t")
-				.names(InboundValidator.FIELD_NAMES)
+		DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB);
+		delimitedLineTokenizer.setNames(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS);
+
+		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
+				.resource(new FileSystemResource(fileExtTargetEmail)).lineTokenizer(delimitedLineTokenizer)
 				.targetType(EmailOptOuts.class).linesToSkip(1)
 				/* Validation file's header */
 				.build();
@@ -175,8 +206,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(
-				"SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = (" + SqlQueriesConstants.SQL_SELECT_LAST_FILE + ")");
+		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS);
 		reader.setRowMapper(new RegistrationrowMapper());
 
 		return reader;
@@ -189,16 +219,22 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@Bean
-	public JdbcBatchItemWriter<OutboundRegistration> inboundRegistrationDBWriter()
+	public ExactTargetEmailProcessor extactExactTargetEmailProcessor(){
+		return new ExactTargetEmailProcessor();
+	}
+
+	@Bean
+	public JdbcBatchItemWriter<FileInboundStgTable> inboundRegistrationDBWriter()
 	{
-		JdbcBatchItemWriter<OutboundRegistration> writer = new JdbcBatchItemWriter<>();
+		JdbcBatchItemWriter<FileInboundStgTable> writer = new JdbcBatchItemWriter<>();
 
 		writer.setDataSource(dataSource);
 		writer.setSql(SqlQueriesConstants.SQL_INSERT_FILE_INBOUND_STG_REGISTRATION);
-		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<OutboundRegistration>());
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<FileInboundStgTable>());
 
 		return writer;
 	}
+
 
 	/**
 	 * Process job.
@@ -209,12 +245,22 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Bean
 	public Job registrationInbound() throws Exception
 	{
-		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundCSVFileStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
+		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND)
+				.incrementer(new RunIdIncrementer())
+				.listener(jobListener)
+				.start(readInboundCSVFileStep1())
+				.on(PreferenceBatchConstants.COMPLETED_STATUS)
+				.to(readInboundBDStep2())
+				.build()
 				.build();
 
 	}
 
+	@Bean
+	public Job sfmcOptOutsEmailClient() throws Exception{
+		return  jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readSFMCOptOutsStep1()).build();
+	}
 	/**
 	 * Order step 1 step.
 	 *
@@ -224,8 +270,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Bean
 	public Step readInboundCSVFileStep1() throws Exception
 	{
-		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, OutboundRegistration> chunk(chunkValue)
-				.reader(inboundFileReader()).processor(inboundFileProcessor()).listener(writerListener)
+		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
+				.reader(inboundFileReader()).processor(inboundFileProcessor()).listener(hybrisWriterListener)
 				.writer(inboundRegistrationDBWriter()).build();
 	}
 
@@ -236,6 +282,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.reader(inboundDBReader()).writer(apiWriter).build();
 	}
 
+	/*
+		SFMC Opt-Outs STEPS
+	* */
+	@Bean
+	public Step readSFMCOptOutsStep1(){
+		return stepBuilderFactory.get("readSFMCOptOutsStep1").<EmailOptOuts, FileInboundStgTable>chunk(chunkValue)
+				.reader(inboundEmailPreferencesSMFCReader()).processor(extactExactTargetEmailProcessor())
+				.listener(exactTargetEmailWriterListener).writer(inboundRegistrationDBWriter()).build();
+	}
 
 
 	@Bean
@@ -272,6 +327,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 
+	public String getFile(String baseName){
+
+		if(fileinRegistration.equals(baseName)){
+			FileUtil.setRegistrationFile(baseName);
+		}else{
+			FileUtil.setFileExtTargetEmail(baseName);
+		}
+		return baseName;
+	}
 
 
 }

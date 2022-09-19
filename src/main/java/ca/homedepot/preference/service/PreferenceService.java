@@ -21,5 +21,5 @@ public interface PreferenceService
 
 	List<Master> getMasterInfo();
 
-	int updateJob(Job job);
+	int updateJob(Job job, String status);
 }

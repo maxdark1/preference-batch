@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.model.FileInboundStgTable;
 
 //@SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,9 +50,9 @@ public class RegistrationItemProcessorTest
 		assertEquals("02-02-2022 22:22:22", input.getAsOfDate());
 		input.setAsOfDate(null);
 
-		OutboundRegistration outboundRegistration = registrationItemProcessor.process(input);
+		FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
 
-		assertNull(outboundRegistration);
+		assertNull(fileInboundStgTable);
 	}
 
 	@Test
@@ -60,9 +60,9 @@ public class RegistrationItemProcessorTest
 	{
 		input.setEmail_Permission("a");
 
-		OutboundRegistration outboundRegistration = registrationItemProcessor.process(input);
+		FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
 
-		assertNull(outboundRegistration);
+		assertNull(fileInboundStgTable);
 
 	}
 

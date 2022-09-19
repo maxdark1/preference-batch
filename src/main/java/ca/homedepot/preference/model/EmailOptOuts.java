@@ -2,6 +2,7 @@ package ca.homedepot.preference.model;
 
 import lombok.Data;
 
+
 @Data
 public class EmailOptOuts {
     private String emailAddress;

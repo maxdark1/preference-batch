@@ -10,9 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.FileDTO;
-import ca.homedepot.preference.repositories.FileRepo;
-import ca.homedepot.preference.repositories.entities.FileEntity;
 import ca.homedepot.preference.service.FileService;
 
 
@@ -22,7 +19,6 @@ public class FileServiceImpl implements FileService
 
 	private JdbcTemplate jdbcTemplate;
 
-	private FileRepo fileRepo;
 
 	public JdbcTemplate getJdbcTemplate()
 	{
@@ -33,29 +29,6 @@ public class FileServiceImpl implements FileService
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
 	{
 		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	@Autowired
-	private void setFileRepo(FileRepo fileRepo)
-	{
-		this.fileRepo = fileRepo;
-	}
-
-	@Override
-	public FileEntity saveFile(FileDTO file)
-	{
-
-		FileEntity fileEntity = new FileEntity();
-		fileEntity.setFileName(file.getFile_name());
-		fileEntity.setStatus(file.getStatus());
-		fileEntity.setFileSourceId(file.getFile_source_id());
-		fileEntity.setStartTime(file.getStart_time());
-		fileEntity.setJob(fileEntity.getJob());
-		fileEntity.setInsertedDate(file.getInserted_date());
-		fileEntity.setInsertedBy(file.getInserted_by());
-		fileRepo.insert(file);
-		// fileRepo.save(fileEntity);
-		return fileEntity;
 	}
 
 	@Override
@@ -70,15 +43,13 @@ public class FileServiceImpl implements FileService
 
 	public BigDecimal getJobId(String job_name)
 	{
-		String sql = SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME.replace("%param%", "'" + job_name + "'");
-		return jdbcTemplate.queryForObject(sql, (rs, RowNum) -> rs.getBigDecimal("job_id"));
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME, (rs, RowNum) -> rs.getBigDecimal("job_id"), job_name);
 	}
 
 	@Override
 	public BigDecimal getFile(String file_name, BigDecimal job_id)
 	{
-		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE_INSERT, new Object[]
-		{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal("file_id"));
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE_INSERT, new Object[]{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal("file_id"));
 	}
 
 	@Override
@@ -90,8 +61,13 @@ public class FileServiceImpl implements FileService
 	@Override
 	public BigDecimal getSourceId(String keyVal, String valueVal)
 	{
-		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_MASTER_ID, new Object[]
-		{ keyVal, valueVal }, (rs, RowNum) -> rs.getBigDecimal("master_id"));
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_MASTER_ID, new Object[]{ keyVal, valueVal }, (rs, RowNum) -> rs.getBigDecimal("master_id"));
+	}
+
+	@Override
+	public int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus)
+	{
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_FILE, newStatus, updatedDate,fileName, status);
 	}
 
 

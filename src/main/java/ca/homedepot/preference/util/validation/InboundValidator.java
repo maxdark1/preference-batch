@@ -9,14 +9,14 @@ import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.model.FileInboundStgTable;
 
 public class InboundValidator
 {
 	public static final String VALID_EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	public static final String[] FIELD_NAMES = new String[]
+	public static final String[] FIELD_NAMES_REGISTRATION = new String[]
 	{ "Language_Preference", "AsOfDate", "Email_Address", "Email_Permission", "Phone_Permission", "Phone_Number",
 			"Phone_Extension", "Title", "First_Name", "Last_Name", "Address_1", "Address_2", "City", "Province", "Postal_Code",
 			"Mail_Permission", "EmailPrefHDCA", "GardenClub", "EmailPrefPRO", "NewMover", "For_Future_Use", "Source_ID", "SMS_Flag",
@@ -25,6 +25,7 @@ public class InboundValidator
 			"Value_9", "Content_10", "Value_10", "Content_11", "Value_11", "Content_12", "Value_12", "Content_13", "Value_13",
 			"Content_14", "Value_14", "Content_15", "Value_15", "Content_16", "Value_16", "Content_17", "Value_17", "Content_18",
 			"Value_18", "Content_19", "Value_19", "Content_20", "Value_20" };
+
 
 	/*
 	 * File's validation field's name.
@@ -38,7 +39,7 @@ public class InboundValidator
 	{
 		return line -> {
 			String[] header = line.split("\\|");
-			if (!Arrays.equals(header, FIELD_NAMES))
+			if (!Arrays.equals(header, FIELD_NAMES_REGISTRATION))
 				throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
 		};
 	}
@@ -65,12 +66,12 @@ public class InboundValidator
 					"invalid value for language_pref {}: " + item.getLanguage_Preference() + " not matches with: E, EN, F, FR");
 	}
 
-	public static void validateEmailFormat(InboundRegistration item)
+	public static void validateEmailFormat(String email)
 	{
 
-		if (item.getEmail_Address() != null)
-			if (!item.getEmail_Address().matches(VALID_EMAIL_PATTERN))
-				throw new ValidationException(" email address does not have a valid format {}: " + item.getEmail_Address());
+		if (email != null)
+			if (!email.matches(VALID_EMAIL_PATTERN))
+				throw new ValidationException(" email address does not have a valid format {}: " + email);
 
 	}
 
@@ -89,7 +90,7 @@ public class InboundValidator
 		}
 	}
 
-	public static void validateNumberFormat(InboundRegistration item, OutboundRegistration.OutboundRegistrationBuilder builder)
+	public static void validateNumberFormat(InboundRegistration item, FileInboundStgTable.FileInboundStgTableBuilder builder)
 	{
 		Integer value = null;
 		value = validateIsNumber(item.getEmail_Permission());

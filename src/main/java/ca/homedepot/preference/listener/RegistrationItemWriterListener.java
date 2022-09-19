@@ -2,18 +2,15 @@ package ca.homedepot.preference.listener;
 
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.sql.DataSource;
-
+import ca.homedepot.preference.dto.Master;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.stereotype.Component;
 
-import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.repositories.entities.FileEntity;
 import ca.homedepot.preference.service.FileService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,71 +20,43 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class RegistrationItemWriterListener implements ItemWriteListener<OutboundRegistration>
+public class RegistrationItemWriterListener implements ItemWriteListener<FileInboundStgTable>
 {
-
-
 	private final FileService fileService;
 
-	private String fileRegistration;
+	private String fileName;
 	private String jobName;
+	private BigDecimal fileID;
 
-	private JobListener jobListener;
+	private Master master;
 
-	private List<FileEntity> fileEntities;
-
-	private DataSource dataSource;
-
-	private BigDecimal file_id;
-
-	private MasterProcessor masterProcessor;
-
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-	}
 
 	@Override
-	public void beforeWrite(List<? extends OutboundRegistration> items)
+	public void beforeWrite(List<? extends FileInboundStgTable> items)
 	{
-		file_id = writeFile();
+		fileID = writeFile();
 
-		items.forEach(item -> item.setFile_id(file_id));
+		items.forEach(item -> item.setFile_id(fileID));
 	}
 
 	public BigDecimal writeFile()
 	{
+		BigDecimal jobId = fileService.getJobId(jobName);
+		BigDecimal masterId = new BigDecimal("1");
 
-		BigDecimal job_id = fileService.getJobId(jobName);
-		BigDecimal masterId = masterProcessor.getSourceId("SOURCE", "hybris").getMaster_id();
-
-		System.out.println(masterId);
-		// status: string (STARTED, COMPLETED, ERROR), source_id = read master table (start batch application  "key - value")
-		fileService.insert(fileRegistration, "G", masterId, new Date(), job_id, new Date(), "BATCH");
-		return fileService.getFile(fileRegistration, job_id);
+		fileService.insert(fileName, "G", masterId, new Date(), jobId, new Date(), "BATCH");
+		return fileService.getFile(fileName, jobId);
 	}
 
 	@Override
-	public void afterWrite(List<? extends OutboundRegistration> items)
+	public void afterWrite(List<? extends FileInboundStgTable> items)
 	{
-
+		fileService.updateFileStatus(fileName, new Date(), "G", "C");
 	}
 
 	@Override
-	public void onWriteError(Exception exception, List<? extends OutboundRegistration> items)
+	public void onWriteError(Exception exception, List<? extends FileInboundStgTable> items)
 	{
 
-	}
-
-	public FileEntity getFileEntity(String fileName, String jobName)
-	{
-		System.out.println(fileEntities.toString());
-		return fileEntities.get(fileEntities.size() - 1);
-	}
-
-	public void setJobListener(JobListener jobListener)
-	{
-		fileEntities = new ArrayList<>();
-		this.jobListener = jobListener;
 	}
 }

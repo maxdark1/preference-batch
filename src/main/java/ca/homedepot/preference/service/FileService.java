@@ -18,8 +18,6 @@ public interface FileService
 
 	void setJdbcTemplate(JdbcTemplate jdbcTemplate);
 
-	FileEntity saveFile(FileDTO file);
-
 	int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id, Date inserted_date,
 			String inserted_by);
 
@@ -34,4 +32,5 @@ public interface FileService
 	 */
 	BigDecimal getSourceId(String keyVal, String valueVal);
 
+	int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus);
 }

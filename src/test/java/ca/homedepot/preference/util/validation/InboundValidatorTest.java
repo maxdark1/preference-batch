@@ -81,7 +81,7 @@ class InboundValidatorTest
 		input.setEmail_Address("item");
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateEmailFormat(input);
+			InboundValidator.validateEmailFormat(input.getEmail_Address());
 		});
 	}
 

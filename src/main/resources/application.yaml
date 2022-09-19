@@ -39,6 +39,7 @@ spring:
 cron:
   job:
     registration: 30 * * * * *
+    ingestSFMC: 30 * * * * *
 
 server:
   port: 8080
@@ -91,6 +92,7 @@ analytic:
 inbound:
   file:
     registration: OPTIN_STANDARD_FLEX_YYYYMMDD.txt
+    ingestSFMC: ET.CAN.YYYYMMDD.TXT
 
 process:
   analytics:

@@ -1,5 +1,6 @@
 package ca.homedepot.preference.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 
@@ -8,15 +9,21 @@ import java.lang.reflect.Modifier;
 
 import javax.sql.DataSource;
 
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
+import ca.homedepot.preference.listener.JobListener;
+import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.*;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.builder.SimpleStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
@@ -26,7 +33,6 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
@@ -36,6 +42,28 @@ class SchedulerConfigTest
 
 	@Mock
 	public JobBuilderFactory jobBuilderFactory;
+
+	@Mock
+	public JobBuilder jobBuilder;
+
+	@Mock
+	public JobBuilderHelper jobBuilderHelper;
+
+	@Mock
+	public SimpleJobBuilder simpleJobBuilder;
+
+	@Mock
+	public FlowBuilder.TransitionBuilder transitionBuilder;
+
+	@Mock
+	public FlowJobBuilder flowJobBuilder;
+
+	@Mock
+	public FlowBuilder flowBuilder;
+
+	@Mock
+	public Job job;
+
 	@Mock
 	public StepBuilderFactory stepBuilderFactory;
 	@Mock
@@ -87,14 +115,24 @@ class SchedulerConfigTest
 		platformTransactionManager = Mockito.mock(PlatformTransactionManager.class);
 		simpleStepBuilder = Mockito.mock(SimpleStepBuilder.class);
 		stepBuilder = Mockito.mock(StepBuilder.class);
+
+		jobBuilderHelper = Mockito.mock(JobBuilderHelper.class);
+		jobBuilder = Mockito.mock(JobBuilder.class);
+		simpleJobBuilder = Mockito.mock(SimpleJobBuilder.class);
+		transitionBuilder = Mockito.mock(FlowBuilder.TransitionBuilder.class);
+		flowBuilder = Mockito.mock(FlowBuilder.class);
+		flowJobBuilder = Mockito.mock(FlowJobBuilder.class);
+		job = Mockito.mock(Job.class);
+
 		writerListener = Mockito.mock(RegistrationItemWriterListener.class);
 		step = Mockito.mock(TaskletStep.class);
 
 		schedulerConfig = new SchedulerConfig(jobBuilderFactory, stepBuilderFactory, jobLauncher, platformTransactionManager);
 		schedulerConfig.setDataSource(dataSource);
+		schedulerConfig.setJobListener(jobListener);
 		schedulerConfig.chunkValue = 100;
 		schedulerConfig.fileinRegistration = "TEST_FILE";
-		schedulerConfig.setWriterListener(writerListener);
+		schedulerConfig.setHybrisWriterListener(writerListener);
 
 		setFinalStaticField(SchedulerConfig.class, "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
 
@@ -121,12 +159,33 @@ class SchedulerConfigTest
 		assertNotNull(schedulerConfig.inboundFileProcessor());
 	}
 
+	// TODO NullPointerException
+	@Test
+	public void processRegistrationInbound() throws Exception {
+		Mockito.when(jobBuilderFactory.get(eq("job_name"))).thenReturn(jobBuilder);
+		Mockito.when(jobBuilder.incrementer(new RunIdIncrementer())).thenReturn(jobBuilder);
+		Mockito.when(jobBuilderHelper.listener(jobListener)).thenReturn(jobBuilder);
+		Mockito.when(jobBuilder.start(step)).thenReturn(simpleJobBuilder);
+		Mockito.when(simpleJobBuilder.on(eq(PreferenceBatchConstants.COMPLETED_STATUS))).thenReturn(transitionBuilder);
+		Mockito.when(transitionBuilder.to(eq(step))).thenReturn(flowBuilder);
+		Mockito.when(flowBuilder.build()).thenReturn(flowJobBuilder);
+		Mockito.when(flowJobBuilder.build()).thenReturn(job);
 
-	//    @Test
-	//    public void processRegistrationInbound() throws Exception {
-	//        schedulerConfig.processRegistrationInbound();
-	//       Mockito.verify(schedulerConfig).processRegistrationInbound();
-	//    }
+		//assertNotNull(schedulerConfig.registrationInbound());
+	}
+
+	@Test
+	public void getFileTest(){
+		schedulerConfig.fileinRegistration = "registration";
+		schedulerConfig.fileExtTargetEmail = "extTargetEmail";
+
+		String file = schedulerConfig.getFile("registration");
+		assertEquals(schedulerConfig.fileinRegistration, file);
+
+		String file2 = schedulerConfig.getFile("extTargetEmail");
+		assertEquals(schedulerConfig.fileExtTargetEmail, file2);
+
+	}
 
 	@Test
 	public void inboundRegistrationFileWriter()
@@ -150,6 +209,13 @@ class SchedulerConfigTest
 
 		assertNotNull(schedulerConfig.readInboundCSVFileStep1());
 	}
+
+	@Test
+	void testExtactExactTargetEmailProcessor() {
+		assertNotNull(schedulerConfig);
+		assertNotNull(schedulerConfig.extactExactTargetEmailProcessor());
+	}
+
 
 
 }

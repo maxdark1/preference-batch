@@ -22,7 +22,7 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 
 
 		registrationRequest.setFileId(rs.getString(PreferenceBatchConstants.FILE_ID));
-		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS).equals("T"));
+		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS).equals("1"));
 		registrationRequest.setSequenceNbr("12345");
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
 		registrationRequest.setLanguagePreference(rs.getString(PreferenceBatchConstants.CREDIT_LANGUAGE_CD));

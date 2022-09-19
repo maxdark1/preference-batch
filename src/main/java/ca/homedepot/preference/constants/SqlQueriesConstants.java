@@ -7,16 +7,17 @@ public interface SqlQueriesConstants
 	 * SELECT
 	 */
 	String SQL_SELECT_MASTER_ID = "SELECT * \n" + "\tFROM pcam.hdpc_master WHERE active = '1';";
-	String SQL_SELECT_LAST_FILE = "SELECT file_id FROM pcam.hdpc_file_inbound_stg ORDER BY file_id DESC LIMIT 1 ";
+	String SQL_SELECT_LAST_FILE = "SELECT file_id FROM pcam.hdpc_file ORDER BY file_id DESC LIMIT 1";
 	String SQL_SELECT_LAST_FILE_INSERT = "SELECT file_id FROM pcam.hdpc_file WHERE file_name = ? AND job_id = ? LIMIT 1";
-	String SQL_SELECT_LAST_JOB_W_NAME = "SELECT job_id FROM pcam.hdpc_job WHERE job_name = %param% ORDER BY job_id DESC LIMIT 1";
+	String SQL_SELECT_LAST_JOB_W_NAME = "SELECT * FROM pcam.hdpc_job WHERE job_name = ? AND status = 'G' ORDER BY job_id DESC LIMIT 1";
 
 
+	String SQL_GET_LAST_FILE_INSERTED_RECORDS = "SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = (" + SqlQueriesConstants.SQL_SELECT_LAST_FILE + "); ";
 	/*
 	 * INSERTIONS
 	 */
-	String SQL_INSERT_HDPC_JOB = "INSERT INTO pcam.hdpc_job( job_name, status, start_time, inserted_by, inserted_date) "
-			+ "VALUES ( ?, ?, ?, ?, ?) ";
+	String SQL_INSERT_HDPC_JOB = "INSERT INTO pcam.hdpc_job( job_name, status, status_id,start_time, inserted_by, inserted_date) "
+			+ "VALUES ( ?, ?,15, ?, ?, ?) ";
 
 	String SQL_INSERT_HDPC_FILE = "INSERT INTO pcam.hdpc_file (file_name, job_id, source_type, "
 			+ "status,start_time, inserted_by, inserted_date) " + "VALUES (? , ? , ?, ?, ? , ?, ?); ";
@@ -44,5 +45,10 @@ public interface SqlQueriesConstants
 	 */
 
 	String SQL_UPDATE_STAUTS_JOB = "UPDATE pcam.hdpc_job\n" + "\tSET  status=?, updated_date=?\n"
-			+ "\tWHERE inserted_date = ? AND job_name = ? ;";
+			+ "\tWHERE inserted_date = ? AND job_name = ? AND status = ?;";
+
+	String SQL_UPDATE_STAUTS_FILE = "UPDATE pcam.hdpc_file \n" + "\tSET  status=?, updated_date=?\n"
+			+ "\tWHERE file_name = ? AND status = ?;";
+
+	String SQL_UPDATE_STATUS_INBOUND = "UPDATE pcam.hdpc_file_inbound_stg SET status = '0' WHERE file_id =";
 }

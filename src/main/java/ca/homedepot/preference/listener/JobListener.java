@@ -12,6 +12,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -27,40 +28,17 @@ import lombok.extern.slf4j.Slf4j;
  * The type Job listener.
  */
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class JobListener implements JobExecutionListener
 {
-	/**
-	 * The Application context.
-	 */
-
-	private final ApplicationContext applicationContext;
-
-
 	private PreferenceService preferenceService;
 
-	private List<JobEntity> jobEntityList;
-
-
-	private DataSource dataSource;
-
+	@Autowired
 	public void setPreferenceService(PreferenceService preferenceService)
 	{
-		jobEntityList = new ArrayList<>();
 		this.preferenceService = preferenceService;
 	}
 
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-	}
-
-	public JobEntity getJob(String jobName)
-	{
-		System.out.println("\n " + Arrays.toString(jobEntityList.toArray()) + "\n");
-		return jobEntityList.stream().filter(job -> job.getJobName().contains(jobName)).findFirst().get();
-	}
 
 	/**
 	 * Before job.
@@ -103,18 +81,6 @@ public class JobListener implements JobExecutionListener
 		}
 	}
 
-	public JdbcBatchItemWriter<Job> jobWriter()
-	{
-
-		JdbcBatchItemWriter<Job> writer = new JdbcBatchItemWriter<>();
-		writer.setDataSource(dataSource);
-		writer.setSql(SqlQueriesConstants.SQL_INSERT_HDPC_JOB);
-
-		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<Job>());
-
-		return writer;
-	}
-
 	/**
 	 * After job.
 	 *
@@ -134,7 +100,7 @@ public class JobListener implements JobExecutionListener
 		job.setUpdated_date(new Date());
 		job.setStart_time(jobExecution.getStartTime());
 
-		int insert = preferenceService.updateJob(job);
+		int insert = preferenceService.updateJob(job, "G");
 
 		log.info("  {} Job(s) updated", insert);
 

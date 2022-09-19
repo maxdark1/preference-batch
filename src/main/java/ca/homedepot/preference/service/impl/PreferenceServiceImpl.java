@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gson.Gson;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -30,28 +31,22 @@ import reactor.netty.resources.ConnectionProvider;
  * The type Preference service.
  */
 @Service
-//@RequiredArgsConstructor
 @Slf4j
 public class PreferenceServiceImpl implements PreferenceService
 {
 
-	/**
-	 * The notification subscription repository.
-	 */
-	private final JobRepo jobRepo;
 	@Value("${service.preference.baseurl}")
 	public String baseUrl;
 	private JdbcTemplate jdbcTemplate;
 	private WebClient webClient;
 
 	@Autowired
-	public PreferenceServiceImpl(JobRepo jobRepo)
+	public void setUpWebClient()
 	{
-		this.jobRepo = jobRepo;
 		this.webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection()))).baseUrl(baseUrl).build();
-
-
 	}
+
+
 
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
@@ -86,10 +81,25 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		log.info(" Request Registration {} ", new Gson().toJson(items));
 
+		return webClient.post().uri(uriBuilder ->
+			uriBuilder.path(path).build()
+		).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>() {})
+				.retrieve()
+				.bodyToMono(RegistrationResponse.class).block();
+	}
+
+	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
+	{
+
+		String path = baseUrl + PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL;
+
+		log.info(" Request Registration {} ", new Gson().toJson(items));
+
 		return webClient.post().uri(uriBuilder -> {
-			URI uri = uriBuilder.path(path).build();
-			return uri;
-		}).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+					URI uri = uriBuilder.path(path).build();
+					return uri;
+				}).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>()
 				{}).retrieve().bodyToMono(RegistrationResponse.class).block();
 	}
@@ -119,10 +129,10 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 	@Override
-	public int updateJob(Job job)
+	public int updateJob(Job job, String status)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus(), job.getUpdated_date(),
-				job.getStart_time(), job.getJob_name());
+				job.getStart_time(), job.getJob_name(),status);
 	}
 
 

@@ -10,19 +10,19 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.model.OutboundRegistration;
+import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.validation.InboundValidator;
 
-public class RegistrationItemProcessor implements ItemProcessor<InboundRegistration, OutboundRegistration>
+public class RegistrationItemProcessor implements ItemProcessor<InboundRegistration, FileInboundStgTable>
 {
 
 	private final Logger LOG = LoggerFactory.getLogger(RegistrationItemProcessor.class);
 
 
 	@Override
-	public OutboundRegistration process(InboundRegistration item) throws Exception
+	public FileInboundStgTable process(InboundRegistration item) throws Exception
 	{
-		OutboundRegistration.OutboundRegistrationBuilder builder = OutboundRegistration.builder();
+		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 
 		LOG.info("item in process{} :" + item.toString());
 		Date asOfDate = null;
@@ -39,7 +39,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 			return null;
 		}
 		LOG.info(" Processing inbound item {}: ", item);
-		builder.status("T").credit_language_cd(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date()).src_date(asOfDate)
+		builder.status("1").credit_language_cd(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date()).src_date(asOfDate)
 				.src_email_address(item.getEmail_Address()).email_address_1_pref(item.getEmail_Permission())
 				.phone_1_pref(item.getPhone_Permission()).src_phone_number(item.getPhone_Number())
 				.src_phone_extension(item.getPhone_Extension()).src_title_name(item.getTitle()).src_first_name(item.getFirst_Name())
@@ -66,13 +66,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		return builder.build();
 	}
 
-	private void validate(final InboundRegistration item, final OutboundRegistration.OutboundRegistrationBuilder builder)
+	private void validate(final InboundRegistration item, final FileInboundStgTable.FileInboundStgTableBuilder builder)
 	{
 		validateIsRequired(item);
 		validateMaxLength(item);
 		validateMaxLengthReqField(item);
 		validateNumberFormat(item, builder);
-		validateEmailFormat(item);
+		validateEmailFormat(item.getEmail_Address());
 		validateLanguagePref(item);
 
 
