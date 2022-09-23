@@ -52,7 +52,7 @@ class MasterProcessorTest {
 
         master = new Master();
         master.setMaster_id(new BigDecimal("12345"));
-        master.setKey_val("SOURCE");
+        master.setKey_value("SOURCE");
         master.setValue_val("hybris");
 
         masterInfo = new ArrayList<>();

@@ -21,9 +21,9 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		RegistrationRequest registrationRequest = new RegistrationRequest();
 
 
-		registrationRequest.setFileId(rs.getString(PreferenceBatchConstants.FILE_ID));
+		registrationRequest.setFileId(rs.getBigDecimal(PreferenceBatchConstants.FILE_ID));
 		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS).equals("1"));
-		registrationRequest.setSequenceNbr("12345");
+		registrationRequest.setSequenceNbr(rs.getString(PreferenceBatchConstants.SEQUENCE_NBR));
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
 		registrationRequest.setLanguagePreference(rs.getString(PreferenceBatchConstants.CREDIT_LANGUAGE_CD));
 		registrationRequest.setSrcTitleName(rs.getString(PreferenceBatchConstants.SRC_TITLE_NAME));
@@ -33,12 +33,13 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 
 		String emailStatus = rs.getString(PreferenceBatchConstants.EMAIL_STATUS);
 		registrationRequest.setEmailStatus(emailStatus == null ? 0 : Integer.parseInt(emailStatus));
-		registrationRequest.setEmailAddressPref(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_1_PREF)));
+		registrationRequest.setEmailAddressPref(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
 		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
-		registrationRequest.setCellSmsFlag(Integer.parseInt(rs.getString(PreferenceBatchConstants.CELL_SMS_FLAG)));
+
+		registrationRequest.setCellSmsFlag(getIntegerValue(rs.getString(PreferenceBatchConstants.CELL_SMS_FLAG)));
 		registrationRequest.setSrcPhoneNumber(rs.getString(PreferenceBatchConstants.SRC_PHONE_NUMBER));
 		registrationRequest.setSrcPhoneExtension(rs.getString(PreferenceBatchConstants.SRC_PHONE_EXTENSION));
-		registrationRequest.setPhonePref(Integer.parseInt(rs.getString(PreferenceBatchConstants.PHONE_1_PREF)));
+		registrationRequest.setPhonePref(getIntegerValue(rs.getString(PreferenceBatchConstants.PHONE_PREF)));
 
 		Address address = new Address();
 		address.setSrcAddress1(rs.getString(PreferenceBatchConstants.SRC_ADDRESS1));
@@ -48,11 +49,11 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		address.setSrcPostalCode(rs.getString(PreferenceBatchConstants.SRC_POSTAL_CODE));
 
 		registrationRequest.setSrcAddress(address);
-		registrationRequest.setMailAddresspref(Integer.parseInt(rs.getString(PreferenceBatchConstants.MAIL_ADDRESS_1_PREF)));
-		registrationRequest.setEmailPrefHDCa(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_HD_CA)));
-		registrationRequest.setEmailPrefGardenClub(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_GARDEN_CLUB)));
-		registrationRequest.setEmailPrefPro(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_PRO)));
-		registrationRequest.setEmailPrefNewMover(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_PREF_NEW_MOVER)));
+		registrationRequest.setMailAddresspref(getIntegerValue(rs.getString(PreferenceBatchConstants.MAIL_ADDRESS_PREF)));
+		registrationRequest.setEmailPrefHDCa(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_HD_CA)));
+		registrationRequest.setEmailPrefGardenClub(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_GARDEN_CLUB)));
+		registrationRequest.setEmailPrefPro(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_PRO)));
+		registrationRequest.setEmailPrefNewMover(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_NEW_MOVER)));
 
 		Map<String, String> contentValue = new HashMap<>();
 
@@ -80,10 +81,10 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 		/*
 		 * Deletes any null value before send it to the service
 		 */
-		contentValue.forEach((key, value) -> {
-			if (key == null || value == null)
-				contentValue.remove(key, value);
-		});
+			contentValue.forEach((key, value) -> {
+				if (key == null || value == null)
+					contentValue.remove(key, value);
+			});
 
 
 		registrationRequest.setContentValue(contentValue);
@@ -94,6 +95,18 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 
 
 
+	}
+
+	public static Integer getIntegerValue(String value){
+		Integer intValue = null;
+
+		try{
+			intValue = Integer.parseInt(value);
+		}catch(Exception e){
+			//
+		}
+
+		return intValue;
 	}
 
 

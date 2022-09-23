@@ -29,7 +29,7 @@ public class ItemReaderListener implements ItemReadListener<Object> {
         BigDecimal jobId = fileService.getJobId(jobName);
         BigDecimal masterId = master.getMaster_id();
 
-        fileService.insert(fileName, "G", masterId, new Date(), jobId, new Date(), "BATCH");
+        //fileService.insert(fileName, "G", masterId, new Date(), jobId, new Date(), "BATCH");
     }
 
     @Override

@@ -77,29 +77,31 @@ public class PreferenceServiceImpl implements PreferenceService
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
 	{
 
-		String path = baseUrl + PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
+		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
 
 		log.info(" Request Registration {} ", new Gson().toJson(items));
 
-		return webClient.post().uri(uriBuilder ->
-			uriBuilder.path(path).build()
+		return webClient.post().uri(uriBuilder ->{
+					URI uri = uriBuilder.path(path).build();
+					return uri;
+				}
 		).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>() {})
 				.retrieve()
-				.bodyToMono(RegistrationResponse.class).block();
+				.bodyToMono(RegistrationResponse.class)
+				.doOnError(e-> log.info(e.toString())).block();
 	}
 
+	@Override
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
 	{
 
-		String path = baseUrl + PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL;
+		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL;
 
-		log.info(" Request Registration {} ", new Gson().toJson(items));
+		log.info(" Request Registration LayoutB {} ", new Gson().toJson(items));
 
-		return webClient.post().uri(uriBuilder -> {
-					URI uri = uriBuilder.path(path).build();
-					return uri;
-				}).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+		return webClient.post().uri(uriBuilder -> uriBuilder.path(path).build())
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>()
 				{}).retrieve().bodyToMono(RegistrationResponse.class).block();
 	}
@@ -123,9 +125,8 @@ public class PreferenceServiceImpl implements PreferenceService
 	public List<Master> getMasterInfo()
 	{
 		return jdbcTemplate.query(SqlQueriesConstants.SQL_SELECT_MASTER_ID,
-				(rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getString("key_val"), rs.getString("value_val"),
-						rs.getString("active"), rs.getString("inserted_by"), rs.getDate("inserted_date"), rs.getString("updated_by"),
-						rs.getDate("updated_date")));
+				(rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"),rs.getString("key_value"), rs.getString("value_val"),
+						rs.getBoolean("active")));
 	}
 
 	@Override

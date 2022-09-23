@@ -37,7 +37,7 @@ class JobRepoTest {
 		createMaster();
 	}
 	void createMaster(){
-		masterDTO = new Master(new BigDecimal("1"),"SOURCE", "hybris", "1", "TEST", new Date(), null, null);
+		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"),"SOURCE", "hybris", true);
 
 	}
 	void createJobDTO(){
@@ -194,15 +194,11 @@ class JobRepoTest {
 	void testMasterDTO(){
 		Master master2 = new Master();
 		assertNotNull(masterDTO);
-		assertEquals("SOURCE", masterDTO.getKey_val());
+		assertEquals("SOURCE", masterDTO.getKey_value());
 		assertNotNull(master2);
 		assertNotEquals(master2, masterDTO);
 		assertEquals("hybris", masterDTO.getValue_val());
 		assertEquals("1", masterDTO.getActive());
-		assertEquals("TEST", masterDTO.getInserted_by());
-		assertNotNull(masterDTO.getInserted_date());
-		assertNull(masterDTO.getUpdated_by());
-		assertNull(masterDTO.getUpdated_date());
 	}
 
 	@Test

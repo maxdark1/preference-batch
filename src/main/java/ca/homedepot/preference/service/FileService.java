@@ -19,7 +19,7 @@ public interface FileService
 	void setJdbcTemplate(JdbcTemplate jdbcTemplate);
 
 	int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id, Date inserted_date,
-			String inserted_by);
+			String inserted_by, BigDecimal status_id);
 
 	BigDecimal getJobId(String job_name);
 
@@ -33,4 +33,6 @@ public interface FileService
 	BigDecimal getSourceId(String keyVal, String valueVal);
 
 	int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus);
+
+    int updateInboundStgTableStatus(BigDecimal fileId, String status);
 }

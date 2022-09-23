@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @JsonRootName("registration")
 public class Response
 {
-	private int id;
+	private String id;
 	private String status;
 	private String details;
 

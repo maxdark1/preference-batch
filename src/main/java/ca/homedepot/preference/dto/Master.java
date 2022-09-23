@@ -15,19 +15,12 @@ public class Master
 
 	private BigDecimal master_id;
 
-	private String key_val;
+	private BigDecimal key_id;
+
+	private String key_value;
 
 	private String value_val;
 
-	private String active;
-
-	private String inserted_by;
-
-	private Date inserted_date;
-
-	private String updated_by;
-
-	private Date updated_date;
-
+	private Boolean active;
 
 }

@@ -2,10 +2,12 @@ package ca.homedepot.preference.util.validation;
 
 import ca.homedepot.preference.model.EmailOptOuts;
 import io.micrometer.core.lang.Nullable;
+import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class ExactTargetEmailValidation
@@ -68,4 +70,12 @@ public class ExactTargetEmailValidation
         throw new ValidationException("invalid date format " + date);
     }
 
+    public static LineCallbackHandler lineCallbackHandler() {
+
+        return line -> {
+            String[] header = line.split("\\t");
+            if (!Arrays.equals(header, FIELD_NAMES_SFMC_OPTOUTS))
+                throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
+        };
+    }
 }

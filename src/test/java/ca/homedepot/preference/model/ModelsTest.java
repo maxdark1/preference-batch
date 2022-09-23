@@ -1,8 +1,5 @@
 package ca.homedepot.preference.model;
 
-import ca.homedepot.preference.model.EmailOptOuts;
-import ca.homedepot.preference.model.FileInboundStgTable;
-import ca.homedepot.preference.model.InboundRegistration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +25,7 @@ public class ModelsTest {
         fileInboundStgTable = new FileInboundStgTable.FileInboundStgTableBuilder()
                 .status("status")
                 .src_date(new Date())
-                .email_address_1_pref("-1")
+                .email_address_pref("-1")
                 .source_id(1L)
                 .email_pref_hd_ca("1")
                 .build();
@@ -62,14 +59,14 @@ public class ModelsTest {
         fileInboundStgTable.setEmail_status(new BigDecimal("123"));
         fileInboundStgTable.setEmail_pref_garden_club("0");
         fileInboundStgTable.setCell_sms_flag("0");
-        fileInboundStgTable.setCredit_language_cd("E");
+        fileInboundStgTable.setSrc_language_pref("E");
 
         assertEquals("2", fileInboundStgTable.getContent1());
         assertEquals("content3", fileInboundStgTable.getContent3());
         assertEquals(new BigDecimal("123"), fileInboundStgTable.getEmail_status());
         assertEquals("0", fileInboundStgTable.getEmail_pref_garden_club());
         assertEquals("0", fileInboundStgTable.getCell_sms_flag());
-        assertEquals("E", fileInboundStgTable.getCredit_language_cd());
+        assertEquals("E", fileInboundStgTable.getSrc_language_pref());
 
         FileInboundStgTable fileInboundStgTable1 = new FileInboundStgTable.FileInboundStgTableBuilder().build();
         assertNotEquals(fileInboundStgTable1, fileInboundStgTable);

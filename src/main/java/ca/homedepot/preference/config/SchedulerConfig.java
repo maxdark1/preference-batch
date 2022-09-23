@@ -1,6 +1,8 @@
 package ca.homedepot.preference.config;
 
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -9,11 +11,13 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import ca.homedepot.preference.dto.LayoutBRequest;
 import ca.homedepot.preference.listener.ItemReaderListener;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
+import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -26,13 +30,17 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.FileUrlResource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -86,6 +94,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String emailAnalyticsFile;
 	@Value("${process.analytics.chunk}")
 	Integer chunkValue;
+
+	@Value("${inbound.source.path}")
+	String path;
 	@Value("${inbound.file.registration}")
 	String fileinRegistration;
 
@@ -112,6 +123,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private RegistrationItemWriterListener exactTargetEmailWriterListener;
 	@Autowired
 	private RegistrationAPIWriter apiWriter;
+
+	@Autowired
+	private RegistrationLayoutBWriter layoutBWriter;
 	@Autowired
 	private MasterProcessor masterProcessor;
 
@@ -123,12 +137,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		hybrisWriterListener.setFileName(fileinRegistration);
 		hybrisWriterListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
 
-
 		apiWriter.setPreferenceService(batchTasklet.getBackinStockService());
+		layoutBWriter.setPreferenceService(batchTasklet.getBackinStockService());
+		FileUtil.setPath(path);
 
-
+		exactTargetEmailWriterListener = new RegistrationItemWriterListener();
+		exactTargetEmailWriterListener.setFileService(hybrisWriterListener.getFileService());
 		exactTargetEmailWriterListener.setFileName(fileExtTargetEmail);
-		//exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
+		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
 
 	}
 
@@ -148,8 +164,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public void getMasterInfo()
 	{
 		masterProcessor.getMasterInfo();
-		hybrisWriterListener.setMaster(masterProcessor.getSourceId("SOURCE", "hybris"));
-		exactTargetEmailWriterListener.setMaster(masterProcessor.getSourceId("SOURCE","SFMC"));
+		hybrisWriterListener.setSourceIDMasterObj(MasterProcessor.getSourceId("SOURCE","hybris"));
+		exactTargetEmailWriterListener.setSourceIDMasterObj(MasterProcessor.getSourceId("SOURCE","SFMC"));
 	}
 	///***************************************************
 
@@ -176,24 +192,29 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * Read inbound files
 	 */
 	@Bean
-	public FlatFileItemReader<InboundRegistration> inboundFileReader()
-	{
+	public FlatFileItemReader<InboundRegistration> inboundFileReader() throws MalformedURLException {
 		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
-				.resource(new FileSystemResource(fileinRegistration)).delimited().delimiter("|").names(InboundValidator.FIELD_NAMES_REGISTRATION)
+				.resource(new FileSystemResource(path+"INBOUND\\"+fileinRegistration)).delimited().delimiter("|").names(InboundValidator.FIELD_NAMES_REGISTRATION)
 				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(InboundValidator.lineCallbackHandler()).build();
 	}
 
 	public FlatFileItemReader<EmailOptOuts> inboundEmailPreferencesSMFCReader(){
-		DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB);
-		delimitedLineTokenizer.setNames(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS);
+
 
 		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
-				.resource(new FileSystemResource(fileExtTargetEmail)).lineTokenizer(delimitedLineTokenizer)
-				.targetType(EmailOptOuts.class).linesToSkip(1)
+				.resource(new FileSystemResource(path+"INBOUND\\"+fileExtTargetEmail)).lineTokenizer(new DelimitedLineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB){{
+					setNames(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS);
+				}})
+				.fieldSetMapper(new BeanWrapperFieldSetMapper<EmailOptOuts>(){{
+					setTargetType(EmailOptOuts.class);
+				}})
+				.linesToSkip(1)
 				/* Validation file's header */
-				.build();
+
+				.skippedLinesCallback(ExactTargetEmailValidation.lineCallbackHandler())
+			.build();
 	}
 
 
@@ -211,6 +232,19 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 		return reader;
 	}
+
+	@Bean
+	public JdbcCursorItemReader<RegistrationRequest> inboundDBReaderSFMC()
+	{
+		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS);
+		reader.setRowMapper(new SFMCRowMapper());
+
+		return reader;
+	}
+
 
 	@Bean
 	public RegistrationItemProcessor inboundFileProcessor()
@@ -259,7 +293,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Bean
 	public Job sfmcOptOutsEmailClient() throws Exception{
 		return  jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSFMCOptOutsStep1()).build();
+				.start(readSFMCOptOutsStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
+				.to(readDBSFMCOptOutsStep2())
+				.build().build();
 	}
 	/**
 	 * Order step 1 step.
@@ -294,10 +330,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 
 	@Bean
-	public Step orderStep4()
+	public Step readDBSFMCOptOutsStep2()
 	{
 
-		return stepBuilderFactory.get("orderStep4").tasklet(batchTasklet).transactionManager(transactionManager).build();
+		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest>chunk(chunkValue).reader(inboundDBReaderSFMC())
+				.writer(layoutBWriter).build();
 
 	}
 
@@ -336,6 +373,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		return baseName;
 	}
+
+
 
 
 }

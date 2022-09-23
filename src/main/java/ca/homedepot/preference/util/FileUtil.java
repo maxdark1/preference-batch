@@ -1,17 +1,27 @@
 package ca.homedepot.preference.util;
 
+import ca.homedepot.preference.config.SchedulerConfig;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 /**
  * The type File util.
  */
+@Slf4j
 @UtilityClass
 public final class FileUtil
 {
     private static String registrationFile;
     private static String fileExtTargetEmail;
 
+    private static String path;
     /**
      * Gets registration file.
      *
@@ -54,4 +64,20 @@ public final class FileUtil
         FileUtil.fileExtTargetEmail = fileExtTargetEmail;
     }
 
+    public static void setPath(String path){
+        FileUtil.path = path;
+    }
+
+    public static void moveFile(String file, String folder) throws IOException {
+        Path temp = Files.move(
+                Paths.get(path+"\\INBOUND\\"+file),
+                Paths.get(path+"\\"+folder+"\\"+file)
+        );
+
+        if(temp != null){
+            log.info(" File moved successfully to folder: {} ", folder);
+        }else{
+            log.info("Failed to move the file");
+        }
+    }
 }

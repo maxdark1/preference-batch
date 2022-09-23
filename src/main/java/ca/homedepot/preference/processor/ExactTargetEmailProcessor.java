@@ -17,6 +17,7 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
     public FileInboundStgTable process(EmailOptOuts item) throws Exception {
 
         FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
+        log.info(" Item in process: " + item.toString());
         Date srcDate = null;
         try{
             InboundValidator.validateRequired(item.getEmailAddress(), "email address");
@@ -32,9 +33,9 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 
         return builder.src_email_address(item.getEmailAddress())
                 .email_status(new BigDecimal(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())))
-                .status("1")
+                .status("NS")
                 .src_date(srcDate)
-                .email_address_1_pref("0")
+                .email_address_pref("0")
                 .email_pref_hd_ca("0")
                 .email_pref_garden_club("-1")
                 .email_pref_pro("-1")

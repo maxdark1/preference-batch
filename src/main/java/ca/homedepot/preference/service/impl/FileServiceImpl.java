@@ -34,10 +34,10 @@ public class FileServiceImpl implements FileService
 	@Override
 	@Transactional
 	public int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id,
-			Date inserted_date, String inserted_by)
+			Date inserted_date, String inserted_by, BigDecimal status_id)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file_name, job_id, source_id, status, start_time,
-				inserted_by, inserted_date);
+				inserted_by, inserted_date, status_id);
 	}
 
 
@@ -68,6 +68,12 @@ public class FileServiceImpl implements FileService
 	public int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_FILE, newStatus, updatedDate,fileName, status);
+	}
+
+
+	@Override
+	public int updateInboundStgTableStatus(BigDecimal fileId, String status){
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STATUS_INBOUND, status, new Date(), "BATCH",fileId);
 	}
 
 
