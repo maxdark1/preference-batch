@@ -1,12 +1,11 @@
 package ca.homedepot.preference.repositories;
 
-import static org.junit.Assert.*;
-
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import ca.homedepot.preference.dto.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +14,9 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
 
-import ca.homedepot.preference.dto.*;
+import static org.junit.Assert.*;
 
-class JobRepoTest
-{
+class JobRepoTest {
 
 
 	Faker faker;
@@ -33,8 +31,7 @@ class JobRepoTest
 	PreferenceItem preferenceItem;
 
 	@BeforeEach
-	void setUp() throws ParseException
-	{
+	void setUp() throws ParseException {
 		createRegistrationRequestObj();
 		createFileDTO();
 		createJobDTO();
@@ -43,7 +40,7 @@ class JobRepoTest
 
 	void createMaster()
 	{
-		masterDTO = new Master(new BigDecimal("1"), "SOURCE", "hybris", "1", "TEST", new Date(), null, null);
+		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"),"SOURCE", "hybris", true)
 
 	}
 

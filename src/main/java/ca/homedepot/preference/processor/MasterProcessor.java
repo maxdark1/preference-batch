@@ -3,12 +3,14 @@ package ca.homedepot.preference.processor;
 import java.math.BigDecimal;
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.Setter;
+import lombok.Getter;
 
 @Component
 @Setter
@@ -18,19 +20,25 @@ public class MasterProcessor
 	@Autowired
 	private PreferenceService preferenceService;
 
-	private List<Master> masterList;
+	private static List<Master> masterList;
 
 	public void getMasterInfo()
 	{
-		//masterList = preferenceService.getMasterInfo();
+		masterList = preferenceService.getMasterInfo();
 	}
 
-	public Master getSourceId(String key_val, String value_val)
+	public static Master getSourceId(String key_val, String value_val)
 	{
-		Master master = new Master();
-		master.setMaster_id(new BigDecimal("1"));
-		return master;
-		//		return masterList.stream().filter(master -> master.getKey_val().equals(key_val) && master.getValue_val().equals(value_val))
-		//				.findFirst().get();
+		return masterList.stream().filter(master -> master.getKey_value().equals(key_val) && master.getValue_val().equals(value_val))
+				.findFirst().get();
+	}
+	public static List<Master> getMasterList()
+	{
+		return masterList;
+	}
+
+	public static void setMasterList(List<Master> masterList)
+	{
+		MasterProcessor.masterList = masterList;
 	}
 }

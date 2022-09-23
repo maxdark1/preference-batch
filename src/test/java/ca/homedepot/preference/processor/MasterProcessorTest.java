@@ -46,19 +46,19 @@ class MasterProcessorTest
 		masterProcessor = new MasterProcessor();
 		masterList = Mockito.mock((new ArrayList<Master>()).getClass());
 
-		masterProcessor.setPreferenceService(preferenceService);
+        masterProcessor.setPreferenceService(preferenceService);
 
 
-		master = new Master();
-		master.setMaster_id(new BigDecimal("12345"));
-		master.setKey_val("SOURCE");
-		master.setValue_val("hybris");
+        master = new Master();
+        master.setMaster_id(new BigDecimal("12345"));
+        master.setKey_value("SOURCE");
+        master.setValue_val("hybris");
 
 		masterInfo = new ArrayList<>();
 		masterInfo.add(master);
 		masterProcessor.setMasterList(masterInfo);
 
-	}
+    }
 
 	@Test
 	void getSourceId()

@@ -16,7 +16,7 @@ public interface PreferenceBatchConstants
 
 	String SRC_MIDDLE_INITIAL = "src_middle_initial";
 
-	String CREDIT_LANGUAGE_CD = "credit_language_cd";
+	String CREDIT_LANGUAGE_CD = "src_language_pref";
 
 	String SRC_SYSTEM = "src_system";
 
@@ -40,9 +40,9 @@ public interface PreferenceBatchConstants
 
 	String SRC_EMAIL_ADDRESS = "src_email_address";
 
-	String EMAIL_ADDRESS_1_PREF = "email_address_1_pref";
+	String EMAIL_ADDRESS_PREF = "email_address_pref";
 
-	String PHONE_1_PREF = "phone_1_pref";
+	String PHONE_PREF = "phone_pref";
 
 	String SRC_PHONE_NUMBER = "src_phone_number";
 
@@ -64,7 +64,7 @@ public interface PreferenceBatchConstants
 
 	String SRC_POSTAL_CODE = "src_postal_code";
 
-	String MAIL_ADDRESS_1_PREF = "mail_address_1_pref";
+	String MAIL_ADDRESS_PREF = "mail_address_pref";
 
 	String EMAIL_PREF_HD_CA = "email_pref_hd_ca";
 
@@ -172,8 +172,9 @@ public interface PreferenceBatchConstants
 
 	String PREFERENCE_CENTER_REGISTRATION_URL = "preferences/registration";
 
-	String PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL = "registration/layoutB";
+	String PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL = "/preferences/registration/layoutB";
 
 	String SRC_ZIPCODE = "src_zipcode";
 	String SRC_DATE = "src_date";
+    String UPDATED_BY = "updated_by";
 }

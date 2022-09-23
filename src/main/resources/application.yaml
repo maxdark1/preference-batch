@@ -44,7 +44,7 @@ server:
 
 service:
   preference:
-    baseurl: localhost:8081/hdpc/v1/
+    baseurl: http://localhost:8081/hdpc/v1/
 
 feign:
   retry:
@@ -53,6 +53,12 @@ feign:
     maxAttempts: 3
 
 inbound:
+  source:
+    path: C:\batchFiles\
+    folder:
+      inbound: INBOUND
+      error: ERROR
+      processed: PROCESSED
   file:
     registration: OPTIN_STANDARD_FLEX_YYYYMMDD.txt
     ingestSFMC: ET.CAN.YYYYMMDD.TXT

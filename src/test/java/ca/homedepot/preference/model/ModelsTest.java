@@ -58,14 +58,14 @@ public class ModelsTest
 		fileInboundStgTable.setEmail_status(new BigDecimal("123"));
 		fileInboundStgTable.setEmail_pref_garden_club("0");
 		fileInboundStgTable.setCell_sms_flag("0");
-		fileInboundStgTable.setCredit_language_cd("E");
+		fileInboundStgTable.setSrc_language_pref("E");
 
 		assertEquals("2", fileInboundStgTable.getContent1());
 		assertEquals("content3", fileInboundStgTable.getContent3());
 		assertEquals(new BigDecimal("123"), fileInboundStgTable.getEmail_status());
 		assertEquals("0", fileInboundStgTable.getEmail_pref_garden_club());
 		assertEquals("0", fileInboundStgTable.getCell_sms_flag());
-		assertEquals("E", fileInboundStgTable.getCredit_language_cd());
+		assertEquals("E", fileInboundStgTable.getSrc_language_pref());
 
 		FileInboundStgTable fileInboundStgTable1 = new FileInboundStgTable.FileInboundStgTableBuilder().build();
 		assertNotEquals(fileInboundStgTable1, fileInboundStgTable);

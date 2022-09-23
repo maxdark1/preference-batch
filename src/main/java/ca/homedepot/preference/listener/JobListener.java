@@ -2,6 +2,8 @@ package ca.homedepot.preference.listener;
 
 import java.util.Date;
 
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.processor.MasterProcessor;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
@@ -41,8 +43,10 @@ public class JobListener implements JobExecutionListener
 		log.debug("Batch Started.");
 		ca.homedepot.preference.dto.Job job = new ca.homedepot.preference.dto.Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
-		job.setStatus(status(jobExecution.getStatus())); // Cambiarle
 
+		Master master = status(jobExecution.getStatus());
+		job.setStatus(master.getValue_val());
+		job.setStatus_id(master.getMaster_id());
 		job.setStart_time(jobExecution.getStartTime());
 		job.setInserted_by("BATCH");
 		job.setInserted_date(new Date());
@@ -52,21 +56,19 @@ public class JobListener implements JobExecutionListener
 
 	}
 
-	public String status(BatchStatus batchStatus)
+	public Master status(BatchStatus batchStatus)
 	{
 
 		switch (batchStatus)
 		{
+			case STARTING:
+				return MasterProcessor.getSourceId("JOB_STATUS", "STARTED");
 			case STARTED:
-				return "G";
+				return MasterProcessor.getSourceId("JOB_STATUS", "IN PROGRESS");
 			case COMPLETED:
-				return "C";
-			case FAILED:
-				return "F";
-			case STOPPED:
-				return "S";
+				return MasterProcessor.getSourceId("JOB_STATUS", "COMPLETED");
 			default:
-				return "U";
+				return MasterProcessor.getSourceId("JOB_STATUS", "ERROR");
 		}
 	}
 
@@ -85,11 +87,15 @@ public class JobListener implements JobExecutionListener
 
 		Job job = new Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
-		job.setStatus(status(jobExecution.getStatus())); //Cambiar
+
+		Master master = status(jobExecution.getStatus());
+		job.setStatus(master.getValue_val());
+		job.setStatus_id(master.getMaster_id());
+
 		job.setUpdated_date(new Date());
 		job.setStart_time(jobExecution.getStartTime());
 
-		int insert = preferenceService.updateJob(job, "G");
+		int insert = preferenceService.updateJob(job, "IN PROGRESS");
 
 		log.info("  {} Job(s) updated", insert);
 

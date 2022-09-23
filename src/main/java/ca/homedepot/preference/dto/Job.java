@@ -12,6 +12,12 @@ public class Job
 	private BigDecimal job_id;
 
 	/**
+	 * The status id
+	 */
+
+	private BigDecimal status_id;
+
+	/**
 	 * The Job Name
 	 */
 	private String job_name;
