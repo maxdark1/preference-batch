@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 public final class FileUtil
 {
 	private static String registrationFile;
-	private static String emailanalyticsFile;
+	private static String fileExtTargetEmail;
 
 	/**
 	 * Gets registration file.
@@ -38,20 +38,20 @@ public final class FileUtil
 	 *
 	 * @return the emailanalytics file
 	 */
-	public static String getEmailanalyticsFile()
+	public static String getFileExtTargetEmail()
 	{
-		return emailanalyticsFile;
+		return fileExtTargetEmail;
 	}
 
 	/**
 	 * Sets emailanalytics file.
 	 *
-	 * @param emailanalyticsFile
+	 * @param fileExtTargetEmail
 	 *           the emailanalytics file
 	 */
-	public static void setEmailanalyticsFile(String emailanalyticsFile)
+	public static void setFileExtTargetEmail(String fileExtTargetEmail)
 	{
-		FileUtil.emailanalyticsFile = emailanalyticsFile;
+		FileUtil.fileExtTargetEmail = fileExtTargetEmail;
 	}
 
 }

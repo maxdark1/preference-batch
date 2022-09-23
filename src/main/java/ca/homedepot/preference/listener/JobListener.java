@@ -1,28 +1,33 @@
 package ca.homedepot.preference.listener;
 
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Date;
+
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import ca.homedepot.preference.dto.Job;
+import ca.homedepot.preference.service.PreferenceService;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
  * The type Job listener.
  */
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class JobListener implements JobExecutionListener
 {
-	/**
-	 * The Application context.
-	 */
-	private final ApplicationContext applicationContext;
+	private PreferenceService preferenceService;
+
+	@Autowired
+	public void setPreferenceService(PreferenceService preferenceService)
+	{
+		this.preferenceService = preferenceService;
+	}
+
 
 	/**
 	 * Before job.
@@ -34,6 +39,35 @@ public class JobListener implements JobExecutionListener
 	public void beforeJob(JobExecution jobExecution)
 	{
 		log.debug("Batch Started.");
+		ca.homedepot.preference.dto.Job job = new ca.homedepot.preference.dto.Job();
+		job.setJob_name(jobExecution.getJobInstance().getJobName());
+		job.setStatus(status(jobExecution.getStatus())); // Cambiarle
+
+		job.setStart_time(jobExecution.getStartTime());
+		job.setInserted_by("BATCH");
+		job.setInserted_date(new Date());
+
+		preferenceService.insert(job.getJob_name(), job.getStatus(), job.getStart_time(), job.getInserted_by(),
+				job.getInserted_date());
+
+	}
+
+	public String status(BatchStatus batchStatus)
+	{
+
+		switch (batchStatus)
+		{
+			case STARTED:
+				return "G";
+			case COMPLETED:
+				return "C";
+			case FAILED:
+				return "F";
+			case STOPPED:
+				return "S";
+			default:
+				return "U";
+		}
 	}
 
 	/**
@@ -45,19 +79,20 @@ public class JobListener implements JobExecutionListener
 	@Override
 	public void afterJob(JobExecution jobExecution)
 	{
-		int exit;
+
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED)
-		{
-			log.debug("Batch Executed Successfully!");
-			exit = SpringApplication.exit(applicationContext, () -> 0);
-		}
-		else
-		{
-			List exceptions = jobExecution.getAllFailureExceptions();
-			exceptions.stream().forEach(e -> log.error("Job Failed With Error {}", e));
-			exit = SpringApplication.exit(applicationContext, () -> -1);
-		}
-		System.exit(exit);
+			log.info(" Job {} ends with completes status: ", jobExecution.getJobInstance().getJobName());
+
+		Job job = new Job();
+		job.setJob_name(jobExecution.getJobInstance().getJobName());
+		job.setStatus(status(jobExecution.getStatus())); //Cambiar
+		job.setUpdated_date(new Date());
+		job.setStart_time(jobExecution.getStartTime());
+
+		int insert = preferenceService.updateJob(job, "G");
+
+		log.info("  {} Job(s) updated", insert);
+
 	}
 
 }

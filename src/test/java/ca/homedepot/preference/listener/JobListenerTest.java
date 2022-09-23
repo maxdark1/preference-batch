@@ -1,27 +1,29 @@
 package ca.homedepot.preference.listener;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobInstance;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
 
 
 /**
  * The type Job listener test.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringBootTest
 public class JobListenerTest
 {
 	/**
@@ -30,6 +32,11 @@ public class JobListenerTest
 	@Rule
 	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
+	/*
+	 * Preference Service to save the Job
+	 */
+	@Mock
+	PreferenceServiceImpl preferenceService;
 	/**
 	 * The Application context.
 	 */
@@ -47,40 +54,45 @@ public class JobListenerTest
 	 */
 	JobExecution jobExecution;
 
+	JobInstance jobInstance;
+
 	/**
 	 * Sets up.
 	 */
 	@Before
 	public void setUp()
 	{
+		jobListener = new JobListener();
 		MockitoAnnotations.initMocks(this.getClass());
-		jobExecution = Mockito.mock(JobExecution.class);
+		preferenceService = Mockito.mock(PreferenceServiceImpl.class);
+
+		jobListener.setPreferenceService(preferenceService);
+		JobParameters jobParameters = new JobParameters();
+		jobExecution = new JobExecution(jobInstance, jobParameters);
+		jobInstance = new JobInstance(1L, "TEST_JOB");
+		jobExecution.setStartTime(new Date());
+		jobExecution.setStatus(BatchStatus.STARTED);
+
+		jobExecution.setJobInstance(jobInstance);
 		jobListener.beforeJob(jobExecution);
+
+
 	}
 
-	/**
-	 * Test after job.
-	 */
 	@Test
-	public void testAfterJob()
+	public void testStatus()
 	{
-		when(jobExecution.getStatus()).thenReturn(BatchStatus.COMPLETED);
-		exit.expectSystemExitWithStatus(0);
-		jobListener.afterJob(jobExecution);
-		verify(jobExecution).getStatus();
-	}
+		BatchStatus batchStatusCompleted = BatchStatus.COMPLETED;
+		BatchStatus batchStatusStarted = BatchStatus.STARTED;
+		BatchStatus batchStatusFailed = BatchStatus.FAILED;
+		BatchStatus batchStatusStopped = BatchStatus.STOPPED;
+		BatchStatus batchStatusUnknown = BatchStatus.UNKNOWN;
 
-	/**
-	 * Test after job with batch not completed.
-	 */
-	@Test
-	public void testAfterJob_with_batch_not_completed()
-	{
-		when(jobExecution.getStatus()).thenReturn(BatchStatus.ABANDONED);
-		exit.expectSystemExitWithStatus(-1);
-		jobListener.afterJob(jobExecution);
-		verify(jobExecution).getStatus();
+		Assertions.assertEquals("G", jobListener.status(batchStatusStarted));
+		Assertions.assertEquals("C", jobListener.status(batchStatusCompleted));
+		Assertions.assertEquals("S", jobListener.status(batchStatusStopped));
+		Assertions.assertEquals("F", jobListener.status(batchStatusFailed));
+		Assertions.assertEquals("U", jobListener.status(batchStatusUnknown));
 	}
-
 
 }
