@@ -1,8 +1,6 @@
 package ca.homedepot.preference.dto;
 
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;

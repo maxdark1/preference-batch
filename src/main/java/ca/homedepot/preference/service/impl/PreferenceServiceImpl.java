@@ -1,12 +1,9 @@
 package ca.homedepot.preference.service.impl;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gson.Gson;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,10 +13,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.google.gson.Gson;
+
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
-import ca.homedepot.preference.repositories.JobRepo;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -43,7 +41,9 @@ public class PreferenceServiceImpl implements PreferenceService
 	@Autowired
 	public void setUpWebClient()
 	{
-		this.webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection()))).baseUrl(baseUrl).build();
+		this.webClient = WebClient.builder()
+				.clientConnector(new ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection())))
+				.baseUrl(baseUrl).build();
 	}
 
 
@@ -81,12 +81,10 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		log.info(" Request Registration {} ", new Gson().toJson(items));
 
-		return webClient.post().uri(uriBuilder ->
-			uriBuilder.path(path).build()
-		).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>() {})
-				.retrieve()
-				.bodyToMono(RegistrationResponse.class).block();
+		return webClient.post().uri(uriBuilder -> uriBuilder.path(path).build()).accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>()
+				{}).retrieve().bodyToMono(RegistrationResponse.class).block();
 	}
 
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
@@ -97,9 +95,9 @@ public class PreferenceServiceImpl implements PreferenceService
 		log.info(" Request Registration {} ", new Gson().toJson(items));
 
 		return webClient.post().uri(uriBuilder -> {
-					URI uri = uriBuilder.path(path).build();
-					return uri;
-				}).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+			URI uri = uriBuilder.path(path).build();
+			return uri;
+		}).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>()
 				{}).retrieve().bodyToMono(RegistrationResponse.class).block();
 	}
@@ -132,7 +130,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	public int updateJob(Job job, String status)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus(), job.getUpdated_date(),
-				job.getStart_time(), job.getJob_name(),status);
+				job.getStart_time(), job.getJob_name(), status);
 	}
 
 

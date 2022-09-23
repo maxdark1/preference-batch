@@ -9,9 +9,6 @@ import java.lang.reflect.Modifier;
 
 import javax.sql.DataSource;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.listener.JobListener;
-import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +30,8 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
@@ -161,7 +160,8 @@ class SchedulerConfigTest
 
 	// TODO NullPointerException
 	@Test
-	public void processRegistrationInbound() throws Exception {
+	public void processRegistrationInbound() throws Exception
+	{
 		Mockito.when(jobBuilderFactory.get(eq("job_name"))).thenReturn(jobBuilder);
 		Mockito.when(jobBuilder.incrementer(new RunIdIncrementer())).thenReturn(jobBuilder);
 		Mockito.when(jobBuilderHelper.listener(jobListener)).thenReturn(jobBuilder);
@@ -175,7 +175,8 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void getFileTest(){
+	public void getFileTest()
+	{
 		schedulerConfig.fileinRegistration = "registration";
 		schedulerConfig.fileExtTargetEmail = "extTargetEmail";
 
@@ -211,7 +212,8 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	void testExtactExactTargetEmailProcessor() {
+	void testExtactExactTargetEmailProcessor()
+	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.extactExactTargetEmailProcessor());
 	}

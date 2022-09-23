@@ -2,10 +2,6 @@ package ca.homedepot.preference.writer;
 
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +9,7 @@ import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.RegistrationResponse;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component

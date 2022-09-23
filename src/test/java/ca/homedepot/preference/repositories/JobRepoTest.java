@@ -1,11 +1,12 @@
 package ca.homedepot.preference.repositories;
 
+import static org.junit.Assert.*;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import ca.homedepot.preference.dto.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,10 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
 
-import static org.junit.Assert.*;
+import ca.homedepot.preference.dto.*;
 
-class JobRepoTest {
+class JobRepoTest
+{
 
 
 	Faker faker;
@@ -29,18 +31,24 @@ class JobRepoTest {
 	Master masterDTO;
 
 	PreferenceItem preferenceItem;
+
 	@BeforeEach
-	void setUp() throws ParseException {
+	void setUp() throws ParseException
+	{
 		createRegistrationRequestObj();
 		createFileDTO();
 		createJobDTO();
 		createMaster();
 	}
-	void createMaster(){
-		masterDTO = new Master(new BigDecimal("1"),"SOURCE", "hybris", "1", "TEST", new Date(), null, null);
+
+	void createMaster()
+	{
+		masterDTO = new Master(new BigDecimal("1"), "SOURCE", "hybris", "1", "TEST", new Date(), null, null);
 
 	}
-	void createJobDTO(){
+
+	void createJobDTO()
+	{
 		jobDTO = new Job();
 		jobDTO.setJob_id(new BigDecimal("12345"));
 		jobDTO.setJob_name("JOB NAME");
@@ -51,7 +59,9 @@ class JobRepoTest {
 		jobDTO.setInserted_date(new Date());
 		jobDTO.setUpdated_by("TEST");
 	}
-	void createFileDTO() throws ParseException {
+
+	void createFileDTO() throws ParseException
+	{
 		fileDTO = new FileDTO();
 		fileDTO.setFile_id(1L);
 		fileDTO.setFile_source_id(new BigDecimal("12345"));
@@ -65,8 +75,10 @@ class JobRepoTest {
 		fileDTO.setFile_name("TEST_FILE");
 		fileDTO.setEnd_time((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
 	}
-	void createRegistrationRequestObj(){
-		registrationRequest  = new RegistrationRequest();
+
+	void createRegistrationRequestObj()
+	{
+		registrationRequest = new RegistrationRequest();
 		registrationRequest.setFileId("12345");
 		registrationRequest.setStatus(true);
 		registrationRequest.setSequenceNbr("246810");
@@ -99,7 +111,7 @@ class JobRepoTest {
 		registrationRequest.setEmailPrefNewMover(1);
 
 		Map<String, String> contentValue = new HashMap<>();
-		contentValue.put("content1","value1");
+		contentValue.put("content1", "value1");
 		contentValue.put("content2", "value2");
 		registrationRequest.setContentValue(contentValue);
 	}
@@ -128,12 +140,12 @@ class JobRepoTest {
 		registrationRequest.setFileId("12345");
 		assertEquals("12345", registrationRequest.getFileId());
 		assertTrue(true && registrationRequest.getStatus());
-		assertEquals("246810",registrationRequest.getSequenceNbr());
+		assertEquals("246810", registrationRequest.getSequenceNbr());
 		assertEquals(Long.valueOf(1), registrationRequest.getSourceId());
 		assertEquals("E", registrationRequest.getLanguagePreference());
 		assertEquals("Sr", registrationRequest.getSrcTitleName());
 		assertEquals("Michael", registrationRequest.getSrcFirstName());
-		assertNotEquals("Escobedo",registrationRequest.getSrcLastName());
+		assertNotEquals("Escobedo", registrationRequest.getSrcLastName());
 		assertNull(registrationRequest.getSrcEmailAddress());
 		assertNotNull(registrationRequest.getEmailStatus());
 		assertNotNull(registrationRequest.getEmailAddressPref());
@@ -154,13 +166,16 @@ class JobRepoTest {
 	}
 
 	@Test
-	void testDTOAddress(){
+	void testDTOAddress()
+	{
 		assertNotNull(registrationRequest.getSrcAddress());
 		assertEquals("Culiacan", registrationRequest.getSrcAddress().getSrcCity());
 		assertEquals("Sinaloa", registrationRequest.getSrcAddress().getSrcState());
 	}
+
 	@Test
-	void testFileDTO() throws ParseException {
+	void testFileDTO() throws ParseException
+	{
 		assertNotNull(fileDTO);
 		assertEquals("TEST_FILE", fileDTO.getFile_name());
 		assertNotNull(fileDTO.getJob());
@@ -177,7 +192,8 @@ class JobRepoTest {
 	}
 
 	@Test
-	void testJobDTO(){
+	void testJobDTO()
+	{
 		assertNotNull(jobDTO);
 		assertEquals(new BigDecimal("12345"), jobDTO.getJob_id());
 		assertNotEquals("NAME", jobDTO.getJob_name());
@@ -191,7 +207,8 @@ class JobRepoTest {
 	}
 
 	@Test
-	void testMasterDTO(){
+	void testMasterDTO()
+	{
 		Master master2 = new Master();
 		assertNotNull(masterDTO);
 		assertEquals("SOURCE", masterDTO.getKey_val());
@@ -206,19 +223,21 @@ class JobRepoTest {
 	}
 
 	@Test
-	void testPreferenceItemDTO(){
-		preferenceItem = new PreferenceItem("1","TEST", "TEST1");
+	void testPreferenceItemDTO()
+	{
+		preferenceItem = new PreferenceItem("1", "TEST", "TEST1");
 		PreferenceItem preferenceItem1 = new PreferenceItem();
 		assertNotNull(preferenceItem);
 		assertNotNull(preferenceItem);
 		assertNotEquals(preferenceItem1, preferenceItem);
 		assertEquals("1", preferenceItem.getId());
 		assertEquals("TEST", preferenceItem.getType());
-		assertEquals("TEST1",preferenceItem.getValue());
+		assertEquals("TEST1", preferenceItem.getValue());
 	}
 
 	@Test
-	void testPreferenceListDTO(){
+	void testPreferenceListDTO()
+	{
 		PreferenceItemList preferenceItemList = new PreferenceItemList();
 		ArrayList<PreferenceItem> items = new ArrayList<>();
 		items.add(new PreferenceItem());
@@ -231,7 +250,8 @@ class JobRepoTest {
 	}
 
 	@Test
-	void testregistrationResponseDTO(){
+	void testregistrationResponseDTO()
+	{
 		RegistrationResponse registrationResponse = new RegistrationResponse();
 		assertNotNull(registrationResponse);
 		assertNull(registrationResponse.getRegistration());
@@ -241,7 +261,8 @@ class JobRepoTest {
 	}
 
 	@Test
-	void testResponseDTO(){
+	void testResponseDTO()
+	{
 		Response response = new Response();
 		Response response1 = new Response();
 		response.setId(1);
@@ -249,7 +270,7 @@ class JobRepoTest {
 		response.setDetails("DETAILS");
 		assertNotNull(response);
 		assertNotEquals(response1, response);
-		assertEquals(1,  response.getId());
+		assertEquals(1, response.getId());
 		assertEquals("ACTIVE", response.getStatus());
 		assertEquals("DETAILS", response.getDetails());
 	}

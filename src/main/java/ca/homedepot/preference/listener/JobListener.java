@@ -1,26 +1,15 @@
 package ca.homedepot.preference.listener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
-import javax.sql.DataSource;
 
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.Job;
-import ca.homedepot.preference.repositories.entities.JobEntity;
 import ca.homedepot.preference.service.PreferenceService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 

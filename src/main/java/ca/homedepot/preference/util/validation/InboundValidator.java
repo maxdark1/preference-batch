@@ -8,8 +8,8 @@ import java.util.Date;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
-import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.model.InboundRegistration;
 
 public class InboundValidator
 {

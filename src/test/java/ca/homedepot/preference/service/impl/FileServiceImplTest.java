@@ -1,6 +1,7 @@
 package ca.homedepot.preference.service.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -23,11 +24,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 class FileServiceImplTest
 {
 
-	@Mock
-	private JdbcTemplate jdbcTemplate;
-
 	@InjectMocks
 	FileServiceImpl fileService;
+	@Mock
+	private JdbcTemplate jdbcTemplate;
 
 	@BeforeEach
 	public void setUp()
@@ -38,7 +38,8 @@ class FileServiceImplTest
 	}
 
 	@Test
-	void testGetJdbcTemplate(){
+	void testGetJdbcTemplate()
+	{
 		assertNotNull(fileService.getJdbcTemplate());
 	}
 
@@ -105,10 +106,11 @@ class FileServiceImplTest
 	@Test
 	void getSourceId()
 	{
-		String keyVal = "SOURCE",  valueVal = "hybris";
+		String keyVal = "SOURCE", valueVal = "hybris";
 		BigDecimal masterId = new BigDecimal("123456");
 
-		when(jdbcTemplate.queryForObject( anyString(), eq(new Object[]{ keyVal, valueVal }),  any(RowMapper.class) )).thenReturn(masterId);
+		when(jdbcTemplate.queryForObject(anyString(), eq(new Object[]
+		{ keyVal, valueVal }), any(RowMapper.class))).thenReturn(masterId);
 		when(fileService.getSourceId(keyVal, valueVal)).thenReturn(masterId);
 		BigDecimal currentMasterId = fileService.getSourceId(keyVal, valueVal);
 
@@ -118,11 +120,11 @@ class FileServiceImplTest
 	@Test
 	void updateFileStatus()
 	{
-		String fileName = "TEST_FILE",  status = "S",  newStatus = "P";
+		String fileName = "TEST_FILE", status = "S", newStatus = "P";
 		Date updatedDate = new Date();
 		int rowAffected = 1;
 
-		when(jdbcTemplate.update( anyString(), eq(newStatus), eq(updatedDate), eq(fileName), eq(status) )).thenReturn(rowAffected);
+		when(jdbcTemplate.update(anyString(), eq(newStatus), eq(updatedDate), eq(fileName), eq(status))).thenReturn(rowAffected);
 
 		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus);
 

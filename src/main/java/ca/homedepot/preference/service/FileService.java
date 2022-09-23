@@ -6,9 +6,6 @@ import java.util.Date;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import ca.homedepot.preference.dto.FileDTO;
-import ca.homedepot.preference.repositories.entities.FileEntity;
-
 
 @Service
 public interface FileService

@@ -3,26 +3,22 @@ package ca.homedepot.preference.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 
-import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import reactor.core.publisher.Mono;
+import ca.homedepot.preference.dto.Job;
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.dto.RegistrationRequest;
 
 class PreferenceServiceImplTest
 {
@@ -79,21 +75,21 @@ class PreferenceServiceImplTest
 	@Test
 	void preferencesRegistration()
 	{
-//		RegistrationResponse registration = new RegistrationResponse(List.of(new Response(1, "Published", "Done")));
-//		Mono<RegistrationResponse> response = Mono.just(registration);
-//
-//
-//		Mockito.lenient().when(webClient.post()).thenReturn(requestBodyUriSpec);
-//		Mockito.lenient().when(requestBodyUriSpec.uri(any(Function.class))).thenReturn(requestBodySpec);
-//		Mockito.lenient().when(requestBodySpec.accept(eq(MediaType.APPLICATION_JSON))).thenReturn(requestBodySpec);
-//		Mockito.lenient().when(requestBodySpec.contentType(eq(MediaType.APPLICATION_JSON))).thenReturn(requestBodySpec);
-//
-//		Mockito.lenient().when( requestBodySpec.body( any(Mono.class), eq(items.getClass()))).thenReturn(requestHeadersSpec);
-//		Mockito.lenient().when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-//		Mockito.lenient().when(responseSpec.bodyToMono(eq(RegistrationResponse.class))).thenReturn(response);
-//
-//		RegistrationResponse resultResponse = preferenceServiceImpl.preferencesRegistration(items);
-//		assertEquals(resultResponse.getRegistration().get(0).getDetails(), registration.getRegistration().get(0).getDetails());
+		//		RegistrationResponse registration = new RegistrationResponse(List.of(new Response(1, "Published", "Done")));
+		//		Mono<RegistrationResponse> response = Mono.just(registration);
+		//
+		//
+		//		Mockito.lenient().when(webClient.post()).thenReturn(requestBodyUriSpec);
+		//		Mockito.lenient().when(requestBodyUriSpec.uri(any(Function.class))).thenReturn(requestBodySpec);
+		//		Mockito.lenient().when(requestBodySpec.accept(eq(MediaType.APPLICATION_JSON))).thenReturn(requestBodySpec);
+		//		Mockito.lenient().when(requestBodySpec.contentType(eq(MediaType.APPLICATION_JSON))).thenReturn(requestBodySpec);
+		//
+		//		Mockito.lenient().when( requestBodySpec.body( any(Mono.class), eq(items.getClass()))).thenReturn(requestHeadersSpec);
+		//		Mockito.lenient().when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+		//		Mockito.lenient().when(responseSpec.bodyToMono(eq(RegistrationResponse.class))).thenReturn(response);
+		//
+		//		RegistrationResponse resultResponse = preferenceServiceImpl.preferencesRegistration(items);
+		//		assertEquals(resultResponse.getRegistration().get(0).getDetails(), registration.getRegistration().get(0).getDetails());
 
 	}
 
@@ -135,7 +131,8 @@ class PreferenceServiceImplTest
 		String status = "C";
 		int rowsAffected = 1;
 
-		Mockito.when(jdbcTemplate.update(anyString(), eq(job.getStatus()), eq(job.getUpdated_date()), eq(job.getStart_time()), eq(job.getJob_name()), eq(status) )).thenReturn(rowsAffected);
+		Mockito.when(jdbcTemplate.update(anyString(), eq(job.getStatus()), eq(job.getUpdated_date()), eq(job.getStart_time()),
+				eq(job.getJob_name()), eq(status))).thenReturn(rowsAffected);
 
 		int currentRowsAffected = preferenceServiceImpl.updateJob(job, status);
 		assertEquals(rowsAffected, currentRowsAffected);

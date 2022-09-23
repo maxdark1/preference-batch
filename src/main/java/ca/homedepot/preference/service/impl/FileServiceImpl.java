@@ -43,13 +43,15 @@ public class FileServiceImpl implements FileService
 
 	public BigDecimal getJobId(String job_name)
 	{
-		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME, (rs, RowNum) -> rs.getBigDecimal("job_id"), job_name);
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME,
+				(rs, RowNum) -> rs.getBigDecimal("job_id"), job_name);
 	}
 
 	@Override
 	public BigDecimal getFile(String file_name, BigDecimal job_id)
 	{
-		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE_INSERT, new Object[]{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal("file_id"));
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE_INSERT, new Object[]
+		{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal("file_id"));
 	}
 
 	@Override
@@ -61,13 +63,14 @@ public class FileServiceImpl implements FileService
 	@Override
 	public BigDecimal getSourceId(String keyVal, String valueVal)
 	{
-		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_MASTER_ID, new Object[]{ keyVal, valueVal }, (rs, RowNum) -> rs.getBigDecimal("master_id"));
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_MASTER_ID, new Object[]
+		{ keyVal, valueVal }, (rs, RowNum) -> rs.getBigDecimal("master_id"));
 	}
 
 	@Override
 	public int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_FILE, newStatus, updatedDate,fileName, status);
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_FILE, newStatus, updatedDate, fileName, status);
 	}
 
 

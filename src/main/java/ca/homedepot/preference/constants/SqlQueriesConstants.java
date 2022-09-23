@@ -12,7 +12,8 @@ public interface SqlQueriesConstants
 	String SQL_SELECT_LAST_JOB_W_NAME = "SELECT * FROM pcam.hdpc_job WHERE job_name = ? AND status = 'G' ORDER BY job_id DESC LIMIT 1";
 
 
-	String SQL_GET_LAST_FILE_INSERTED_RECORDS = "SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = (" + SqlQueriesConstants.SQL_SELECT_LAST_FILE + "); ";
+	String SQL_GET_LAST_FILE_INSERTED_RECORDS = "SELECT * FROM pcam.hdpc_file_inbound_stg WHERE file_id = ("
+			+ SqlQueriesConstants.SQL_SELECT_LAST_FILE + "); ";
 	/*
 	 * INSERTIONS
 	 */

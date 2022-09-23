@@ -1,12 +1,12 @@
 package ca.homedepot.preference.listener;
 
-import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -16,9 +16,8 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Date;
+import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
 
 
 /**
@@ -34,8 +33,8 @@ public class JobListenerTest
 	public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
 	/*
-	* Preference Service to save the Job
-	* */
+	 * Preference Service to save the Job
+	 */
 	@Mock
 	PreferenceServiceImpl preferenceService;
 	/**
@@ -56,6 +55,7 @@ public class JobListenerTest
 	JobExecution jobExecution;
 
 	JobInstance jobInstance;
+
 	/**
 	 * Sets up.
 	 */

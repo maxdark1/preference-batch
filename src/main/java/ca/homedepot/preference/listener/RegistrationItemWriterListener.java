@@ -5,12 +5,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import ca.homedepot.preference.dto.Master;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.stereotype.Component;
 
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
-import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

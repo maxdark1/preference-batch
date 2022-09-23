@@ -23,21 +23,6 @@
         <org.apache.maven.plugins.pmd.version>3.13.0</org.apache.maven.plugins.pmd.version>
         <net.revelc.code.formatter.version>2.11.0</net.revelc.code.formatter.version>
         <org.apache.maven.plugins.surefire.version>2.22.2</org.apache.maven.plugins.surefire.version>
-        <sonar.exclusions>
-            **/config/**,
-            **/feign/**,
-            **/constants/**,
-            **/data/**,
-            **/exception/**,
-            **/model/**,
-            **/processor/**,
-            **/repositories/**,
-            **/util/**,
-            **/email/EmailAddressDTO.java,
-            **/email/EmailDTO.java,
-            **/email/EmailParametersDTO.java,
-            **/PreferenceBatchApplication.java
-        </sonar.exclusions>
         <jacoco-version>0.8.6</jacoco-version>
         <jacoco.out.unit.test.file>jacoco.exec</jacoco.out.unit.test.file>
         <jacoco.outputDir>${project.build.directory}/jacoco</jacoco.outputDir>
@@ -320,9 +305,6 @@
                                         <exclude>*.processor.*</exclude>
                                         <exclude>*.util.*</exclude>
                                         <exclude>*.repositories.*</exclude>
-                                        <exclude>*.email.EmailAddressDTO</exclude>
-                                        <exclude>*.email.EmailDTO</exclude>
-                                        <exclude>*.email.EmailParametersDTO</exclude>
                                         <exclude>*.PreferenceBatchApplication</exclude>
                                     </excludes>
                                     <limits>
@@ -338,7 +320,11 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.6.0.1398</version>
+            </plugin>
         </plugins>
     </build>
 

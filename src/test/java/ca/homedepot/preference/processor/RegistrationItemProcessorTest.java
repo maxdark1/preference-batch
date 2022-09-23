@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.model.InboundRegistration;
 
 //@SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
