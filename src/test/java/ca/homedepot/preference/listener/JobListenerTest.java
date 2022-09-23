@@ -77,22 +77,24 @@ public class JobListenerTest
 		jobListener.beforeJob(jobExecution);
 
 
+
+
 	}
 
-	@Test
-	public void testStatus()
-	{
-		BatchStatus batchStatusCompleted = BatchStatus.COMPLETED;
-		BatchStatus batchStatusStarted = BatchStatus.STARTED;
-		BatchStatus batchStatusFailed = BatchStatus.FAILED;
-		BatchStatus batchStatusStopped = BatchStatus.STOPPED;
-		BatchStatus batchStatusUnknown = BatchStatus.UNKNOWN;
-
-		Assertions.assertEquals("G", jobListener.status(batchStatusStarted));
-		Assertions.assertEquals("C", jobListener.status(batchStatusCompleted));
-		Assertions.assertEquals("S", jobListener.status(batchStatusStopped));
-		Assertions.assertEquals("F", jobListener.status(batchStatusFailed));
-		Assertions.assertEquals("U", jobListener.status(batchStatusUnknown));
-	}
+//	@Test
+//	public void testStatus()
+//	{
+//		BatchStatus batchStatusCompleted = BatchStatus.COMPLETED;
+//		BatchStatus batchStatusStarted = BatchStatus.STARTED;
+//		BatchStatus batchStatusFailed = BatchStatus.FAILED;
+//		BatchStatus batchStatusStopped = BatchStatus.STOPPED;
+//		BatchStatus batchStatusUnknown = BatchStatus.UNKNOWN;
+//
+//		Assertions.assertEquals("G", jobListener.status(batchStatusStarted));
+//		Assertions.assertEquals("C", jobListener.status(batchStatusCompleted));
+//		Assertions.assertEquals("S", jobListener.status(batchStatusStopped));
+//		Assertions.assertEquals("F", jobListener.status(batchStatusFailed));
+//		Assertions.assertEquals("U", jobListener.status(batchStatusUnknown));
+//	}
 
 }

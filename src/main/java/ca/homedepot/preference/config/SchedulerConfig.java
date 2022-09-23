@@ -9,6 +9,7 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -118,6 +119,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private RegistrationAPIWriter apiWriter;
 	@Autowired
+	private RegistrationLayoutBWriter layoutBWriter;
+	@Autowired
 	private MasterProcessor masterProcessor;
 
 	@Autowired
@@ -128,12 +131,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		hybrisWriterListener.setFileName(fileinRegistration);
 		hybrisWriterListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
 
-
 		apiWriter.setPreferenceService(batchTasklet.getBackinStockService());
+		layoutBWriter.setPreferenceService(batchTasklet.getBackinStockService());
 
-
+		exactTargetEmailWriterListener = new RegistrationItemWriterListener();
+		exactTargetEmailWriterListener.setFileService(hybrisWriterListener.getFileService());
 		exactTargetEmailWriterListener.setFileName(fileExtTargetEmail);
-		//exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
+		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
+		FileUtil.setPath(path);
 
 	}
 

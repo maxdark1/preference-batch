@@ -1,11 +1,15 @@
 package ca.homedepot.preference.listener;
 
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import ca.homedepot.preference.processor.MasterProcessor;
+import ca.homedepot.preference.util.FileUtil;
 import org.springframework.batch.core.ItemWriteListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ca.homedepot.preference.dto.Master;
@@ -21,13 +25,16 @@ import lombok.Setter;
 @Setter
 public class RegistrationItemWriterListener implements ItemWriteListener<FileInboundStgTable>
 {
-	private final FileService fileService;
+	@Autowired
+	private FileService fileService;
 
 	private String fileName;
 	private String jobName;
 	private BigDecimal fileID;
 
 	private Master master;
+
+	private Master sourceIDMasterObj;
 
 
 	@Override

@@ -25,7 +25,7 @@ public class ModelsTest
 		emailOptOuts.setDateUnsubscribed("22-11-2022");
 
 		fileInboundStgTable = new FileInboundStgTable.FileInboundStgTableBuilder().status("status").src_date(new Date())
-				.email_address_1_pref("-1").source_id(1L).email_pref_hd_ca("1").build();
+				.email_address_pref("-1").source_id(1L).email_pref_hd_ca("1").build();
 	}
 
 	@Test

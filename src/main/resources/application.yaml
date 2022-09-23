@@ -2,7 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
@@ -33,7 +33,9 @@ spring:
     batch-size: 25
   application:
     name: preference-batch
-
+#  h2:
+#    console:
+#      enabled: false
 cron:
   job:
     registration: 30 * * * * *
@@ -46,11 +48,46 @@ service:
   preference:
     baseurl: http://localhost:8081/hdpc/v1/
 
+shelflife:
+  bisn:
+    purge:
+      days: 180
+email:
+  pubsub-topic: custcomm-email
+  en:
+    template:
+    subject:
+  fr:
+    template:
+    subject:
+  domain:
+    environment:
+analytics:
+  bisn:
+    purge:
+      days: 1
+
+inventory:
+  bisn:
+    purge:
+      days: 1
+
 feign:
   retry:
     period: 3000
     maxPeriod: 3000
     maxAttempts: 3
+
+product:
+  domain:
+  web-url: /homedepotcacommercewebservices/v2/homedepotca
+
+analytic:
+  file:
+    registration: registration
+    email: emailanalytics
+    bucket:
+    path:
 
 inbound:
   source:
@@ -63,4 +100,10 @@ inbound:
     registration: OPTIN_STANDARD_FLEX_YYYYMMDD.txt
     ingestSFMC: ET.CAN.YYYYMMDD.TXT
 
-       
+process:
+  analytics:
+    chunk: 100
+
+sub:
+  activity:
+    days: 1

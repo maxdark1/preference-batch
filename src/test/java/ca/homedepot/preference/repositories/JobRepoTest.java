@@ -40,7 +40,7 @@ class JobRepoTest {
 
 	void createMaster()
 	{
-		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"),"SOURCE", "hybris", true)
+		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"),"SOURCE", "hybris", true);
 
 	}
 
@@ -76,7 +76,7 @@ class JobRepoTest {
 	void createRegistrationRequestObj()
 	{
 		registrationRequest = new RegistrationRequest();
-		registrationRequest.setFileId("12345");
+		registrationRequest.setFileId(new BigDecimal("12345"));
 		registrationRequest.setStatus(true);
 		registrationRequest.setSequenceNbr("246810");
 		registrationRequest.setSourceId(1L);
@@ -134,8 +134,8 @@ class JobRepoTest {
 		address.setSrcAddress2("address2");
 		address.setSrcPostalCode("82000");
 		assertNotNull(registrationRequest);
-		registrationRequest.setFileId("12345");
-		assertEquals("12345", registrationRequest.getFileId());
+		registrationRequest.setFileId(new BigDecimal("12345"));
+		assertEquals(new BigDecimal("12345"), registrationRequest.getFileId());
 		assertTrue(true && registrationRequest.getStatus());
 		assertEquals("246810", registrationRequest.getSequenceNbr());
 		assertEquals(Long.valueOf(1), registrationRequest.getSourceId());
@@ -208,15 +208,11 @@ class JobRepoTest {
 	{
 		Master master2 = new Master();
 		assertNotNull(masterDTO);
-		assertEquals("SOURCE", masterDTO.getKey_val());
+		assertEquals("SOURCE", masterDTO.getKey_value());
 		assertNotNull(master2);
 		assertNotEquals(master2, masterDTO);
 		assertEquals("hybris", masterDTO.getValue_val());
-		assertEquals("1", masterDTO.getActive());
-		assertEquals("TEST", masterDTO.getInserted_by());
-		assertNotNull(masterDTO.getInserted_date());
-		assertNull(masterDTO.getUpdated_by());
-		assertNull(masterDTO.getUpdated_date());
+		assertEquals(true, masterDTO.getActive());
 	}
 
 	@Test
@@ -262,12 +258,12 @@ class JobRepoTest {
 	{
 		Response response = new Response();
 		Response response1 = new Response();
-		response.setId(1);
+		response.setId("1");
 		response.setStatus("ACTIVE");
 		response.setDetails("DETAILS");
 		assertNotNull(response);
 		assertNotEquals(response1, response);
-		assertEquals(1, response.getId());
+		assertEquals("1", response.getId());
 		assertEquals("ACTIVE", response.getStatus());
 		assertEquals("DETAILS", response.getDetails());
 	}
