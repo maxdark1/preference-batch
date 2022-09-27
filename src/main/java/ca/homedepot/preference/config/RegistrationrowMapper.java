@@ -22,18 +22,18 @@ public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
 
 
 		registrationRequest.setFileId(rs.getBigDecimal(PreferenceBatchConstants.FILE_ID));
-		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS).equals("1"));
+		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS).equals("IP"));
 		registrationRequest.setSequenceNbr(rs.getString(PreferenceBatchConstants.SEQUENCE_NBR));
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
-		registrationRequest.setLanguagePreference(rs.getString(PreferenceBatchConstants.CREDIT_LANGUAGE_CD));
+		registrationRequest.setLanguagePreference(rs.getString(PreferenceBatchConstants.SRC_LANGUAGE_PREF));
 		registrationRequest.setSrcTitleName(rs.getString(PreferenceBatchConstants.SRC_TITLE_NAME));
 		registrationRequest.setSrcFirstName(rs.getString(PreferenceBatchConstants.SRC_FIRST_NAME));
 		registrationRequest.setSrcLastName(rs.getString(PreferenceBatchConstants.SRC_LAST_NAME));
 		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
 
-		String emailStatus = rs.getString(PreferenceBatchConstants.EMAIL_STATUS);
-		registrationRequest.setEmailStatus(emailStatus == null ? 0 : Integer.parseInt(emailStatus));
-		registrationRequest.setEmailAddressPref(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
+		Integer emailStatus = getIntegerValue( rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
+		registrationRequest.setEmailStatus(emailStatus == null ? 0 : emailStatus);
+		registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
 		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
 
 		registrationRequest.setCellSmsFlag(getIntegerValue(rs.getString(PreferenceBatchConstants.CELL_SMS_FLAG)));

@@ -1,5 +1,6 @@
 package ca.homedepot.preference.service.impl;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
@@ -112,9 +113,9 @@ public class PreferenceServiceImpl implements PreferenceService
 	 */
 
 	@Override
-	public int insert(String job_name, String status, Date start_time, String inserted_by, Date inserted_date)
+	public int insert(String job_name, String status,BigDecimal status_id, Date start_time, String inserted_by, Date inserted_date)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_JOB, job_name, status, start_time, inserted_by,
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_JOB, job_name, status, status_id, start_time, inserted_by,
 				inserted_date);
 	}
 
@@ -129,7 +130,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	@Override
 	public int updateJob(Job job, String status)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus(), job.getUpdated_date(),
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus_id(), job.getUpdated_date(), job.getStatus(),
 				job.getStart_time(), job.getJob_name(), status);
 	}
 

@@ -1,6 +1,7 @@
 package ca.homedepot.preference.processor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ class MasterProcessorTest
 	void setUp()
 	{
 		preferenceService = Mockito.mock(PreferenceServiceImpl.class);
-		masterProcessor = new MasterProcessor();
+		masterProcessor = Mockito.mock(MasterProcessor.class);
 		masterList = Mockito.mock((new ArrayList<Master>()).getClass());
 
         masterProcessor.setPreferenceService(preferenceService);
@@ -61,14 +62,26 @@ class MasterProcessorTest
     }
 
 	@Test
+	void getMasterInfo(){
+		masterProcessor.getMasterInfo();
+		Mockito.doNothing().when(masterProcessor).getMasterInfo();
+
+		Mockito.verify(masterProcessor).getMasterInfo();
+
+	}
+
+
+	@Test
 	void getSourceId()
 	{
 
 		Master master1 = masterProcessor.getSourceId("SOURCE", "hybris");
 
-
-		//when(masterProcessor.getSourceId("SOURCE", "hybris")).thenReturn(master);
-
 		assertEquals(this.master.getMaster_id(), master1.getMaster_id());
+	}
+
+	@Test
+	void getMasterList(){
+		assertNotNull(MasterProcessor.getMasterList());
 	}
 }

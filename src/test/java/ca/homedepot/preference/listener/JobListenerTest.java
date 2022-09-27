@@ -1,7 +1,12 @@
 package ca.homedepot.preference.listener;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.processor.MasterProcessor;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,12 +61,21 @@ public class JobListenerTest
 
 	JobInstance jobInstance;
 
+	List<Master> masterList;
 	/**
 	 * Sets up.
 	 */
 	@Before
 	public void setUp()
 	{
+		masterList = new ArrayList<>();
+		masterList.add(new Master(new BigDecimal("15"), new BigDecimal("5"), "JOB_STATUS", "STARTED", true));
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true));
+		masterList.add(new Master(new BigDecimal("17"), new BigDecimal("5"), "JOB_STATUS", "COMPLETED", true));
+		masterList.add(new Master(new BigDecimal("18"), new BigDecimal("5"), "JOB_STATUS", "ERROR", true));
+
+		MasterProcessor.setMasterList(masterList);
+
 		jobListener = new JobListener();
 		MockitoAnnotations.initMocks(this.getClass());
 		preferenceService = Mockito.mock(PreferenceServiceImpl.class);
@@ -75,26 +89,21 @@ public class JobListenerTest
 
 		jobExecution.setJobInstance(jobInstance);
 		jobListener.beforeJob(jobExecution);
-
-
-
-
 	}
 
-//	@Test
-//	public void testStatus()
-//	{
-//		BatchStatus batchStatusCompleted = BatchStatus.COMPLETED;
-//		BatchStatus batchStatusStarted = BatchStatus.STARTED;
-//		BatchStatus batchStatusFailed = BatchStatus.FAILED;
-//		BatchStatus batchStatusStopped = BatchStatus.STOPPED;
-//		BatchStatus batchStatusUnknown = BatchStatus.UNKNOWN;
-//
-//		Assertions.assertEquals("G", jobListener.status(batchStatusStarted));
-//		Assertions.assertEquals("C", jobListener.status(batchStatusCompleted));
-//		Assertions.assertEquals("S", jobListener.status(batchStatusStopped));
-//		Assertions.assertEquals("F", jobListener.status(batchStatusFailed));
-//		Assertions.assertEquals("U", jobListener.status(batchStatusUnknown));
-//	}
+	@Test
+	public void testStatus()
+	{
+		BatchStatus batchStatusCompleted = BatchStatus.COMPLETED;
+		BatchStatus batchStatusStarted = BatchStatus.STARTED;
+		BatchStatus batchStatusFailed = BatchStatus.FAILED;
+		BatchStatus batchStatusStarting = BatchStatus.STARTING;
+
+
+		Assertions.assertEquals(masterList.get(0), jobListener.status(batchStatusStarting));
+		Assertions.assertEquals(masterList.get(1), jobListener.status(batchStatusStarted));
+		Assertions.assertEquals(masterList.get(2), jobListener.status(batchStatusCompleted));
+		Assertions.assertEquals(masterList.get(3), jobListener.status(batchStatusFailed));
+	}
 
 }

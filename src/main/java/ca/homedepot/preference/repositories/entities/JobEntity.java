@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "hdpc_job", schema = "pcam")
+@Table(name = "hdpc_job")
 public class JobEntity
 {
 

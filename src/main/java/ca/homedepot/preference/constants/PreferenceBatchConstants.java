@@ -16,7 +16,7 @@ public interface PreferenceBatchConstants
 
 	String SRC_MIDDLE_INITIAL = "src_middle_initial";
 
-	String CREDIT_LANGUAGE_CD = "src_language_pref";
+	String SRC_LANGUAGE_PREF = "src_language_pref";
 
 	String SRC_SYSTEM = "src_system";
 

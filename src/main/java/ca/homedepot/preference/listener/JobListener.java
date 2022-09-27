@@ -51,7 +51,7 @@ public class JobListener implements JobExecutionListener
 		job.setInserted_by("BATCH");
 		job.setInserted_date(new Date());
 
-		preferenceService.insert(job.getJob_name(), job.getStatus(), job.getStart_time(), job.getInserted_by(),
+		preferenceService.insert(job.getJob_name(), job.getStatus(), job.getStatus_id(), job.getStart_time(), job.getInserted_by(),
 				job.getInserted_date());
 
 	}

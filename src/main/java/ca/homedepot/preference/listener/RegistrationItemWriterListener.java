@@ -58,7 +58,6 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	@Override
 	public void afterWrite(List<? extends FileInboundStgTable> items)
 	{
-		//fileService.updateFileStatus(fileName, new Date(), "G", "C");
 		fileService.updateInboundStgTableStatus(items.get(0).getFile_id(),"IP");
 
 		try {

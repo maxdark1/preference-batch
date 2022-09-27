@@ -1,6 +1,5 @@
 package ca.homedepot.preference.util.validation;
 
-import ca.homedepot.preference.model.EmailOptOuts;
 import io.micrometer.core.lang.Nullable;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;

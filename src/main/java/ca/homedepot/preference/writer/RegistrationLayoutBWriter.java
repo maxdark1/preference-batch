@@ -1,6 +1,5 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.dto.LayoutBRequest;
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.RegistrationResponse;
 import ca.homedepot.preference.service.PreferenceService;
@@ -17,7 +16,6 @@ import java.util.List;
 @Setter
 public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest> {
     private PreferenceService preferenceService;
-
 
     @Override
     public void write(List<? extends RegistrationRequest> items) throws Exception

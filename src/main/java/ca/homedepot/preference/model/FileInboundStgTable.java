@@ -45,12 +45,12 @@ public class FileInboundStgTable
 	String cust_type_cd;
 	String fax_number;
 	String fax_extension;
-	String content1;
-	String value1;
 
 	//----------------------
 	// Content - Value pair
 	//----------------------
+	String content1;
+	String value1;
 	String content2;
 	String value2;
 	String content3;
