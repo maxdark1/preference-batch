@@ -3,6 +3,7 @@ package ca.homedepot.preference.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -98,12 +99,13 @@ class PreferenceServiceImplTest
 	{
 		String job_name = "testJob", inserted_by = "BATCH";
 		String status = "1";
+		BigDecimal status_id = BigDecimal.ONE;
 		Date start_time = new Date(), inserted_date = new Date();
 		int value = 1;
-		Mockito.when(jdbcTemplate.update(anyString(), eq(job_name), eq(status), eq(start_time), eq(inserted_by), eq(inserted_date)))
+		Mockito.when(jdbcTemplate.update(anyString(), eq(job_name), eq(status), eq(status_id),eq(start_time), eq(inserted_by), eq(inserted_date)))
 				.thenReturn(value);
 
-		int resultValue = preferenceServiceImpl.insert(job_name, status, start_time, inserted_by, inserted_date);
+		int resultValue = preferenceServiceImpl.insert(job_name, status, status_id, start_time, inserted_by, inserted_date);
 		assertEquals(value, resultValue);
 	}
 
@@ -131,7 +133,7 @@ class PreferenceServiceImplTest
 		String status = "C";
 		int rowsAffected = 1;
 
-		Mockito.when(jdbcTemplate.update(anyString(), eq(job.getStatus()), eq(job.getUpdated_date()), eq(job.getStart_time()),
+		Mockito.when(jdbcTemplate.update(anyString(), eq(job.getStatus_id()), eq(job.getUpdated_date()), eq(job.getStatus()),eq(job.getStart_time()),
 				eq(job.getJob_name()), eq(status))).thenReturn(rowsAffected);
 
 		int currentRowsAffected = preferenceServiceImpl.updateJob(job, status);
