@@ -39,7 +39,7 @@ class RegistrationAPIWriterTest
 	void write() throws Exception
 	{
 		List<RegistrationRequest> items = new ArrayList<>();
-		RegistrationResponse registration = new RegistrationResponse(List.of(new Response(1, "Published", "Done")));
+		RegistrationResponse registration = new RegistrationResponse(List.of(new Response("1", "Published", "Done")));
 
 		Mockito.when(preferenceService.preferencesRegistration(items)).thenReturn(registration);
 

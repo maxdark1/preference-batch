@@ -22,4 +22,11 @@ class FileUtilTest
 		FileUtil.setFileExtTargetEmail("fileExtTargetEmail");
 		assertEquals("fileExtTargetEmail", FileUtil.getFileExtTargetEmail());
 	}
+
+	@Test
+	void moveFile() throws Exception
+	{
+		FileUtil.setPath("TEST_PATH");
+
+	}
 }

@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "hdpc_file", schema = "pcam")
+@Table(name = "hdpc_file")
 public class FileEntity
 {
 	@Id

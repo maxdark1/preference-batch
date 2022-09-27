@@ -1,11 +1,15 @@
 package ca.homedepot.preference.listener;
 
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import ca.homedepot.preference.processor.MasterProcessor;
+import ca.homedepot.preference.util.FileUtil;
 import org.springframework.batch.core.ItemWriteListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ca.homedepot.preference.dto.Master;
@@ -21,13 +25,16 @@ import lombok.Setter;
 @Setter
 public class RegistrationItemWriterListener implements ItemWriteListener<FileInboundStgTable>
 {
-	private final FileService fileService;
+	@Autowired
+	private FileService fileService;
 
 	private String fileName;
 	private String jobName;
 	private BigDecimal fileID;
 
 	private Master master;
+
+	private Master sourceIDMasterObj;
 
 
 	@Override
@@ -41,16 +48,23 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	public BigDecimal writeFile()
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-		BigDecimal masterId = new BigDecimal("1");
+		Master fileStatus = MasterProcessor.getSourceId("STATUS","VALID");
+		BigDecimal masterId = sourceIDMasterObj.getMaster_id();
 
-		fileService.insert(fileName, "G", masterId, new Date(), jobId, new Date(), "BATCH");
+		fileService.insert(fileName, fileStatus.getValue_val(), masterId, new Date(), jobId, new Date(), "BATCH", fileStatus.getMaster_id());
 		return fileService.getFile(fileName, jobId);
 	}
 
 	@Override
 	public void afterWrite(List<? extends FileInboundStgTable> items)
 	{
-		fileService.updateFileStatus(fileName, new Date(), "G", "C");
+		fileService.updateInboundStgTableStatus(items.get(0).getFile_id(),"IP");
+
+		try {
+			FileUtil.moveFile(fileName, "PROCESSED");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

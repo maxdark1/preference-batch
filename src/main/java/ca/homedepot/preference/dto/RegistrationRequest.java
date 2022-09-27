@@ -1,5 +1,6 @@
 package ca.homedepot.preference.dto;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -14,7 +15,7 @@ import lombok.Data;
 public class RegistrationRequest
 {
 	@JsonProperty("file_id")
-	private String fileId;
+	private BigDecimal fileId;
 
 	@JsonProperty("status")
 	private Boolean status;
@@ -88,5 +89,17 @@ public class RegistrationRequest
 
 	@JsonProperty("content_value")
 	private Map<String, String> contentValue;
+
+	@JsonProperty("inserted_by")
+	private String insertedBy;
+
+	@JsonProperty("inserted_date")
+	private String insertedDate;
+
+	@JsonProperty("updated_by")
+	private String updatedBy;
+
+	@JsonProperty("updated_date")
+	private String updatedDate;
 
 }

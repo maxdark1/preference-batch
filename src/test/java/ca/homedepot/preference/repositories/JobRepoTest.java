@@ -1,12 +1,11 @@
 package ca.homedepot.preference.repositories;
 
-import static org.junit.Assert.*;
-
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import ca.homedepot.preference.dto.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +14,9 @@ import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
 
-import ca.homedepot.preference.dto.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-class JobRepoTest
-{
+class JobRepoTest {
 
 
 	Faker faker;
@@ -33,8 +31,7 @@ class JobRepoTest
 	PreferenceItem preferenceItem;
 
 	@BeforeEach
-	void setUp() throws ParseException
-	{
+	void setUp() throws ParseException {
 		createRegistrationRequestObj();
 		createFileDTO();
 		createJobDTO();
@@ -43,7 +40,7 @@ class JobRepoTest
 
 	void createMaster()
 	{
-		masterDTO = new Master(new BigDecimal("1"), "SOURCE", "hybris", "1", "TEST", new Date(), null, null);
+		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"),"SOURCE", "hybris", true);
 
 	}
 
@@ -51,8 +48,10 @@ class JobRepoTest
 	{
 		jobDTO = new Job();
 		jobDTO.setJob_id(new BigDecimal("12345"));
+
 		jobDTO.setJob_name("JOB NAME");
 		jobDTO.setStatus("S");
+		jobDTO.setStatus_id(BigDecimal.ONE);
 		jobDTO.setStart_time(new Date());
 		jobDTO.setEnd_time(new Date());
 		jobDTO.setInserted_by("TEST");
@@ -79,7 +78,7 @@ class JobRepoTest
 	void createRegistrationRequestObj()
 	{
 		registrationRequest = new RegistrationRequest();
-		registrationRequest.setFileId("12345");
+		registrationRequest.setFileId(new BigDecimal("12345"));
 		registrationRequest.setStatus(true);
 		registrationRequest.setSequenceNbr("246810");
 		registrationRequest.setSourceId(1L);
@@ -114,6 +113,10 @@ class JobRepoTest
 		contentValue.put("content1", "value1");
 		contentValue.put("content2", "value2");
 		registrationRequest.setContentValue(contentValue);
+		registrationRequest.setUpdatedDate("09-26-2022");
+		registrationRequest.setInsertedDate("09-26-2022");
+		registrationRequest.setInsertedBy("TEST");
+		registrationRequest.setUpdatedBy("TEST");
 	}
 
 	private String getFakeEmail()
@@ -137,9 +140,9 @@ class JobRepoTest
 		address.setSrcAddress2("address2");
 		address.setSrcPostalCode("82000");
 		assertNotNull(registrationRequest);
-		registrationRequest.setFileId("12345");
-		assertEquals("12345", registrationRequest.getFileId());
-		assertTrue(true && registrationRequest.getStatus());
+		registrationRequest.setFileId(new BigDecimal("12345"));
+		assertEquals(new BigDecimal("12345"), registrationRequest.getFileId());
+		assertTrue(registrationRequest.getStatus());
 		assertEquals("246810", registrationRequest.getSequenceNbr());
 		assertEquals(Long.valueOf(1), registrationRequest.getSourceId());
 		assertEquals("E", registrationRequest.getLanguagePreference());
@@ -150,7 +153,7 @@ class JobRepoTest
 		assertNotNull(registrationRequest.getEmailStatus());
 		assertNotNull(registrationRequest.getEmailAddressPref());
 		assertEquals("09-15-2022", registrationRequest.getSrcDate());
-		assertTrue(1 == registrationRequest.getCellSmsFlag());
+		assertEquals(Integer.valueOf(1), registrationRequest.getCellSmsFlag());
 		assertEquals(address, registrationRequest.getSrcAddress());
 		assertEquals("1234567890", registrationRequest.getSrcPhoneNumber());
 		assertEquals("+52", registrationRequest.getSrcPhoneExtension());
@@ -163,6 +166,10 @@ class JobRepoTest
 		assertNotNull(registrationRequest.getEmailPrefPro());
 		assertNotNull(registrationRequest.getContentValue());
 		assertEquals(Integer.valueOf(1), registrationRequest.getEmailPrefHDCa());
+		assertTrue(registrationRequest.getUpdatedDate().contains("9"));
+		assertNotNull(registrationRequest.getUpdatedBy());
+		assertNotNull(registrationRequest.getInsertedDate());
+		assertNotNull(registrationRequest.getInsertedBy());
 	}
 
 	@Test
@@ -195,6 +202,7 @@ class JobRepoTest
 	void testJobDTO()
 	{
 		assertNotNull(jobDTO);
+		assertEquals(BigDecimal.ONE, jobDTO.getStatus_id());
 		assertEquals(new BigDecimal("12345"), jobDTO.getJob_id());
 		assertNotEquals("NAME", jobDTO.getJob_name());
 		assertEquals("S", jobDTO.getStatus());
@@ -211,15 +219,12 @@ class JobRepoTest
 	{
 		Master master2 = new Master();
 		assertNotNull(masterDTO);
-		assertEquals("SOURCE", masterDTO.getKey_val());
+		assertEquals("SOURCE", masterDTO.getKey_value());
+		assertEquals(BigDecimal.ONE, masterDTO.getKey_id());
 		assertNotNull(master2);
 		assertNotEquals(master2, masterDTO);
 		assertEquals("hybris", masterDTO.getValue_val());
-		assertEquals("1", masterDTO.getActive());
-		assertEquals("TEST", masterDTO.getInserted_by());
-		assertNotNull(masterDTO.getInserted_date());
-		assertNull(masterDTO.getUpdated_by());
-		assertNull(masterDTO.getUpdated_date());
+		assertEquals(true, masterDTO.getActive());
 	}
 
 	@Test
@@ -265,12 +270,12 @@ class JobRepoTest
 	{
 		Response response = new Response();
 		Response response1 = new Response();
-		response.setId(1);
+		response.setId("1");
 		response.setStatus("ACTIVE");
 		response.setDetails("DETAILS");
 		assertNotNull(response);
 		assertNotEquals(response1, response);
-		assertEquals(1, response.getId());
+		assertEquals("1", response.getId());
 		assertEquals("ACTIVE", response.getStatus());
 		assertEquals("DETAILS", response.getDetails());
 	}

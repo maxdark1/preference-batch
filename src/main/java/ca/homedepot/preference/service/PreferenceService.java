@@ -1,5 +1,6 @@
 package ca.homedepot.preference.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,9 @@ public interface PreferenceService
 
 	RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items);
 
-	int insert(String job_name, String status, Date start_time, String inserted_by, Date inserted_date);
+	RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items);
+
+	int insert(String job_name, String status,BigDecimal status_id, Date start_time, String inserted_by, Date inserted_date);
 
 	List<Master> getMasterInfo();
 

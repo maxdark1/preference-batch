@@ -15,11 +15,11 @@ public class FileInboundStgTable
 
 	String status;
 
-	String credit_language_cd;
+	String src_language_pref;
 	Date updated_date;
 	String src_email_address;
-	String email_address_1_pref;
-	String phone_1_pref;
+	String email_address_pref;
+	String phone_pref;
 	String src_phone_number;
 	String src_phone_extension;
 	String src_title_name;
@@ -32,7 +32,7 @@ public class FileInboundStgTable
 	Date src_date;
 	String src_postal_code;
 	BigDecimal email_status;
-	String mail_address_1_pref;
+	String mail_address_pref;
 	String email_pref_hd_ca;
 	String email_pref_garden_club;
 	String email_pref_pro;
@@ -45,12 +45,12 @@ public class FileInboundStgTable
 	String cust_type_cd;
 	String fax_number;
 	String fax_extension;
-	String content1;
-	String value1;
 
 	//----------------------
 	// Content - Value pair
 	//----------------------
+	String content1;
+	String value1;
 	String content2;
 	String value2;
 	String content3;

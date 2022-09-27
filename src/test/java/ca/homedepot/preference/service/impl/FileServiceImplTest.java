@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import ca.homedepot.preference.constants.SqlQueriesConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -50,13 +51,15 @@ class FileServiceImplTest
 		BigDecimal sourceId = new BigDecimal("12345678"), job_id = new BigDecimal("1234567890");
 		Date startTime = new Date(), insertedDate = new Date();
 		String file_name = "fileName", inserted_by = "test";
+		BigDecimal statusId = BigDecimal.ONE;
+
 		int value = 1;
 
 		when(jdbcTemplate.update(anyString(), eq(file_name), eq(status), eq(sourceId), eq(startTime), eq(job_id), eq(insertedDate),
 				eq(inserted_by))).thenReturn(value);
-		when(fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by)).thenReturn(value);
+		when(fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId)).thenReturn(value);
 
-		int result = fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by);
+		int result = fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId);
 
 		assertEquals(value, result);
 
@@ -110,7 +113,7 @@ class FileServiceImplTest
 		BigDecimal masterId = new BigDecimal("123456");
 
 		when(jdbcTemplate.queryForObject(anyString(), eq(new Object[]
-		{ keyVal, valueVal }), any(RowMapper.class))).thenReturn(masterId);
+		{ keyVal, valueVal }),   any(RowMapper.class) )).thenReturn(masterId);
 		when(fileService.getSourceId(keyVal, valueVal)).thenReturn(masterId);
 		BigDecimal currentMasterId = fileService.getSourceId(keyVal, valueVal);
 
@@ -129,5 +132,21 @@ class FileServiceImplTest
 		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus);
 
 		assertEquals(rowAffected, currentRowAffected);
+	}
+
+	@Test
+	void updateInboundStgTableStatus(){
+		String insertedBy = "BATCH", status = "IP";
+		BigDecimal fileId = BigDecimal.ONE;
+		Date updatedDate = new Date();
+
+		int updatedRecords = 1;
+
+		when(jdbcTemplate.update(anyString(), eq(status), any(Date.class), anyString(),eq(fileId))).thenReturn(updatedRecords);
+		when(fileService.updateInboundStgTableStatus(fileId, status)).thenReturn(updatedRecords);
+
+		int currentUpdatedRecords = fileService.updateInboundStgTableStatus(fileId, status);
+		assertEquals(updatedRecords, currentUpdatedRecords);
+
 	}
 }
