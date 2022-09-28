@@ -147,6 +147,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		this.hybrisWriterListener = hybrisWriterListener;
 	}
 
+	public void setExactTargetEmailWriterListener(RegistrationItemWriterListener exactTargetEmailWriterListener){
+		this.exactTargetEmailWriterListener = exactTargetEmailWriterListener;
+	}
+
 	public void setJobListener(JobListener jobListener)
 	{
 		this.jobListener = jobListener;
@@ -164,7 +168,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 	///***************************************************
 
-	@Scheduled(cron = "${cron.job.registration}")
+	//@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -174,7 +178,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
-	//@Scheduled(cron = "${cron.job.ingestSFMC}")
+	@Scheduled(cron = "${cron.job.ingestSFMC}")
 	public void processsSFMCOptOutsEmail() throws Exception
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
