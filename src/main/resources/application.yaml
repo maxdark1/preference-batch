@@ -78,17 +78,6 @@ feign:
     maxPeriod: 3000
     maxAttempts: 3
 
-product:
-  domain:
-  web-url: /homedepotcacommercewebservices/v2/homedepotca
-
-analytic:
-  file:
-    registration: registration
-    email: emailanalytics
-    bucket:
-    path:
-
 #
 inbound:
   files:
@@ -108,8 +97,6 @@ folders:
      path: C:\batchFiles\Hybris
    sfmc:
      path: C:\batchFiles\SFMC
-
-
 
 process:
   analytics:

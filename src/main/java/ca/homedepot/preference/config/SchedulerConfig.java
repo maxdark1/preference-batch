@@ -14,6 +14,7 @@ import javax.xml.bind.ValidationException;
 
 import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
+import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
@@ -91,10 +92,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Qualifier("visitorTransactionManager")
 	private final PlatformTransactionManager transactionManager;
-	@Value("${analytic.file.registration}")
-	String registrationAnalyticsFile;
-	@Value("${analytic.file.email}")
-	String emailAnalyticsFile;
 	@Value("${process.analytics.chunk}")
 	Integer chunkValue;
 	/*
@@ -271,10 +268,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * MultipleResourceItemReader for the now, yesterday and tomorrow
 	 * */
 	@StepScope
-	public MultiResourceItemReader<InboundRegistration> multiResourceItemReaderInboundFileReader(@Value("#{jobParameters['directory']}") String directory,
-																								 @Value("#{jobParameters['document']}") String document,
-																								 @Value("#{jobParameters['source']}") String source){
-		MultiResourceItemReader<InboundRegistration> multiReaderResourceInbound = new MultiResourceItemReader<>();
+	public MultiResourceItemReaderInbound<InboundRegistration> multiResourceItemReaderInboundFileReader(@Value("#{jobParameters['directory']}") String directory,
+																										@Value("#{jobParameters['document']}") String document,
+																										@Value("#{jobParameters['source']}") String source){
+		MultiResourceItemReaderInbound<InboundRegistration> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
 		multiReaderResourceInbound.setName("multiResourceItemReaderInboundFileReader");
 
 		multiReaderResourceInbound.setResources(getResources(directory, document, source));

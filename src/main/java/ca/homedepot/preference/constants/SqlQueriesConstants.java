@@ -49,8 +49,8 @@ public interface SqlQueriesConstants
 	 * UPDATE
 	 */
 
-	String SQL_UPDATE_STAUTS_JOB = "UPDATE hdpc_job\n" + "\tSET  status_id=?, updated_date=?, status = ?\n"
-			+ "\tWHERE inserted_date = ? AND job_name = ? AND status = ?;";
+	String SQL_UPDATE_STAUTS_JOB = "UPDATE hdpc_job\n" + "\tSET  status_id=?, updated_date=?, updated_by=?,status = ?, end_time = ?\n"
+			+ "\tWHERE start_time = ? AND job_name = ? AND status = ?;";
 
 	String SQL_UPDATE_STAUTS_FILE = "UPDATE hdpc_file \n" + "\tSET  status=?, updated_date=?\n"
 			+ "\tWHERE file_name = ? AND status = ?;";

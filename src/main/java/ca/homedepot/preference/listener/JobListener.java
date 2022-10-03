@@ -83,7 +83,7 @@ public class JobListener implements JobExecutionListener
 	{
 
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED)
-			log.info(" Job {} ends with completes status: ", jobExecution.getJobInstance().getJobName());
+			log.info(" Job {} ends with completes status ", jobExecution.getJobInstance().getJobName());
 
 		Job job = new Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
@@ -94,6 +94,9 @@ public class JobListener implements JobExecutionListener
 
 		job.setUpdated_date(new Date());
 		job.setStart_time(jobExecution.getStartTime());
+		job.setEnd_time(jobExecution.getEndTime());
+		job.setUpdated_by("BATCH JobListener");
+
 
 		int insert = preferenceService.updateJob(job, "IN PROGRESS");
 
