@@ -23,8 +23,6 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	public FileInboundStgTable process(InboundRegistration item) throws Exception
 	{
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
-
-		LOG.info("item in process{} :" + item.toString());
 		Date asOfDate = null;
 		String asOfDateStr = item.getAsOfDate();
 		try
@@ -39,7 +37,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 			return null;
 		}
 		LOG.info(" Processing inbound item {}: ", item);
-		builder.status("NS").src_language_pref(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date())
+		builder.status("NS").fileName(item.getFileName()).src_language_pref(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date())
 				.src_date(asOfDate).src_email_address(item.getEmail_Address()).email_address_pref(item.getEmail_Permission())
 				.phone_pref(item.getPhone_Permission()).src_phone_number(item.getPhone_Number())
 				.src_phone_extension(item.getPhone_Extension()).src_title_name(item.getTitle()).src_first_name(item.getFirst_Name())

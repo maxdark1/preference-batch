@@ -149,4 +149,19 @@ class FileServiceImplTest
 		assertEquals(updatedRecords, currentUpdatedRecords);
 
 	}
+
+	@Test
+	void updateFileEndTime(){
+		String updatedBy = "BATCH", status = "IP";
+		BigDecimal fileId = BigDecimal.ONE;
+		Date updatedDate = new Date(), endTime = new Date();
+
+		int updatedRecords = 1;
+
+		when(jdbcTemplate.update(anyString(), eq(endTime), eq(updatedDate), eq(updatedBy), eq(fileId))).thenReturn(updatedRecords);
+		when(fileService.updateFileEndTime( fileId,  updatedDate,  updatedBy , endTime)).thenReturn(updatedRecords);
+
+		int currentUpdatedRecords = fileService.updateFileEndTime(fileId,  updatedDate,  updatedBy , endTime);
+		assertEquals(updatedRecords, currentUpdatedRecords);
+	}
 }

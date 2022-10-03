@@ -35,14 +35,7 @@ public class InboundValidator
 	 * @return lineCallBackHandler
 	 */
 
-	public static LineCallbackHandler lineCallbackHandler()
-	{
-		return line -> {
-			String[] header = line.split("\\|");
-			if (!Arrays.equals(header, FIELD_NAMES_REGISTRATION))
-				throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
-		};
-	}
+
 
 	public static void validateMaxLengthNotReq(String field, String value, int maxLength)
 	{

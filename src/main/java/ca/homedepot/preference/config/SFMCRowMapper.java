@@ -1,15 +1,12 @@
 package ca.homedepot.preference.config;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.dto.Address;
 import ca.homedepot.preference.dto.RegistrationRequest;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static ca.homedepot.preference.config.RegistrationrowMapper.getIntegerValue;
 
@@ -24,9 +21,9 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest> {
         registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
         registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
 
-        String emailStatus = rs.getString(PreferenceBatchConstants.EMAIL_STATUS);
-        registrationRequest.setEmailStatus(emailStatus == null ? 0 : Integer.parseInt(emailStatus));
-        registrationRequest.setEmailAddressPref(Integer.parseInt(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
+        Integer emailStatus = getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
+        registrationRequest.setEmailStatus(emailStatus == null ? 0 : emailStatus);
+        registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
         registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
 
 

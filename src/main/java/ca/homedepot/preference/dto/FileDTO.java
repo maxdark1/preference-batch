@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class FileDTO
 {
-	private Long file_id;
+	private BigDecimal file_id;
 	private String file_name;
 	private BigDecimal job;
 	private BigDecimal file_source_id;
@@ -20,4 +20,7 @@ public class FileDTO
 	private String updated_by;
 	private Date updated_date;
 
+	public FileDTO(String file_name){
+		this.file_name = file_name;
+	}
 }

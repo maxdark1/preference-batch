@@ -34,7 +34,6 @@ class RegistrationItemWriterListenerTest {
         fileService = Mockito.mock(FileServiceImpl.class);
         registrationItemWriterListener = new RegistrationItemWriterListener();
         registrationItemWriterListener.setFileService(fileService);
-        registrationItemWriterListener.setFileName("TEST_FILE");
         registrationItemWriterListener.setJobName("JOB_NAME");
         registrationItemWriterListener.setFileID(BigDecimal.ONE);
         registrationItemWriterListener.setMaster(new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true));
@@ -62,7 +61,7 @@ class RegistrationItemWriterListenerTest {
         Mockito.when(fileService.insert(eq(fileName), eq(fileStatus.getValue_val()), eq(BigDecimal.TEN), eq(new Date()), eq(jobId), eq( new Date()), eq(insertedBy), eq(BigDecimal.ONE))).thenReturn(records);
         Mockito.when(fileService.getFile(eq(fileName), eq(BigDecimal.ONE))).thenReturn(fileId);
 
-        BigDecimal currentFileId = registrationItemWriterListener.writeFile();
+        BigDecimal currentFileId = registrationItemWriterListener.writeFile(fileName);
         assertEquals(fileId, currentFileId);
     }
 
@@ -74,11 +73,6 @@ class RegistrationItemWriterListenerTest {
     @Test
     void getFileService() {
         assertNotNull(registrationItemWriterListener.getFileService());
-    }
-
-    @Test
-    void getFileName() {
-        assertEquals("TEST_FILE", registrationItemWriterListener.getFileName());
     }
 
     @Test

@@ -7,6 +7,8 @@ import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 public class ModelsTest
 {
@@ -148,5 +150,15 @@ public class ModelsTest
 		assertNotNull("value20", fileInboundStgTable.getValue20());
 		assertNull(fileInboundStgTable.getInserted_by());
 		assertNull(fileInboundStgTable.getInserted_date());
+	}
+
+	@Test
+	void inboundRegistrationSetResourceTest(){
+		Resource resource = new FileSystemResource("File");
+		inboundRegistration = new InboundRegistration();
+
+		inboundRegistration.setResource(resource);
+
+		assertEquals("File", inboundRegistration.getFileName());
 	}
 }

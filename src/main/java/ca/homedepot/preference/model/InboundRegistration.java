@@ -2,9 +2,11 @@ package ca.homedepot.preference.model;
 
 
 import lombok.Data;
+import org.springframework.batch.item.ResourceAware;
+import org.springframework.core.io.Resource;
 
 @Data
-public class InboundRegistration
+public class InboundRegistration implements ResourceAware
 {
 
 	private String Language_Preference;
@@ -75,5 +77,10 @@ public class InboundRegistration
 	private String Value_19;
 	private String Content_20;
 	private String Value_20;
+	private String fileName;
 
+	@Override
+	public void setResource(Resource resource) {
+		this.fileName = resource.getFilename();
+	}
 }
