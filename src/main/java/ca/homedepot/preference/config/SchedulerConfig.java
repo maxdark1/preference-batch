@@ -200,6 +200,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		this.exactTargetEmailWriterListener = exactTargetEmailWriterListener;
 	}
 
+	public void setLayoutBWriter(RegistrationLayoutBWriter layoutBWriter) {
+		this.layoutBWriter = layoutBWriter;
+	}
+
 	public void setJobListener(JobListener jobListener)
 	{
 		this.jobListener = jobListener;
@@ -479,18 +483,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		this.dataSource = dataSource;
 	}
 
-	/**
-	 * Getting actual date for processing.
-	 */
-
-	private String[] getActualDates()
-	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		Instant now = Instant.now();
-		Instant yesterday = now.minus(subactivity, ChronoUnit.DAYS);
-		Instant tomorrow = now.plus(subactivity, ChronoUnit.DAYS);
-		return new String[]{sdf.format(Date.from(yesterday)), sdf.format(Date.from(now)), sdf.format(Date.from(tomorrow))};
-	}
 
 
 	public Resource[] getResources(String folder, String baseName, String source)

@@ -13,6 +13,7 @@ import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
+import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,7 +90,8 @@ class SchedulerConfigTest
 	public PlatformTransactionManager platformTransactionManager;
 	@Mock
 	APIWriterListener apiWriterListener;
-
+	@Mock
+	RegistrationLayoutBWriter layoutBWriter;
 	@InjectMocks
 	public SchedulerConfig schedulerConfig;
 	@Autowired
@@ -126,6 +128,7 @@ class SchedulerConfigTest
 		simpleStepBuilder = Mockito.mock(SimpleStepBuilder.class);
 		stepBuilder = Mockito.mock(StepBuilder.class);
 		apiWriterListener = Mockito.mock(APIWriterListener.class);
+		layoutBWriter = Mockito.mock(RegistrationLayoutBWriter.class);
 
 		jobBuilderHelper = Mockito.mock(JobBuilderHelper.class);
 		jobBuilder = Mockito.mock(JobBuilder.class);
@@ -146,7 +149,7 @@ class SchedulerConfigTest
 		schedulerConfig.hybrisRegistrationFile = "TEST_FILE";
 		schedulerConfig.setHybrisWriterListener(writerListener);
 		schedulerConfig.setExactTargetEmailWriterListener(writerListener);
-
+		schedulerConfig.setLayoutBWriter(layoutBWriter);
 		setFinalStaticField(SchedulerConfig.class, "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
 
 
@@ -251,6 +254,20 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readInboundBDStep2());
+	}
+
+	@Test
+	void readDBSFMCOptOutsStep2(){
+		schedulerConfig.setApiWriterListener(apiWriterListener);
+
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(RegistrationLayoutBWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.readDBSFMCOptOutsStep2());
 	}
 
 
