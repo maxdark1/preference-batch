@@ -61,8 +61,8 @@ class JobRepoTest {
 
 	void createFileDTO() throws ParseException
 	{
-		fileDTO = new FileDTO();
-		fileDTO.setFile_id(1L);
+		fileDTO = new FileDTO("TEST");
+		fileDTO.setFile_id(BigDecimal.ONE);
 		fileDTO.setFile_source_id(new BigDecimal("12345"));
 		fileDTO.setJob(new BigDecimal("246810"));
 		fileDTO.setInserted_by("TEST");

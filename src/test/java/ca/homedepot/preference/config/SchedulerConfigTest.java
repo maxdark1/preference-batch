@@ -9,7 +9,8 @@ import java.lang.reflect.Modifier;
 
 import javax.sql.DataSource;
 
-import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.listener.APIWriterListener;
+import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import org.junit.jupiter.api.AfterEach;
@@ -27,10 +28,10 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.builder.SimpleStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -77,7 +78,7 @@ class SchedulerConfigTest
 	@Mock
 	public RegistrationItemWriterListener writerListener;
 	@Mock
-	RegistrationAPIWriter registrationAPIWriter;
+	RegistrationAPIWriter apiWriter;
 	@Mock
 	public DataSource dataSource;
 	@Mock
@@ -86,6 +87,9 @@ class SchedulerConfigTest
 	public JobListener jobListener;
 	@Mock
 	public PlatformTransactionManager platformTransactionManager;
+	@Mock
+	APIWriterListener apiWriterListener;
+
 	@InjectMocks
 	public SchedulerConfig schedulerConfig;
 	@Autowired
@@ -121,6 +125,7 @@ class SchedulerConfigTest
 		platformTransactionManager = Mockito.mock(PlatformTransactionManager.class);
 		simpleStepBuilder = Mockito.mock(SimpleStepBuilder.class);
 		stepBuilder = Mockito.mock(StepBuilder.class);
+		apiWriterListener = Mockito.mock(APIWriterListener.class);
 
 		jobBuilderHelper = Mockito.mock(JobBuilderHelper.class);
 		jobBuilder = Mockito.mock(JobBuilder.class);
@@ -131,14 +136,14 @@ class SchedulerConfigTest
 		job = Mockito.mock(Job.class);
 
 		writerListener = Mockito.mock(RegistrationItemWriterListener.class);
-		registrationAPIWriter = Mockito.mock(RegistrationAPIWriter.class);
+		apiWriter = Mockito.mock(RegistrationAPIWriter.class);
 		step = Mockito.mock(TaskletStep.class);
 
 		schedulerConfig = new SchedulerConfig(jobBuilderFactory, stepBuilderFactory, jobLauncher, platformTransactionManager);
 		schedulerConfig.setDataSource(dataSource);
 		schedulerConfig.setJobListener(jobListener);
 		schedulerConfig.chunkValue = 100;
-		schedulerConfig.fileinRegistration = "TEST_FILE";
+		schedulerConfig.hybrisRegistrationFile = "TEST_FILE";
 		schedulerConfig.setHybrisWriterListener(writerListener);
 		schedulerConfig.setExactTargetEmailWriterListener(writerListener);
 
@@ -155,7 +160,7 @@ class SchedulerConfigTest
 	@Test
 	public void testInboundFileReader() throws Exception
 	{
-		schedulerConfig.fileinRegistration = "OPTIN_STANDARD_FLEX_YYYYMMDD";
+		schedulerConfig.hybrisRegistrationFile = "OPTIN_STANDARD_FLEX_YYYYMMDD";
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundFileReader());
 
@@ -164,7 +169,7 @@ class SchedulerConfigTest
 	@Test
 	public void testInboundEmailPreferencesSMFCReader() throws Exception
 	{
-		schedulerConfig.fileinRegistration = "ET.CAN.YYYYMMDD";
+		schedulerConfig.hybrisRegistrationFile = "ET.CAN.YYYYMMDD";
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader());
 
@@ -194,20 +199,6 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void getFileTest()
-	{
-		schedulerConfig.fileinRegistration = "registration";
-		schedulerConfig.fileExtTargetEmail = "extTargetEmail";
-
-		String file = schedulerConfig.getFile("registration");
-		assertEquals(schedulerConfig.fileinRegistration, file);
-
-		String file2 = schedulerConfig.getFile("extTargetEmail");
-		assertEquals(schedulerConfig.fileExtTargetEmail, file2);
-
-	}
-
-	@Test
 	public void inboundRegistrationFileWriter()
 	{
 
@@ -221,10 +212,11 @@ class SchedulerConfigTest
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(FlatFileItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readInboundCSVFileStep1());
@@ -232,7 +224,7 @@ class SchedulerConfigTest
 
 
 	@Test
-	public void readSFMCOptOutsStep1() throws Exception
+	public void readSFMCOptOutsStep1()
 	{
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
@@ -245,6 +237,22 @@ class SchedulerConfigTest
 
 		assertNotNull(schedulerConfig.readSFMCOptOutsStep1());
 	}
+
+	@Test
+	void readInboundDBStep2() throws Exception {
+		schedulerConfig.setApiWriter(apiWriter);
+		schedulerConfig.setApiWriterListener(apiWriterListener);
+
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.readInboundBDStep2());
+	}
+
 
 	@Test
 	void testExtactExactTargetEmailProcessor()

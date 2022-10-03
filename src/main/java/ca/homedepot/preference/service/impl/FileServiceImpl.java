@@ -79,5 +79,9 @@ public class FileServiceImpl implements FileService
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STATUS_INBOUND, status, new Date(), "BATCH",fileId);
 	}
 
+	@Override
+	public int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy ,Date endTime){
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_ENDTIME_FILE, endTime, updatedDate, updatedBy, fileId);
+	}
 
 }

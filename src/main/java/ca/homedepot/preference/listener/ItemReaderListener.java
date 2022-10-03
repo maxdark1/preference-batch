@@ -3,6 +3,7 @@ package ca.homedepot.preference.listener;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import ca.homedepot.preference.model.InboundRegistration;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ import java.util.Date;
 @Component
 @Data
 //@AllArgsConstructor
-public class ItemReaderListener implements ItemReadListener<Object> {
+public class ItemReaderListener implements ItemReadListener<InboundRegistration> {
 
     private final FileService fileService;
 
@@ -39,7 +40,7 @@ public class ItemReaderListener implements ItemReadListener<Object> {
     }
 
     @Override
-    public void afterRead(Object item) {
+    public void afterRead(InboundRegistration item) {
 
     }
 

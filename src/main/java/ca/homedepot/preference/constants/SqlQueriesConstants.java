@@ -15,8 +15,9 @@ public interface SqlQueriesConstants
 	String SQL_SELECT_LAST_JOB_W_NAME = "SELECT * FROM hdpc_job WHERE job_name = ? AND status = 'IN PROGRESS' ORDER BY job_id DESC LIMIT 1";
 
 
-	String SQL_GET_LAST_FILE_INSERTED_RECORDS = "SELECT * FROM hdpc_file_inbound_stg WHERE file_id = ("
-			+ SqlQueriesConstants.SQL_SELECT_LAST_FILE + "); ";
+	String SQL_GET_LAST_FILE_INSERTED_RECORDS = "SELECT*FROM public.hdpc_file_inbound_stg\n" +
+			"INNER JOIN public.hdpc_file ON \n" +
+			"hdpc_file.file_id = hdpc_file_inbound_stg.file_id AND hdpc_file.end_time is null; ";
 	/*
 	 * INSERTIONS
 	 */
@@ -53,6 +54,9 @@ public interface SqlQueriesConstants
 
 	String SQL_UPDATE_STAUTS_FILE = "UPDATE hdpc_file \n" + "\tSET  status=?, updated_date=?\n"
 			+ "\tWHERE file_name = ? AND status = ?;";
+
+	String SQL_UPDATE_ENDTIME_FILE = "UPDATE hdpc_file SET end_time = ?, updated_date = ?, updated_by = ? " +
+			" WHERE file_id = ?";
 
 	String SQL_UPDATE_STATUS_INBOUND = "UPDATE hdpc_file_inbound_stg SET status = ?, updated_date = ?, updated_by = ? WHERE status = 'NS' and file_id = ?";
 }

@@ -39,7 +39,7 @@ spring:
 cron:
   job:
     registration: 30 * * * * *
-    ingestSFMC: 30 * * * * *
+    ingestSFMCOutlookUnsubscribed: 30 * * * * *
 
 server:
   port: 8080
@@ -89,16 +89,27 @@ analytic:
     bucket:
     path:
 
+#
 inbound:
-  source:
-    path: C:\batchFiles\
-    folder:
-      inbound: INBOUND
-      error: ERROR
-      processed: PROCESSED
-  file:
-    registration: OPTIN_STANDARD_FLEX_YYYYMMDD.txt
-    ingestSFMC: ET.CAN.YYYYMMDD.TXT
+  files:
+     registration: OPTIN_STANDARD_FLEX_
+     registrationFbSfmc: OPTIN_STANDARD_FLEX_GCFB_
+     sfmcUnsubscribedOutlook: ET.CAN.
+
+folders:
+   inbound: \INBOUND\
+   error: \ERROR\
+   processed: \PROCESSED\
+   crm:
+     path: C:\batchFiles\CRM
+   fb-sfmc:
+     path: C:\batchFiles\FB-SFMC
+   hybris:
+     path: C:\batchFiles\Hybris
+   sfmc:
+     path: C:\batchFiles\SFMC
+
+
 
 process:
   analytics:

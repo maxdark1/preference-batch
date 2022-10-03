@@ -3,12 +3,16 @@ package ca.homedepot.preference.listener;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import ca.homedepot.preference.dto.FileDTO;
+import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemWriteListener;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +27,12 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
+@Slf4j
 public class RegistrationItemWriterListener implements ItemWriteListener<FileInboundStgTable>
 {
 	@Autowired
 	private FileService fileService;
 
-	private String fileName;
 	private String jobName;
 	private BigDecimal fileID;
 
@@ -40,13 +44,28 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	@Override
 	public void beforeWrite(List<? extends FileInboundStgTable> items)
 	{
-		fileID = writeFile();
 
-		items.forEach(item -> item.setFile_id(fileID));
+		Map<String, BigDecimal> files = getMapFileNameFileId(items);
+		List<String> filesNames = new ArrayList<>(files.keySet());
+		Collections.sort(filesNames);
+		filesNames.forEach(key ->
+		{
+			fileID = writeFile(key);
+			files.put(key, fileID);
+		});
+
+		items.forEach(item -> {
+			item.setFile_id(files.get(item.getFileName()));
+		});
 	}
 
-	public BigDecimal writeFile()
+	public Map<String, BigDecimal> getMapFileNameFileId(List<? extends FileInboundStgTable> items){
+		return items.stream().collect(Collectors.toMap(key->key.getFileName(), value-> (value.getFile_id()==null)?BigDecimal.ZERO: value.getFile_id()));
+	}
+
+	public BigDecimal writeFile(String fileName)
 	{
+		System.out.println(jobName);
 		BigDecimal jobId = fileService.getJobId(jobName);
 		Master fileStatus = MasterProcessor.getSourceId("STATUS","VALID");
 		BigDecimal masterId = sourceIDMasterObj.getMaster_id();
@@ -55,16 +74,22 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		return fileService.getFile(fileName, jobId);
 	}
 
+
 	@Override
 	public void afterWrite(List<? extends FileInboundStgTable> items)
 	{
-		fileService.updateInboundStgTableStatus(items.get(0).getFile_id(),"IP");
+		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 
-		try {
-			FileUtil.moveFile(fileName, "PROCESSED");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		files.forEach((fileName, fileId)->{
+			fileService.updateInboundStgTableStatus(fileId,"IP");
+			try {
+				FileUtil.moveFile(fileName, true, sourceIDMasterObj.getValue_val());
+			} catch (IOException e) {
+				log.warn(" An exception occurs when we try to move the file {}: {}",fileName, e.getMessage());
+			}
+		});
+
+
 	}
 
 	@Override
