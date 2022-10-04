@@ -283,7 +283,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public MultiResourceItemReader<EmailOptOuts> multiResourceItemReaderSFMCUnsubcribed(@Value("#{jobParameters['directory']}") String directory,
 																						@Value("#{jobParameters['document']}") String document,
 																						@Value("#{jobParameters['source']}") String source){
-		MultiResourceItemReader<EmailOptOuts> multiReaderResourceInbound = new MultiResourceItemReader<>();
+		MultiResourceItemReaderInbound<EmailOptOuts> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
 		multiReaderResourceInbound.setName("multiResourceItemReaderSFMCUnsubcribed");
 
 		multiReaderResourceInbound.setResources(getResources(directory, document, source));
@@ -348,7 +348,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 		reader.setDataSource(dataSource);
 		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS);
-		reader.setRowMapper(new RegistrationrowMapper());
+		reader.setRowMapper(new RegistrationRowMapper());
 
 		return reader;
 	}

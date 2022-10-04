@@ -15,9 +15,9 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RegistrationrowMapperTest {
+class RegistrationRowMapperTest {
 
-    RegistrationrowMapper registrationrowMapper;
+    RegistrationRowMapper registrationrowMapper;
 
     @Mock
     ResultSet resultSet;
@@ -40,7 +40,7 @@ class RegistrationrowMapperTest {
 
     @BeforeEach
     void setup(){
-        registrationrowMapper = new RegistrationrowMapper();
+        registrationrowMapper = new RegistrationRowMapper();
         resultSet = Mockito.mock(ResultSet.class);
 
         registrationRequest = new RegistrationRequest();
@@ -158,8 +158,8 @@ class RegistrationrowMapperTest {
         String wrongValue = "a";
         Integer expected = 1;
 
-        Integer current = RegistrationrowMapper.getIntegerValue(value);
-        Integer currentWrong = RegistrationrowMapper.getIntegerValue(wrongValue);
+        Integer current = RegistrationRowMapper.getIntegerValue(value);
+        Integer currentWrong = RegistrationRowMapper.getIntegerValue(wrongValue);
 
         assertEquals(expected, current);
         assertEquals(null, currentWrong);
