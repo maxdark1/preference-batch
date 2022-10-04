@@ -28,11 +28,14 @@ public final class FileUtil
 
     private static String crmPath;
 
+    private static String sfmcPath;
+
     private static String inbound;
 
     private static String error;
 
     private static String processed;
+
 	/**
 	 * Gets registration file.
 	 *
@@ -112,6 +115,14 @@ public final class FileUtil
         FileUtil.processed = processed;
     }
 
+    public static String getSfmcPath() {
+        return sfmcPath;
+    }
+
+    public static void setSfmcPath(String sfmcPath) {
+        FileUtil.sfmcPath = sfmcPath;
+    }
+
     public static void moveFile(String file, boolean status, String value_val) throws IOException
     {
         String folder = ((status)?processed:error);
@@ -139,6 +150,8 @@ public final class FileUtil
                 return hybrisPath;
             case "CRM":
                 return crmPath;
+            case "SFMC":
+                return sfmcPath;
         }
         return null;
     }
@@ -151,7 +164,6 @@ public final class FileUtil
         File folder = new File(path);
         List<String> listOfFiles = new ArrayList<>();
         String[] files = folder.list();
-        System.out.println(path);
 
         if(files != null)
             for (String fileName: files) {
