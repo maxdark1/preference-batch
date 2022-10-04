@@ -65,7 +65,6 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 
 	public BigDecimal writeFile(String fileName)
 	{
-		System.out.println(jobName);
 		BigDecimal jobId = fileService.getJobId(jobName);
 		Master fileStatus = MasterProcessor.getSourceId("STATUS","VALID");
 		BigDecimal masterId = sourceIDMasterObj.getMaster_id();

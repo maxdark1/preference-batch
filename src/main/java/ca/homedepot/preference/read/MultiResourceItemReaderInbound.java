@@ -27,7 +27,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     /*
     * Constructor to assign Source
     * */
-    public MultiResourceItemReaderInbound(String source) {
+    public MultiResourceItemReaderInbound(String source)
+    {
         this.source = source;
     }
 
@@ -35,7 +36,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     *
     * */
     @Override
-    public T read() throws Exception {
+    public T read() throws Exception
+    {
 
         T itemRead = null;
 

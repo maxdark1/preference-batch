@@ -269,12 +269,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * */
 	@StepScope
 	public MultiResourceItemReaderInbound<InboundRegistration> multiResourceItemReaderInboundFileReader(@Value("#{jobParameters['directory']}") String directory,
-																										@Value("#{jobParameters['document']}") String document,
+																										@Value("#{jobParameters['documentName']}") String documentName,
 																										@Value("#{jobParameters['source']}") String source){
 		MultiResourceItemReaderInbound<InboundRegistration> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
 		multiReaderResourceInbound.setName("multiResourceItemReaderInboundFileReader");
 
-		multiReaderResourceInbound.setResources(getResources(directory, document, source));
+		multiReaderResourceInbound.setResources(getResources(directory, documentName, source));
 		multiReaderResourceInbound.setDelegate(inboundFileReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
@@ -420,7 +420,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readInboundCSVFileStep1() throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(hybrisPath+folderInbound,hybrisRegistrationFile, "hybris"))
+				.reader(multiResourceItemReaderInboundFileReader(hybrisPath+folderInbound,hybrisRegistrationFile, "hybris")) // change source to constants
 				.processor(inboundFileProcessor()).listener(hybrisWriterListener).writer(inboundRegistrationDBWriter()).listener(new StepErrorLoggingListener()).build();
 	}
 

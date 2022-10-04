@@ -159,11 +159,11 @@ public final class FileUtil
                 if(FileValidation.validateFileName(fileName, baseName)){
                     listOfFiles.add(path+fileName);
                 }else{
-                    log.info( " File name invalid: " + fileName);
+                    log.error( " File name invalid: " + fileName);
                     try {
                         moveFile(fileName, false, source);
                     } catch (IOException e) {
-                        log.warn(" Exception occurs moving file {}: {}", fileName, e.getMessage());
+                        log.error(" Exception occurs moving file {}: {}", fileName, e.getMessage());
                     }
                 }
             }
