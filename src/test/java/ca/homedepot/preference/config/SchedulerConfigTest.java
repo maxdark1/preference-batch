@@ -166,7 +166,24 @@ class SchedulerConfigTest
 		schedulerConfig.hybrisRegistrationFile = "OPTIN_STANDARD_FLEX_YYYYMMDD";
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundFileReader());
+	}
 
+	@Test
+	public void testinboundEmailPreferencesSMFCReader(){
+		assertNotNull(schedulerConfig);
+		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader());
+	}
+
+	@Test
+	public void testingestOptOutsGmailClientUnsubscribedReader(){
+		assertNotNull(schedulerConfig);
+		assertNotNull(schedulerConfig.ingestOptOutsGmailClientUnsubscribedReader());
+	}
+
+	@Test
+	public void testlineTokenizer(){
+		assertNotNull(schedulerConfig);
+		assertNotNull(schedulerConfig.lineTokenizer());
 	}
 
 	@Test
@@ -232,7 +249,7 @@ class SchedulerConfigTest
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(FlatFileItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.processor(any(ExactTargetEmailProcessor.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);

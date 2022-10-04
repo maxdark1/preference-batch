@@ -1,16 +1,10 @@
 package ca.homedepot.preference.config;
 
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import javax.xml.bind.ValidationException;
 
 import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
@@ -28,7 +22,6 @@ import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
-import org.springframework.batch.item.file.builder.MultiResourceItemReaderBuilder;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -58,7 +51,6 @@ import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import static ca.homedepot.preference.util.validation.ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS;
 
@@ -175,6 +167,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
 		FileUtil.setCrmPath(crmPath);
 		FileUtil.setHybrisPath(hybrisPath);
+		FileUtil.setSfmcPath(sfmcPath);
 		FileUtil.setError(folderError);
 		FileUtil.setProcessed(folderProcessed);
 		FileUtil.setInbound(folderInbound);
@@ -234,7 +227,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
-	@Scheduled(cron = "${cron.job.registration}")
+	//@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationCRMInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -251,12 +244,16 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	}
 
-	//@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
+	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processsSFMCOptOutsEmail() throws Exception
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
-				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis())).toJobParameters();
+				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
+				.addString("directory", sfmcPath+folderInbound)
+				.addString("document", fileExtTargetEmail)
+				.addString("source", "SFMC")
+				.toJobParameters();
 		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(), param);
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
 	}
@@ -264,8 +261,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	/*
 	 * Read inbound files
 	 */
+
 	/*
-	 * MultipleResourceItemReader for the now, yesterday and tomorrow
+	 * MultipleResourceItemReaders
+	 * Use to read the existing files on the directory
 	 * */
 	@StepScope
 	public MultiResourceItemReaderInbound<InboundRegistration> multiResourceItemReaderInboundFileReader(@Value("#{jobParameters['directory']}") String directory,
@@ -278,6 +277,20 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		multiReaderResourceInbound.setDelegate(inboundFileReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
+	}
+
+	@StepScope
+	public MultiResourceItemReader<EmailOptOuts> multiResourceItemReaderSFMCUnsubcribed(@Value("#{jobParameters['directory']}") String directory,
+																						@Value("#{jobParameters['document']}") String document,
+																						@Value("#{jobParameters['source']}") String source){
+		MultiResourceItemReader<EmailOptOuts> multiReaderResourceInbound = new MultiResourceItemReader<>();
+		multiReaderResourceInbound.setName("multiResourceItemReaderSFMCUnsubcribed");
+
+		multiReaderResourceInbound.setResources(getResources(directory, document, source));
+		multiReaderResourceInbound.setDelegate(inboundEmailPreferencesSMFCReader());
+		multiReaderResourceInbound.setStrict(false);
+		return multiReaderResourceInbound;
+
 	}
 	/*
 	* FlatItemReader to use on hybris
@@ -292,18 +305,16 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.skippedLinesCallback(FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, "\\|")).build();
 	}
 
+	@StepScope
 	public FlatFileItemReader<EmailOptOuts> inboundEmailPreferencesSMFCReader()
 	{
 		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
-				.resource(new FileSystemResource(crmPath+"INBOUND\\"+fileExtTargetEmail))
 				.lineTokenizer(lineTokenizer())
 				.targetType(EmailOptOuts.class)
 
 				.linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(FileValidation.lineCallbackHandler(FIELD_NAMES_SFMC_OPTOUTS, "\\t"))
-				.saveState(true)
-
 			.build();
 	}
 
@@ -401,7 +412,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	}
 
-	@Bean
 	public Job sfmcOptOutsEmailOutlookClient()
 	{
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
@@ -440,13 +450,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	/*
-	 * SFMC Opt-Outs STEPS
+	 * SFMC Opt-Outs Unsubscribed
 	 */
-	@Bean
 	public Step readSFMCOptOutsStep1()
 	{
 		return stepBuilderFactory.get("readSFMCOptOutsStep1").<EmailOptOuts, FileInboundStgTable> chunk(chunkValue)
-				.reader(inboundEmailPreferencesSMFCReader()).processor(extactExactTargetEmailProcessor())
+				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath+folderInbound,fileExtTargetEmail, "SFMC")).processor(extactExactTargetEmailProcessor())
 				.listener(exactTargetEmailWriterListener).writer(inboundRegistrationDBWriter()).build();
 	}
 
