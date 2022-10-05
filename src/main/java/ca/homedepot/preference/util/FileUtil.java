@@ -133,9 +133,9 @@ public final class FileUtil
         );
 
         if(temp != null){
-            log.info(" File moved successfully to folder: {} ", folder);
+            log.info(" File {} moved successfully to folder: {} ", temp.getFileName(), folder);
         }else{
-            log.info("Failed to move the file");
+            log.info("Failed to move the file {} ", temp.getFileName());
         }
     }
 
@@ -171,11 +171,11 @@ public final class FileUtil
                 if(FileValidation.validateFileName(fileName, baseName)){
                     listOfFiles.add(path+fileName);
                 }else{
-                    log.info( " File name invalid: " + fileName);
+                    log.error( " File name invalid: " + fileName);
                     try {
                         moveFile(fileName, false, source);
                     } catch (IOException e) {
-                        log.warn(" Exception occurs moving file {}: {}", fileName, e.getMessage());
+                        log.error(" Exception occurs moving file {}: {}", fileName, e.getMessage());
                     }
                 }
             }

@@ -11,7 +11,7 @@ import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.Address;
 import ca.homedepot.preference.dto.RegistrationRequest;
 
-public class RegistrationrowMapper implements RowMapper<RegistrationRequest>
+public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 {
 
 	@Override

@@ -74,7 +74,6 @@ public class BatchTaskletTest
 
 
 
-		ReflectionTestUtils.setField(batchTasklet, "purgeDays", 1);
 		ReflectionTestUtils.setField(batchTasklet, "purgeDaysforAnalytics", 1);
 		ReflectionTestUtils.setField(batchTasklet, "purgeDaysforInventoryStatus", 1);
 		ReflectionTestUtils.setField(batchTasklet, "templateIdEn", "492");

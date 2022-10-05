@@ -130,7 +130,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	@Override
 	public int updateJob(Job job, String status)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus_id(), job.getUpdated_date(), job.getStatus(),
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus_id(), job.getUpdated_date(), job.getUpdated_by(),job.getStatus(), job.getEnd_time(),
 				job.getStart_time(), job.getJob_name(), status);
 	}
 

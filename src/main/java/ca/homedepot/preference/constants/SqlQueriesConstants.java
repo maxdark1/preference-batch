@@ -15,6 +15,7 @@ public interface SqlQueriesConstants
 	String SQL_SELECT_LAST_JOB_W_NAME = "SELECT * FROM hdpc_job WHERE job_name = ? AND status = 'IN PROGRESS' ORDER BY job_id DESC LIMIT 1";
 
 
+	/// ADD STATUS AS WELL IN HERE FIST (NS records)
 	String SQL_GET_LAST_FILE_INSERTED_RECORDS = "SELECT*FROM public.hdpc_file_inbound_stg\n" +
 			"INNER JOIN public.hdpc_file ON \n" +
 			"hdpc_file.file_id = hdpc_file_inbound_stg.file_id AND hdpc_file.end_time is null; ";
@@ -25,7 +26,7 @@ public interface SqlQueriesConstants
 			+ "VALUES ( ?, ?, ?, ?, ?, ?) ";
 
 	String SQL_INSERT_HDPC_FILE = "INSERT INTO hdpc_file (file_name, job_id, source_type, "
-			+ "status,start_time, inserted_by, inserted_date, status_id) " + "VALUES (? , ? , ?, ?, ? , ?, ?, ?); ";
+			+ "status,start_time, inserted_by, inserted_date, status_id, end_time) " + "VALUES (? , ? , ?, ?, ? , ?, ?, ?, ?); ";
 
 	String SQL_INSERT_FILE_INBOUND_STG_REGISTRATION = "INSERT INTO hdpc_file_inbound_stg "
 			+ "(file_id, status,src_date, source_id, src_phone_number, src_first_name,  src_last_name,"
@@ -49,8 +50,8 @@ public interface SqlQueriesConstants
 	 * UPDATE
 	 */
 
-	String SQL_UPDATE_STAUTS_JOB = "UPDATE hdpc_job\n" + "\tSET  status_id=?, updated_date=?, status = ?\n"
-			+ "\tWHERE inserted_date = ? AND job_name = ? AND status = ?;";
+	String SQL_UPDATE_STAUTS_JOB = "UPDATE hdpc_job\n" + "\tSET  status_id=?, updated_date=?, updated_by=?,status = ?, end_time = ?\n"
+			+ "\tWHERE start_time = ? AND job_name = ? AND status = ?;";
 
 	String SQL_UPDATE_STAUTS_FILE = "UPDATE hdpc_file \n" + "\tSET  status=?, updated_date=?\n"
 			+ "\tWHERE file_name = ? AND status = ?;";

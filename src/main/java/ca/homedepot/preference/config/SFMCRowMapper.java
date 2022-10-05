@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import static ca.homedepot.preference.config.RegistrationrowMapper.getIntegerValue;
+import static ca.homedepot.preference.config.RegistrationRowMapper.getIntegerValue;
 
 public class SFMCRowMapper implements RowMapper<RegistrationRequest> {
     @Override
