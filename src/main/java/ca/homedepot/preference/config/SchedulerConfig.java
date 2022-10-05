@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
@@ -117,8 +118,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${inbound.files.registrationFbSfmc}")
 	String fileRegistrationFbSfmc;
 
-	@Value("${sub.activity.days}")
-	Integer subactivity;
 	@Autowired
 	private DataSource dataSource;
 	/**
@@ -220,7 +219,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_NAME_REGISTRATION_INBOUND, String.valueOf(System.currentTimeMillis()))
 				.addString("directory", hybrisPath+folderInbound)
 				.addString("document", hybrisRegistrationFile)
-				.addString("source", "hybris")
+				.addString("source", SourceDelimitersConstants.HYBRIS)
 				.toJobParameters();
 
 		JobExecution execution = jobLauncher.run(registrationInbound(), param);
@@ -235,7 +234,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_NAME_REGISTRATION_CRM_INBOUND, String.valueOf(System.currentTimeMillis()))
 				.addString("directory", crmPath+folderInbound)
 				.addString("document", hybrisRegistrationFile)
-				.addString("source", "CRM")
+				.addString("source", SourceDelimitersConstants.CRM)
 				.toJobParameters();
 
         JobExecution execution = jobLauncher.run(registrationCRMInbound(), param);
@@ -252,7 +251,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
 				.addString("directory", sfmcPath+folderInbound)
 				.addString("document", fileExtTargetEmail)
-				.addString("source", "SFMC")
+				.addString("source", SourceDelimitersConstants.SFMC)
 				.toJobParameters();
 		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(), param);
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
@@ -281,12 +280,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@StepScope
 	public MultiResourceItemReader<EmailOptOuts> multiResourceItemReaderSFMCUnsubcribed(@Value("#{jobParameters['directory']}") String directory,
-																						@Value("#{jobParameters['document']}") String document,
-																						@Value("#{jobParameters['source']}") String source){
+																						@Value("#{jobParameters['documentName']}") String documentName,
+																						@Value("#{jobParameters['source']}") String source, String jobName){
 		MultiResourceItemReaderInbound<EmailOptOuts> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
+		multiReaderResourceInbound.setJobName(jobName);
+		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 		multiReaderResourceInbound.setName("multiResourceItemReaderSFMCUnsubcribed");
 
-		multiReaderResourceInbound.setResources(getResources(directory, document, source));
+		multiReaderResourceInbound.setResources(getResources(directory, documentName, source));
 		multiReaderResourceInbound.setDelegate(inboundEmailPreferencesSMFCReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
@@ -302,7 +303,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.name("inboundFileReader").delimited().delimiter("|").names(InboundValidator.FIELD_NAMES_REGISTRATION)
 				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
-				.skippedLinesCallback(FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, "\\|")).build();
+				.skippedLinesCallback(FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, SourceDelimitersConstants.DELIMITER_PIPELINE)).build();
 	}
 
 	@StepScope
@@ -314,7 +315,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 				.linesToSkip(1)
 				/* Validation file's header */
-				.skippedLinesCallback(FileValidation.lineCallbackHandler(FIELD_NAMES_SFMC_OPTOUTS, "\\t"))
+				.skippedLinesCallback(FileValidation.lineCallbackHandler(FIELD_NAMES_SFMC_OPTOUTS, SourceDelimitersConstants.DELIMITER_TAB))
 			.build();
 	}
 
@@ -415,7 +416,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job sfmcOptOutsEmailOutlookClient()
 	{
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSFMCOptOutsStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
+				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readDBSFMCOptOutsStep2())
 				.build().build();
 	}
@@ -430,14 +431,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readInboundCSVFileStep1() throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(hybrisPath+folderInbound,hybrisRegistrationFile, "hybris")) // change source to constants
+				.reader(multiResourceItemReaderInboundFileReader(hybrisPath+folderInbound,hybrisRegistrationFile, SourceDelimitersConstants.HYBRIS)) // change source to constants
 				.processor(inboundFileProcessor()).listener(hybrisWriterListener).writer(inboundRegistrationDBWriter()).listener(new StepErrorLoggingListener()).build();
 	}
 
 	public Step readInboundCSVFileCRMStep1() throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(crmPath+folderInbound,hybrisRegistrationFile, "CRM"))
+				.reader(multiResourceItemReaderInboundFileReader(crmPath+folderInbound,hybrisRegistrationFile, SourceDelimitersConstants.CRM))
 				.processor(inboundFileProcessor()).listener(crmWriterListener).writer(inboundRegistrationDBWriter())
 				.listener(new StepErrorLoggingListener()).build();
 	}
@@ -452,10 +453,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	/*
 	 * SFMC Opt-Outs Unsubscribed
 	 */
-	public Step readSFMCOptOutsStep1()
+	public Step readSFMCOptOutsStep1(String jobName)
 	{
 		return stepBuilderFactory.get("readSFMCOptOutsStep1").<EmailOptOuts, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath+folderInbound,fileExtTargetEmail, "SFMC")).processor(extactExactTargetEmailProcessor())
+				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath+folderInbound,fileExtTargetEmail, SourceDelimitersConstants.SFMC, jobName)).processor(extactExactTargetEmailProcessor())
 				.listener(exactTargetEmailWriterListener).writer(inboundRegistrationDBWriter()).build();
 	}
 

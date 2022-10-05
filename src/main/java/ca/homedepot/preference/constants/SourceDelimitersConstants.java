@@ -11,4 +11,8 @@ public interface SourceDelimitersConstants {
     String CITI_BANK = "citi_bank";
 
     String SFMC = "SFMC";
+
+    String DELIMITER_PIPELINE = "\\|";
+
+    String DELIMITER_TAB = "\\t";
 }

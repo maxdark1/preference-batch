@@ -255,7 +255,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readSFMCOptOutsStep1());
+		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));
 	}
 
 	@Test
