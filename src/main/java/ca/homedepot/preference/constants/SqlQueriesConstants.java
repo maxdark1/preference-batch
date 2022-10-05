@@ -26,7 +26,7 @@ public interface SqlQueriesConstants
 			+ "VALUES ( ?, ?, ?, ?, ?, ?) ";
 
 	String SQL_INSERT_HDPC_FILE = "INSERT INTO hdpc_file (file_name, job_id, source_type, "
-			+ "status,start_time, inserted_by, inserted_date, status_id) " + "VALUES (? , ? , ?, ?, ? , ?, ?, ?); ";
+			+ "status,start_time, inserted_by, inserted_date, status_id, end_time) " + "VALUES (? , ? , ?, ?, ? , ?, ?, ?, ?); ";
 
 	String SQL_INSERT_FILE_INBOUND_STG_REGISTRATION = "INSERT INTO hdpc_file_inbound_stg "
 			+ "(file_id, status,src_date, source_id, src_phone_number, src_first_name,  src_last_name,"

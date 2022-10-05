@@ -11,7 +11,10 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
+import ca.homedepot.preference.model.EmailOptOuts;
+import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
+import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.junit.jupiter.api.AfterEach;
@@ -21,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.*;
@@ -35,6 +39,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -239,7 +244,24 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readInboundCSVFileStep1());
+		assertNotNull(schedulerConfig.readInboundCSVFileStep1("JOB_NAME"));
+	}
+
+	@Test
+	public void readInboundCSVFileCRMStep1() throws Exception
+	{
+		schedulerConfig.setCrmWriterListener(writerListener);
+
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReaderInbound.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.readInboundCSVFileCRMStep1("JOB_NAME"));
 	}
 
 
@@ -255,7 +277,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readSFMCOptOutsStep1());
+		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));
 	}
 
 	@Test
@@ -277,6 +299,7 @@ class SchedulerConfigTest
 	void readDBSFMCOptOutsStep2(){
 		schedulerConfig.setApiWriterListener(apiWriterListener);
 
+
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
@@ -295,6 +318,20 @@ class SchedulerConfigTest
 		assertNotNull(schedulerConfig.extactExactTargetEmailProcessor());
 	}
 
+
+	@Test
+	public void readSFMCOptOutsGmailStep(){
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(FlatFileItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.processor(any(ExactTargetEmailProcessor.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.readSFMCOptOutsGmailStep());
+
+	}
 
 
 }

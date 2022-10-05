@@ -133,8 +133,8 @@ class PreferenceServiceImplTest
 		String status = "C";
 		int rowsAffected = 1;
 
-		Mockito.when(jdbcTemplate.update(anyString(), eq(job.getStatus_id()), eq(job.getUpdated_date()), eq(job.getStatus()),eq(job.getStart_time()),
-				eq(job.getJob_name()), eq(status))).thenReturn(rowsAffected);
+		Mockito.when(jdbcTemplate.update(anyString(), eq(job.getStatus_id()), eq(job.getUpdated_date()), eq(job.getUpdated_by()), eq(job.getStatus()), eq(job.getEnd_time()),
+				eq(job.getStart_time()), eq(job.getJob_name()), eq(status))).thenReturn(rowsAffected);
 
 		int currentRowsAffected = preferenceServiceImpl.updateJob(job, status);
 		assertEquals(rowsAffected, currentRowsAffected);

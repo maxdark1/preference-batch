@@ -33,11 +33,6 @@ public class BatchTasklet implements Tasklet
 	 */
 	//private final EmailMessagePublisher emailMessagePublisher;
 
-	/**
-	 * The Purge days.
-	 */
-	@Value("${shelflife.bisn.purge.days}")
-	Integer purgeDays;
 
 	/**
 	 * The Purge daysfor analytics.

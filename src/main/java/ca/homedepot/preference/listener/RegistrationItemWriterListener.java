@@ -50,7 +50,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		Collections.sort(filesNames);
 		filesNames.forEach(key ->
 		{
-			fileID = writeFile(key);
+			fileID = getFromTableFileID(key);
 			files.put(key, fileID);
 		});
 
@@ -63,13 +63,11 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		return items.stream().collect(Collectors.toMap(key->key.getFileName(), value-> (value.getFile_id()==null)?BigDecimal.ZERO: value.getFile_id()));
 	}
 
-	public BigDecimal writeFile(String fileName)
+	public BigDecimal getFromTableFileID(String fileName)
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-		Master fileStatus = MasterProcessor.getSourceId("STATUS","VALID");
-		BigDecimal masterId = sourceIDMasterObj.getMaster_id();
 
-		fileService.insert(fileName, fileStatus.getValue_val(), masterId, new Date(), jobId, new Date(), "BATCH", fileStatus.getMaster_id());
+		System.out.println(" JobId =  " + jobId + " FileName = " + fileName);
 		return fileService.getFile(fileName, jobId);
 	}
 
@@ -84,7 +82,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 			try {
 				FileUtil.moveFile(fileName, true, sourceIDMasterObj.getValue_val());
 			} catch (IOException e) {
-				log.warn(" An exception occurs when we try to move the file {}: {}",fileName, e.getMessage());
+				log.error(" An exception occurs when we try to move the file {}: {}",fileName, e.getMessage());
 			}
 		});
 

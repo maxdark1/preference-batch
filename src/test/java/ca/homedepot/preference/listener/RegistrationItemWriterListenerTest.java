@@ -58,10 +58,9 @@ class RegistrationItemWriterListenerTest {
         BigDecimal jobId = BigDecimal.ONE;
 
         Mockito.when(fileService.getJobId(eq(jobName))).thenReturn(jobId);
-        Mockito.when(fileService.insert(eq(fileName), eq(fileStatus.getValue_val()), eq(BigDecimal.TEN), eq(new Date()), eq(jobId), eq( new Date()), eq(insertedBy), eq(BigDecimal.ONE))).thenReturn(records);
         Mockito.when(fileService.getFile(eq(fileName), eq(BigDecimal.ONE))).thenReturn(fileId);
 
-        BigDecimal currentFileId = registrationItemWriterListener.writeFile(fileName);
+        BigDecimal currentFileId = registrationItemWriterListener.getFromTableFileID(fileName);
         assertEquals(fileId, currentFileId);
     }
 

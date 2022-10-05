@@ -49,7 +49,7 @@ class FileServiceImplTest
 	{
 		String status = "G";
 		BigDecimal sourceId = new BigDecimal("12345678"), job_id = new BigDecimal("1234567890");
-		Date startTime = new Date(), insertedDate = new Date();
+		Date startTime = new Date(), insertedDate = new Date(), endTiem = new Date();
 		String file_name = "fileName", inserted_by = "test";
 		BigDecimal statusId = BigDecimal.ONE;
 
@@ -57,9 +57,9 @@ class FileServiceImplTest
 
 		when(jdbcTemplate.update(anyString(), eq(file_name), eq(status), eq(sourceId), eq(startTime), eq(job_id), eq(insertedDate),
 				eq(inserted_by))).thenReturn(value);
-		when(fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId)).thenReturn(value);
+		when(fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId, endTiem)).thenReturn(value);
 
-		int result = fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId);
+		int result = fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId, endTiem);
 
 		assertEquals(value, result);
 
