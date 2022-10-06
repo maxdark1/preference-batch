@@ -11,8 +11,6 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
-import ca.homedepot.preference.model.EmailOptOuts;
-import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
@@ -24,7 +22,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.*;
@@ -39,7 +36,6 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -151,7 +147,7 @@ class SchedulerConfigTest
 		schedulerConfig.setDataSource(dataSource);
 		schedulerConfig.setJobListener(jobListener);
 		schedulerConfig.chunkValue = 100;
-		schedulerConfig.hybrisRegistrationFile = "TEST_FILE";
+		schedulerConfig.hybrisCrmRegistrationFile = "TEST_FILE";
 		schedulerConfig.setHybrisWriterListener(writerListener);
 		schedulerConfig.setExactTargetEmailWriterListener(writerListener);
 		schedulerConfig.setLayoutBWriter(layoutBWriter);
@@ -168,7 +164,7 @@ class SchedulerConfigTest
 	@Test
 	public void testInboundFileReader() throws Exception
 	{
-		schedulerConfig.hybrisRegistrationFile = "OPTIN_STANDARD_FLEX_YYYYMMDD";
+		schedulerConfig.hybrisCrmRegistrationFile = "OPTIN_STANDARD_FLEX_YYYYMMDD";
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundFileReader());
 	}
@@ -194,7 +190,7 @@ class SchedulerConfigTest
 	@Test
 	public void testInboundEmailPreferencesSMFCReader() throws Exception
 	{
-		schedulerConfig.hybrisRegistrationFile = "ET.CAN.YYYYMMDD";
+		schedulerConfig.hybrisCrmRegistrationFile = "ET.CAN.YYYYMMDD";
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader());
 
