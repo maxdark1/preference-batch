@@ -143,7 +143,7 @@ public final class FileUtil
         if(temp != null){
             log.info(" File {} moved successfully to folder: {} ", temp.getFileName(), folder);
         }else{
-            log.info("Failed to move the file {} ", temp.getFileName());
+            log.info(" Failed to move the file {} ", temp.getFileName());
         }
     }
 
