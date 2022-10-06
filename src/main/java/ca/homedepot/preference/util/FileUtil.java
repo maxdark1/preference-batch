@@ -3,6 +3,7 @@ package ca.homedepot.preference.util;
 import ca.homedepot.preference.util.validation.FileValidation;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -49,7 +51,7 @@ public final class FileUtil
     /**
      * Sets registration file.
      *
-     * @param fileExtTargetEmail
+     * @param registrationFile
      *           the registration file
      */
     public static void setRegistrationFile(String registrationFile)
@@ -127,18 +129,29 @@ public final class FileUtil
     {
         String folder = ((status)?processed:error);
         String path = getPath(value_val);
+        String newFile = renameFile(file);
+
+        File file1 = new File(path +inbound+file);
+        file1.renameTo(new File(path +inbound+newFile ));
+
+
         Path temp = Files.move(
-                Paths.get(path +inbound+file),
-                Paths.get(path +folder+"\\"+file)
+                Paths.get(path +inbound+newFile),
+                Paths.get(path +folder+"\\"+newFile)
         );
 
         if(temp != null){
             log.info(" File {} moved successfully to folder: {} ", temp.getFileName(), folder);
         }else{
-            log.info("Failed to move the file {} ", temp.getFileName());
+            log.info(" Failed to move the file {} ", temp.getFileName());
         }
     }
 
+    public static String renameFile(String file){
+        String baseName = FileValidation.getFileName(file);
+        String extension = FileValidation.getExtension(file, baseName);
+        return baseName+"_"+(new SimpleDateFormat("YYYYMMSSHHmmssSSSS")).format(new Date()) +extension;
+    }
     /*
     * Get path
     * */
@@ -159,7 +172,7 @@ public final class FileUtil
     /*
         List of files in certain folder
     * */
-    public static List<String> getFilesOnFolder(String path, String baseName, String source)
+    public static List<String> getFilesOnFolder(String path, String source)
     {
         File folder = new File(path);
         List<String> listOfFiles = new ArrayList<>();
@@ -168,7 +181,7 @@ public final class FileUtil
         if(files != null)
             for (String fileName: files) {
 
-                if(FileValidation.validateFileName(fileName, baseName)){
+                if(FileValidation.validateFileName(fileName, source)){
                     listOfFiles.add(path+fileName);
                 }else{
                     log.error( " File name invalid: " + fileName);
