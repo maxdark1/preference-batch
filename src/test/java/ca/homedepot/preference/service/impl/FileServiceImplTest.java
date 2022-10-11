@@ -138,16 +138,16 @@ class FileServiceImplTest
 
 	@Test
 	void updateInboundStgTableStatus(){
-		String insertedBy = "BATCH", status = "IP";
+		String insertedBy = "BATCH", status = "IP", oldStatus = "NS";
 		BigDecimal fileId = BigDecimal.ONE;
 		Date updatedDate = new Date();
 
 		int updatedRecords = 1;
 
-		when(jdbcTemplate.update(anyString(), eq(status), any(Date.class), anyString(),eq(fileId))).thenReturn(updatedRecords);
-		when(fileService.updateInboundStgTableStatus(fileId, status)).thenReturn(updatedRecords);
+		when(jdbcTemplate.update(anyString(), eq(status), any(Date.class), anyString(),anyString(),eq(fileId), eq(fileId))).thenReturn(updatedRecords);
+		when(fileService.updateInboundStgTableStatus(fileId, status, oldStatus)).thenReturn(updatedRecords);
 
-		int currentUpdatedRecords = fileService.updateInboundStgTableStatus(fileId, status);
+		int currentUpdatedRecords = fileService.updateInboundStgTableStatus(fileId, status, oldStatus);
 		assertEquals(updatedRecords, currentUpdatedRecords);
 
 	}

@@ -90,16 +90,5 @@ public class RegistrationRequest
 	@JsonProperty("content_value")
 	private Map<String, String> contentValue;
 
-	@JsonProperty("inserted_by")
-	private String insertedBy;
-
-	@JsonProperty("inserted_date")
-	private String insertedDate;
-
-	@JsonProperty("updated_by")
-	private String updatedBy;
-
-	@JsonProperty("updated_date")
-	private String updatedDate;
 
 }

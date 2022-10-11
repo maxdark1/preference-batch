@@ -35,7 +35,7 @@ public interface FileService
 
 	int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus, BigDecimal jobId, Date endTime, String updatedBy, BigDecimal statusId);
 
-    int updateInboundStgTableStatus(BigDecimal sequenceNbr, String status);
+    int updateInboundStgTableStatus(BigDecimal sequenceNbr, String status, String oldStatus);
 
 	int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy ,Date endTime, Master status);
 

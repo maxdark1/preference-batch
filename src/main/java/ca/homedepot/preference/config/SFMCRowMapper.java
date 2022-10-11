@@ -32,12 +32,6 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest> {
         registrationRequest.setEmailPrefPro(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_PRO)));
         registrationRequest.setEmailPrefNewMover(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_NEW_MOVER)));
 
-
-        registrationRequest.setInsertedBy(rs.getString(PreferenceBatchConstants.INSERTED_BY));
-        registrationRequest.setInsertedDate(getDate(rs.getDate(PreferenceBatchConstants.INSERTED_DATE)));
-        registrationRequest.setUpdatedBy(rs.getString(PreferenceBatchConstants.UPDATED_BY));
-        registrationRequest.setUpdatedDate(getDate(rs.getDate(PreferenceBatchConstants.UPDATED_DATE)));
-
         return registrationRequest;
 
 

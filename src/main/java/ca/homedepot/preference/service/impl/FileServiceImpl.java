@@ -79,8 +79,8 @@ public class FileServiceImpl implements FileService
 
 
 	@Override
-	public int updateInboundStgTableStatus(BigDecimal sequenceNbr, String status){
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STATUS_INBOUND, status, new Date(), "BATCH",sequenceNbr);
+	public int updateInboundStgTableStatus(BigDecimal sequenceNbr, String status, String oldStatus){
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STATUS_INBOUND, status, new Date(), "BATCH", oldStatus, sequenceNbr, sequenceNbr);
 	}
 
 	@Override
