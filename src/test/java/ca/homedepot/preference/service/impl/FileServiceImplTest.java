@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.Master;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -123,13 +124,14 @@ class FileServiceImplTest
 	@Test
 	void updateFileStatus()
 	{
-		String fileName = "TEST_FILE", status = "S", newStatus = "P";
-		Date updatedDate = new Date();
+		String fileName = "TEST_FILE", status = "S", newStatus = "P", updatedBy = "TEST";
+		Date updatedDate = new Date(), endTime = new Date();
+		BigDecimal jobId = BigDecimal.ONE, statusId = BigDecimal.TEN;
 		int rowAffected = 1;
 
-		when(jdbcTemplate.update(anyString(), eq(newStatus), eq(updatedDate), eq(fileName), eq(status))).thenReturn(rowAffected);
+		when(jdbcTemplate.update(anyString(), eq(newStatus), eq(statusId), eq(updatedDate), eq(fileName), eq(status), eq(jobId))).thenReturn(rowAffected);
 
-		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus);
+		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus, jobId, endTime, updatedBy, statusId);
 
 		assertEquals(rowAffected, currentRowAffected);
 	}
@@ -155,13 +157,14 @@ class FileServiceImplTest
 		String updatedBy = "BATCH", status = "IP";
 		BigDecimal fileId = BigDecimal.ONE;
 		Date updatedDate = new Date(), endTime = new Date();
+		Master statusMaster = new Master();
 
 		int updatedRecords = 1;
 
-		when(jdbcTemplate.update(anyString(), eq(endTime), eq(updatedDate), eq(updatedBy), eq(fileId))).thenReturn(updatedRecords);
-		when(fileService.updateFileEndTime( fileId,  updatedDate,  updatedBy , endTime)).thenReturn(updatedRecords);
+		when(jdbcTemplate.update(anyString(), eq(endTime), eq(updatedDate), eq(updatedBy), eq(fileId), eq(statusMaster.getMaster_id()), eq(statusMaster.getValue_val()))).thenReturn(updatedRecords);
+		when(fileService.updateFileEndTime( fileId,  updatedDate,  updatedBy , endTime, statusMaster)).thenReturn(updatedRecords);
 
-		int currentUpdatedRecords = fileService.updateFileEndTime(fileId,  updatedDate,  updatedBy , endTime);
+		int currentUpdatedRecords = fileService.updateFileEndTime(fileId,  updatedDate,  updatedBy , endTime, statusMaster);
 		assertEquals(updatedRecords, currentUpdatedRecords);
 	}
 }

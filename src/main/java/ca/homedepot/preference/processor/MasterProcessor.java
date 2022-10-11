@@ -32,6 +32,10 @@ public class MasterProcessor
 		return masterList.stream().filter(master -> master.getKey_value().equals(key_val) && master.getValue_val().equals(value_val))
 				.findFirst().get();
 	}
+	public static String getValueVal(BigDecimal masterId){
+		return masterList.stream().filter(master -> master.getMaster_id().equals(masterId)).map(master -> master.getValue_val())
+				.findFirst().get();
+	}
 	public static List<Master> getMasterList()
 	{
 		return masterList;

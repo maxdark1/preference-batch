@@ -40,6 +40,8 @@ public class FileInboundStgTable
 	Long source_id;
 	String cell_sms_flag;
 	String customer_nbr;
+
+	String business_name;
 	String org_name;
 	String store_nbr;
 	String cust_type_cd;

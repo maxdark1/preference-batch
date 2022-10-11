@@ -2,7 +2,11 @@ package ca.homedepot.preference.service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
+import ca.homedepot.preference.dto.FileDTO;
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.model.FileInboundStgTable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +33,13 @@ public interface FileService
 	 */
 	BigDecimal getSourceId(String keyVal, String valueVal);
 
-	int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus);
+	int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus, BigDecimal jobId, Date endTime, String updatedBy, BigDecimal statusId);
 
-    int updateInboundStgTableStatus(BigDecimal fileId, String status);
+    int updateInboundStgTableStatus(BigDecimal sequenceNbr, String status);
 
-	int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy ,Date endTime);
+	int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy ,Date endTime, Master status);
+
+	List<FileDTO> getFilesToMove();
+
+	int insertInboundStgError(FileInboundStgTable fileInboundStgTable);
 }

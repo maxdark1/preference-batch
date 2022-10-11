@@ -11,6 +11,8 @@ import org.springframework.core.io.Resource;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
 *   MultiResourceItemReader
@@ -29,6 +31,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     * hybris, SFMC, FB_SFMC, citi...
     * */
     private String source;
+
+    private Map<String, Boolean> canResourceBeWriting;
 
     /*
     * Constructor to assign Source
@@ -57,6 +61,15 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
         this.jobName = jobName;
     }
 
+    @Override
+    public void setResources(Resource[] resources) {
+        super.setResources(resources);
+        canResourceBeWriting = new HashMap<>();
+        for (Resource resource : resources) {
+            canResourceBeWriting.put(resource.getFilename(), true);
+        }
+    }
+
     /*
     *
     * */
@@ -64,22 +77,26 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     public T read() throws Exception
     {
         T itemRead = null;
+
         Resource resource = null;
         Boolean status = true;
         try{
             itemRead = super.read();
             resource = getCurrentResource();
         }catch(Exception e){
-            status = !status;
             resource = getCurrentResource();
+            status = !status;
             FileUtil.moveFile(resource.getFilename(), status, source);
             log.error(" An exception has ocurred reading file: " + getCurrentResource().getFilename() + "\n " + e.getCause().getMessage() );
         }
 
-        if(resource != null)
+        if(resource != null && canResourceBeWriting.get(resource.getFilename()))
         {
             writeFile(resource.getFilename(), status);
+            canResourceBeWriting.put(resource.getFilename(), false);
         }
+
+
         return itemRead;
     }
 
@@ -97,4 +114,5 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 
         fileService.insert(fileName, fileStatus.getValue_val(), masterId, new Date(), jobId, new Date(), "BATCH", fileStatus.getMaster_id(), endTime);
     }
+
 }

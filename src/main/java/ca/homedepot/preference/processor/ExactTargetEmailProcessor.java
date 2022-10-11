@@ -14,21 +14,25 @@ import java.util.Date;
 @Slf4j
 public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, FileInboundStgTable> {
     @Override
-    public FileInboundStgTable process(EmailOptOuts item) throws Exception {
+    public FileInboundStgTable process(EmailOptOuts item){
 
         FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
         log.info(" Item in process: " + item.toString());
+        StringBuilder error = new StringBuilder();
         Date srcDate = null;
         try{
-            InboundValidator.validateRequired(item.getEmailAddress(), "email address");
-            InboundValidator.validateRequired(item.getStatus(), "status");
-            InboundValidator.validateRequired(item.getDateUnsubscribed(), "Date Unsubscribed");
+            InboundValidator.validateRequired(item.getEmailAddress(), "email address", error);
+            InboundValidator.validateRequired(item.getStatus(), "status", error);
+            InboundValidator.validateRequired(item.getDateUnsubscribed(), "Date Unsubscribed", error);
+            InboundValidator.validateMaxLength("Email Address",item.getEmailAddress(),150,error);
             ExactTargetEmailValidation.validateStatusEmail(item.getStatus());
             srcDate = ExactTargetEmailValidation.validateDateFormat(item.getDateUnsubscribed());
-            InboundValidator.validateEmailFormat(item.getEmailAddress());
+
+            InboundValidator.validateEmailFormat(item.getEmailAddress(), error);
+            InboundValidator.isValidationsErros(error);
         }catch (ValidationException e){
             log.error(" Validation error {}: ", e.getMessage());
-            return null;
+            throw e;
         }
 
 		return builder.src_email_address(item.getEmailAddress()).fileName(item.getFileName())

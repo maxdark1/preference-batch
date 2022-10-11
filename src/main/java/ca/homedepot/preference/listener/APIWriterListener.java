@@ -32,7 +32,7 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
     public void afterWrite(List<? extends RegistrationRequest> items) {
         List<BigDecimal> filesId = getMapFileNameFileId(items);
 
-        filesId.forEach(fileId -> fileService.updateFileEndTime(fileId, new Date(), "BATCH API Writer",new Date()));
+        filesId.forEach(fileId ->  fileService.updateInboundStgTableStatus(fileId,"S"));
     }
 
     public List<BigDecimal> getMapFileNameFileId(List<? extends RegistrationRequest> items){
