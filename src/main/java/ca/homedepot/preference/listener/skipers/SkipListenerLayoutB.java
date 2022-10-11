@@ -3,6 +3,7 @@ package ca.homedepot.preference.listener.skipers;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
+import lombok.Data;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 @Component
 @JobScope
+@Data
 public class SkipListenerLayoutB extends SkipFileService implements SkipListener<EmailOptOuts, FileInboundStgTable> {
 
 

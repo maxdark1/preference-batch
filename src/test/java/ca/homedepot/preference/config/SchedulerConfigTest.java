@@ -11,6 +11,8 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
+import ca.homedepot.preference.listener.skipers.SkipListenerLayoutB;
+import ca.homedepot.preference.listener.skipers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
@@ -27,6 +29,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.job.builder.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.builder.FaultTolerantStepBuilder;
 import org.springframework.batch.core.step.builder.SimpleStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
@@ -34,6 +37,7 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.MultiResourceItemReader;
+import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -69,6 +73,9 @@ class SchedulerConfigTest
 	public FlowBuilder flowBuilder;
 
 	@Mock
+	public FaultTolerantStepBuilder faultTolerantStepBuilder;
+
+	@Mock
 	public Job job;
 
 	@Mock
@@ -88,6 +95,12 @@ class SchedulerConfigTest
 	@Mock
 	public JobListener jobListener;
 	@Mock
+	public SkipListenerLayoutC skipListenerLayoutC;
+	@Mock
+	public SkipListenerLayoutB skipListenerLayoutB;
+	@Mock
+	public StepErrorLoggingListener stepErrorLoggingListener;
+	@Mock
 	public PlatformTransactionManager platformTransactionManager;
 	@Mock
 	APIWriterListener apiWriterListener;
@@ -101,6 +114,7 @@ class SchedulerConfigTest
 	private SimpleStepBuilder simpleStepBuilder;
 	@Mock
 	private JobLauncher jobLauncher;
+
 
 	private static void setFinalStaticField(Class<?> clazz, String fieldName, Object value)
 			throws NoSuchFieldException, IllegalAccessException
@@ -137,10 +151,14 @@ class SchedulerConfigTest
 		transitionBuilder = Mockito.mock(FlowBuilder.TransitionBuilder.class);
 		flowBuilder = Mockito.mock(FlowBuilder.class);
 		flowJobBuilder = Mockito.mock(FlowJobBuilder.class);
+		faultTolerantStepBuilder = Mockito.mock(FaultTolerantStepBuilder.class);
 		job = Mockito.mock(Job.class);
 
 		writerListener = Mockito.mock(RegistrationItemWriterListener.class);
 		apiWriter = Mockito.mock(RegistrationAPIWriter.class);
+		skipListenerLayoutB = Mockito.mock(SkipListenerLayoutB.class);
+		skipListenerLayoutC = Mockito.mock(SkipListenerLayoutC.class);
+		stepErrorLoggingListener = Mockito.mock(StepErrorLoggingListener.class);
 		step = Mockito.mock(TaskletStep.class);
 
 		schedulerConfig = new SchedulerConfig(jobBuilderFactory, stepBuilderFactory, jobLauncher, platformTransactionManager);
@@ -151,6 +169,11 @@ class SchedulerConfigTest
 		schedulerConfig.setHybrisWriterListener(writerListener);
 		schedulerConfig.setExactTargetEmailWriterListener(writerListener);
 		schedulerConfig.setLayoutBWriter(layoutBWriter);
+		schedulerConfig.setSkipListenerLayoutB(skipListenerLayoutB);
+		schedulerConfig.setSkipListenerLayoutC(skipListenerLayoutC);
+		schedulerConfig.setStepListener(stepErrorLoggingListener);
+		schedulerConfig.setBatchTasklet(batchTasklet);
+		schedulerConfig.setApiWriter(apiWriter);
 		setFinalStaticField(SchedulerConfig.class, "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
 
 
@@ -159,6 +182,12 @@ class SchedulerConfigTest
 	@AfterEach
 	public void tearDown()
 	{
+	}
+
+	@Test
+	void setUpTest(){
+		assertNotNull(schedulerConfig);
+		schedulerConfig.setUpListener();
 	}
 
 	@Test
@@ -235,7 +264,12 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.skipLimit(eq(Integer.MAX_VALUE))).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
@@ -248,11 +282,17 @@ class SchedulerConfigTest
 	{
 		schedulerConfig.setCrmWriterListener(writerListener);
 
+
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReaderInbound.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.skipLimit(eq(Integer.MAX_VALUE))).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
@@ -269,8 +309,14 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.processor(any(ExactTargetEmailProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.skipLimit(eq(Integer.MAX_VALUE))).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutB.class))).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));

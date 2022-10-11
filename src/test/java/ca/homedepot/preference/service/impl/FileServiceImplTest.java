@@ -129,7 +129,7 @@ class FileServiceImplTest
 		BigDecimal jobId = BigDecimal.ONE, statusId = BigDecimal.TEN;
 		int rowAffected = 1;
 
-		when(jdbcTemplate.update(anyString(), eq(newStatus), eq(statusId), eq(updatedDate), eq(fileName), eq(status), eq(jobId))).thenReturn(rowAffected);
+		when(jdbcTemplate.update(anyString(), eq(newStatus), eq(statusId), eq(updatedDate), eq(endTime), eq(updatedBy),eq(fileName), eq(status), eq(jobId))).thenReturn(rowAffected);
 
 		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus, jobId, endTime, updatedBy, statusId);
 

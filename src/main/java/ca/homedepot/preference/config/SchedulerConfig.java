@@ -220,6 +220,24 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		this.jobListener = jobListener;
 	}
+
+
+	public void setSkipListenerLayoutB(SkipListenerLayoutB skipListenerLayoutB) {
+		this.skipListenerLayoutB = skipListenerLayoutB;
+	}
+
+	public void setSkipListenerLayoutC(SkipListenerLayoutC skipListenerLayoutC) {
+		this.skipListenerLayoutC = skipListenerLayoutC;
+	}
+
+	public void setStepListener(StepErrorLoggingListener stepListener) {
+		this.stepListener = stepListener;
+	}
+
+	public void setBatchTasklet(BatchTasklet batchTasklet) {
+		this.batchTasklet = batchTasklet;
+	}
+
 	/*
 	 * SCHEDULING JOBS
 	 */
@@ -468,7 +486,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.faultTolerant().processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC)
 				.listener(crmWriterListener).writer(inboundRegistrationDBWriter())
-				.listener(stepListener).listener(stepListener).build();
+				.listener(stepListener).build();
 	}
 
 	@Bean

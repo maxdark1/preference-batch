@@ -36,8 +36,6 @@ class RegistrationItemWriterListenerTest {
         registrationItemWriterListener.setFileService(fileService);
         registrationItemWriterListener.setJobName("JOB_NAME");
         registrationItemWriterListener.setFileID(BigDecimal.ONE);
-        registrationItemWriterListener.setMaster(new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true));
-        registrationItemWriterListener.setSourceIDMasterObj(new Master(BigDecimal.TEN, BigDecimal.ONE, "TEST2", "TEST2", true));
 
     }
 
@@ -84,13 +82,4 @@ class RegistrationItemWriterListenerTest {
         assertEquals(BigDecimal.ONE, registrationItemWriterListener.getFileID());
     }
 
-    @Test
-    void getMaster() {
-        assertNotNull(registrationItemWriterListener.getMaster());
-    }
-
-    @Test
-    void getSourceIDMasterObj() {
-        assertNotNull(registrationItemWriterListener.getSourceIDMasterObj());
-    }
 }
