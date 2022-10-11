@@ -35,7 +35,8 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
     @Override
     public void onSkipInProcess(InboundRegistration item, Throwable t) {
 
-        FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().file_id(getFromTableFileID(item.getFileName(), jobName)).status("E").fileName(item.getFileName()).src_language_pref(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date())
+        FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().file_id(getFromTableFileID(item.getFileName(), jobName)).status("E").fileName(item.getFileName())
+                .src_language_pref(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date())
                 .src_email_address(item.getEmail_Address()).email_address_pref(item.getEmail_Permission())
                 .phone_pref(item.getPhone_Permission()).src_phone_number(item.getPhone_Number())
                 .src_phone_extension(item.getPhone_Extension()).src_title_name(item.getTitle()).src_first_name(item.getFirst_Name())
