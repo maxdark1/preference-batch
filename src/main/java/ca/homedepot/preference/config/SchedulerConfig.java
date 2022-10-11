@@ -107,6 +107,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String fbSFMCPath;
 	@Value("${folders.sfmc.path}")
 	String sfmcPath;
+	@Value("${folders.fb-sfmc.path}")
+	String fbsfmcPath;
 	/*
 	* Folders ERROR, INBOUND AND PROCCESED
 	* */
@@ -143,6 +145,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private RegistrationItemWriterListener crmWriterListener;
 
+	private RegistrationItemWriterListener fbsfmcWriterListener;
 	@Autowired
 	private RegistrationItemWriterListener exactTargetEmailWriterListener;
 	@Autowired
@@ -181,11 +184,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		crmWriterListener.setFileService(hybrisWriterListener.getFileService());
 		crmWriterListener.setJobName(JOB_NAME_REGISTRATION_CRM_INBOUND);
 		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
+		fbsfmcWriterListener = new RegistrationItemWriterListener();
+		fbsfmcWriterListener.setFileService(hybrisWriterListener.getFileService());
+		fbsfmcWriterListener.setJobName(JOB_NAME_REGISTRATION_FBSFMC_INBOUND);
 
 
 		FileUtil.setCrmPath(crmPath);
 		FileUtil.setHybrisPath(hybrisPath);
 		FileUtil.setSfmcPath(sfmcPath);
+		FileUtil.setFbsfmcPath(fbsfmcPath);
 		FileUtil.setError(folderError);
 		FileUtil.setProcessed(folderProcessed);
 		FileUtil.setInbound(folderInbound);
@@ -253,7 +260,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 	///***************************************************
 
-	//@Scheduled(cron = "${cron.job.registration}")
+	@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -282,8 +289,21 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
         JobExecution execution = jobLauncher.run(registrationCRMInbound(), param);
         log.info("Registration Inbound finished with status :" + execution.getStatus());
+	}
 
+	@Scheduled(cron = "${cron.job.registrationFBSFMC}")
+	public void processFBSFMCInbound() throws Exception
+	{
+		log.info(" Registration Inbound : Registration Job started at :" + new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_REGISTRATION_FBSFMC_INBOUND, String.valueOf(System.currentTimeMillis()))
+				.addString("directory", fbSFMCPath+folderInbound)
+				.addString("source", SourceDelimitersConstants.FB_SFMC)
+				.addString("job_name", JOB_NAME_REGISTRATION_FBSFMC_INBOUND)
+				.toJobParameters();
 
+		JobExecution execution = jobLauncher.run(registrationFBSFMCGardenClubInbound(), param);
+		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
@@ -504,11 +524,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readInboundFBSFMCFileStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath+folderInbound, SourceDelimitersConstants.SFMC, jobName))
-				.processor(inboundFileProcessor())
-				.faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath+folderInbound, SourceDelimitersConstants.FB_SFMC, jobName))
+				.processor(inboundFileProcessor()).faultTolerant().processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC)
-				.listener(crmWriterListener).writer(inboundRegistrationDBWriter())
+				.listener(fbsfmcWriterListener).writer(inboundRegistrationDBWriter())
 				.listener(stepListener).build();
 	}
 
@@ -571,7 +590,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		for(int i = 0; i< resources.length;i++){
 			resources[i] = new FileSystemResource(filesName.get(i));
 		}
-		System.out.println(filesName.toString());
 
 		return resources;
 	}

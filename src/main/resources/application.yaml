@@ -40,6 +40,7 @@ cron:
   job:
     registration: 30 * * * * *
     ingestSFMCOutlookUnsubscribed: 30 * * * * *
+    registrationFBSFMC: 30 * * * * *
 
 server:
   port: 8080

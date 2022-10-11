@@ -113,10 +113,6 @@ class JobRepoTest {
 		contentValue.put("content1", "value1");
 		contentValue.put("content2", "value2");
 		registrationRequest.setContentValue(contentValue);
-		registrationRequest.setUpdatedDate("09-26-2022");
-		registrationRequest.setInsertedDate("09-26-2022");
-		registrationRequest.setInsertedBy("TEST");
-		registrationRequest.setUpdatedBy("TEST");
 	}
 
 	private String getFakeEmail()
@@ -166,10 +162,6 @@ class JobRepoTest {
 		assertNotNull(registrationRequest.getEmailPrefPro());
 		assertNotNull(registrationRequest.getContentValue());
 		assertEquals(Integer.valueOf(1), registrationRequest.getEmailPrefHDCa());
-		assertTrue(registrationRequest.getUpdatedDate().contains("9"));
-		assertNotNull(registrationRequest.getUpdatedBy());
-		assertNotNull(registrationRequest.getInsertedDate());
-		assertNotNull(registrationRequest.getInsertedBy());
 	}
 
 	@Test

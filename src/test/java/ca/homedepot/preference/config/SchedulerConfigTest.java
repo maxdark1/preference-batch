@@ -132,6 +132,7 @@ class SchedulerConfigTest
 	@BeforeEach
 	public void setUp() throws NoSuchFieldException, IllegalAccessException
 	{
+
 		jobBuilderFactory = Mockito.mock(JobBuilderFactory.class);
 		stepBuilderFactory = Mockito.mock(StepBuilderFactory.class);
 		dataSource = Mockito.mock(DataSource.class);
@@ -323,11 +324,13 @@ class SchedulerConfigTest
 
 	@Test
 	void readInboundDBStep2() throws Exception {
+
 		schedulerConfig.setApiWriter(apiWriter);
 		schedulerConfig.setApiWriterListener(apiWriterListener);
+		schedulerConfig.chunkLayoutC = 10;
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
+		Mockito.when(stepBuilder.chunk(eq(10))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
@@ -339,10 +342,10 @@ class SchedulerConfigTest
 	@Test
 	void readDBSFMCOptOutsStep2(){
 		schedulerConfig.setApiWriterListener(apiWriterListener);
-
+		schedulerConfig.chunkLayoutB = 20;
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
+		Mockito.when(stepBuilder.chunk(eq(20))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(RegistrationLayoutBWriter.class))).thenReturn(simpleStepBuilder);

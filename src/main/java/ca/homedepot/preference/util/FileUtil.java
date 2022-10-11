@@ -27,8 +27,8 @@ public final class FileUtil
     private static String registrationFile;
     private static String fileExtTargetEmail;
     private static String hybrisPath;
-
     private static String crmPath;
+    private static String fbsfmcPath;
 
     private static String sfmcPath;
 
@@ -125,12 +125,22 @@ public final class FileUtil
         FileUtil.sfmcPath = sfmcPath;
     }
 
+    public static String getFbsfmcPath() {
+        return fbsfmcPath;
+    }
+
+    public static void setFbsfmcPath(String fbsfmcPath) {
+        FileUtil.fbsfmcPath = fbsfmcPath;
+    }
+
     public static void moveFile(String file, boolean status, String value_val) throws IOException
     {
         String folder = ((status)?processed:error);
-        String path = getPath(value_val);
-        String newFile = renameFile(file);
+        String fileName = FileValidation.getFileName(file);
+        String source = isFBSFMC(fileName)?"FB_SFMC":value_val;
 
+        String path = getPath(source);
+        String newFile = renameFile(file);
         File file1 = new File(path +inbound+file);
         file1.renameTo(new File(path +inbound+newFile ));
 
@@ -145,6 +155,10 @@ public final class FileUtil
         }else{
             log.info(" Failed to move the file {} ", temp.getFileName());
         }
+    }
+
+    public static boolean isFBSFMC(String fileName){
+        return fileName.contains(FileValidation.getFbSFMCBaseName());
     }
 
     public static String renameFile(String file){
@@ -166,7 +180,7 @@ public final class FileUtil
             case "SFMC":
                 return sfmcPath;
         }
-        return null;
+        return fbsfmcPath;
     }
 
     /*

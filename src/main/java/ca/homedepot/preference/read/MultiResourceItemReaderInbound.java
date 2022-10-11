@@ -1,5 +1,6 @@
 package ca.homedepot.preference.read;
 
+import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
@@ -107,7 +108,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     {
         BigDecimal jobId = fileService.getJobId(jobName);
         Master fileStatus = MasterProcessor.getSourceId("STATUS",status?"VALID":"INVALID");
-        BigDecimal masterId = MasterProcessor.getSourceId("SOURCE", source).getMaster_id();
+        BigDecimal masterId = MasterProcessor.getSourceId("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC)? SourceDelimitersConstants.SFMC: source).getMaster_id();
         Date endTime = new Date();
         if(status)
             endTime = null;
