@@ -16,7 +16,6 @@ import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.annotation.AfterWrite;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -74,6 +73,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private static final String JOB_NAME_REGISTRATION_CRM_INBOUND = "registrationCRMInbound";
 
+	private static final String JOB_NAME_REGISTRATION_FBSFMC_INBOUND = "registrationFBSFMCGardenClubInbound";
+
 	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
 	/**
 	 * The Job builder factory.
@@ -89,8 +90,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Qualifier("visitorTransactionManager")
 	private final PlatformTransactionManager transactionManager;
-	@Value("${process.analytics.chunk}")
+	@Value("${preference.centre.chunk}")
 	Integer chunkValue;
+	@Value("${preference.centre.layoutc.chunk}")
+	Integer chunkLayoutC;
+	@Value("${preference.centre.layoutb.chunk}")
+	Integer chunkLayoutB;
 	/*
 	* The folders paths
 	* */
@@ -260,7 +265,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString("job_name", JOB_NAME_REGISTRATION_INBOUND)
 				.toJobParameters();
 
-		JobExecution execution = jobLauncher.run(registrationInbound(), param);
+		JobExecution execution = jobLauncher.run(registrationHybrisInbound(), param);
 		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
@@ -437,10 +442,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationInbound() throws Exception
+	public Job registrationHybrisInbound() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundCSVFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
+				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readLayoutCInboundBDStep2()).build()
 				.build();
 
 	}
@@ -448,7 +453,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationCRMInbound() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundCSVFileCRMStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
+				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readLayoutCInboundBDStep2()).build()
+				.build();
+
+	}
+
+	public Job registrationFBSFMCGardenClubInbound() throws Exception
+	{
+		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readLayoutCInboundBDStep2()).build()
 				.build();
 
 	}
@@ -468,7 +481,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return the step
 	 */
 
-	public Step readInboundCSVFileStep1(String jobName) throws Exception
+	public Step readInboundHybrisFileStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(hybrisPath+folderInbound, SourceDelimitersConstants.HYBRIS, jobName)) // change source to constants
@@ -477,7 +490,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.writer(inboundRegistrationDBWriter()).listener(stepListener).build();
 	}
 
-	public Step readInboundCSVFileCRMStep1(String jobName) throws Exception
+	public Step readInboundCRMFileStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(crmPath+folderInbound, SourceDelimitersConstants.CRM, jobName))
@@ -488,10 +501,21 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.listener(stepListener).build();
 	}
 
-	@Bean
-	public Step readInboundBDStep2() throws Exception
+	public Step readInboundFBSFMCFileStep1(String jobName) throws Exception
 	{
-		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkValue)
+		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
+				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath+folderInbound, SourceDelimitersConstants.SFMC, jobName))
+				.processor(inboundFileProcessor())
+				.faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC)
+				.listener(crmWriterListener).writer(inboundRegistrationDBWriter())
+				.listener(stepListener).build();
+	}
+
+	@Bean
+	public Step readLayoutCInboundBDStep2() throws Exception
+	{
+		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
 				.reader(inboundDBReader()).listener(apiWriterListener).writer(apiWriter).build();
 	}
 
@@ -511,7 +535,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readDBSFMCOptOutsStep2()
 	{
 
-		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest>chunk(chunkValue).reader(inboundDBReaderSFMC())
+		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest>chunk(chunkLayoutB).reader(inboundDBReaderSFMC())
 				.listener(apiWriterListener).writer(layoutBWriter).build();
 
 	}

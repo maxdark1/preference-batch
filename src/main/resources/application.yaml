@@ -74,6 +74,10 @@ folders:
    sfmc:
      path: C:\batchFiles\SFMC
 
-process: #Change this
-  analytics:
+preference:
+  centre:
     chunk: 100
+    layoutb:
+      chunk: 20
+    layoutc:
+      chunk: 10

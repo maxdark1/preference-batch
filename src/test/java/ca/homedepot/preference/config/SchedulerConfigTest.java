@@ -14,7 +14,6 @@ import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.listener.skipers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skipers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
-import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.junit.jupiter.api.AfterEach;
@@ -274,7 +273,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readInboundCSVFileStep1("JOB_NAME"));
+		assertNotNull(schedulerConfig.readInboundHybrisFileStep1("JOB_NAME"));
 	}
 
 	@Test
@@ -297,7 +296,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readInboundCSVFileCRMStep1("JOB_NAME"));
+		assertNotNull(schedulerConfig.readInboundCRMFileStep1("JOB_NAME"));
 	}
 
 
@@ -334,7 +333,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readInboundBDStep2());
+		assertNotNull(schedulerConfig.readLayoutCInboundBDStep2());
 	}
 
 	@Test
