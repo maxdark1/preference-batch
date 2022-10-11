@@ -11,6 +11,8 @@ import org.springframework.core.io.Resource;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
 *   MultiResourceItemReader
@@ -30,6 +32,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     * */
     private String source;
 
+    private Map<String, Boolean> canResourceBeWriting;
+
     /*
     * Constructor to assign Source
     * */
@@ -38,16 +42,32 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
         this.source = source;
     }
 
+    public void setSource(String source)
+    {
+        this.source = source;
+    }
+
     @Autowired
-    public void setFileService(FileService fileService) {
+    public void setFileService(FileService fileService)
+    {
         this.fileService = fileService;
     }
 
     /*
     * Set jobName
     * */
-    public void setJobName(String jobName) {
+    public void setJobName(String jobName)
+    {
         this.jobName = jobName;
+    }
+
+    @Override
+    public void setResources(Resource[] resources) {
+        super.setResources(resources);
+        canResourceBeWriting = new HashMap<>();
+        for (Resource resource : resources) {
+            canResourceBeWriting.put(resource.getFilename(), true);
+        }
     }
 
     /*
@@ -57,33 +77,42 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     public T read() throws Exception
     {
         T itemRead = null;
+
         Resource resource = null;
         Boolean status = true;
         try{
             itemRead = super.read();
             resource = getCurrentResource();
         }catch(Exception e){
-            status = !status;
             resource = getCurrentResource();
+            status = !status;
             FileUtil.moveFile(resource.getFilename(), status, source);
             log.error(" An exception has ocurred reading file: " + getCurrentResource().getFilename() + "\n " + e.getCause().getMessage() );
         }
 
-        if(resource != null)
+        if(resource != null && canResourceBeWriting.get(resource.getFilename()))
         {
             writeFile(resource.getFilename(), status);
+            canResourceBeWriting.put(resource.getFilename(), false);
         }
+
+
         return itemRead;
     }
 
     /*
     * Write file into file table
     * */
-    public void writeFile(String fileName, Boolean status){
+    public void writeFile(String fileName, Boolean status)
+    {
         BigDecimal jobId = fileService.getJobId(jobName);
         Master fileStatus = MasterProcessor.getSourceId("STATUS",status?"VALID":"INVALID");
         BigDecimal masterId = MasterProcessor.getSourceId("SOURCE", source).getMaster_id();
+        Date endTime = new Date();
+        if(status)
+            endTime = null;
 
-        fileService.insert(fileName, fileStatus.getValue_val(), masterId, new Date(), jobId, new Date(), "BATCH", fileStatus.getMaster_id());
+        fileService.insert(fileName, fileStatus.getValue_val(), masterId, new Date(), jobId, new Date(), "BATCH", fileStatus.getMaster_id(), endTime);
     }
+
 }

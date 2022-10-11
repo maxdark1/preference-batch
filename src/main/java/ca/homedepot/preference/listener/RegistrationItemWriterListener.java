@@ -36,9 +36,6 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	private String jobName;
 	private BigDecimal fileID;
 
-	private Master master;
-
-	private Master sourceIDMasterObj;
 
 
 	@Override
@@ -51,6 +48,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		filesNames.forEach(key ->
 		{
 			fileID = getFromTableFileID(key);
+			System.out.println(" fileID: " + fileID );
 			files.put(key, fileID);
 		});
 
@@ -60,14 +58,18 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	}
 
 	public Map<String, BigDecimal> getMapFileNameFileId(List<? extends FileInboundStgTable> items){
-		return items.stream().collect(Collectors.toMap(key->key.getFileName(), value-> (value.getFile_id()==null)?BigDecimal.ZERO: value.getFile_id()));
+		return items.stream().map(item -> {
+			FileDTO file = new FileDTO();
+			file.setFile_id(item.getFile_id());
+			file.setFile_name(item.getFileName());
+			return file;
+		}).distinct().collect(Collectors.toMap(key->key.getFile_name(), value-> (value.getFile_id()==null)?BigDecimal.ZERO: value.getFile_id()));
 	}
 
 	public BigDecimal getFromTableFileID(String fileName)
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-
-		System.out.println(" JobId =  " + jobId + " FileName = " + fileName);
+		System.out.println(jobId);
 		return fileService.getFile(fileName, jobId);
 	}
 
@@ -78,12 +80,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 
 		files.forEach((fileName, fileId)->{
-			fileService.updateInboundStgTableStatus(fileId,"IP");
-			try {
-				FileUtil.moveFile(fileName, true, sourceIDMasterObj.getValue_val());
-			} catch (IOException e) {
-				log.error(" An exception occurs when we try to move the file {}: {}",fileName, e.getMessage());
-			}
+			fileService.updateInboundStgTableStatus(fileId,"IP", "NS");
 		});
 
 

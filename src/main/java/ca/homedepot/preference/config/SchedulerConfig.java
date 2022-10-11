@@ -9,11 +9,14 @@ import javax.sql.DataSource;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
+import ca.homedepot.preference.listener.skipers.SkipListenerLayoutB;
+import ca.homedepot.preference.listener.skipers.SkipListenerLayoutC;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
+import org.springframework.batch.core.annotation.AfterWrite;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -24,6 +27,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -108,9 +112,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${folders.processed}")
 	String folderProcessed;
 
-
 	@Value("${inbound.files.registration}")
-	String hybrisRegistrationFile;
+	String hybrisCrmRegistrationFile;
 
 	@Value("${inbound.files.sfmcUnsubscribedOutlook}")
 	String fileExtTargetEmail;
@@ -142,9 +145,17 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private APIWriterListener apiWriterListener;
 	@Autowired
+	private SkipListenerLayoutB skipListenerLayoutB;
+
+	@Autowired
+	private SkipListenerLayoutC skipListenerLayoutC;
+	@Autowired
 	private RegistrationLayoutBWriter layoutBWriter;
 	@Autowired
 	private MasterProcessor masterProcessor;
+
+	@Autowired
+	private StepErrorLoggingListener stepListener;
 
 	@Autowired
 	public void setUpListener()
@@ -159,17 +170,28 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 		exactTargetEmailWriterListener = new RegistrationItemWriterListener();
 		exactTargetEmailWriterListener.setFileService(hybrisWriterListener.getFileService());
+		apiWriter.setFileService(hybrisWriterListener.getFileService());
+		layoutBWriter.setFileService(hybrisWriterListener.getFileService());
 		crmWriterListener = new RegistrationItemWriterListener();
 		crmWriterListener.setFileService(hybrisWriterListener.getFileService());
 		crmWriterListener.setJobName(JOB_NAME_REGISTRATION_CRM_INBOUND);
-		//exactTargetEmailWriterListener.setFileName(fileExtTargetEmail);
 		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
+
+
 		FileUtil.setCrmPath(crmPath);
 		FileUtil.setHybrisPath(hybrisPath);
 		FileUtil.setSfmcPath(sfmcPath);
 		FileUtil.setError(folderError);
 		FileUtil.setProcessed(folderProcessed);
 		FileUtil.setInbound(folderInbound);
+
+		FileValidation.setFbSFMCBaseName(fileRegistrationFbSfmc);
+		FileValidation.setHybrisBaseName(hybrisCrmRegistrationFile);
+		FileValidation.setSfmcBaseName(fileExtTargetEmail);
+	}
+
+	public void setCrmWriterListener(RegistrationItemWriterListener crmWriterListener) {
+		this.crmWriterListener = crmWriterListener;
 	}
 
 	public void setHybrisWriterListener(RegistrationItemWriterListener hybrisWriterListener)
@@ -197,6 +219,24 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		this.jobListener = jobListener;
 	}
+
+
+	public void setSkipListenerLayoutB(SkipListenerLayoutB skipListenerLayoutB) {
+		this.skipListenerLayoutB = skipListenerLayoutB;
+	}
+
+	public void setSkipListenerLayoutC(SkipListenerLayoutC skipListenerLayoutC) {
+		this.skipListenerLayoutC = skipListenerLayoutC;
+	}
+
+	public void setStepListener(StepErrorLoggingListener stepListener) {
+		this.stepListener = stepListener;
+	}
+
+	public void setBatchTasklet(BatchTasklet batchTasklet) {
+		this.batchTasklet = batchTasklet;
+	}
+
 	/*
 	 * SCHEDULING JOBS
 	 */
@@ -205,36 +245,34 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public void getMasterInfo()
 	{
 		masterProcessor.getMasterInfo();
-		hybrisWriterListener.setSourceIDMasterObj(MasterProcessor.getSourceId("SOURCE","hybris"));
-		exactTargetEmailWriterListener.setSourceIDMasterObj(MasterProcessor.getSourceId("SOURCE","SFMC"));
-		crmWriterListener.setSourceIDMasterObj(MasterProcessor.getSourceId("SOURCE", "CRM"));
 	}
 	///***************************************************
 
-	//@Scheduled(cron = "${cron.job.registration}")
-	public void processRegistrationInbound() throws Exception
+	@Scheduled(cron = "${cron.job.registration}")
+	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_INBOUND, String.valueOf(System.currentTimeMillis()))
 				.addString("directory", hybrisPath+folderInbound)
-				.addString("document", hybrisRegistrationFile)
+				.addString("document", hybrisCrmRegistrationFile)
 				.addString("source", SourceDelimitersConstants.HYBRIS)
+				.addString("job_name", JOB_NAME_REGISTRATION_INBOUND)
 				.toJobParameters();
 
 		JobExecution execution = jobLauncher.run(registrationInbound(), param);
 		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
-	//@Scheduled(cron = "${cron.job.registration}")
+	@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationCRMInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_CRM_INBOUND, String.valueOf(System.currentTimeMillis()))
 				.addString("directory", crmPath+folderInbound)
-				.addString("document", hybrisRegistrationFile)
 				.addString("source", SourceDelimitersConstants.CRM)
+				.addString("job_name", JOB_NAME_REGISTRATION_CRM_INBOUND)
 				.toJobParameters();
 
         JobExecution execution = jobLauncher.run(registrationCRMInbound(), param);
@@ -250,8 +288,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
 				.addString("directory", sfmcPath+folderInbound)
-				.addString("document", fileExtTargetEmail)
 				.addString("source", SourceDelimitersConstants.SFMC)
+				.addString("job_name", JOB_NAME_EXTACT_TARGET_EMAIL)
 				.toJobParameters();
 		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(), param);
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
@@ -267,12 +305,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * */
 	@StepScope
 	public MultiResourceItemReaderInbound<InboundRegistration> multiResourceItemReaderInboundFileReader(@Value("#{jobParameters['directory']}") String directory,
-																										@Value("#{jobParameters['documentName']}") String documentName,
-																										@Value("#{jobParameters['source']}") String source){
+																										@Value("#{jobParameters['source']}") String source,
+																										@Value("#{jobParameters['job_name']}") String jobName){
 		MultiResourceItemReaderInbound<InboundRegistration> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
 		multiReaderResourceInbound.setName("multiResourceItemReaderInboundFileReader");
+		multiReaderResourceInbound.setJobName(jobName);
+		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 
-		multiReaderResourceInbound.setResources(getResources(directory, documentName, source));
+		multiReaderResourceInbound.setResources(getResources(directory, source));
 		multiReaderResourceInbound.setDelegate(inboundFileReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
@@ -280,14 +320,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@StepScope
 	public MultiResourceItemReader<EmailOptOuts> multiResourceItemReaderSFMCUnsubcribed(@Value("#{jobParameters['directory']}") String directory,
-																						@Value("#{jobParameters['documentName']}") String documentName,
-																						@Value("#{jobParameters['source']}") String source, String jobName){
+																						@Value("#{jobParameters['source']}") String source,
+																						@Value("#{jobParameters['job_name']}") String jobName){
 		MultiResourceItemReaderInbound<EmailOptOuts> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
 		multiReaderResourceInbound.setJobName(jobName);
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 		multiReaderResourceInbound.setName("multiResourceItemReaderSFMCUnsubcribed");
 
-		multiReaderResourceInbound.setResources(getResources(directory, documentName, source));
+		multiReaderResourceInbound.setResources(getResources(directory, source));
 		multiReaderResourceInbound.setDelegate(inboundEmailPreferencesSMFCReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
@@ -400,7 +440,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationInbound() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundCSVFileStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
+				.start(readInboundCSVFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
 				.build();
 
 	}
@@ -408,7 +448,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationCRMInbound() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundCSVFileCRMStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
+				.start(readInboundCSVFileCRMStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
 				.build();
 
 	}
@@ -428,19 +468,24 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return the step
 	 */
 
-	public Step readInboundCSVFileStep1() throws Exception
+	public Step readInboundCSVFileStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(hybrisPath+folderInbound,hybrisRegistrationFile, SourceDelimitersConstants.HYBRIS)) // change source to constants
-				.processor(inboundFileProcessor()).listener(hybrisWriterListener).writer(inboundRegistrationDBWriter()).listener(new StepErrorLoggingListener()).build();
+				.reader(multiResourceItemReaderInboundFileReader(hybrisPath+folderInbound, SourceDelimitersConstants.HYBRIS, jobName)) // change source to constants
+				.processor(inboundFileProcessor()).faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(hybrisWriterListener)
+				.writer(inboundRegistrationDBWriter()).listener(stepListener).build();
 	}
 
-	public Step readInboundCSVFileCRMStep1() throws Exception
+	public Step readInboundCSVFileCRMStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(crmPath+folderInbound,hybrisRegistrationFile, SourceDelimitersConstants.CRM))
-				.processor(inboundFileProcessor()).listener(crmWriterListener).writer(inboundRegistrationDBWriter())
-				.listener(new StepErrorLoggingListener()).build();
+				.reader(multiResourceItemReaderInboundFileReader(crmPath+folderInbound, SourceDelimitersConstants.CRM, jobName))
+				.processor(inboundFileProcessor())
+				.faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC)
+				.listener(crmWriterListener).writer(inboundRegistrationDBWriter())
+				.listener(stepListener).build();
 	}
 
 	@Bean
@@ -456,8 +501,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readSFMCOptOutsStep1(String jobName)
 	{
 		return stepBuilderFactory.get("readSFMCOptOutsStep1").<EmailOptOuts, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath+folderInbound,fileExtTargetEmail, SourceDelimitersConstants.SFMC, jobName)).processor(extactExactTargetEmailProcessor())
-				.listener(exactTargetEmailWriterListener).writer(inboundRegistrationDBWriter()).build();
+				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath+folderInbound, SourceDelimitersConstants.SFMC, jobName))
+				.processor(extactExactTargetEmailProcessor()).faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutB).listener(exactTargetEmailWriterListener).writer(inboundRegistrationDBWriter()).listener(stepListener).build();
 	}
 
 
@@ -492,15 +538,16 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 
 
-	public Resource[] getResources(String folder, String baseName, String source)
+	public Resource[] getResources(String folder, String source)
 	{
-		List<String> filesName = FileUtil.getFilesOnFolder(folder, baseName, source);
+		List<String> filesName = FileUtil.getFilesOnFolder(folder, source);
 
 		Resource[] resources = new Resource[filesName.size()];
 
 		for(int i = 0; i< resources.length;i++){
 			resources[i] = new FileSystemResource(filesName.get(i));
 		}
+		System.out.println(filesName.toString());
 
 		return resources;
 	}

@@ -1,7 +1,9 @@
 package ca.homedepot.preference.writer;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import ca.homedepot.preference.service.FileService;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +20,16 @@ public class RegistrationAPIWriter implements ItemWriter<RegistrationRequest>
 {
 	private PreferenceService preferenceService;
 
+	private FileService fileService;
+
 
 	@Override
 	public void write(List<? extends RegistrationRequest> items) throws Exception
 	{
 		RegistrationResponse response = preferenceService.preferencesRegistration(items);
 
-		log.info("Service Response {} :", response.toString());
+		response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus( new BigDecimal(resp.getId()),resp.getStatus().substring(0,1), "IP"));
+		log.info("Service Response {} :", response);
 
 	}
 }

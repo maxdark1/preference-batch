@@ -1,15 +1,15 @@
 package ca.homedepot.preference.processor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 //@SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,9 +50,12 @@ public class RegistrationItemProcessorTest
 		assertEquals("02-02-2022 22:22:22", input.getAsOfDate());
 		input.setAsOfDate(null);
 
-		FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
+		ValidationException validationException = assertThrows(ValidationException.class, ()->{
+			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
+		});
 
-		assertNull(fileInboundStgTable);
+		assertNotNull(validationException);
+		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
 	}
 
 	@Test
@@ -60,9 +63,12 @@ public class RegistrationItemProcessorTest
 	{
 		input.setEmail_Permission("a");
 
-		FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
+		ValidationException validationException = assertThrows(ValidationException.class, ()->{
+			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
+		});
 
-		assertNull(fileInboundStgTable);
+		assertNotNull(validationException);
+		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
 
 	}
 

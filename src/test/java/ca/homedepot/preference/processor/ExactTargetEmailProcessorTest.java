@@ -1,13 +1,14 @@
 package ca.homedepot.preference.processor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import org.springframework.batch.item.validator.ValidationException;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExactTargetEmailProcessorTest
 {
@@ -34,8 +35,13 @@ class ExactTargetEmailProcessorTest
 
 		FileInboundStgTable fileInboundStgTable = exactTargetEmailProcessor.process(emailOptOuts);
 		emailOptOuts.setEmailAddress(null);
-		FileInboundStgTable fileInboundStgTableNull = exactTargetEmailProcessor.process(emailOptOuts);
+
+		ValidationException validationException = assertThrows(ValidationException.class, ()->{
+			exactTargetEmailProcessor.process(emailOptOuts);
+		});
+
+
+		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
 		assertNotNull(fileInboundStgTable);
-		assertNull(fileInboundStgTableNull);
 	}
 }

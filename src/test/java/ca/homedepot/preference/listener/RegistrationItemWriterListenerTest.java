@@ -36,8 +36,6 @@ class RegistrationItemWriterListenerTest {
         registrationItemWriterListener.setFileService(fileService);
         registrationItemWriterListener.setJobName("JOB_NAME");
         registrationItemWriterListener.setFileID(BigDecimal.ONE);
-        registrationItemWriterListener.setMaster(new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true));
-        registrationItemWriterListener.setSourceIDMasterObj(new Master(BigDecimal.TEN, BigDecimal.ONE, "TEST2", "TEST2", true));
 
     }
 
@@ -58,7 +56,6 @@ class RegistrationItemWriterListenerTest {
         BigDecimal jobId = BigDecimal.ONE;
 
         Mockito.when(fileService.getJobId(eq(jobName))).thenReturn(jobId);
-       // Mockito.when(fileService.insert(eq(fileName), eq(fileStatus.getValue_val()), eq(BigDecimal.TEN), eq(new Date()), eq(jobId), eq( new Date()), eq(insertedBy), eq(BigDecimal.ONE))).thenReturn(records);
         Mockito.when(fileService.getFile(eq(fileName), eq(BigDecimal.ONE))).thenReturn(fileId);
 
         BigDecimal currentFileId = registrationItemWriterListener.getFromTableFileID(fileName);
@@ -85,13 +82,4 @@ class RegistrationItemWriterListenerTest {
         assertEquals(BigDecimal.ONE, registrationItemWriterListener.getFileID());
     }
 
-    @Test
-    void getMaster() {
-        assertNotNull(registrationItemWriterListener.getMaster());
-    }
-
-    @Test
-    void getSourceIDMasterObj() {
-        assertNotNull(registrationItemWriterListener.getSourceIDMasterObj());
-    }
 }

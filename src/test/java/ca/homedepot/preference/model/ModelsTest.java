@@ -50,8 +50,10 @@ public class ModelsTest
 
 		emailOptOuts.setStatus("status2");
 		emailOptOuts.setEmailAddress("addr2");
+		emailOptOuts.setResource(new FileSystemResource("fileName.txt"));
 		assertEquals("status2", emailOptOuts.getStatus());
 		assertEquals("addr2", emailOptOuts.getEmailAddress());
+		assertEquals("fileName.txt", emailOptOuts.getFileName());
 
 	}
 
