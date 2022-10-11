@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class FileDTO
 {
 	private BigDecimal file_id;

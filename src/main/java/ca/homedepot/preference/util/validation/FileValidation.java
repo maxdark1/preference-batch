@@ -51,8 +51,9 @@ public class FileValidation {
     }
     public static boolean validateFileName(String fileName, String source){
         String formatDate = "yyyyMMdd";
+        String baseName =  getFileName(fileName);
         int start = getBaseName(source).length(), end = start+formatDate.length();
-        if(end > fileName.length())
+        if(end != baseName.length())
         {
             return false;
         }

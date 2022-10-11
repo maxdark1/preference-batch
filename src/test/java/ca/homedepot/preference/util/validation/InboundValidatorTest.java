@@ -18,10 +18,14 @@ class InboundValidatorTest
 
 	InboundRegistration input;
 
+
+	StringBuilder error ;
+
 	@BeforeEach
 	public void setup()
 	{
 		input = new InboundRegistration();
+		error = new StringBuilder();
 		input.setAsOfDate("08-26-2022 10:10:10");
 		input.setLanguage_Preference("E");
 		input.setEmail_Permission("1");
@@ -44,8 +48,9 @@ class InboundValidatorTest
 		String field = "test_field", value = "Wrong length test";
 		int maxLength = 3;
 
+		InboundValidator.validateMaxLengthNotReq(field, value, maxLength, error);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateMaxLengthNotReq(field, value, maxLength);
+			InboundValidator.isValidationsErros(error);
 		});
 		assertTrue(exception.getMessage().contains(field));
 	}
@@ -55,8 +60,10 @@ class InboundValidatorTest
 	{
 		input.setLanguage_Preference("ENGLISH");
 
+		InboundValidator.validateLanguagePref(input, error);
+
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateLanguagePref(input);
+			InboundValidator.isValidationsErros(error);
 		});
 
 		assertTrue(exception.getMessage().contains(input.getLanguage_Preference()));
@@ -67,8 +74,9 @@ class InboundValidatorTest
 	{
 		input.setEmail_Address("item");
 
+		InboundValidator.validateEmailFormat(input.getEmail_Address(), error);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateEmailFormat(input.getEmail_Address());
+			InboundValidator.isValidationsErros(error);
 		});
 	}
 
@@ -78,7 +86,7 @@ class InboundValidatorTest
 		String date = "09-06-2022 2:23:23";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 
-		Date validatedDate = InboundValidator.validateDateFormat(date);
+		Date validatedDate = InboundValidator.validateDateFormat(date, error);
 
 		assertEquals(validatedDate, simpleDateFormat.parse(date));
 	}
@@ -88,15 +96,63 @@ class InboundValidatorTest
 	{
 		String date = "09/06/2022 2:23:23";
 
+		InboundValidator.validateDateFormat(date, error);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateDateFormat(date);
+			InboundValidator.isValidationsErros(error);
 		});
-		assertTrue(exception.getMessage().contains("invalid date format"));
+		assertTrue(exception.getMessage().contains("Invalid date format"));
 	}
 
 	@Test
-	void validateNumberFormat()
+	void validateNumberFormatSourceID()
 	{
+		InboundRegistration item = new InboundRegistration();
+		item.setSource_ID( null);
+
+		InboundValidator.validateNumberFormat(item, error);
+
+		assertEquals("0", item.getSource_ID());
+	}
+
+	@Test
+	void validateNumberFormatValue5(){
+		InboundRegistration item = new InboundRegistration();
+		item.setValue_5( "a");
+
+		InboundValidator.validateNumberFormat(item, error);
+
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.isValidationsErros(error);
+		});
+		assertTrue(exception.getMessage().contains("invalid"));
+	}
+
+	@Test
+	void validateNumberFormatValue5Numeric(){
+		InboundRegistration item = new InboundRegistration();
+		item.setValue_5( "10");
+
+		InboundValidator.validateNumberFormat(item, error);
+
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.isValidationsErros(error);
+		});
+		assertTrue(exception.getMessage().contains("invalid"));
+	}
+
+
+	@Test
+	void validateNumberFormatPhonePermission()
+	{
+		InboundRegistration item = new InboundRegistration();
+		item.setPhone_Permission( "a");
+
+		InboundValidator.validateNumberFormat(item, error);
+
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.isValidationsErros(error);
+		});
+		assertTrue(exception.getMessage().contains("invalid"));
 
 	}
 
@@ -104,15 +160,16 @@ class InboundValidatorTest
 	void validateIsNumber()
 	{
 		String number = "4";
-		Integer value = InboundValidator.validateIsNumber(number);
+		Integer value = InboundValidator.validateIsNumber(number, error);
 
 		assertEquals(value, Integer.parseInt(number));
 
 		number = "a";
 
 		String finalNumber = number;
+		InboundValidator.validateIsNumber(finalNumber, error);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateIsNumber(finalNumber);
+			InboundValidator.isValidationsErros(error);
 		});
 
 		assertTrue(exception.getMessage().contains("invalid number format"));
@@ -123,9 +180,9 @@ class InboundValidatorTest
 	void validValue_Number()
 	{
 		String field = "test_field";
-
+		InboundValidator.validValue_Number(2, field, error);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validValue_Number(2, field);
+			InboundValidator.isValidationsErros(error);
 		});
 
 		assertTrue(exception.getMessage().contains(field));
@@ -135,18 +192,30 @@ class InboundValidatorTest
 	void validateIsRequired()
 	{
 
-		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateIsRequired(null);
-		});
 
-		assertTrue(exception.getMessage().contains("should be present"));
+
+
 		input.setLanguage_Preference(null);
 
+		InboundValidator.validateIsRequired(input, error);
 		ValidationException exception1 = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateIsRequired(input);
+				InboundValidator.isValidationsErros(error);
 		});
 
 		assertTrue(exception1.getMessage().contains("language_pref"));
+	}
+
+	@Test
+	void validateIsRequiredEmptyObj(){
+
+		InboundValidator.validateIsRequired(null, error);
+
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.isValidationsErros(error);
+		});
+
+		assertTrue(exception.getMessage().contains("should be present"));
+
 	}
 
 	@Test
@@ -154,8 +223,11 @@ class InboundValidatorTest
 	{
 		String value = "", field = "test_field";
 
+
+		InboundValidator.validateRequired(value, field, error);
+
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			InboundValidator.validateRequired(value, field);
+			InboundValidator.isValidationsErros(error);
 		});
 
 		assertTrue(exception.getMessage().contains(field));

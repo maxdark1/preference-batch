@@ -27,11 +27,11 @@ class FileValidationTest {
 
     @Test
     void validateFileName() {
-        String baseName ="EXAMPLE_";
-        String fileNameRightOne = "EXAMPLE_20221202", fileNameWrongOne = "EXAMPLE";
+        String source ="hybris";
+        String fileNameRightOne = "OPTIN_STANDARD_FLEX_20221202", fileNameWrongOne = "EXAMPLE";
 
-        boolean fileNameCorrect = FileValidation.validateFileName(fileNameRightOne, baseName),
-        fileNameWrong = FileValidation.validateFileName(fileNameWrongOne, baseName);
+        boolean fileNameCorrect = FileValidation.validateFileName(fileNameRightOne, source),
+        fileNameWrong = FileValidation.validateFileName(fileNameWrongOne, source);
 
         assertTrue(fileNameCorrect);
         assertTrue(!fileNameWrong);

@@ -17,8 +17,12 @@ public interface SqlQueriesConstants
 
 	/// ADD STATUS AS WELL IN HERE FIST (NS records)
 	String SQL_GET_LAST_FILE_INSERTED_RECORDS = "SELECT*FROM public.hdpc_file_inbound_stg\n" +
-			"INNER JOIN public.hdpc_file ON \n" +
-			"hdpc_file.file_id = hdpc_file_inbound_stg.file_id AND hdpc_file.end_time is null; ";
+			"WHERE status = 'IP' ";
+
+	String SQL_GET_FILES_TO_MOVE = "SELECT file_id, file_name, source_type, hdpc_master.value_val\n" +
+			"\tFROM public.hdpc_file\n" +
+			"\tINNER JOIN hdpc_master ON hdpc_master.master_id = hdpc_file.source_type\n" +
+			"\tWHERE end_time is null;";
 	/*
 	 * INSERTIONS
 	 */
@@ -28,6 +32,18 @@ public interface SqlQueriesConstants
 	String SQL_INSERT_HDPC_FILE = "INSERT INTO hdpc_file (file_name, job_id, source_type, "
 			+ "status,start_time, inserted_by, inserted_date, status_id, end_time) " + "VALUES (? , ? , ?, ?, ? , ?, ?, ?, ?); ";
 
+	String SQL_INSERT_FILE_INBOUND_STG_ERROR = "INSERT INTO public.hdpc_file_inbound_stg_error(\n" +
+			"\tfile_id, status, source_id, src_phone_number, src_first_name, src_last_name, src_address1, " +
+			"src_address2, src_city, src_state, src_postal_code, src_language_pref, src_email_address, src_title_name, phone_pref, " +
+			"email_address_pref, mail_address_pref, src_date, email_status, src_phone_extension, email_pref_hd_ca, email_pref_garden_club, email_pref_pro," +
+			" email_pref_new_mover, cell_sms_flag, business_name, customer_nbr, org_name, store_nbr, cust_type_cd, content1, " +
+			"value1, content2, value2, content3, value3, content4, value4, content5, " +
+			"value5, content6, value6, content7, value7, content8, value8, content9, " +
+			"value9, content10, value10, content11, value11, content12, value12, content13, " +
+			"value13, content14, value14, content15, value15, content16,value16, content17, " +
+			"value17, content18, value18, content19, value19, content20, value20, inserted_by, inserted_date)\n" +
+			"\tVALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?," +
+			"?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 	String SQL_INSERT_FILE_INBOUND_STG_REGISTRATION = "INSERT INTO hdpc_file_inbound_stg "
 			+ "(file_id, status,src_date, source_id, src_phone_number, src_first_name,  src_last_name,"
 			+ "src_address1, src_address2, src_city, src_state, src_postal_code, src_language_pref,"
@@ -53,11 +69,11 @@ public interface SqlQueriesConstants
 	String SQL_UPDATE_STAUTS_JOB = "UPDATE hdpc_job\n" + "\tSET  status_id=?, updated_date=?, updated_by=?,status = ?, end_time = ?\n"
 			+ "\tWHERE start_time = ? AND job_name = ? AND status = ?;";
 
-	String SQL_UPDATE_STAUTS_FILE = "UPDATE hdpc_file \n" + "\tSET  status=?, updated_date=?\n"
-			+ "\tWHERE file_name = ? AND status = ?;";
+	String SQL_UPDATE_STAUTS_FILE = "UPDATE hdpc_file \n" + "\tSET  status=?, status_id = ?,updated_date=?, endTime = ?, updated_by = ? \n"
+			+ "\tWHERE file_name = ? AND status = ? AND job_id = ?;";
 
-	String SQL_UPDATE_ENDTIME_FILE = "UPDATE hdpc_file SET end_time = ?, updated_date = ?, updated_by = ? " +
+	String SQL_UPDATE_ENDTIME_FILE = "UPDATE hdpc_file SET end_time = ?, updated_date = ?, updated_by = ?, status = ?, status_id = ? " +
 			" WHERE file_id = ?";
 
-	String SQL_UPDATE_STATUS_INBOUND = "UPDATE hdpc_file_inbound_stg SET status = ?, updated_date = ?, updated_by = ? WHERE status = 'NS' and file_id = ?";
+	String SQL_UPDATE_STATUS_INBOUND = "UPDATE hdpc_file_inbound_stg SET status = ?, updated_date = ?, updated_by = ? WHERE status = 'IP' and sequence_nbr = ?";
 }

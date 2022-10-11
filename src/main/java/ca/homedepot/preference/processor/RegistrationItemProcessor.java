@@ -27,14 +27,14 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		String asOfDateStr = item.getAsOfDate();
 		try
 		{
-			validate(item, builder);
-			asOfDate = validateDateFormat(asOfDateStr);
-
+			StringBuilder error = validate(item, builder);
+			asOfDate = validateDateFormat(asOfDateStr, error);
+			InboundValidator.isValidationsErros(error);
 		}
 		catch (ValidationException e)
 		{
 			LOG.error(" Validation error {}: ", e.getMessage());
-			return null;
+			throw e;
 		}
 		LOG.info(" Processing inbound item {}: ", item);
 		builder.status("NS").fileName(item.getFileName()).src_language_pref(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date())
@@ -64,68 +64,71 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		return builder.build();
 	}
 
-	private void validate(final InboundRegistration item, final FileInboundStgTable.FileInboundStgTableBuilder builder)
+	private StringBuilder validate(final InboundRegistration item, final FileInboundStgTable.FileInboundStgTableBuilder builder)
 	{
-		validateIsRequired(item);
-		validateMaxLength(item);
-		validateMaxLengthReqField(item);
-		validateNumberFormat(item, builder);
-		validateEmailFormat(item.getEmail_Address());
-		validateLanguagePref(item);
+		StringBuilder error = new StringBuilder();
+		validateIsRequired(item, error);
+		if(item != null){
+			validateMaxLength(item, error);
+			validateMaxLengthReqField(item, error);
+			validateNumberFormat(item, error);
+			validateEmailFormat(item.getEmail_Address(), error);
+			validateLanguagePref(item, error);
+		}
 
+		return error;
+	}
+
+	private void validateMaxLengthReqField(InboundRegistration item, StringBuilder error)
+	{
+		item.setLanguage_Preference(InboundValidator.validateMaxLength("language_pref", item.getLanguage_Preference(), 2, error));
+		item.setAsOfDate(InboundValidator.validateMaxLength("as_of_date", item.getAsOfDate(), 19, error));
+		item.setEmail_Permission(InboundValidator.validateMaxLength("email_permission", item.getEmail_Permission(), 2, error));
+		item.setMail_Permission(InboundValidator.validateMaxLength("mail_permission", item.getMail_Permission(), 2, error));
+		item.setEmailPrefHDCA(InboundValidator.validateMaxLength("email_pref_hd_ca", item.getEmailPrefHDCA(), 2, error));
+		item.setGardenClub(InboundValidator.validateMaxLength("email_pref_garden_club", item.getGardenClub(), 2, error));
+		item.setEmailPrefPRO(InboundValidator.validateMaxLength("email_pref_pro", item.getEmailPrefPRO(), 2, error));
+		item.setNewMover(InboundValidator.validateMaxLength("email_pref_new_mover", item.getNewMover(), 2, error));
+		item.setContent_1(InboundValidator.validateMaxLength("content1", item.getContent_1(), 30, error));
+		item.setContent_2(InboundValidator.validateMaxLength("content2", item.getContent_2(), 30, error));
+		item.setContent_3(InboundValidator.validateMaxLength("content3", item.getContent_3(), 30, error));
+		item.setContent_5(InboundValidator.validateMaxLength("content5", item.getContent_5(), 30, error));
+		item.setContent_6(InboundValidator.validateMaxLength("content6", item.getContent_6(), 30, error));
 
 	}
 
-	private void validateMaxLengthReqField(InboundRegistration item)
+	private void validateMaxLength(InboundRegistration item, StringBuilder error)
 	{
-		InboundValidator.validateMaxLength("language_pref", item.getLanguage_Preference(), 2);
-		InboundValidator.validateMaxLength("as_of_date", item.getAsOfDate(), 19);
-		InboundValidator.validateMaxLength("email_permission", item.getEmail_Permission(), 2);
-		InboundValidator.validateMaxLength("mail_permission", item.getMail_Permission(), 2);
-		InboundValidator.validateMaxLength("email_pref_hd_ca", item.getEmailPrefHDCA(), 2);
-		InboundValidator.validateMaxLength("email_pref_garden_club", item.getGardenClub(), 2);
-		InboundValidator.validateMaxLength("email_pref_pro", item.getEmailPrefPRO(), 2);
-		InboundValidator.validateMaxLength("email_pref_new_mover", item.getNewMover(), 2);
-		InboundValidator.validateMaxLength("content1", item.getContent_1(), 30);
-		InboundValidator.validateMaxLength("content2", item.getContent_2(), 30);
-		InboundValidator.validateMaxLength("content3", item.getContent_3(), 30);
-		InboundValidator.validateMaxLength("content5", item.getContent_5(), 30);
-		InboundValidator.validateMaxLength("content6", item.getContent_6(), 30);
-
-	}
-
-	private void validateMaxLength(InboundRegistration item)
-	{
-		validateMaxLengthNotReq("email_addr", item.getEmail_Address(), 72);
-		validateMaxLengthNotReq("phone_permission", item.getPhone_Permission(), 2);
-		validateMaxLengthNotReq("phone_num", item.getPhone_Number(), 10);
-		validateMaxLengthNotReq("phone_ext", item.getPhone_Extension(), 6);
-		validateMaxLengthNotReq("title", item.getTitle(), 20);
-		validateMaxLengthNotReq("first_name", item.getFirst_Name(), 40);
-		validateMaxLengthNotReq("last_name", item.getLast_Name(), 60);
-		validateMaxLengthNotReq("addr1", item.getAddress_1(), 100);
-		validateMaxLengthNotReq("addr2", item.getAddress_2(), 60);
-		validateMaxLengthNotReq("city", item.getCity(), 60);
-		validateMaxLengthNotReq("province", item.getProvince(), 2);
-		validateMaxLengthNotReq("postal_code", item.getPostal_Code(), 7);
-		validateMaxLengthNotReq("sms_flag", item.getSMS_Flag(), 2);
-		validateMaxLengthNotReq("fax_number", item.getFax_Number(), 30);
-		validateMaxLengthNotReq("fax_extension", item.getFax_Extension(), 6);
-		validateMaxLengthNotReq("content4", item.getContent_4(), 30);
-		validateMaxLengthNotReq("content7", item.getContent_7(), 30);
-		validateMaxLengthNotReq("content8", item.getContent_8(), 30);
-		validateMaxLengthNotReq("content9", item.getContent_9(), 30);
-		validateMaxLengthNotReq("content10", item.getContent_10(), 30);
-		validateMaxLengthNotReq("content11", item.getContent_11(), 30);
-		validateMaxLengthNotReq("content12", item.getContent_12(), 30);
-		validateMaxLengthNotReq("content13", item.getContent_13(), 30);
-		validateMaxLengthNotReq("content14", item.getContent_14(), 30);
-		validateMaxLengthNotReq("content15", item.getContent_15(), 30);
-		validateMaxLengthNotReq("content16", item.getContent_16(), 30);
-		validateMaxLengthNotReq("content17", item.getContent_17(), 30);
-		validateMaxLengthNotReq("content18", item.getContent_18(), 30);
-		validateMaxLengthNotReq("content19", item.getContent_19(), 30);
-		validateMaxLengthNotReq("content20", item.getContent_20(), 30);
+		item.setEmail_Address(validateMaxLengthNotReq("email_addr", item.getEmail_Address(), 72, error));
+		item.setPhone_Permission(validateMaxLengthNotReq("phone_permission", item.getPhone_Permission(), 2, error));
+		item.setPhone_Number(validateMaxLengthNotReq("phone_num", item.getPhone_Number(), 10, error));
+		item.setPhone_Extension(validateMaxLengthNotReq("phone_ext", item.getPhone_Extension(), 6, error));
+		item.setTitle(validateMaxLengthNotReq("title", item.getTitle(), 20, error));
+		item.setFirst_Name(validateMaxLengthNotReq("first_name", item.getFirst_Name(), 40, error));
+		item.setLast_Name(validateMaxLengthNotReq("last_name", item.getLast_Name(), 60, error));
+		item.setAddress_1(validateMaxLengthNotReq("addr1", item.getAddress_1(), 100, error));
+		item.setAddress_2(validateMaxLengthNotReq("addr2", item.getAddress_2(), 60, error));
+		item.setCity(validateMaxLengthNotReq("city", item.getCity(), 60, error));
+		item.setProvince(validateMaxLengthNotReq("province", item.getProvince(), 2, error));
+		item.setPostal_Code(validateMaxLengthNotReq("postal_code", item.getPostal_Code(), 7, error));
+		item.setSMS_Flag(validateMaxLengthNotReq("sms_flag", item.getSMS_Flag(), 2, error));
+		item.setFax_Number(validateMaxLengthNotReq("fax_number", item.getFax_Number(), 30, error));
+		item.setFax_Extension(validateMaxLengthNotReq("fax_extension", item.getFax_Extension(), 6, error));
+		item.setContent_4(validateMaxLengthNotReq("content4", item.getContent_4(), 30, error));
+		item.setContent_7(validateMaxLengthNotReq("content7", item.getContent_7(), 30, error));
+		item.setContent_8(validateMaxLengthNotReq("content8", item.getContent_8(), 30, error));
+		item.setContent_9(validateMaxLengthNotReq("content9", item.getContent_9(), 30, error));
+		item.setContent_10(validateMaxLengthNotReq("content10", item.getContent_10(), 30, error));
+		item.setContent_11(validateMaxLengthNotReq("content11", item.getContent_11(), 30, error));
+		item.setContent_12(validateMaxLengthNotReq("content12", item.getContent_12(), 30, error));
+		item.setContent_13(validateMaxLengthNotReq("content13", item.getContent_13(), 30, error));
+		item.setContent_14(validateMaxLengthNotReq("content14", item.getContent_14(), 30, error));
+		item.setContent_15(validateMaxLengthNotReq("content15", item.getContent_15(), 30, error));
+		item.setContent_16(validateMaxLengthNotReq("content16", item.getContent_16(), 30, error));
+		item.setContent_17(validateMaxLengthNotReq("content17", item.getContent_17(), 30, error));
+		item.setContent_18(validateMaxLengthNotReq("content18", item.getContent_18(), 30, error));
+		item.setContent_19(validateMaxLengthNotReq("content19", item.getContent_19(), 30, error));
+		item.setContent_20(validateMaxLengthNotReq("content20", item.getContent_20(), 30, error));
 	}
 
 
