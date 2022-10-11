@@ -175,7 +175,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		crmWriterListener = new RegistrationItemWriterListener();
 		crmWriterListener.setFileService(hybrisWriterListener.getFileService());
 		crmWriterListener.setJobName(JOB_NAME_REGISTRATION_CRM_INBOUND);
-		//exactTargetEmailWriterListener.setFileName(fileExtTargetEmail);
 		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
 
 
@@ -249,7 +248,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 	///***************************************************
 
-	//@Scheduled(cron = "${cron.job.registration}")
+	@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());

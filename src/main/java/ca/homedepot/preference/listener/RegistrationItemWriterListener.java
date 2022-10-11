@@ -48,6 +48,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		filesNames.forEach(key ->
 		{
 			fileID = getFromTableFileID(key);
+			System.out.println(" fileID: " + fileID );
 			files.put(key, fileID);
 		});
 
@@ -68,6 +69,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	public BigDecimal getFromTableFileID(String fileName)
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
+		System.out.println(jobId);
 		return fileService.getFile(fileName, jobId);
 	}
 
@@ -78,7 +80,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 
 		files.forEach((fileName, fileId)->{
-			fileService.updateInboundStgTableStatus(fileId,"IP");
+			fileService.updateInboundStgTableStatus(fileId,"IP", "NS");
 		});
 
 
