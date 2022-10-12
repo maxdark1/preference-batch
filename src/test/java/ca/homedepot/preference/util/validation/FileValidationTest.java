@@ -17,6 +17,7 @@ class FileValidationTest {
         FileValidation.setFbSFMCBaseName("OPTIN_STANDARD_FLEX_GCFB_");
         FileValidation.setHybrisBaseName("OPTIN_STANDARD_FLEX_");
         FileValidation.setSfmcBaseName("ET.CAN.");
+        FileValidation.setExtensionRegex(".txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT");
     }
     @Test
     void lineCallbackHandler()
@@ -71,14 +72,21 @@ class FileValidationTest {
     {
         String fbSFMCbaseName = "OPTIN_STANDARD_FLEX_GCFB_", sfcm = "ET.CAN.", hybris = "OPTIN_STANDARD_FLEX_";
 
-        FileValidation.setFbSFMCBaseName(fbSFMCbaseName);
-        FileValidation.setHybrisBaseName(hybris);
-        FileValidation.setSfmcBaseName(sfcm);
-
         assertEquals(sfcm, FileValidation.getBaseName("SFMC"));
         assertEquals(fbSFMCbaseName, FileValidation.getBaseName("FB_SFMC"));
         assertEquals(hybris, FileValidation.getBaseName("hybris"));
     }
+
+    @Test
+    void gettersBaseNamesFormat()
+    {
+        String fbSFMCbaseName = "OPTIN_STANDARD_FLEX_GCFB_", sfcm = "ET.CAN.", hybris = "OPTIN_STANDARD_FLEX_";
+
+        assertEquals(sfcm, FileValidation.getSfmcBaseName());
+        assertEquals(fbSFMCbaseName, FileValidation.getFbSFMCBaseName());
+        assertEquals(hybris, FileValidation.getHybrisBaseName());
+    }
+
     @Test
     void validateExtension()
     {

@@ -74,6 +74,9 @@ folders:
    sfmc:
      path: C:\batchFiles\SFMC
 
+validation:
+  extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
+
 process: #Change this
   analytics:
     chunk: 100

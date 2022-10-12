@@ -115,7 +115,8 @@ class InboundValidatorTest
 	}
 
 	@Test
-	void validateNumberFormatValue5(){
+	void validateNumberFormatValue5()
+	{
 		InboundRegistration item = new InboundRegistration();
 		item.setValue_5( "a");
 
@@ -128,7 +129,8 @@ class InboundValidatorTest
 	}
 
 	@Test
-	void validateNumberFormatValue5Numeric(){
+	void validateNumberFormatValue5Numeric()
+	{
 		InboundRegistration item = new InboundRegistration();
 		item.setValue_5( "10");
 
@@ -138,6 +140,31 @@ class InboundValidatorTest
 			InboundValidator.isValidationsErros(error);
 		});
 		assertTrue(exception.getMessage().contains("invalid"));
+	}
+	@Test
+	void invalidMonthDateTest()
+	{
+		StringBuilder error = new StringBuilder();
+		String invalidDate = "80-40-2022 2:02:20";
+
+		InboundValidator.validateDateFormat(invalidDate, error);
+
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.isValidationsErros(error);
+		});
+
+		assertTrue(exception.getMessage().contains("validations erros"));
+	}
+
+	@Test
+	void invalidDayLeapYear(){
+		StringBuilder error = new StringBuilder();
+		String invalidDate = "02-29-2024 2:02:20";
+
+		InboundValidator.validateDateFormat(invalidDate, error);
+
+
+		assertTrue(error.toString().isEmpty());
 	}
 
 
@@ -191,10 +218,6 @@ class InboundValidatorTest
 	@Test
 	void validateIsRequired()
 	{
-
-
-
-
 		input.setLanguage_Preference(null);
 
 		InboundValidator.validateIsRequired(input, error);
@@ -215,7 +238,6 @@ class InboundValidatorTest
 		});
 
 		assertTrue(exception.getMessage().contains("should be present"));
-
 	}
 
 	@Test
@@ -231,7 +253,5 @@ class InboundValidatorTest
 		});
 
 		assertTrue(exception.getMessage().contains(field));
-
-
 	}
 }
