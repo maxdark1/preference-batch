@@ -172,7 +172,7 @@ public interface PreferenceBatchConstants
 
 	String PREFERENCE_CENTER_REGISTRATION_URL = "preferences/registration";
 
-	String PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL = "/preferences/registration/layoutB";
+	String PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL = "preferences/registration/layoutB";
 
 	String SRC_ZIPCODE = "src_zipcode";
 	String SRC_DATE = "src_date";

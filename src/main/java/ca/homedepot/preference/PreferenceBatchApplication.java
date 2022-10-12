@@ -14,9 +14,4 @@ public class PreferenceBatchApplication
 		SpringApplication.run(PreferenceBatchApplication.class, args);
 	}
 
-	/*
-	 * @Bean public Storage createGoogleStorage() { return StorageOptions.getDefaultInstance().getService(); }
-	 */
-
-
 }

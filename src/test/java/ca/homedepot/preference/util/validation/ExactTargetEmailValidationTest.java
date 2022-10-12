@@ -37,13 +37,17 @@ class ExactTargetEmailValidationTest
 	@Test
 	void validateStatusEmail()
 	{
+		StringBuilder error = new StringBuilder();
 		String validEmailStatus = "Unsubscribed";
 		String invalidEmailStatus = "e.com";
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			ExactTargetEmailValidation.validateStatusEmail(invalidEmailStatus);
+			ExactTargetEmailValidation.validateStatusEmail(invalidEmailStatus, error);
+			InboundValidator.isValidationsErros(error);
 		});
-		assertDoesNotThrow(() -> ExactTargetEmailValidation.validateStatusEmail(validEmailStatus));
+		StringBuilder notError = new StringBuilder();
+		ExactTargetEmailValidation.validateStatusEmail(validEmailStatus, notError);
+		assertDoesNotThrow(() -> InboundValidator.isValidationsErros(notError));
 		assertTrue(exception.getMessage().contains(invalidEmailStatus));
 	}
 
@@ -74,14 +78,17 @@ class ExactTargetEmailValidationTest
 		String dateFormat1 = "09/19/2022 7 :49", dateFormat2 = "09/19/2022 16:22", dateFormat3 = "9/19/2022 15:2",
 				dateFormat4 = "09/10/2022 1 :2", invalidDateFormat = "2-2-2";
 
+		StringBuilder error = new StringBuilder();
+
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			ExactTargetEmailValidation.validateDateFormat(invalidDateFormat);
+			ExactTargetEmailValidation.validateDateFormat(invalidDateFormat, error);
+			InboundValidator.isValidationsErros(error);
 		});
 
-		assertNotNull(ExactTargetEmailValidation.validateDateFormat(dateFormat1));
-		assertNotNull(ExactTargetEmailValidation.validateDateFormat(dateFormat2));
-		assertNotNull(ExactTargetEmailValidation.validateDateFormat(dateFormat3));
-		assertNotNull(ExactTargetEmailValidation.validateDateFormat(dateFormat4));
+		assertNotNull(ExactTargetEmailValidation.validateDateFormat(dateFormat1, error));
+		assertNotNull(ExactTargetEmailValidation.validateDateFormat(dateFormat2, error));
+		assertNotNull(ExactTargetEmailValidation.validateDateFormat(dateFormat3, error));
+		assertNotNull(ExactTargetEmailValidation.validateDateFormat(dateFormat4, error));
 		assertTrue(exception.getMessage().contains(invalidDateFormat));
 	}
 }
