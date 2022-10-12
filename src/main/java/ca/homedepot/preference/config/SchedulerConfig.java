@@ -16,7 +16,6 @@ import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.annotation.AfterWrite;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -121,6 +120,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${inbound.files.registrationFbSfmc}")
 	String fileRegistrationFbSfmc;
 
+	@Value("${validation.extension}")
+	String extensionRegex;
 	@Autowired
 	private DataSource dataSource;
 	/**
@@ -188,6 +189,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		FileValidation.setFbSFMCBaseName(fileRegistrationFbSfmc);
 		FileValidation.setHybrisBaseName(hybrisCrmRegistrationFile);
 		FileValidation.setSfmcBaseName(fileExtTargetEmail);
+		FileValidation.setExtensionRegex(extensionRegex);
 	}
 
 	public void setCrmWriterListener(RegistrationItemWriterListener crmWriterListener) {
@@ -248,7 +250,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 	///***************************************************
 
-	//@Scheduled(cron = "${cron.job.registration}")
+	@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -388,7 +390,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS);
+		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_NOT_SFMC+"'"+JOB_NAME_EXTACT_TARGET_EMAIL+"'"+SqlQueriesConstants.SQL_CONDITION_IP);
 		reader.setRowMapper(new RegistrationRowMapper());
 
 		return reader;
@@ -400,7 +402,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS);
+		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_SFMC+"'"+JOB_NAME_EXTACT_TARGET_EMAIL+"'"+SqlQueriesConstants.SQL_CONDITION_IP);
 		reader.setRowMapper(new SFMCRowMapper());
 
 		return reader;

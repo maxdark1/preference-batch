@@ -3,6 +3,7 @@ package ca.homedepot.preference.util.validation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.springframework.batch.item.validator.ValidationException;
 
@@ -35,7 +36,7 @@ public class InboundValidator
 
 	public static void isValidationsErros(StringBuilder errors){
 		if(errors.length() > 0)
-			throw new ValidationException(" The item processed has the above validations erros: \n" + errors.toString());
+			throw new ValidationException(" The item processed has the above validations erros: \n" + errors);
 	}
 
 	public static String validateMaxLengthNotReq(String field, String value, int maxLength, StringBuilder error)
@@ -50,22 +51,18 @@ public class InboundValidator
 
 		if (value != null &&(value.length() > maxLength))
 		{
-			error.append(String.format("The length of %s field  must be %d caracters or fewer.", field, maxLength));
+			error.append(String.format("The length of %s field  must be %d caracters or fewer.\n", field, maxLength));
 			return value.substring(0, maxLength);
 		}
 		return value;
-//			throw new ValidationException(String.format("The length of %s field  must be %d caracters or fewer.", field, maxLength));
 
 
 	}
 
 	public static void validateLanguagePref(InboundRegistration item, StringBuilder error)
 	{
-
 		if (!item.getLanguage_Preference().trim().matches("e|E|f|F|fr|FR|en|EN"))
 			error.append("invalid value for language_pref {}: ").append(item.getLanguage_Preference()).append(" not matches with: E, EN, F, FR\n");
-//			throw new ValidationException(
-//					"invalid value for language_pref {}: " + item.getLanguage_Preference() + " not matches with: E, EN, F, FR");
 	}
 
 	public static void validateEmailFormat(String email, StringBuilder error)
@@ -86,6 +83,7 @@ public class InboundValidator
 		try
 		{
 			asOfDate = simpleDateFormat.parse(date);
+			validateDayMonth(date, error);
 			return asOfDate;
 		}
 		catch (Exception ex)
@@ -94,6 +92,34 @@ public class InboundValidator
 			return asOfDate;
 //			throw new ValidationException("invalid date format");
 		}
+	}
+
+	public static void validateDayMonth(String date, StringBuilder error)
+	{
+		String[] mmddyy = date.split(" ")[0].split("-");
+		int month = Integer.valueOf(mmddyy[0]);
+		validateMonth(month, error);
+		int day = Integer.valueOf(mmddyy[1]);
+		int year = Integer.valueOf(mmddyy[2]);
+		validateDay(day, month, year, error);
+
+	}
+
+	public static void validateMonth(int month, StringBuilder error){
+		if(!(month >=1 && month <= 12))
+			error.append(" Invalid Month: " ).append(month).append(" \n");
+	}
+	public static  void validateDay(int day, int month, int year, StringBuilder error){
+		GregorianCalendar calendar = new GregorianCalendar();
+		int maxDays = 31;
+		if(month == 4 || month == 5 || month == 9 || month == 11)
+			maxDays = 30;
+		if(month == 2)
+		{
+			maxDays = calendar.isLeapYear(year)? 29:28;
+		}
+		if(day < 1 || day > maxDays)
+			error.append(" Invalid day: ").append(day).append("\n");
 	}
 
 	public static void validateNumberFormat(InboundRegistration item, StringBuilder error)
@@ -161,7 +187,7 @@ public class InboundValidator
 	public static void validValue_Number(Integer value, String field, StringBuilder error)
 	{
 		if (value != null &&(value < -1 || value > 1))
-			error.append("invalid value for field {}: ").append(field).append("\n");
+			error.append(" invalid value for field {}: ").append(field).append("\n");
 			//throw new ValidationException("invalid value for field {}: " + field);
 	}
 
