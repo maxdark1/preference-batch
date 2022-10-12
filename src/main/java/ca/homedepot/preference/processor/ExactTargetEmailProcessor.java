@@ -25,8 +25,8 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
             InboundValidator.validateRequired(item.getStatus(), "status", error);
             InboundValidator.validateRequired(item.getDateUnsubscribed(), "Date Unsubscribed", error);
             InboundValidator.validateMaxLength("Email Address",item.getEmailAddress(),150,error);
-            ExactTargetEmailValidation.validateStatusEmail(item.getStatus());
-            srcDate = ExactTargetEmailValidation.validateDateFormat(item.getDateUnsubscribed());
+            ExactTargetEmailValidation.validateStatusEmail(item.getStatus(), error);
+            srcDate = ExactTargetEmailValidation.validateDateFormat(item.getDateUnsubscribed(), error);
 
             InboundValidator.validateEmailFormat(item.getEmailAddress(), error);
             InboundValidator.isValidationsErros(error);

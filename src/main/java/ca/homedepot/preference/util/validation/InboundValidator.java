@@ -83,7 +83,7 @@ public class InboundValidator
 		try
 		{
 			asOfDate = simpleDateFormat.parse(date);
-			validateDayMonth(date, error);
+			validateDayMonth(date, "-", error);
 			return asOfDate;
 		}
 		catch (Exception ex)
@@ -94,9 +94,9 @@ public class InboundValidator
 		}
 	}
 
-	public static void validateDayMonth(String date, StringBuilder error)
+	public static void validateDayMonth(String date, String separator,StringBuilder error)
 	{
-		String[] mmddyy = date.split(" ")[0].split("-");
+		String[] mmddyy = date.split(" ")[0].split(separator);
 		int month = Integer.valueOf(mmddyy[0]);
 		validateMonth(month, error);
 		int day = Integer.valueOf(mmddyy[1]);
