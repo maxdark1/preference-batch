@@ -53,7 +53,7 @@ public class FileValidation {
         String formatDate = "yyyyMMdd";
         String baseName =  getFileName(fileName);
         int start = getBaseName(source).length(), end = start+formatDate.length();
-        if(end != baseName.length())
+        if(end != baseName.length() || !validateExtension(getExtension(fileName, baseName)))
         {
             return false;
         }
@@ -67,6 +67,9 @@ public class FileValidation {
         return  fileName.replaceAll(baseName, "");
     }
 
+    public static Boolean validateExtension(String extension){
+        return extension.matches(".txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT");
+    }
     public static String getBaseName(String source){
 
         switch (source){

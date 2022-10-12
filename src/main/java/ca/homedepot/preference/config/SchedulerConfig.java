@@ -547,7 +547,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		for(int i = 0; i< resources.length;i++){
 			resources[i] = new FileSystemResource(filesName.get(i));
 		}
-		System.out.println(filesName.toString());
 
 		return resources;
 	}
