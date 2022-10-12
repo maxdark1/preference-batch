@@ -50,7 +50,7 @@ class RegistrationAPIWriterTest
 		RegistrationResponse registration = new RegistrationResponse(List.of(new Response("1", "Published", "Done")));
 
 		Mockito.when(preferenceService.preferencesRegistration(items)).thenReturn(registration);
-		Mockito.when(fileService.updateInboundStgTableStatus(eq(BigDecimal.ZERO), anyString())).thenReturn(1);
+		Mockito.when(fileService.updateInboundStgTableStatus(eq(BigDecimal.ZERO), anyString(), anyString())).thenReturn(1);
 
 		registrationAPIWriter.write(items);
 	}

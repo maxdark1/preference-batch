@@ -12,13 +12,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class FileValidationTest {
 
     @BeforeAll
-    static void setup(){
+    static void setup()
+    {
         FileValidation.setFbSFMCBaseName("OPTIN_STANDARD_FLEX_GCFB_");
         FileValidation.setHybrisBaseName("OPTIN_STANDARD_FLEX_");
         FileValidation.setSfmcBaseName("ET.CAN.");
     }
     @Test
-    void lineCallbackHandler() {
+    void lineCallbackHandler()
+    {
         LineCallbackHandler lineCallbackHandler = FileValidation.lineCallbackHandler(new String[]{"STUFF1", "STUFF2"}, "\\|");
 
         ValidationException exception = assertThrows(ValidationException.class, ()-> lineCallbackHandler.handleLine("a|a"));
@@ -26,9 +28,10 @@ class FileValidationTest {
     }
 
     @Test
-    void validateFileName() {
+    void validateFileName()
+    {
         String source ="hybris";
-        String fileNameRightOne = "OPTIN_STANDARD_FLEX_20221202", fileNameWrongOne = "EXAMPLE";
+        String fileNameRightOne = "OPTIN_STANDARD_FLEX_20221202.TXT", fileNameWrongOne = "EXAMPLE.txt";
 
         boolean fileNameCorrect = FileValidation.validateFileName(fileNameRightOne, source),
         fileNameWrong = FileValidation.validateFileName(fileNameWrongOne, source);
@@ -38,7 +41,8 @@ class FileValidationTest {
     }
 
     @Test
-    void validateSimpleFileDateFormat() {
+    void validateSimpleFileDateFormat()
+    {
         String format = "yyyyMMdd";
         String date = "2/2/2022";
 
@@ -46,7 +50,8 @@ class FileValidationTest {
     }
 
     @Test
-    void getFileExtension(){
+    void getFileExtension()
+    {
         String baseName = "OPTIN_STANDARD_FLEX_YYYYMMDD";
         String fileName = "OPTIN_STANDARD_FLEX_YYYYMMDD.txt.AXOSTD";
 
@@ -55,9 +60,32 @@ class FileValidationTest {
     }
 
     @Test
-    void getFileName(){
+    void getFileName()
+    {
         String file = "ET.CAN.YYYYMMDD.TXT";
-        System.out.println( FileValidation.getFileName(file));
         assertEquals("ET.CAN.YYYYMMDD", FileValidation.getFileName(file));
+    }
+
+    @Test
+    void getBaseName()
+    {
+        String fbSFMCbaseName = "OPTIN_STANDARD_FLEX_GCFB_", sfcm = "ET.CAN.", hybris = "OPTIN_STANDARD_FLEX_";
+
+        FileValidation.setFbSFMCBaseName(fbSFMCbaseName);
+        FileValidation.setHybrisBaseName(hybris);
+        FileValidation.setSfmcBaseName(sfcm);
+
+        assertEquals(sfcm, FileValidation.getBaseName("SFMC"));
+        assertEquals(fbSFMCbaseName, FileValidation.getBaseName("FB_SFMC"));
+        assertEquals(hybris, FileValidation.getBaseName("hybris"));
+    }
+    @Test
+    void validateExtension()
+    {
+        String fileName = "ET.CAN.YYYYMMDD.TXT";
+        String baseName = FileValidation.getFileName(fileName);
+        String extension = FileValidation.getExtension(fileName, baseName);
+
+        assertTrue(FileValidation.validateExtension(extension));
     }
 }
