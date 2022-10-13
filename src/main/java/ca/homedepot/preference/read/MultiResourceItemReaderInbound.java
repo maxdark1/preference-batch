@@ -8,12 +8,11 @@ import ca.homedepot.preference.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /*
 *   MultiResourceItemReader
@@ -52,6 +51,17 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     public void setFileService(FileService fileService)
     {
         this.fileService = fileService;
+    }
+
+    public void setResources(Map<String, List<Resource>> resources) {
+        Resource[] resourcesArray = new Resource[resources.get("VALID").size()];
+        resources.get("VALID").toArray(resourcesArray);
+        System.out.println(resourcesArray);
+        resources.get("INVALID").forEach(fileName ->
+        {
+            writeFile(fileName.getFilename(), false);
+        });
+        this.setResources(resourcesArray);
     }
 
     /*

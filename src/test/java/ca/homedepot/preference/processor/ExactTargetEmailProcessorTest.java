@@ -1,5 +1,6 @@
 package ca.homedepot.preference.processor;
 
+import ca.homedepot.preference.util.validation.InboundValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +28,8 @@ class ExactTargetEmailProcessorTest
 		emailOptOuts.setReason("SOME REASON");
 		emailOptOuts.setStatus("unsubscribed");
 		emailOptOuts.setDateUnsubscribed("09/19/2022 8 :11");
+
+		InboundValidator.setValidEmailPattern("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 	}
 
 	@Test

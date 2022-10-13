@@ -10,6 +10,8 @@ import java.util.Arrays;
 @Slf4j
 public class FileValidation {
 
+    private static String extensionRegex;
+
     private static String hybrisBaseName;
 
     private static String fbSFMCBaseName;
@@ -17,28 +19,39 @@ public class FileValidation {
     private static String sfmcBaseName;
 
 
-    public static String getHybrisBaseName() {
+    public static String getHybrisBaseName()
+    {
         return hybrisBaseName;
     }
 
-    public static void setHybrisBaseName(String hybrisBaseName) {
+    public static void setHybrisBaseName(String hybrisBaseName)
+    {
         FileValidation.hybrisBaseName = hybrisBaseName;
     }
 
-    public static String getFbSFMCBaseName() {
+    public static String getFbSFMCBaseName()
+    {
         return fbSFMCBaseName;
     }
 
-    public static void setFbSFMCBaseName(String fbSFMCBaseName) {
+    public static void setFbSFMCBaseName(String fbSFMCBaseName)
+    {
         FileValidation.fbSFMCBaseName = fbSFMCBaseName;
     }
 
-    public static String getSfmcBaseName() {
+    public static String getSfmcBaseName()
+    {
         return sfmcBaseName;
     }
 
-    public static void setSfmcBaseName(String sfmcBaseName) {
+    public static void setSfmcBaseName(String sfmcBaseName)
+    {
         FileValidation.sfmcBaseName = sfmcBaseName;
+    }
+
+    public static void setExtensionRegex(String extensionRegex)
+    {
+        FileValidation.extensionRegex = extensionRegex;
     }
 
     public static LineCallbackHandler lineCallbackHandler(String[] headerFile, String separator)
@@ -53,18 +66,22 @@ public class FileValidation {
         String formatDate = "yyyyMMdd";
         String baseName =  getFileName(fileName);
         int start = getBaseName(source).length(), end = start+formatDate.length();
-        if(end != baseName.length())
+        if(end != baseName.length() || !validateExtension(getExtension(fileName, baseName)))
         {
             return false;
         }
         return validateSimpleFileDateFormat(fileName.substring(start, end), formatDate);
     }
     public static String getFileName(String fileName){
-        return fileName.replaceAll(".txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT", "");
+        return fileName.replaceAll(extensionRegex, "");
     }
 
     public static String getExtension(String fileName, String baseName){
         return  fileName.replaceAll(baseName, "");
+    }
+
+    public static Boolean validateExtension(String extension){
+        return extension.matches(extensionRegex);
     }
 
     public static String getBaseName(String source){

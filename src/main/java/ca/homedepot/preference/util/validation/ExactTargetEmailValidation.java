@@ -26,9 +26,9 @@ public class ExactTargetEmailValidation
 
     }
 
-    public static void validateStatusEmail(String status){
+    public static void validateStatusEmail(String status, StringBuilder error){
         if(!status.trim().equalsIgnoreCase("Unsubscribed")&&!status.trim().equalsIgnoreCase("held"))
-            throw new ValidationException(" Email status: "+status +" is not equals to Unsubscribed or held" );
+            error.append(" Email status: ").append(status).append(" is not equals to Unsubscribed or held" );
     }
 
     public static String getSourceId(@Nullable String reason)
@@ -44,7 +44,7 @@ public class ExactTargetEmailValidation
         return "188";
     }
 
-    public static Date validateDateFormat(String date)
+    public static Date validateDateFormat(String date, StringBuilder error)
     {
         Date asOfDate = null;
 
@@ -59,6 +59,7 @@ public class ExactTargetEmailValidation
             try
             {
                asOfDate = simpleDateFormat.parse(date);
+               InboundValidator.validateDayMonth(date, "/", error);
                 return asOfDate;
             }
             catch (ParseException ex)
@@ -66,8 +67,10 @@ public class ExactTargetEmailValidation
                 // Nothing to do in here
             }
         }
-        throw new ValidationException("invalid date format " + date);
+        error.append("invalid date format ").append(date).append("\n");
+        return asOfDate;
     }
+
 
     public static LineCallbackHandler lineCallbackHandler() {
 

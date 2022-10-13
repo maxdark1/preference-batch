@@ -1,7 +1,9 @@
 package ca.homedepot.preference.config;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -16,6 +18,7 @@ import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
+import org.springframework.batch.core.annotation.AfterWrite;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -90,7 +93,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Qualifier("visitorTransactionManager")
 	private final PlatformTransactionManager transactionManager;
-	@Value("${preference.centre.chunk}")
+	@Value("${process.analytics.chunk}")
 	Integer chunkValue;
 	@Value("${preference.centre.layoutc.chunk}")
 	Integer chunkLayoutC;
@@ -128,6 +131,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${inbound.files.registrationFbSfmc}")
 	String fileRegistrationFbSfmc;
 
+	@Value("${validation.extension}")
+	String extensionRegex;
+
+	@Value("${validation.email}")
+	String emailRegex;
 	@Autowired
 	private DataSource dataSource;
 	/**
@@ -200,6 +208,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		FileValidation.setFbSFMCBaseName(fileRegistrationFbSfmc);
 		FileValidation.setHybrisBaseName(hybrisCrmRegistrationFile);
 		FileValidation.setSfmcBaseName(fileExtTargetEmail);
+		FileValidation.setExtensionRegex(extensionRegex);
+
+		InboundValidator.setValidEmailPattern(emailRegex);
 	}
 
 	public void setCrmWriterListener(RegistrationItemWriterListener crmWriterListener) {
@@ -260,7 +271,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 	///***************************************************
 
-	@Scheduled(cron = "${cron.job.registration}")
+	//@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -413,7 +424,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS);
+		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_NOT_SFMC+"'"+JOB_NAME_EXTACT_TARGET_EMAIL+"'"+SqlQueriesConstants.SQL_CONDITION_IP);
 		reader.setRowMapper(new RegistrationRowMapper());
 
 		return reader;
@@ -425,7 +436,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS);
+		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_SFMC+"'"+JOB_NAME_EXTACT_TARGET_EMAIL+"'"+SqlQueriesConstants.SQL_CONDITION_IP);
 		reader.setRowMapper(new SFMCRowMapper());
 
 		return reader;
@@ -581,17 +592,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 
 
-	public Resource[] getResources(String folder, String source)
+	public Map<String, List<Resource>> getResources(String folder, String source)
 	{
-		List<String> filesName = FileUtil.getFilesOnFolder(folder, source);
-
-		Resource[] resources = new Resource[filesName.size()];
-
-		for(int i = 0; i< resources.length;i++){
-			resources[i] = new FileSystemResource(filesName.get(i));
-		}
-
-		return resources;
+		return FileUtil.getFilesOnFolder(folder, source);
 	}
 
 

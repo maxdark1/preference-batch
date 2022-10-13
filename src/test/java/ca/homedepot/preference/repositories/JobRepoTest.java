@@ -162,6 +162,7 @@ class JobRepoTest {
 		assertNotNull(registrationRequest.getEmailPrefPro());
 		assertNotNull(registrationRequest.getContentValue());
 		assertEquals(Integer.valueOf(1), registrationRequest.getEmailPrefHDCa());
+
 	}
 
 	@Test

@@ -40,7 +40,6 @@ cron:
   job:
     registration: 30 * * * * *
     ingestSFMCOutlookUnsubscribed: 30 * * * * *
-    registrationFBSFMC: 30 * * * * *
 
 server:
   port: 8080
@@ -75,10 +74,10 @@ folders:
    sfmc:
      path: C:\batchFiles\SFMC
 
-preference:
-  centre:
+validation:
+  extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
+  email: ^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$
+
+process: #Change this
+  analytics:
     chunk: 100
-    layoutb:
-      chunk: 20
-    layoutc:
-      chunk: 10
