@@ -125,6 +125,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Value("${validation.extension}")
 	String extensionRegex;
+
+	@Value("${validation.email}")
+	String emailRegex;
 	@Autowired
 	private DataSource dataSource;
 	/**
@@ -193,6 +196,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		FileValidation.setHybrisBaseName(hybrisCrmRegistrationFile);
 		FileValidation.setSfmcBaseName(fileExtTargetEmail);
 		FileValidation.setExtensionRegex(extensionRegex);
+
+		InboundValidator.setValidEmailPattern(emailRegex);
 	}
 
 	public void setCrmWriterListener(RegistrationItemWriterListener crmWriterListener) {

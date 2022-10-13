@@ -24,6 +24,7 @@ class InboundValidatorTest
 	@BeforeEach
 	public void setup()
 	{
+		InboundValidator.setValidEmailPattern("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 		input = new InboundRegistration();
 		error = new StringBuilder();
 		input.setAsOfDate("08-26-2022 10:10:10");
