@@ -33,7 +33,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		}
 		catch (ValidationException e)
 		{
-			LOG.error(" Validation error {}: ", e.getMessage());
+			LOG.error(" Validation error: {} ", e.getMessage());
 			throw e;
 		}
 		LOG.info(" Processing inbound item {}: ", item);

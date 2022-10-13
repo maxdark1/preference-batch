@@ -31,7 +31,7 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
             InboundValidator.validateEmailFormat(item.getEmailAddress(), error);
             InboundValidator.isValidationsErros(error);
         }catch (ValidationException e){
-            log.error(" Validation error {}: ", e.getMessage());
+            log.error(" Validation error: {} ", e.getMessage());
             throw e;
         }
 
