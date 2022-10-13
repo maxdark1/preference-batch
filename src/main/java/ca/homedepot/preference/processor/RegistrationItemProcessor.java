@@ -58,7 +58,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 				.value15(item.getValue_15()).content16(item.getContent_16()).value16(item.getValue_16())
 				.content17(item.getContent_17()).value17(item.getValue_17()).content18(item.getContent_18())
 				.value18(item.getValue_18()).content19(item.getContent_19()).value19(item.getValue_19())
-				.content20(item.getContent_20()).value20(item.getValue_20()).inserted_by("test_batch").inserted_date(new Date());
+				.content20(item.getContent_20()).value20(item.getValue_20()).inserted_by("BATCH").inserted_date(new Date());
 
 
 		return builder.build();

@@ -1,7 +1,9 @@
 package ca.homedepot.preference.config;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -55,6 +57,7 @@ import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
 
 import static ca.homedepot.preference.util.validation.ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS;
 
@@ -540,17 +543,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 
 
-	public Resource[] getResources(String folder, String source)
+	public Map<String, List<Resource>> getResources(String folder, String source)
 	{
-		List<String> filesName = FileUtil.getFilesOnFolder(folder, source);
-
-		Resource[] resources = new Resource[filesName.size()];
-
-		for(int i = 0; i< resources.length;i++){
-			resources[i] = new FileSystemResource(filesName.get(i));
-		}
-
-		return resources;
+		return FileUtil.getFilesOnFolder(folder, source);
 	}
 
 
