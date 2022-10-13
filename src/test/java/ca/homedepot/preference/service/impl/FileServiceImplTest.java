@@ -6,10 +6,14 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.model.FileInboundStgTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -69,8 +73,8 @@ class FileServiceImplTest
 	@Test
 	void getJobId()
 	{
-		String job_name = "registrationInbound";
 		BigDecimal jobId = new BigDecimal("1234567890");
+		String job_name = "registrationInbound";
 
 		when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class))).thenReturn(jobId);
 		when(fileService.getJobId(job_name)).thenReturn(jobId);
@@ -166,5 +170,46 @@ class FileServiceImplTest
 
 		int currentUpdatedRecords = fileService.updateFileEndTime(fileId,  updatedDate,  updatedBy , endTime, statusMaster);
 		assertEquals(updatedRecords, currentUpdatedRecords);
+	}
+
+	@Test
+	void getFilesToMove() {
+		List<FileDTO> files = new ArrayList<>();
+		files.add(new FileDTO());
+
+		when(jdbcTemplate.query(anyString(), any(RowMapper.class))).thenReturn(files);
+		when(fileService.getFilesToMove()).thenReturn(files);
+
+		List<FileDTO> currentFiles = fileService.getFilesToMove();
+		assertEquals(files, currentFiles);
+	}
+	@Test
+	void insertInboundStgError() {
+		FileInboundStgTable stgTable = FileInboundStgTable.builder().build();
+		int updated = 1;
+
+		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_FILE_INBOUND_STG_ERROR, stgTable.getFile_id(), stgTable.getStatus(),
+				stgTable.getSource_id(), stgTable.getSrc_phone_number(), stgTable.getSrc_first_name(),
+				stgTable.getSrc_last_name(), stgTable.getSrc_address1(), stgTable.getSrc_address2(), stgTable.getSrc_city(),
+				stgTable.getSrc_state(), stgTable.getSrc_postal_code(), stgTable.getSrc_language_pref(),
+				stgTable.getSrc_email_address(), stgTable.getSrc_title_name(), stgTable.getPhone_pref(),
+				stgTable.getEmail_address_pref(), stgTable.getMail_address_pref(), stgTable.getSrc_date(), stgTable.getEmail_status(),
+				stgTable.getSrc_phone_extension(), stgTable.getEmail_pref_hd_ca(), stgTable.getEmail_pref_garden_club(), stgTable.getEmail_pref_pro(),
+				stgTable.getEmail_pref_new_mover(), stgTable.getCell_sms_flag(), stgTable.getBusiness_name(),
+				stgTable.getCustomer_nbr(), stgTable.getOrg_name(), stgTable.getStore_nbr(),
+				stgTable.getCust_type_cd(), stgTable.getContent1(), stgTable.getValue1(), stgTable.getContent2(),
+				stgTable.getValue2(), stgTable.getContent3(), stgTable.getValue3(), stgTable.getContent4(),
+				stgTable.getValue4(), stgTable.getContent5(), stgTable.getValue5(), stgTable.getContent6(), stgTable.getValue6(),
+				stgTable.getContent7(), stgTable.getValue7(), stgTable.getContent8(), stgTable.getValue8(), stgTable.getContent9(),
+				stgTable.getValue9() ,stgTable.getContent10(), stgTable.getValue10(), stgTable.getContent11(), stgTable.getValue11(),
+				stgTable.getContent12(), stgTable.getValue12(), stgTable.getContent13(), stgTable.getValue13(), stgTable.getContent14(), stgTable.getValue14(),
+				stgTable.getContent15(), stgTable.getValue15(), stgTable.getContent16(), stgTable.getValue16(), stgTable.getContent17(), stgTable.getValue17(),
+				stgTable.getContent18(), stgTable.getValue18(), stgTable.getContent19(), stgTable.getValue19() ,stgTable.getContent20(), stgTable.getValue20(),
+				stgTable.getInserted_by(), stgTable.getInserted_date())).thenReturn(updated);
+		when(fileService.insertInboundStgError(stgTable)).thenReturn(updated);
+
+		int currentUpdated = fileService.insertInboundStgError(stgTable);
+		assertEquals(updated, currentUpdated);
+
 	}
 }

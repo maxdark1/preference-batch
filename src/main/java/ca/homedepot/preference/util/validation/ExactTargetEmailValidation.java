@@ -1,9 +1,11 @@
 package ca.homedepot.preference.util.validation;
 
+import ca.homedepot.preference.processor.MasterProcessor;
 import io.micrometer.core.lang.Nullable;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -31,17 +33,17 @@ public class ExactTargetEmailValidation
             error.append(" Email status: ").append(status).append(" is not equals to Unsubscribed or held" );
     }
 
-    public static String getSourceId(@Nullable String reason)
+    public static BigDecimal getSourceId(@Nullable String reason)
     {
         if(reason == null)
-            return "188";
+            return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
         String reasonUp = reason.toUpperCase();
         if(reasonUp.contains("AOL"))
-            return "189";
+            return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT AOL-CAN").getMaster_id();
         if (reasonUp.contains("SCAMCOP") || reasonUp.contains("SPAM COP REPORT"))
-            return "190";
+            return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT OTH-CAN").getMaster_id();
 
-        return "188";
+        return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
     }
 
     public static Date validateDateFormat(String date, StringBuilder error)

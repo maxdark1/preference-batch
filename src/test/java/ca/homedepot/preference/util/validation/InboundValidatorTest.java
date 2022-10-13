@@ -2,10 +2,16 @@ package ca.homedepot.preference.util.validation;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.processor.MasterProcessor;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.item.file.LineCallbackHandler;
@@ -20,6 +26,21 @@ class InboundValidatorTest
 
 
 	StringBuilder error ;
+
+	@BeforeAll
+	static void settingUp(){
+		List<Master> masterList = new ArrayList<>();
+
+		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true));
+		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true));
+		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true));
+		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true));
+		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true));
+		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true));
+		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true));
+
+		MasterProcessor.setMasterList(masterList);
+	}
 
 	@BeforeEach
 	public void setup()
@@ -112,7 +133,7 @@ class InboundValidatorTest
 
 		InboundValidator.validateNumberFormat(item, error);
 
-		assertEquals("0", item.getSource_ID());
+		assertEquals(null, item.getSource_ID());
 	}
 
 	@Test

@@ -78,6 +78,10 @@ validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
   email: ^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$
 
-process: #Change this
-  analytics:
+preference:
+  centre:
     chunk: 100
+    layoutb:
+      chunk: 20
+    layoutc:
+      chunk: 10

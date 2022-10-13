@@ -1,13 +1,20 @@
 package ca.homedepot.preference.processor;
 
+import ca.homedepot.preference.dto.Master;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,10 +27,11 @@ public class RegistrationItemProcessorTest
 	private InboundRegistration input;
 
 
+
 	@Before
 	public void setup()
 	{
-		registrationItemProcessor = new RegistrationItemProcessor();
+		registrationItemProcessor = new RegistrationItemProcessor("hybris");
 
 		input = new InboundRegistration();
 		input.setAsOfDate("08-26-2022 10:10:10");
@@ -40,6 +48,19 @@ public class RegistrationItemProcessorTest
 		input.setContent_3("ORG_NAME");
 		input.setContent_5("CUST_TYPE_CODE");
 		input.setContent_6("CELL_PHONE");
+
+		List<Master> masterList = new ArrayList<>();
+
+		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true));
+		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true));
+		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true));
+		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true));
+		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true));
+		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true));
+		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT AOL-CAN", true));
+		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true));
+
+		MasterProcessor.setMasterList(masterList);
 	}
 
 	@Test

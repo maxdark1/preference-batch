@@ -37,7 +37,7 @@ public class FileInboundStgTable
 	String email_pref_garden_club;
 	String email_pref_pro;
 	String email_pref_new_mover;
-	Long source_id;
+	BigDecimal source_id;
 	String cell_sms_flag;
 	String customer_nbr;
 

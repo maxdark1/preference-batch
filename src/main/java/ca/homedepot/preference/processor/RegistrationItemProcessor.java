@@ -18,6 +18,11 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	private final Logger LOG = LoggerFactory.getLogger(RegistrationItemProcessor.class);
 
+	private String source;
+
+	public RegistrationItemProcessor(String source){
+		this.source = source;
+	}
 
 	@Override
 	public FileInboundStgTable process(InboundRegistration item) throws Exception
@@ -39,7 +44,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		LOG.info(" Processing inbound item {}: ", item);
 		builder.status("NS").fileName(item.getFileName()).src_language_pref(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date())
 				.src_date(asOfDate).src_email_address(item.getEmail_Address()).email_address_pref(item.getEmail_Permission())
-				.phone_pref(item.getPhone_Permission()).src_phone_number(item.getPhone_Number())
+				.phone_pref(item.getPhone_Permission()).src_phone_number(item.getPhone_Number()).source_id(InboundValidator.getSourceID(source))
 				.src_phone_extension(item.getPhone_Extension()).src_title_name(item.getTitle()).src_first_name(item.getFirst_Name())
 				.src_last_name(item.getLast_Name()).src_address1(item.getAddress_1()).src_address2(item.getAddress_2())
 				.src_city(item.getCity()).src_state(item.getProvince()).src_postal_code(item.getPostal_Code()).mail_address_pref(item.getMail_Permission())

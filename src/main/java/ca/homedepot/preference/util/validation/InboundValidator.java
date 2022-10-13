@@ -1,10 +1,14 @@
 package ca.homedepot.preference.util.validation;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import ca.homedepot.preference.constants.SourceDelimitersConstants;
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.processor.MasterProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.batch.item.validator.ValidationException;
 
@@ -161,16 +165,13 @@ public class InboundValidator
 				error.append("invalid value for field {}: value5 =\n" + value);
 				//throw new ValidationException();
 		}
+	}
 
-		if (item.getSource_ID() != null && !item.getSource_ID().isBlank())
-		{
-			value = validateIsNumber(item.getSource_ID().trim(), error);
-			item.setSource_ID(value != null ? String.valueOf(value): "0");
-		}
-		else
-		{
-			item.setSource_ID("0");
-		}
+	public static BigDecimal getSourceID(String source){
+
+		return MasterProcessor.getSourceId("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC)?
+				SourceDelimitersConstants.SFMC: source).getMaster_id();
+
 	}
 
 	public static Integer validateIsNumber(String number, StringBuilder error)

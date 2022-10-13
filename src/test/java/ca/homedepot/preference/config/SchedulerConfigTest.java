@@ -229,7 +229,7 @@ class SchedulerConfigTest
 	public void inboundFileProcessor()
 	{
 
-		assertNotNull(schedulerConfig.inboundFileProcessor());
+		assertNotNull(schedulerConfig.inboundFileProcessor("hybris"));
 	}
 
 	// TODO NullPointerException
@@ -320,6 +320,27 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));
+	}
+	@Test
+	void readInboundFBSFMCFileStep1() throws Exception {
+		schedulerConfig.setFbsfmcWriterListener(writerListener);
+
+
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.skipLimit(eq(Integer.MAX_VALUE))).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
+		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.readInboundFBSFMCFileStep1("JOB_NAME"));
 	}
 
 	@Test
