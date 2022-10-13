@@ -4,6 +4,8 @@ import ca.homedepot.preference.util.validation.FileValidation;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,10 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -172,18 +171,19 @@ public final class FileUtil
     /*
         List of files in certain folder
     * */
-    public static List<String> getFilesOnFolder(String path, String source)
+    public static Map<String, List<Resource>> getFilesOnFolder(String path, String source)
     {
         File folder = new File(path);
-        List<String> listOfFiles = new ArrayList<>();
+        List<Resource> validFilesNames = new ArrayList<>(), invalidFileNames =  new ArrayList<>();
         String[] files = folder.list();
 
         if(files != null)
             for (String fileName: files) {
 
                 if(FileValidation.validateFileName(fileName, source)){
-                    listOfFiles.add(path+fileName);
+                    validFilesNames.add(new FileSystemResource(path+fileName));
                 }else{
+                    invalidFileNames.add(new FileSystemResource(fileName));
                     log.error( " File name invalid: " + fileName);
                     try {
                         moveFile(fileName, false, source);
@@ -193,7 +193,10 @@ public final class FileUtil
                 }
             }
 
-        return listOfFiles;
+        Map<String, List<Resource>> filesNames = new HashMap<>();
+        filesNames.put("VALID", validFilesNames);
+        filesNames.put("INVALID", invalidFileNames);
+        return filesNames;
     }
 
 

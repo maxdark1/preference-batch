@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.FileInboundStgTable;
@@ -12,8 +13,8 @@ import ca.homedepot.preference.model.InboundRegistration;
 
 public class InboundValidator
 {
-	public static final String VALID_EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+
+	public static String VALID_EMAIL_PATTERN;
 
 	public static final String[] FIELD_NAMES_REGISTRATION = new String[]
 	{ "Language_Preference", "AsOfDate", "Email_Address", "Email_Permission", "Phone_Permission", "Phone_Number",
@@ -24,6 +25,10 @@ public class InboundValidator
 			"Value_9", "Content_10", "Value_10", "Content_11", "Value_11", "Content_12", "Value_12", "Content_13", "Value_13",
 			"Content_14", "Value_14", "Content_15", "Value_15", "Content_16", "Value_16", "Content_17", "Value_17", "Content_18",
 			"Value_18", "Content_19", "Value_19", "Content_20", "Value_20" };
+
+	public static void setValidEmailPattern(String validEmailPattern) {
+		VALID_EMAIL_PATTERN = validEmailPattern;
+	}
 
 
 	/*
