@@ -56,6 +56,14 @@ public class JobListener implements JobExecutionListener
 
 	}
 
+	/**
+	 * status
+	 *
+	 * @param batchStatus
+	 *           the job status
+	 * @return Master
+	 *
+	 */
 	public Master status(BatchStatus batchStatus)
 	{
 

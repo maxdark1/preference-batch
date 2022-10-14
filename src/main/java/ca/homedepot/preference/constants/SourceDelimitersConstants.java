@@ -12,6 +12,8 @@ public interface SourceDelimitersConstants {
 
     String SFMC = "SFMC";
 
+    String FB_SFMC = "FB_SFMC";
+
     String DELIMITER_PIPELINE = "\\|";
 
     String DELIMITER_TAB = "\\t";

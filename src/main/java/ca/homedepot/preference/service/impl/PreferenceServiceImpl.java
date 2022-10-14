@@ -39,6 +39,10 @@ public class PreferenceServiceImpl implements PreferenceService
 	private JdbcTemplate jdbcTemplate;
 	private WebClient webClient;
 
+	/**
+	* Initialization of WebClient
+	* @param no params
+	* */
 	@Autowired
 	public void setUpWebClient()
 	{
@@ -48,7 +52,12 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 
-
+	/**
+	 * Sent JdbcTemplate
+	 *
+	 * @param JdbcTemplate jdbcTemplate
+	 *
+	 */
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
 	{
@@ -65,28 +74,37 @@ public class PreferenceServiceImpl implements PreferenceService
 	{
 		String path = baseUrl + "{id}/preferences";
 
-		PreferenceItemList response = webClient.get().uri(uriBuilder -> {
-			URI uri = uriBuilder.path(path).build(id);
-			return uri;
-		}).accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(PreferenceItemList.class).block();
+		PreferenceItemList response = webClient.get().uri(uriBuilder -> uriBuilder.path(path).build(id)).accept(MediaType.APPLICATION_JSON)
+				.retrieve().bodyToMono(PreferenceItemList.class).doOnError(e-> log.error(e.getMessage())).block();
 
 		log.info("Response {} ", response);
 		return response;
 
 	}
 
+	/**
+	 * Send request to service for subscribe/unsubscribe from marketing programs
+	 *
+	 * @param List<? extends RegistrationRequest> items
+	 *
+	 */
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
 	{
 
 		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
 
-		log.info(" Request Registration {} ", new Gson().toJson(items));
+		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
 
-		return webClient.post().uri(uriBuilder -> uriBuilder.path(path).build()).accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>()
-				{}).retrieve().bodyToMono(RegistrationResponse.class).block();
+		return webClient.post().uri(path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).bodyValue(items)
+				.retrieve().bodyToMono(RegistrationResponse.class).doOnError(e-> log.error(e.getMessage())).block();
 	}
+
+	/**
+	 * Send request to service for SFMC unsubscribe
+	 *
+	 * @param List<? extends RegistrationRequest> items
+	 *
+	 */
 
 	@Override
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
@@ -94,14 +112,10 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL;
 
-		log.info(" Request Registration LayoutB {} ", new Gson().toJson(items));
+		log.info(" {} item(s) has been sent through Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
 
-		return webClient.post().uri(uriBuilder -> {
-			URI uri = uriBuilder.path(path).build();
-			return uri;
-		}).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.body(Mono.just(items), new ParameterizedTypeReference<List<RegistrationRequest>>()
-				{}).retrieve().bodyToMono(RegistrationResponse.class).block();
+		return webClient.post().uri(path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.bodyValue(items).retrieve().bodyToMono(RegistrationResponse.class).doOnError(e-> log.error(e.getMessage())).block();
 	}
 
 
@@ -109,7 +123,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	 * Save Job Information on persistence
 	 *
 	 * @param job_name,
-	 *           status, start_time, inserted_by, inserted_date the job notification entity
+	 *           status, start_time, inserted_by, inserted_date
 	 */
 
 	@Override
@@ -119,14 +133,25 @@ public class PreferenceServiceImpl implements PreferenceService
 				inserted_date);
 	}
 
+	/**
+	 * Gets Master's table information from persistence
+	 *
+	 * @param No params
+	 *           The List resulting will be on MasterProcessor list as static
+	 */
 	@Override
 	public List<Master> getMasterInfo()
 	{
-		return jdbcTemplate.query(SqlQueriesConstants.SQL_SELECT_MASTER_ID,
-				(rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"),rs.getString("key_value"), rs.getString("value_val"),
+		return jdbcTemplate.query(SqlQueriesConstants.SQL_SELECT_MASTER_ID, (rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"),rs.getString("key_value"), rs.getString("value_val"),
 						rs.getBoolean("active")));
 	}
 
+	/**
+	 * Update Job status on persistence
+	 *
+	 * @param job, status
+	 *
+	 */
 	@Override
 	public int updateJob(Job job, String status)
 	{

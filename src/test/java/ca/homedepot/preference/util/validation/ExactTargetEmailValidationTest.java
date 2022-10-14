@@ -2,12 +2,34 @@ package ca.homedepot.preference.util.validation;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.processor.MasterProcessor;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
+import java.math.BigDecimal;
+import java.util.*;
+
 class ExactTargetEmailValidationTest
 {
+	@BeforeEach
+	 void setup(){
+		List<Master> masterList = new ArrayList<>();
+
+		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true));
+		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true));
+		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true));
+		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true));
+		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true));
+		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true));
+		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT AOL-CAN", true));
+		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true));
+
+		MasterProcessor.setMasterList(masterList);
+	}
 
 	@Test
 	void lineCallbackHandler()
@@ -51,7 +73,6 @@ class ExactTargetEmailValidationTest
 		assertTrue(exception.getMessage().contains(invalidEmailStatus));
 	}
 
-	// TODO this might change in the future, these are ACXIOM values
 	@Test
 	void getSourceId()
 	{
@@ -59,17 +80,17 @@ class ExactTargetEmailValidationTest
 		String reasonSCAM = "REASON WHY I DONT WANT THIS OR NOT SCAMCOP";
 		String reasonSPAMCOPREPORT = "SPAM COP REPORT";
 
-		String sourceIDAOL = ExactTargetEmailValidation.getSourceId(reasonAOL);
-		String sourceIDSCAMCOMP = ExactTargetEmailValidation.getSourceId(reasonSCAM);
-		String sourceSPAMCOPREPORT = ExactTargetEmailValidation.getSourceId(reasonSPAMCOPREPORT);
-		String sourceIDWhatEver = ExactTargetEmailValidation.getSourceId(null);
-		String sourceIDReason = ExactTargetEmailValidation.getSourceId("email");
+		BigDecimal sourceIDAOL = ExactTargetEmailValidation.getSourceId(reasonAOL);
+		BigDecimal sourceIDSCAMCOMP = ExactTargetEmailValidation.getSourceId(reasonSCAM);
+		BigDecimal sourceSPAMCOPREPORT = ExactTargetEmailValidation.getSourceId(reasonSPAMCOPREPORT);
+		BigDecimal sourceIDWhatEver = ExactTargetEmailValidation.getSourceId(null);
+		BigDecimal sourceIDReason = ExactTargetEmailValidation.getSourceId("email");
 
-		assertEquals("189", sourceIDAOL);
-		assertEquals("190", sourceIDSCAMCOMP);
-		assertEquals("190", sourceIDSCAMCOMP);
-		assertEquals("188", sourceIDWhatEver);
-		assertEquals("188", sourceIDReason);
+		assertEquals(new BigDecimal("22"), sourceIDAOL);
+		assertEquals(new BigDecimal("23"), sourceSPAMCOPREPORT);
+		assertEquals(new BigDecimal("23"), sourceIDSCAMCOMP);
+		assertEquals(new BigDecimal("21"), sourceIDWhatEver);
+		assertEquals(new BigDecimal("21"), sourceIDReason);
 	}
 
 	@Test

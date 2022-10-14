@@ -28,7 +28,7 @@ public class ModelsTest
 
 		fileInboundStgTable = new FileInboundStgTable.FileInboundStgTableBuilder().file_id(BigDecimal.ONE).fileName("TEST_FILE").status("status")
 				.src_date(new Date()).updated_date(new Date()).src_email_address("email@gmail.com").phone_pref("1").src_phone_number("123456789")
-				.src_phone_extension("52").src_title_name("Sr").email_address_pref("-1").source_id(1L).email_pref_hd_ca("1").src_first_name("Michael")
+				.src_phone_extension("52").src_title_name("Sr").email_address_pref("-1").source_id(BigDecimal.ONE).email_pref_hd_ca("1").src_first_name("Michael")
 				.src_last_name("Penia").src_address1("address1").src_address2("address 2").src_city("city").src_state("st").src_date(new Date())
 				.src_postal_code("123456").mail_address_pref("-1").email_pref_hd_ca("-1").email_pref_pro("-1").email_pref_new_mover("-1")
 				.customer_nbr("1234").org_name("org_name").store_nbr("132").cust_type_cd("123").fax_number("12345").fax_extension("22")
@@ -65,7 +65,7 @@ public class ModelsTest
 		assertNotNull(fileInboundStgTable);
 		assertEquals(null, fileInboundStgTable.getContent1());
 		assertEquals("status", fileInboundStgTable.getStatus());
-		assertEquals(1L, fileInboundStgTable.getSource_id());
+		assertEquals(BigDecimal.ONE, fileInboundStgTable.getSource_id());
 		assertNotEquals(fileInboundStgTable1, fileInboundStgTable);
 
 

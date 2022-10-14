@@ -18,7 +18,33 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	private final Logger LOG = LoggerFactory.getLogger(RegistrationItemProcessor.class);
 
+	/**
+	 * Source value
+	 * Where item comes from
+	 *
+	 */
+	private String source;
 
+	/**
+	 * Constructor with source
+	 *
+	 * @param source
+	 *
+	 *
+	 */
+	public RegistrationItemProcessor(String source)
+	{
+		this.source = source;
+	}
+
+	/**
+	 * Process items
+	 *
+	 * @param item
+	 *
+	 * @return FileInboundStgTable
+	 *
+	 */
 	@Override
 	public FileInboundStgTable process(InboundRegistration item) throws Exception
 	{
@@ -27,7 +53,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		String asOfDateStr = item.getAsOfDate();
 		try
 		{
-			StringBuilder error = validate(item, builder);
+			StringBuilder error = validate(item);
 			asOfDate = validateDateFormat(asOfDateStr, error);
 			InboundValidator.isValidationsErros(error);
 		}
@@ -39,7 +65,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		LOG.info(" Processing inbound item {}: ", item);
 		builder.status("NS").fileName(item.getFileName()).src_language_pref(item.getLanguage_Preference().trim().toUpperCase()).updated_date(new Date())
 				.src_date(asOfDate).src_email_address(item.getEmail_Address()).email_address_pref(item.getEmail_Permission())
-				.phone_pref(item.getPhone_Permission()).src_phone_number(item.getPhone_Number())
+				.phone_pref(item.getPhone_Permission()).src_phone_number(item.getPhone_Number()).source_id(InboundValidator.getSourceID(source))
 				.src_phone_extension(item.getPhone_Extension()).src_title_name(item.getTitle()).src_first_name(item.getFirst_Name())
 				.src_last_name(item.getLast_Name()).src_address1(item.getAddress_1()).src_address2(item.getAddress_2())
 				.src_city(item.getCity()).src_state(item.getProvince()).src_postal_code(item.getPostal_Code()).mail_address_pref(item.getMail_Permission())
@@ -64,7 +90,15 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		return builder.build();
 	}
 
-	private StringBuilder validate(final InboundRegistration item, final FileInboundStgTable.FileInboundStgTableBuilder builder)
+	/**
+	 * Validate item's values
+	 *
+	 * @param item
+	 *
+	 * @return StringBuilder
+	 * 			Returns error message
+	 */
+	private StringBuilder validate(final InboundRegistration item)
 	{
 		StringBuilder error = new StringBuilder();
 		validateIsRequired(item, error);
@@ -79,6 +113,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		return error;
 	}
 
+	/**
+	 * Validate Max Length of required fields
+	 *
+	 * @param item, error
+	 *
+	 * @return
+	 */
 	private void validateMaxLengthReqField(InboundRegistration item, StringBuilder error)
 	{
 		item.setLanguage_Preference(InboundValidator.validateMaxLength("language_pref", item.getLanguage_Preference(), 2, error));
@@ -97,6 +138,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	}
 
+	/**
+	 * Validate Max Length of not required fields
+	 *
+	 * @param item, error
+	 *
+	 * @return
+	 */
 	private void validateMaxLength(InboundRegistration item, StringBuilder error)
 	{
 		item.setEmail_Address(validateMaxLengthNotReq("email_addr", item.getEmail_Address(), 72, error));

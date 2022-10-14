@@ -1,5 +1,6 @@
 package ca.homedepot.preference.read;
 
+import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
@@ -55,15 +56,13 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
     public void setResources(Map<String, List<Resource>> resources) {
         Resource[] resourcesArray = new Resource[resources.get("VALID").size()];
         resources.get("VALID").toArray(resourcesArray);
-        System.out.println(resourcesArray);
-        resources.get("INVALID").forEach(fileName ->
-        {
-            writeFile(fileName.getFilename(), false);
-        });
         this.setResources(resourcesArray);
+
+        resources.get("INVALID").forEach(fileName -> writeFile(fileName.getFilename(), false));
+
     }
 
-    /*
+    /**
     * Set jobName
     * */
     public void setJobName(String jobName)
@@ -80,8 +79,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
         }
     }
 
-    /*
-    *
+    /**
+    * Read item from file
     * */
     @Override
     public T read() throws Exception
@@ -110,14 +109,17 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
         return itemRead;
     }
 
-    /*
+    /**
     * Write file into file table
+    *
+    * @param fileName, status
+    *
     * */
     public void writeFile(String fileName, Boolean status)
     {
         BigDecimal jobId = fileService.getJobId(jobName);
         Master fileStatus = MasterProcessor.getSourceId("STATUS",status?"VALID":"INVALID");
-        BigDecimal masterId = MasterProcessor.getSourceId("SOURCE", source).getMaster_id();
+        BigDecimal masterId = MasterProcessor.getSourceId("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC)? SourceDelimitersConstants.SFMC: source).getMaster_id();
         Date endTime = new Date();
         if(status)
             endTime = null;

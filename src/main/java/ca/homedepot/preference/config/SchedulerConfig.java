@@ -18,6 +18,7 @@ import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
+import org.springframework.batch.core.annotation.AfterWrite;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -57,7 +58,6 @@ import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 
 import static ca.homedepot.preference.util.validation.ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS;
 
@@ -76,6 +76,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private static final String JOB_NAME_REGISTRATION_CRM_INBOUND = "registrationCRMInbound";
 
+	private static final String JOB_NAME_REGISTRATION_FBSFMC_INBOUND = "registrationFBSFMCGardenClubInbound";
+
 	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
 	/**
 	 * The Job builder factory.
@@ -91,8 +93,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Qualifier("visitorTransactionManager")
 	private final PlatformTransactionManager transactionManager;
-	@Value("${process.analytics.chunk}")
+	@Value("${preference.centre.chunk}")
 	Integer chunkValue;
+	@Value("${preference.centre.layoutc.chunk}")
+	Integer chunkLayoutC;
+	@Value("${preference.centre.layoutb.chunk}")
+	Integer chunkLayoutB;
 	/*
 	* The folders paths
 	* */
@@ -104,6 +110,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String fbSFMCPath;
 	@Value("${folders.sfmc.path}")
 	String sfmcPath;
+	@Value("${folders.fb-sfmc.path}")
+	String fbsfmcPath;
 	/*
 	* Folders ERROR, INBOUND AND PROCCESED
 	* */
@@ -145,6 +153,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private RegistrationItemWriterListener crmWriterListener;
 
+	private RegistrationItemWriterListener fbsfmcWriterListener;
 	@Autowired
 	private RegistrationItemWriterListener exactTargetEmailWriterListener;
 	@Autowired
@@ -183,11 +192,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		crmWriterListener.setFileService(hybrisWriterListener.getFileService());
 		crmWriterListener.setJobName(JOB_NAME_REGISTRATION_CRM_INBOUND);
 		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
+		fbsfmcWriterListener = new RegistrationItemWriterListener();
+		fbsfmcWriterListener.setFileService(hybrisWriterListener.getFileService());
+		fbsfmcWriterListener.setJobName(JOB_NAME_REGISTRATION_FBSFMC_INBOUND);
 
 
 		FileUtil.setCrmPath(crmPath);
 		FileUtil.setHybrisPath(hybrisPath);
 		FileUtil.setSfmcPath(sfmcPath);
+		FileUtil.setFbsfmcPath(fbsfmcPath);
 		FileUtil.setError(folderError);
 		FileUtil.setProcessed(folderProcessed);
 		FileUtil.setInbound(folderInbound);
@@ -247,6 +260,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		this.batchTasklet = batchTasklet;
 	}
 
+	public void setFbsfmcWriterListener(RegistrationItemWriterListener fbsfmcWriterListener) {
+		this.fbsfmcWriterListener = fbsfmcWriterListener;
+	}
+
 	/*
 	 * SCHEDULING JOBS
 	 */
@@ -270,7 +287,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString("job_name", JOB_NAME_REGISTRATION_INBOUND)
 				.toJobParameters();
 
-		JobExecution execution = jobLauncher.run(registrationInbound(), param);
+		JobExecution execution = jobLauncher.run(registrationHybrisInbound(), param);
 		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
@@ -287,8 +304,21 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
         JobExecution execution = jobLauncher.run(registrationCRMInbound(), param);
         log.info("Registration Inbound finished with status :" + execution.getStatus());
+	}
 
+	//@Scheduled(cron = "${cron.job.registrationFBSFMC}")
+	public void processFBSFMCInbound() throws Exception
+	{
+		log.info(" Registration Inbound : Registration Job started at :" + new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_REGISTRATION_FBSFMC_INBOUND, String.valueOf(System.currentTimeMillis()))
+				.addString("directory", fbSFMCPath+folderInbound)
+				.addString("source", SourceDelimitersConstants.FB_SFMC)
+				.addString("job_name", JOB_NAME_REGISTRATION_FBSFMC_INBOUND)
+				.toJobParameters();
 
+		JobExecution execution = jobLauncher.run(registrationFBSFMCGardenClubInbound(), param);
+		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
@@ -417,10 +447,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 
-	@Bean
-	public RegistrationItemProcessor inboundFileProcessor()
+	public RegistrationItemProcessor inboundFileProcessor(String source)
 	{
-		return new RegistrationItemProcessor();
+		return new RegistrationItemProcessor(source);
 	}
 
 	@Bean
@@ -447,10 +476,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationInbound() throws Exception
+	public Job registrationHybrisInbound() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundCSVFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
+				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readLayoutCInboundBDStep2()).build()
 				.build();
 
 	}
@@ -458,7 +487,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationCRMInbound() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundCSVFileCRMStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readInboundBDStep2()).build()
+				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readLayoutCInboundBDStep2()).build()
+				.build();
+
+	}
+
+	public Job registrationFBSFMCGardenClubInbound() throws Exception
+	{
+		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readLayoutCInboundBDStep2()).build()
 				.build();
 
 	}
@@ -478,30 +515,40 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return the step
 	 */
 
-	public Step readInboundCSVFileStep1(String jobName) throws Exception
+	public Step readInboundHybrisFileStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(hybrisPath+folderInbound, SourceDelimitersConstants.HYBRIS, jobName)) // change source to constants
-				.processor(inboundFileProcessor()).faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.processor(inboundFileProcessor(SourceDelimitersConstants.HYBRIS)).faultTolerant().processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(hybrisWriterListener)
 				.writer(inboundRegistrationDBWriter()).listener(stepListener).build();
 	}
 
-	public Step readInboundCSVFileCRMStep1(String jobName) throws Exception
+	public Step readInboundCRMFileStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(crmPath+folderInbound, SourceDelimitersConstants.CRM, jobName))
-				.processor(inboundFileProcessor())
+				.processor(inboundFileProcessor(SourceDelimitersConstants.CRM))
 				.faultTolerant().processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC)
 				.listener(crmWriterListener).writer(inboundRegistrationDBWriter())
 				.listener(stepListener).build();
 	}
 
-	@Bean
-	public Step readInboundBDStep2() throws Exception
+	public Step readInboundFBSFMCFileStep1(String jobName) throws Exception
 	{
-		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkValue)
+		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
+				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath+folderInbound, SourceDelimitersConstants.FB_SFMC, jobName))
+				.processor(inboundFileProcessor(SourceDelimitersConstants.FB_SFMC)).faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC)
+				.listener(fbsfmcWriterListener).writer(inboundRegistrationDBWriter())
+				.listener(stepListener).build();
+	}
+
+	@Bean
+	public Step readLayoutCInboundBDStep2() throws Exception
+	{
+		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
 				.reader(inboundDBReader()).listener(apiWriterListener).writer(apiWriter).build();
 	}
 
@@ -521,7 +568,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readDBSFMCOptOutsStep2()
 	{
 
-		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest>chunk(chunkValue).reader(inboundDBReaderSFMC())
+		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest>chunk(chunkLayoutB).reader(inboundDBReaderSFMC())
 				.listener(apiWriterListener).writer(layoutBWriter).build();
 
 	}
