@@ -18,12 +18,33 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	private final Logger LOG = LoggerFactory.getLogger(RegistrationItemProcessor.class);
 
+	/**
+	 * Source value
+	 * Where item comes from
+	 *
+	 */
 	private String source;
 
-	public RegistrationItemProcessor(String source){
+	/**
+	 * Constructor with source
+	 *
+	 * @param source
+	 *
+	 *
+	 */
+	public RegistrationItemProcessor(String source)
+	{
 		this.source = source;
 	}
 
+	/**
+	 * Process items
+	 *
+	 * @param item
+	 *
+	 * @return FileInboundStgTable
+	 *
+	 */
 	@Override
 	public FileInboundStgTable process(InboundRegistration item) throws Exception
 	{
@@ -32,7 +53,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		String asOfDateStr = item.getAsOfDate();
 		try
 		{
-			StringBuilder error = validate(item, builder);
+			StringBuilder error = validate(item);
 			asOfDate = validateDateFormat(asOfDateStr, error);
 			InboundValidator.isValidationsErros(error);
 		}
@@ -69,7 +90,15 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		return builder.build();
 	}
 
-	private StringBuilder validate(final InboundRegistration item, final FileInboundStgTable.FileInboundStgTableBuilder builder)
+	/**
+	 * Validate item's values
+	 *
+	 * @param item
+	 *
+	 * @return StringBuilder
+	 * 			Returns error message
+	 */
+	private StringBuilder validate(final InboundRegistration item)
 	{
 		StringBuilder error = new StringBuilder();
 		validateIsRequired(item, error);
@@ -84,6 +113,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		return error;
 	}
 
+	/**
+	 * Validate Max Length of required fields
+	 *
+	 * @param item, error
+	 *
+	 * @return
+	 */
 	private void validateMaxLengthReqField(InboundRegistration item, StringBuilder error)
 	{
 		item.setLanguage_Preference(InboundValidator.validateMaxLength("language_pref", item.getLanguage_Preference(), 2, error));
@@ -102,6 +138,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	}
 
+	/**
+	 * Validate Max Length of not required fields
+	 *
+	 * @param item, error
+	 *
+	 * @return
+	 */
 	private void validateMaxLength(InboundRegistration item, StringBuilder error)
 	{
 		item.setEmail_Address(validateMaxLengthNotReq("email_addr", item.getEmail_Address(), 72, error));

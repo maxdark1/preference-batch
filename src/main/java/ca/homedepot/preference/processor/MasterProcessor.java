@@ -22,7 +22,7 @@ public class MasterProcessor
 
 	private static List<Master> masterList;
 
-	/*
+	/**
 	 * Gets Master information from persistence and save's it as static value
 	 *
 	 * @param
@@ -34,7 +34,7 @@ public class MasterProcessor
 		masterList = preferenceService.getMasterInfo();
 	}
 
-	/*
+	/**
 	 * Obtains Master value according to key_val and value_val
 	 *
 	 * @param key_val, value_val
@@ -47,7 +47,7 @@ public class MasterProcessor
 				.findFirst().get();
 	}
 
-	/*
+	/**
 	 * Obtains Value_val according to MasterId
 	 *
 	 * @param masterId
@@ -59,7 +59,7 @@ public class MasterProcessor
 				.findFirst().get();
 	}
 
-	/*
+	/**
 	 * Gets master's values
 	 *
 	 * @param
@@ -71,7 +71,7 @@ public class MasterProcessor
 		return masterList;
 	}
 
-	/*
+	/**
 	 * Sets master's values
 	 *
 	 * @param masterList

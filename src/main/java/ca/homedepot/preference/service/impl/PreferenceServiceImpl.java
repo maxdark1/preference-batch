@@ -39,6 +39,10 @@ public class PreferenceServiceImpl implements PreferenceService
 	private JdbcTemplate jdbcTemplate;
 	private WebClient webClient;
 
+	/**
+	* Initialization of WebClient
+	* @param no params
+	* */
 	@Autowired
 	public void setUpWebClient()
 	{
@@ -48,7 +52,12 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 
-
+	/**
+	 * Sent JdbcTemplate
+	 *
+	 * @param JdbcTemplate jdbcTemplate
+	 *
+	 */
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
 	{
@@ -84,7 +93,7 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
 
-		log.info(" {} item(s) has been sent throw Request Registration {} ", items.size(), new Gson().toJson(items));
+		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
 
 		return webClient.post().uri(path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).bodyValue(items)
 				.retrieve().bodyToMono(RegistrationResponse.class).doOnError(e-> log.error(e.getMessage())).block();
@@ -103,7 +112,7 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL;
 
-		log.info(" {} item(s) has been sent throw Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
+		log.info(" {} item(s) has been sent through Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
 
 		return webClient.post().uri(path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
 				.bodyValue(items).retrieve().bodyToMono(RegistrationResponse.class).doOnError(e-> log.error(e.getMessage())).block();

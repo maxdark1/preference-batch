@@ -21,7 +21,7 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 
         log.info(" Item in process: {}", item.toString());
 
-        /*
+        /**
         * This saves all Validation's error messages
         * If there are any
         * */
