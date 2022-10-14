@@ -30,13 +30,27 @@ import lombok.Setter;
 @Slf4j
 public class RegistrationItemWriterListener implements ItemWriteListener<FileInboundStgTable>
 {
+	/**
+	 * The File Service
+	 */
 	@Autowired
 	private FileService fileService;
 
+	/**
+	 * The job name
+	 */
 	private String jobName;
+	/**
+	 * The file Id
+	 */
 	private BigDecimal fileID;
 
-
+	/**
+	 * Before write, sets items file_id according to fileName
+	 * 
+	 * @param items
+	 *           to be written
+	 */
 
 	@Override
 	public void beforeWrite(List<? extends FileInboundStgTable> items)
@@ -55,6 +69,13 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		});
 	}
 
+	/**
+	 * Gets a map of file name and file id
+	 * 
+	 * @param items
+	 * @return a Map of File name and file id
+	 */
+
 	public Map<String, BigDecimal> getMapFileNameFileId(List<? extends FileInboundStgTable> items)
 	{
 		return items.stream().map(item -> {
@@ -66,13 +87,24 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 				value -> (value.getFile_id() == null) ? BigDecimal.ZERO : value.getFile_id()));
 	}
 
+	/**
+	 * Gets from table the file_id
+	 * 
+	 * @param fileName
+	 * @return file id
+	 */
 	public BigDecimal getFromTableFileID(String fileName)
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
 		return fileService.getFile(fileName, jobId);
 	}
 
-
+	/**
+	 * After write Change status of NS (NOt Started) to (IP) In progress
+	 * 
+	 * @param items
+	 *           written items
+	 */
 	@Override
 	public void afterWrite(List<? extends FileInboundStgTable> items)
 	{
@@ -85,6 +117,13 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 
 	}
 
+	/**
+	 *
+	 * @param exception
+	 *           thrown from {@link ItemWriter}
+	 * @param items
+	 *           attempted to be written.
+	 */
 	@Override
 	public void onWriteError(Exception exception, List<? extends FileInboundStgTable> items)
 	{
