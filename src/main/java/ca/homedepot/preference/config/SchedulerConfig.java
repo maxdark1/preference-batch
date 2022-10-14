@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
-import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.listener.skipers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skipers.SkipListenerLayoutC;
@@ -228,11 +227,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private RegistrationAPIWriter apiWriter;
 
-	/**
-	 * The API writer listener
-	 */
-	@Autowired
-	private APIWriterListener apiWriterListener;
+
 	/**
 	 * The skip listener layoutB
 	 */
@@ -339,16 +334,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		this.apiWriter = apiWriter;
 	}
 
-	/**
-	 * Set LayoutC API writer listener.
-	 *
-	 * @param apiWriterListener
-	 *
-	 */
-	public void setApiWriterListener(APIWriterListener apiWriterListener)
-	{
-		this.apiWriterListener = apiWriterListener;
-	}
 
 	/**
 	 * Set LayoutB writer listener.
@@ -876,7 +861,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readLayoutCInboundBDStep2() throws Exception
 	{
 		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
-				.reader(inboundDBReader()).listener(apiWriterListener).writer(apiWriter).build();
+				.reader(inboundDBReader()).writer(apiWriter).build();
 	}
 
 	/**
@@ -891,7 +876,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 
 		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutB)
-				.reader(inboundDBReaderSFMC()).listener(apiWriterListener).writer(layoutBWriter).build();
+				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).build();
 
 	}
 

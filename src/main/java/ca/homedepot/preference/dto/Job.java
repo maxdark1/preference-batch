@@ -8,7 +8,9 @@ import lombok.Data;
 @Data
 public class Job
 {
-
+	/**
+	 * The job_id
+	 */
 	private BigDecimal job_id;
 
 
@@ -31,20 +33,31 @@ public class Job
 	private String status;
 
 	/**
-	 * The Phone number.
+	 * The start time.
 	 */
 	private Date start_time;
 
 	/**
-	 * The notification type.
+	 * The end time.
 	 */
 	private Date end_time;
 
+	/**
+	 * The inserted by
+	 */
+
 	private String inserted_by;
 
+	/**
+	 * The inserted date
+	 */
 	private Date inserted_date;
-
+	/**
+	 * The updated by
+	 */
 	private String updated_by;
-
+	/**
+	 * The updated date
+	 */
 	private Date updated_date;
 }

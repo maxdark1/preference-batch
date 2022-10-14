@@ -9,7 +9,6 @@ import java.lang.reflect.Modifier;
 
 import javax.sql.DataSource;
 
-import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.listener.skipers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skipers.SkipListenerLayoutC;
@@ -102,8 +101,6 @@ class SchedulerConfigTest
 	@Mock
 	public PlatformTransactionManager platformTransactionManager;
 	@Mock
-	APIWriterListener apiWriterListener;
-	@Mock
 	RegistrationLayoutBWriter layoutBWriter;
 	@InjectMocks
 	public SchedulerConfig schedulerConfig;
@@ -142,7 +139,6 @@ class SchedulerConfigTest
 		platformTransactionManager = Mockito.mock(PlatformTransactionManager.class);
 		simpleStepBuilder = Mockito.mock(SimpleStepBuilder.class);
 		stepBuilder = Mockito.mock(StepBuilder.class);
-		apiWriterListener = Mockito.mock(APIWriterListener.class);
 		layoutBWriter = Mockito.mock(RegistrationLayoutBWriter.class);
 
 		jobBuilderHelper = Mockito.mock(JobBuilderHelper.class);
@@ -354,13 +350,11 @@ class SchedulerConfigTest
 	{
 
 		schedulerConfig.setApiWriter(apiWriter);
-		schedulerConfig.setApiWriterListener(apiWriterListener);
 		schedulerConfig.chunkLayoutC = 10;
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(eq(10))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
@@ -370,13 +364,11 @@ class SchedulerConfigTest
 	@Test
 	void readDBSFMCOptOutsStep2()
 	{
-		schedulerConfig.setApiWriterListener(apiWriterListener);
 		schedulerConfig.chunkLayoutB = 20;
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(eq(20))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(RegistrationLayoutBWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 

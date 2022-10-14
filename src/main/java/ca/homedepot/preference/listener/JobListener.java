@@ -22,8 +22,16 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JobListener implements JobExecutionListener
 {
+	/**
+	 * Preference service
+	 */
 	private PreferenceService preferenceService;
 
+	/**
+	 * Set preference service
+	 * 
+	 * @param preferenceService
+	 */
 	@Autowired
 	public void setPreferenceService(PreferenceService preferenceService)
 	{
