@@ -15,35 +15,38 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MultiResourceItemReaderInboundTest {
+class MultiResourceItemReaderInboundTest
+{
 
-    @Mock
-    FileService fileService;
+	@Mock
+	FileService fileService;
 
-    @InjectMocks
-    MultiResourceItemReaderInbound multiResourceItemReaderInbound;
-
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+	@InjectMocks
+	MultiResourceItemReaderInbound multiResourceItemReaderInbound;
 
 
-    @Test
-    void writeFile() {
-        String fileName = "fileNAme";
-        Boolean status = true;
-        multiResourceItemReaderInbound.setSource("hybris");
-        multiResourceItemReaderInbound.setFileService(fileService);
-        List<Master> masterList = new ArrayList<>();
+	@BeforeEach
+	void setUp()
+	{
+		MockitoAnnotations.initMocks(this);
+	}
 
-        masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE,"SOURCE", "hybris", true));
-        masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE,"STATUS", "VALID", true));
-        masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE,"STATUS", "INVALID", true));
-        MasterProcessor.setMasterList(masterList);
 
-        multiResourceItemReaderInbound.writeFile(fileName, status);
-    }
+	@Test
+	void writeFile()
+	{
+		String fileName = "fileNAme";
+		Boolean status = true;
+		multiResourceItemReaderInbound.setSource("hybris");
+		multiResourceItemReaderInbound.setFileService(fileService);
+		List<Master> masterList = new ArrayList<>();
+
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "hybris", true));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true));
+		MasterProcessor.setMasterList(masterList);
+
+		multiResourceItemReaderInbound.writeFile(fileName, status);
+	}
 
 }

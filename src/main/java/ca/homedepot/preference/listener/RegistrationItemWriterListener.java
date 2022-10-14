@@ -45,8 +45,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 		List<String> filesNames = new ArrayList<>(files.keySet());
 		Collections.sort(filesNames);
-		filesNames.forEach(key ->
-		{
+		filesNames.forEach(key -> {
 			fileID = getFromTableFileID(key);
 			files.put(key, fileID);
 		});
@@ -56,13 +55,15 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		});
 	}
 
-	public Map<String, BigDecimal> getMapFileNameFileId(List<? extends FileInboundStgTable> items){
+	public Map<String, BigDecimal> getMapFileNameFileId(List<? extends FileInboundStgTable> items)
+	{
 		return items.stream().map(item -> {
 			FileDTO file = new FileDTO();
 			file.setFile_id(item.getFile_id());
 			file.setFile_name(item.getFileName());
 			return file;
-		}).distinct().collect(Collectors.toMap(key->key.getFile_name(), value-> (value.getFile_id()==null)?BigDecimal.ZERO: value.getFile_id()));
+		}).distinct().collect(Collectors.toMap(key -> key.getFile_name(),
+				value -> (value.getFile_id() == null) ? BigDecimal.ZERO : value.getFile_id()));
 	}
 
 	public BigDecimal getFromTableFileID(String fileName)
@@ -77,8 +78,8 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	{
 		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 
-		files.forEach((fileName, fileId)->{
-			fileService.updateInboundStgTableStatus(fileId,"IP", "NS");
+		files.forEach((fileName, fileId) -> {
+			fileService.updateInboundStgTableStatus(fileId, "IP", "NS");
 		});
 
 

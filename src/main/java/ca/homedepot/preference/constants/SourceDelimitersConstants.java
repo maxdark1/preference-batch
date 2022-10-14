@@ -1,20 +1,38 @@
 package ca.homedepot.preference.constants;
 
-public interface SourceDelimitersConstants {
+public interface SourceDelimitersConstants
+{
 
-    String HYBRIS = "hybris";
-
-    String CRM = "CRM";
-
-    String MANUAL_UPDATE = "manual_update";
-
-    String CITI_BANK = "citi_bank";
-
-    String SFMC = "SFMC";
-
-    String FB_SFMC = "FB_SFMC";
-
-    String DELIMITER_PIPELINE = "\\|";
-
-    String DELIMITER_TAB = "\\t";
+	/**
+	 * The constant hybris
+	 */
+	String HYBRIS = "hybris";
+	/**
+	 * The constant CRM
+	 */
+	String CRM = "CRM";
+	/**
+	 * The constant manual_update
+	 */
+	String MANUAL_UPDATE = "manual_update";
+	/**
+	 * The constant citi_bank
+	 */
+	String CITI_BANK = "citi_bank";
+	/**
+	 * The constant SFMC
+	 */
+	String SFMC = "SFMC";
+	/**
+	 * The constant FB_SFMC
+	 */
+	String FB_SFMC = "FB_SFMC";
+	/**
+	 * The delimiter PIPE LINE
+	 */
+	String DELIMITER_PIPELINE = "\\|";
+	/**
+	 * The delimiter tab
+	 */
+	String DELIMITER_TAB = "\\t";
 }

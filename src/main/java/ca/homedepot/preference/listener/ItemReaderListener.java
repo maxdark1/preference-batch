@@ -21,31 +21,35 @@ import java.util.Date;
 @Component
 @Data
 //@AllArgsConstructor
-public class ItemReaderListener implements ItemReadListener<InboundRegistration> {
+public class ItemReaderListener implements ItemReadListener<InboundRegistration>
+{
 
-    private final FileService fileService;
+	private final FileService fileService;
 
-    private String fileName;
-    private String jobName;
+	private String fileName;
+	private String jobName;
 
-    private BigDecimal fileID;
-    private Master master;
+	private BigDecimal fileID;
+	private Master master;
 
-    @Override
-    public void beforeRead() {
-        BigDecimal jobId = fileService.getJobId(jobName);
-        BigDecimal masterId = master.getMaster_id();
+	@Override
+	public void beforeRead()
+	{
+		BigDecimal jobId = fileService.getJobId(jobName);
+		BigDecimal masterId = master.getMaster_id();
 
-        //fileService.insert(fileName, "G", masterId, new Date(), jobId, new Date(), "BATCH");
-    }
+		//fileService.insert(fileName, "G", masterId, new Date(), jobId, new Date(), "BATCH");
+	}
 
-    @Override
-    public void afterRead(InboundRegistration item) {
+	@Override
+	public void afterRead(InboundRegistration item)
+	{
 
-    }
+	}
 
-    @Override
-    public void onReadError(Exception ex) {
+	@Override
+	public void onReadError(Exception ex)
+	{
 
-    }
+	}
 }

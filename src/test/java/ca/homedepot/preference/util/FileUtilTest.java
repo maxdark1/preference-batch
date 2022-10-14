@@ -33,7 +33,8 @@ class FileUtilTest
 	}
 
 	@Test
-	void getPathTest(){
+	void getPathTest()
+	{
 		FileUtil.setHybrisPath("hybris");
 		FileUtil.setCrmPath("CRM");
 
@@ -43,28 +44,32 @@ class FileUtilTest
 	}
 
 	@Test
-	void getCrmPath(){
+	void getCrmPath()
+	{
 		FileUtil.setCrmPath("CRM");
 
 		assertEquals("CRM", FileUtil.getCrmPath());
 	}
 
 	@Test
-	void getInbound(){
+	void getInbound()
+	{
 		FileUtil.setInbound("inbound/");
 
 		assertEquals("inbound/", FileUtil.getInbound());
 	}
 
 	@Test
-	void getError(){
+	void getError()
+	{
 		FileUtil.setError("error/");
 
 		assertEquals("error/", FileUtil.getError());
 	}
 
 	@Test
-	void getProcessed(){
+	void getProcessed()
+	{
 		FileUtil.setProcessed("processed/");
 
 		assertEquals("processed/", FileUtil.getProcessed());

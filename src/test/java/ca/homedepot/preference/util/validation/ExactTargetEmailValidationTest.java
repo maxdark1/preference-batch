@@ -16,7 +16,8 @@ import java.util.*;
 class ExactTargetEmailValidationTest
 {
 	@BeforeEach
-	 void setup(){
+	void setup()
+	{
 		List<Master> masterList = new ArrayList<>();
 
 		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true));

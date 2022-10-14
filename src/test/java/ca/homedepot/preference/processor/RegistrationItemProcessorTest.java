@@ -71,7 +71,7 @@ public class RegistrationItemProcessorTest
 		assertEquals("02-02-2022 22:22:22", input.getAsOfDate());
 		input.setAsOfDate(null);
 
-		ValidationException validationException = assertThrows(ValidationException.class, ()->{
+		ValidationException validationException = assertThrows(ValidationException.class, () -> {
 			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
 		});
 
@@ -84,7 +84,7 @@ public class RegistrationItemProcessorTest
 	{
 		input.setEmail_Permission("a");
 
-		ValidationException validationException = assertThrows(ValidationException.class, ()->{
+		ValidationException validationException = assertThrows(ValidationException.class, () -> {
 			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
 		});
 

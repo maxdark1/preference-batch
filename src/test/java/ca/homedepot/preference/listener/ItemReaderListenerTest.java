@@ -12,57 +12,64 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ItemReaderListenerTest {
+class ItemReaderListenerTest
+{
 
-    @Mock
-    FileService fileService;
+	@Mock
+	FileService fileService;
 
-    String fileName;
-    String jobName;
+	String fileName;
+	String jobName;
 
-    BigDecimal fileID;
-    Master master;
+	BigDecimal fileID;
+	Master master;
 
-    @InjectMocks
-    ItemReaderListener itemReaderListener;
+	@InjectMocks
+	ItemReaderListener itemReaderListener;
 
-    @BeforeEach
-    void beforeRead() {
-        fileService = Mockito.mock(FileService.class);
-        itemReaderListener = new ItemReaderListener(fileService);
-        fileName = "TEST";
-        jobName = "TEST_JOB";
-        fileID = new BigDecimal("12345");
-        master = new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true);
+	@BeforeEach
+	void beforeRead()
+	{
+		fileService = Mockito.mock(FileService.class);
+		itemReaderListener = new ItemReaderListener(fileService);
+		fileName = "TEST";
+		jobName = "TEST_JOB";
+		fileID = new BigDecimal("12345");
+		master = new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true);
 
-        itemReaderListener.setFileName(fileName);
-        itemReaderListener.setJobName(jobName);
-        itemReaderListener.setFileID(fileID);
-        itemReaderListener.setMaster(master);
-    }
+		itemReaderListener.setFileName(fileName);
+		itemReaderListener.setJobName(jobName);
+		itemReaderListener.setFileID(fileID);
+		itemReaderListener.setMaster(master);
+	}
 
-    @Test
-    void getFileService() {
-        assertNotNull(itemReaderListener.getFileService());
-    }
+	@Test
+	void getFileService()
+	{
+		assertNotNull(itemReaderListener.getFileService());
+	}
 
-    @Test
-    void getFileName() {
-        assertEquals(fileName, itemReaderListener.getFileName());
-    }
+	@Test
+	void getFileName()
+	{
+		assertEquals(fileName, itemReaderListener.getFileName());
+	}
 
-    @Test
-    void getJobName() {
-        assertEquals(jobName, itemReaderListener.getJobName());
-    }
+	@Test
+	void getJobName()
+	{
+		assertEquals(jobName, itemReaderListener.getJobName());
+	}
 
-    @Test
-    void getFileID() {
-        assertEquals(fileID, itemReaderListener.getFileID());
-    }
+	@Test
+	void getFileID()
+	{
+		assertEquals(fileID, itemReaderListener.getFileID());
+	}
 
-    @Test
-    void getMaster() {
-        assertEquals(master, itemReaderListener.getMaster());
-    }
+	@Test
+	void getMaster()
+	{
+		assertEquals(master, itemReaderListener.getMaster());
+	}
 }

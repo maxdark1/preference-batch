@@ -20,7 +20,7 @@ public interface PreferenceService
 
 	RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items);
 
-	int insert(String job_name, String status,BigDecimal status_id, Date start_time, String inserted_by, Date inserted_date);
+	int insert(String job_name, String status, BigDecimal status_id, Date start_time, String inserted_by, Date inserted_date);
 
 	List<Master> getMasterInfo();
 

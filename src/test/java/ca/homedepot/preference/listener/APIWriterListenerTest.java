@@ -15,50 +15,57 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class APIWriterListenerTest {
+class APIWriterListenerTest
+{
 
-    @Mock
-    FileServiceImpl fileService;
+	@Mock
+	FileServiceImpl fileService;
 
-    @InjectMocks
-    APIWriterListener apiWriterListener;
+	@InjectMocks
+	APIWriterListener apiWriterListener;
 
-    List<RegistrationRequest> items;
+	List<RegistrationRequest> items;
 
-    @BeforeEach
-    void setup(){
-        MockitoAnnotations.initMocks(this);
+	@BeforeEach
+	void setup()
+	{
+		MockitoAnnotations.initMocks(this);
 
-        RegistrationRequest item = new RegistrationRequest();
-        item.setFileId(new BigDecimal("12345"));
-        RegistrationRequest item2 = new RegistrationRequest();
-        item2.setFileId(new BigDecimal("36918"));
-        RegistrationRequest item3 = new RegistrationRequest();
-        item3.setFileId(new BigDecimal("24680"));
-        RegistrationRequest item4 = new RegistrationRequest();
-        item4.setFileId(new BigDecimal("12345"));
+		RegistrationRequest item = new RegistrationRequest();
+		item.setFileId(new BigDecimal("12345"));
+		RegistrationRequest item2 = new RegistrationRequest();
+		item2.setFileId(new BigDecimal("36918"));
+		RegistrationRequest item3 = new RegistrationRequest();
+		item3.setFileId(new BigDecimal("24680"));
+		RegistrationRequest item4 = new RegistrationRequest();
+		item4.setFileId(new BigDecimal("12345"));
 
-       items = List.of(item, item2, item3, item4);
-    }
-    @Test
-    void beforeWrite() {
-        apiWriterListener.beforeWrite(items);
-    }
+		items = List.of(item, item2, item3, item4);
+	}
 
-    @Test
-    void afterWrite() {
-        apiWriterListener.afterWrite(items);
-    }
+	@Test
+	void beforeWrite()
+	{
+		apiWriterListener.beforeWrite(items);
+	}
 
-    @Test
-    void getMapFileNameFileId() {
-       List<BigDecimal> filesId =  apiWriterListener.getMapFileNameFileId(items);
+	@Test
+	void afterWrite()
+	{
+		apiWriterListener.afterWrite(items);
+	}
 
-       assertEquals(3, filesId.size());
-    }
+	@Test
+	void getMapFileNameFileId()
+	{
+		List<BigDecimal> filesId = apiWriterListener.getMapFileNameFileId(items);
 
-    @Test
-    void onWriteError() {
-        apiWriterListener.onWriteError(new Exception(), items);
-    }
+		assertEquals(3, filesId.size());
+	}
+
+	@Test
+	void onWriteError()
+	{
+		apiWriterListener.onWriteError(new Exception(), items);
+	}
 }

@@ -185,7 +185,8 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	void setUpTest(){
+	void setUpTest()
+	{
 		assertNotNull(schedulerConfig);
 		schedulerConfig.setUpListener();
 	}
@@ -199,19 +200,22 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void testinboundEmailPreferencesSMFCReader(){
+	public void testinboundEmailPreferencesSMFCReader()
+	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader());
 	}
 
 	@Test
-	public void testingestOptOutsGmailClientUnsubscribedReader(){
+	public void testingestOptOutsGmailClientUnsubscribedReader()
+	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.ingestOptOutsGmailClientUnsubscribedReader());
 	}
 
 	@Test
-	public void testlineTokenizer(){
+	public void testlineTokenizer()
+	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.lineTokenizer());
 	}
@@ -229,7 +233,7 @@ class SchedulerConfigTest
 	public void inboundFileProcessor()
 	{
 
-		assertNotNull(schedulerConfig.inboundFileProcessor("hybris"));
+		assertNotNull(schedulerConfig.layoutCProcessor("hybris"));
 	}
 
 	// TODO NullPointerException
@@ -321,8 +325,10 @@ class SchedulerConfigTest
 
 		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));
 	}
+
 	@Test
-	void readInboundFBSFMCFileStep1() throws Exception {
+	void readInboundFBSFMCFileStep1() throws Exception
+	{
 		schedulerConfig.setFbsfmcWriterListener(writerListener);
 
 
@@ -344,7 +350,8 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	void readInboundDBStep2() throws Exception {
+	void readInboundDBStep2() throws Exception
+	{
 
 		schedulerConfig.setApiWriter(apiWriter);
 		schedulerConfig.setApiWriterListener(apiWriterListener);
@@ -361,7 +368,8 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	void readDBSFMCOptOutsStep2(){
+	void readDBSFMCOptOutsStep2()
+	{
 		schedulerConfig.setApiWriterListener(apiWriterListener);
 		schedulerConfig.chunkLayoutB = 20;
 
@@ -380,23 +388,10 @@ class SchedulerConfigTest
 	void testExtactExactTargetEmailProcessor()
 	{
 		assertNotNull(schedulerConfig);
-		assertNotNull(schedulerConfig.extactExactTargetEmailProcessor());
+		assertNotNull(schedulerConfig.layoutBProcessor());
 	}
 
 
-	@Test
-	public void readSFMCOptOutsGmailStep(){
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(FlatFileItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.processor(any(ExactTargetEmailProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
-
-		assertNotNull(schedulerConfig.readSFMCOptOutsGmailStep());
-
-	}
 
 
 }

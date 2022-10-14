@@ -20,37 +20,38 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
-class RegistrationLayoutBWriterTest {
+class RegistrationLayoutBWriterTest
+{
 
-    @Mock
-    Logger log = LoggerFactory.getLogger(RegistrationLayoutBWriter.class);
-    @Mock
-    PreferenceServiceImpl preferenceService;
-    @Mock
-    FileServiceImpl fileService;
+	@Mock
+	Logger log = LoggerFactory.getLogger(RegistrationLayoutBWriter.class);
+	@Mock
+	PreferenceServiceImpl preferenceService;
+	@Mock
+	FileServiceImpl fileService;
 
-    @InjectMocks
-    RegistrationLayoutBWriter layoutBWriter;
+	@InjectMocks
+	RegistrationLayoutBWriter layoutBWriter;
 
-    @BeforeEach
-    void setUp()
-    {
-        preferenceService = Mockito.mock(PreferenceServiceImpl.class);
-        fileService = Mockito.mock(FileServiceImpl.class);
-        layoutBWriter = new RegistrationLayoutBWriter();
-        layoutBWriter.setPreferenceService(preferenceService);
-        layoutBWriter.setFileService(fileService);
-    }
+	@BeforeEach
+	void setUp()
+	{
+		preferenceService = Mockito.mock(PreferenceServiceImpl.class);
+		fileService = Mockito.mock(FileServiceImpl.class);
+		layoutBWriter = new RegistrationLayoutBWriter();
+		layoutBWriter.setPreferenceService(preferenceService);
+		layoutBWriter.setFileService(fileService);
+	}
 
-    @Test
-    void write() throws Exception
-    {
-        List<RegistrationRequest> items = new ArrayList<>();
-        RegistrationResponse registration = new RegistrationResponse(List.of(new Response("1", "Published", "Done")));
+	@Test
+	void write() throws Exception
+	{
+		List<RegistrationRequest> items = new ArrayList<>();
+		RegistrationResponse registration = new RegistrationResponse(List.of(new Response("1", "Published", "Done")));
 
-        Mockito.when(preferenceService.preferencesSFMCEmailOptOutsLayoutB(items)).thenReturn(registration);
-        Mockito.when(fileService.updateInboundStgTableStatus(eq(BigDecimal.ZERO), anyString(), anyString())).thenReturn(1);
+		Mockito.when(preferenceService.preferencesSFMCEmailOptOutsLayoutB(items)).thenReturn(registration);
+		Mockito.when(fileService.updateInboundStgTableStatus(eq(BigDecimal.ZERO), anyString(), anyString())).thenReturn(1);
 
-        layoutBWriter.write(items);
-    }
+		layoutBWriter.write(items);
+	}
 }

@@ -69,24 +69,24 @@ class PreferenceServiceImplTest
 	public void setUp()
 	{
 		MockitoAnnotations.initMocks(this);
-//		preferenceServiceImpl = new PreferenceServiceImpl();
+		//		preferenceServiceImpl = new PreferenceServiceImpl();
 		preferenceServiceImpl.baseUrl = "test/";
 		// Mocking webClient obj
-//		webClient = Mockito.mock(WebClient.class);
-//		requestBodyUriSpec = Mockito.mock(WebClient.RequestBodyUriSpec.class);
-//		requestBodySpec = Mockito.mock(WebClient.RequestBodySpec.class);
-//		requestHeadersSpec = Mockito.mock(WebClient.RequestHeadersSpec.class);
-//		responseSpec = Mockito.mock(WebClient.ResponseSpec.class);
-//
-//		jdbcTemplate = Mockito.mock(JdbcTemplate.class);
-//
-//		preferenceServiceImpl.setJdbcTemplate(jdbcTemplate);
-//		preferenceServiceImpl.setWebClient(webClient);
-//
-//
-//		items = new ArrayList<>();
-//		RegistrationRequest registration = new RegistrationRequest();
-//		items.add(registration);
+		//		webClient = Mockito.mock(WebClient.class);
+		//		requestBodyUriSpec = Mockito.mock(WebClient.RequestBodyUriSpec.class);
+		//		requestBodySpec = Mockito.mock(WebClient.RequestBodySpec.class);
+		//		requestHeadersSpec = Mockito.mock(WebClient.RequestHeadersSpec.class);
+		//		responseSpec = Mockito.mock(WebClient.ResponseSpec.class);
+		//
+		//		jdbcTemplate = Mockito.mock(JdbcTemplate.class);
+		//
+		//		preferenceServiceImpl.setJdbcTemplate(jdbcTemplate);
+		//		preferenceServiceImpl.setWebClient(webClient);
+		//
+		//
+		//		items = new ArrayList<>();
+		//		RegistrationRequest registration = new RegistrationRequest();
+		//		items.add(registration);
 
 	}
 
@@ -96,7 +96,7 @@ class PreferenceServiceImplTest
 	{
 
 		String id = "13";
-		String path =  "test/" + "{id}/preferences";
+		String path = "test/" + "{id}/preferences";
 		PreferenceItemList preferenceItemList = new PreferenceItemList();
 
 		Mockito.when(webClient.get()).thenReturn(requestHeadersUriSpec);
@@ -115,9 +115,9 @@ class PreferenceServiceImplTest
 	{
 
 		String id = "13";
-		String path =  "test/" + "{id}/preferences";
+		String path = "test/" + "{id}/preferences";
 		RegistrationResponse registrationResponse = Mockito.mock(RegistrationResponse.class);
-		registrationResponse.setRegistration(List.of(new Response("12345", "status", "details" )));
+		registrationResponse.setRegistration(List.of(new Response("12345", "status", "details")));
 		itemsRequest = new ArrayList<>();
 		itemsRequest.add(new RegistrationRequest());
 
@@ -139,9 +139,9 @@ class PreferenceServiceImplTest
 	{
 
 		String id = "13";
-		String path =  "test/" + "{id}/preferences";
+		String path = "test/" + "{id}/preferences";
 		RegistrationResponse registrationResponse = Mockito.mock(RegistrationResponse.class);
-		registrationResponse.setRegistration(List.of(new Response("12345", "status", "details" )));
+		registrationResponse.setRegistration(List.of(new Response("12345", "status", "details")));
 		itemsRequest = new ArrayList<>();
 		itemsRequest.add(new RegistrationRequest());
 
@@ -166,8 +166,8 @@ class PreferenceServiceImplTest
 		BigDecimal status_id = BigDecimal.ONE;
 		Date start_time = new Date(), inserted_date = new Date();
 		int value = 1;
-		Mockito.when(jdbcTemplate.update(anyString(), eq(job_name), eq(status), eq(status_id),eq(start_time), eq(inserted_by), eq(inserted_date)))
-				.thenReturn(value);
+		Mockito.when(jdbcTemplate.update(anyString(), eq(job_name), eq(status), eq(status_id), eq(start_time), eq(inserted_by),
+				eq(inserted_date))).thenReturn(value);
 
 		int resultValue = preferenceServiceImpl.insert(job_name, status, status_id, start_time, inserted_by, inserted_date);
 		assertEquals(value, resultValue);
@@ -181,8 +181,8 @@ class PreferenceServiceImplTest
 
 		Master master = new Master();
 		listMaster.add(master);
-		RowMapper rowMapper = (rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"),rs.getString("key_value"), rs.getString("value_val"),
-				rs.getBoolean("active"));
+		RowMapper rowMapper = (rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"),
+				rs.getString("key_value"), rs.getString("value_val"), rs.getBoolean("active"));
 		Mockito.when(jdbcTemplate.query(anyString(), eq(rowMapper))).thenReturn(listMaster);
 		Mockito.when(preferenceServiceImpl.getMasterInfo()).thenReturn(listMaster);
 
@@ -199,15 +199,18 @@ class PreferenceServiceImplTest
 		String status = "C";
 		int rowsAffected = 1;
 
-		Mockito.when(jdbcTemplate.update(anyString(), eq(job.getStatus_id()), eq(job.getUpdated_date()), eq(job.getUpdated_by()), eq(job.getStatus()), eq(job.getEnd_time()),
-				eq(job.getStart_time()), eq(job.getJob_name()), eq(status))).thenReturn(rowsAffected);
+		Mockito
+				.when(jdbcTemplate.update(anyString(), eq(job.getStatus_id()), eq(job.getUpdated_date()), eq(job.getUpdated_by()),
+						eq(job.getStatus()), eq(job.getEnd_time()), eq(job.getStart_time()), eq(job.getJob_name()), eq(status)))
+				.thenReturn(rowsAffected);
 
 		int currentRowsAffected = preferenceServiceImpl.updateJob(job, status);
 		assertEquals(rowsAffected, currentRowsAffected);
 	}
 
 	@Test
-	void setupWebClient(){
+	void setupWebClient()
+	{
 		preferenceServiceImpl.setUpWebClient();
 	}
 }

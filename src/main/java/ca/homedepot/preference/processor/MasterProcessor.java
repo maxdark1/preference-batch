@@ -37,14 +37,15 @@ public class MasterProcessor
 	/**
 	 * Obtains Master value according to key_val and value_val
 	 *
-	 * @param key_val, value_val
+	 * @param key_val,
+	 *           value_val
 	 *
 	 * @return Master
 	 */
 	public static Master getSourceId(String key_val, String value_val)
 	{
-		return masterList.stream().filter(master -> master.getKey_value().equals(key_val) && master.getValue_val().equals(value_val))
-				.findFirst().get();
+		return masterList.stream()
+				.filter(master -> master.getKey_value().equals(key_val) && master.getValue_val().equals(value_val)).findFirst().get();
 	}
 
 	/**
@@ -54,7 +55,8 @@ public class MasterProcessor
 	 *
 	 * @return String
 	 */
-	public static String getValueVal(BigDecimal masterId){
+	public static String getValueVal(BigDecimal masterId)
+	{
 		return masterList.stream().filter(master -> master.getMaster_id().equals(masterId)).map(master -> master.getValue_val())
 				.findFirst().get();
 	}

@@ -26,17 +26,20 @@ public class ModelsTest
 		emailOptOuts.setEmailAddress("addr");
 		emailOptOuts.setDateUnsubscribed("22-11-2022");
 
-		fileInboundStgTable = new FileInboundStgTable.FileInboundStgTableBuilder().file_id(BigDecimal.ONE).fileName("TEST_FILE").status("status")
-				.src_date(new Date()).updated_date(new Date()).src_email_address("email@gmail.com").phone_pref("1").src_phone_number("123456789")
-				.src_phone_extension("52").src_title_name("Sr").email_address_pref("-1").source_id(BigDecimal.ONE).email_pref_hd_ca("1").src_first_name("Michael")
-				.src_last_name("Penia").src_address1("address1").src_address2("address 2").src_city("city").src_state("st").src_date(new Date())
-				.src_postal_code("123456").mail_address_pref("-1").email_pref_hd_ca("-1").email_pref_pro("-1").email_pref_new_mover("-1")
-				.customer_nbr("1234").org_name("org_name").store_nbr("132").cust_type_cd("123").fax_number("12345").fax_extension("22")
-				.value1("value1").content4("content4").value4("value4").content5("content5").value5("value5").content6("content6").value6("value6")
-				.content7("content7").value7("value7").content8("content8").value8("value8").content10("content10").content11("content11").value11("value11")
-				.content12("content12").value12("value12").content13("content13").value13("value13").content14("content14").value14("value14")
-				.content15("content15").value15("value15").content16("content16").value16("value16").content17("content17").value17("value17")
-				.content18("content18").value18("value18").content19("content19").value19("value19").content20("content20").value20("value20").build();
+		fileInboundStgTable = new FileInboundStgTable.FileInboundStgTableBuilder().file_id(BigDecimal.ONE).fileName("TEST_FILE")
+				.status("status").src_date(new Date()).updated_date(new Date()).src_email_address("email@gmail.com").phone_pref("1")
+				.src_phone_number("123456789").src_phone_extension("52").src_title_name("Sr").email_address_pref("-1")
+				.source_id(BigDecimal.ONE).email_pref_hd_ca("1").src_first_name("Michael").src_last_name("Penia")
+				.src_address1("address1").src_address2("address 2").src_city("city").src_state("st").src_date(new Date())
+				.src_postal_code("123456").mail_address_pref("-1").email_pref_hd_ca("-1").email_pref_pro("-1")
+				.email_pref_new_mover("-1").customer_nbr("1234").org_name("org_name").store_nbr("132").cust_type_cd("123")
+				.fax_number("12345").fax_extension("22").value1("value1").content4("content4").value4("value4").content5("content5")
+				.value5("value5").content6("content6").value6("value6").content7("content7").value7("value7").content8("content8")
+				.value8("value8").content10("content10").content11("content11").value11("value11").content12("content12")
+				.value12("value12").content13("content13").value13("value13").content14("content14").value14("value14")
+				.content15("content15").value15("value15").content16("content16").value16("value16").content17("content17")
+				.value17("value17").content18("content18").value18("value18").content19("content19").value19("value19")
+				.content20("content20").value20("value20").build();
 	}
 
 	@Test
@@ -114,8 +117,8 @@ public class ModelsTest
 		assertEquals("value1", fileInboundStgTable.getValue1());
 		assertNull(fileInboundStgTable.getContent2());
 		assertNull(fileInboundStgTable.getValue2());
-		assertEquals("content3",fileInboundStgTable.getContent3());
-		assertEquals("value3",fileInboundStgTable.getValue3());
+		assertEquals("content3", fileInboundStgTable.getContent3());
+		assertEquals("value3", fileInboundStgTable.getValue3());
 		assertNotNull("content4", fileInboundStgTable.getContent4());
 		assertNotNull("value4", fileInboundStgTable.getValue4());
 		assertNotNull("content5", fileInboundStgTable.getContent5());
@@ -134,8 +137,8 @@ public class ModelsTest
 		assertNotNull("value11", fileInboundStgTable.getValue11());
 		assertNotNull("content12", fileInboundStgTable.getContent12());
 		assertNotNull("value12", fileInboundStgTable.getValue12());
-		assertEquals("content13",fileInboundStgTable.getContent13());
-		assertEquals("value13",fileInboundStgTable.getValue13());
+		assertEquals("content13", fileInboundStgTable.getContent13());
+		assertEquals("value13", fileInboundStgTable.getValue13());
 		assertNotNull("content14", fileInboundStgTable.getContent14());
 		assertNotNull("value14", fileInboundStgTable.getValue14());
 		assertNotNull("content15", fileInboundStgTable.getContent15());
@@ -155,7 +158,8 @@ public class ModelsTest
 	}
 
 	@Test
-	void inboundRegistrationSetResourceTest(){
+	void inboundRegistrationSetResourceTest()
+	{
 		Resource resource = new FileSystemResource("File");
 		inboundRegistration = new InboundRegistration();
 

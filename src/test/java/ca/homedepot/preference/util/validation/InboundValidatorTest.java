@@ -25,10 +25,11 @@ class InboundValidatorTest
 	InboundRegistration input;
 
 
-	StringBuilder error ;
+	StringBuilder error;
 
 	@BeforeAll
-	static void settingUp(){
+	static void settingUp()
+	{
 		List<Master> masterList = new ArrayList<>();
 
 		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true));
@@ -45,7 +46,8 @@ class InboundValidatorTest
 	@BeforeEach
 	public void setup()
 	{
-		InboundValidator.setValidEmailPattern("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+		InboundValidator
+				.setValidEmailPattern("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 		input = new InboundRegistration();
 		error = new StringBuilder();
 		input.setAsOfDate("08-26-2022 10:10:10");
@@ -129,7 +131,7 @@ class InboundValidatorTest
 	void validateNumberFormatSourceID()
 	{
 		InboundRegistration item = new InboundRegistration();
-		item.setSource_ID( null);
+		item.setSource_ID(null);
 
 		InboundValidator.validateNumberFormat(item, error);
 
@@ -140,7 +142,7 @@ class InboundValidatorTest
 	void validateNumberFormatValue5()
 	{
 		InboundRegistration item = new InboundRegistration();
-		item.setValue_5( "a");
+		item.setValue_5("a");
 
 		InboundValidator.validateNumberFormat(item, error);
 
@@ -154,7 +156,7 @@ class InboundValidatorTest
 	void validateNumberFormatValue5Numeric()
 	{
 		InboundRegistration item = new InboundRegistration();
-		item.setValue_5( "10");
+		item.setValue_5("10");
 
 		InboundValidator.validateNumberFormat(item, error);
 
@@ -163,6 +165,7 @@ class InboundValidatorTest
 		});
 		assertTrue(exception.getMessage().contains("invalid"));
 	}
+
 	@Test
 	void invalidMonthDateTest()
 	{
@@ -179,7 +182,8 @@ class InboundValidatorTest
 	}
 
 	@Test
-	void invalidDayLeapYear(){
+	void invalidDayLeapYear()
+	{
 		StringBuilder error = new StringBuilder();
 		String invalidDate = "02-29-2024 2:02:20";
 
@@ -194,7 +198,7 @@ class InboundValidatorTest
 	void validateNumberFormatPhonePermission()
 	{
 		InboundRegistration item = new InboundRegistration();
-		item.setPhone_Permission( "a");
+		item.setPhone_Permission("a");
 
 		InboundValidator.validateNumberFormat(item, error);
 
@@ -244,14 +248,15 @@ class InboundValidatorTest
 
 		InboundValidator.validateIsRequired(input, error);
 		ValidationException exception1 = assertThrows(ValidationException.class, () -> {
-				InboundValidator.isValidationsErros(error);
+			InboundValidator.isValidationsErros(error);
 		});
 
 		assertTrue(exception1.getMessage().contains("language_pref"));
 	}
 
 	@Test
-	void validateIsRequiredEmptyObj(){
+	void validateIsRequiredEmptyObj()
+	{
 
 		InboundValidator.validateIsRequired(null, error);
 
