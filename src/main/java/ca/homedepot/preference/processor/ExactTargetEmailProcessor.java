@@ -18,7 +18,13 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
     public FileInboundStgTable process(EmailOptOuts item){
 
         FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
-        log.info(" Item in process: " + item.toString());
+
+        log.info(" Item in process: {}", item.toString());
+
+        /*
+        * This saves all Validation's error messages
+        * If there are any
+        * */
         StringBuilder error = new StringBuilder();
         Date srcDate = null;
         try{
@@ -30,6 +36,11 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
             srcDate = ExactTargetEmailValidation.validateDateFormat(item.getDateUnsubscribed(), error);
 
             InboundValidator.validateEmailFormat(item.getEmailAddress(), error);
+
+            /**
+             * Throws an exception if it finds any Error message on
+             * StringBuilder container
+             * */
             InboundValidator.isValidationsErros(error);
         }catch (ValidationException e){
             log.error(" Validation error: {} ", e.getMessage());

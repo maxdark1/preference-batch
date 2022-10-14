@@ -36,11 +36,11 @@ public class InboundValidator
 
 
 	/*
-	 * File's validation field's name.
+	 * Error's validation.
 	 * 
-	 * @param
+	 * @param errors
 	 * 
-	 * @return lineCallBackHandler
+	 * @return
 	 */
 
 	public static void isValidationsErros(StringBuilder errors){
@@ -48,6 +48,14 @@ public class InboundValidator
 			throw new ValidationException(" The item processed has the above validations erros: \n" + errors);
 	}
 
+	/*
+	 * Error's validation.
+	 *
+	 * @param field, value, maxLength, error
+	 *
+	 * @return String
+	 *  If there is any error, it returns String with maxLength
+	 */
 	public static String validateMaxLengthNotReq(String field, String value, int maxLength, StringBuilder error)
 	{
 		if (value != null)
@@ -55,6 +63,14 @@ public class InboundValidator
 		return value;
 	}
 
+	/*
+	 * Validates field length
+	 *
+	 * @param field, value, maxLength, error
+	 *
+	 * @return String
+	 *  If there is any error, it returns String with maxLength
+	 */
 	public static String validateMaxLength(String field, String value, int maxLength, StringBuilder error)
 	{
 
@@ -68,22 +84,45 @@ public class InboundValidator
 
 	}
 
+	/*
+	 * Validate Lenguage Pref
+	 *
+	 * @param item, error
+	 *
+	 * @return
+	 *  It update message error if there's any Error
+	 */
 	public static void validateLanguagePref(InboundRegistration item, StringBuilder error)
 	{
 		if (!item.getLanguage_Preference().trim().matches("e|E|f|F|fr|FR|en|EN"))
 			error.append("invalid value for language_pref {}: ").append(item.getLanguage_Preference()).append(" not matches with: E, EN, F, FR\n");
 	}
 
+	/*
+	 * Validate email format
+	 *
+	 * @param email, error
+	 *
+	 * @return
+	 *  Validate email according to email pattern (on configuration file)
+	 */
 	public static void validateEmailFormat(String email, StringBuilder error)
 	{
 
 		if (email != null)
 			if (!email.matches(VALID_EMAIL_PATTERN))
 				error.append(" email address does not have a valid format {}: " ).append( email).append("\n");
-//				throw new ValidationException(" email address does not have a valid format {}: " + email);
 
 	}
 
+	/*
+	 * Validate date format
+	 *
+	 * @param date, error
+	 *
+	 * @return
+	 *  Validate date format, if there's any error update error message
+	 */
 	public static Date validateDateFormat(String date, StringBuilder error)
 	{
 
@@ -99,10 +138,18 @@ public class InboundValidator
 		{
 			error.append("Invalid date format ").append(date).append("\n");
 			return asOfDate;
-//			throw new ValidationException("invalid date format");
 		}
 	}
 
+
+	/*
+	 * Validate Day and Month value
+	 *
+	 * @param date, separator, error
+	 *
+	 * @return
+	 *  Validate Day and Moth value, if there's any error update error message
+	 */
 	public static void validateDayMonth(String date, String separator,StringBuilder error)
 	{
 		String[] mmddyy = date.split(" ")[0].split(separator);
@@ -114,10 +161,27 @@ public class InboundValidator
 
 	}
 
+	/*
+	 * Validate Month's value
+	 *
+	 * @param month,  error
+	 *
+	 * @return
+	 *  Validate Moth's value, if there's any error update error message
+	 */
 	public static void validateMonth(int month, StringBuilder error){
 		if(!(month >=1 && month <= 12))
 			error.append(" Invalid Month: " ).append(month).append(" \n");
 	}
+
+	/*
+	 * Validate day's value
+	 *
+	 * @param day, month, year, error
+	 *
+	 * @return
+	 *  Validate day's value according to Month and year value, if there's any error update error message
+	 */
 	public static  void validateDay(int day, int month, int year, StringBuilder error){
 		GregorianCalendar calendar = new GregorianCalendar();
 		int maxDays = 31;
@@ -131,6 +195,14 @@ public class InboundValidator
 			error.append(" Invalid day: ").append(day).append("\n");
 	}
 
+	/*
+	 * Validate number format
+	 *
+	 * @param item, error
+	 *
+	 * @return
+	 *  Validate number format for fields with number values, if there's any error, update error message
+	 */
 	public static void validateNumberFormat(InboundRegistration item, StringBuilder error)
 	{
 		Integer value = null;
@@ -167,6 +239,14 @@ public class InboundValidator
 		}
 	}
 
+	/*
+	 * Gets source_id for specific record
+	 *
+	 * @param source
+	 *
+	 * @return BigDecimal
+	 *
+	 */
 	public static BigDecimal getSourceID(String source){
 
 		return MasterProcessor.getSourceId("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC)?
@@ -174,6 +254,14 @@ public class InboundValidator
 
 	}
 
+	/*
+	 * Validate if is number
+	 *
+	 * @param number, error
+	 *
+	 * @return Integer
+	 * Validate if it is number, if there's any error, update error message
+	 */
 	public static Integer validateIsNumber(String number, StringBuilder error)
 	{
 		Integer value = null;
@@ -184,26 +272,39 @@ public class InboundValidator
 		catch (NumberFormatException ex)
 		{
 			error.append("invalid number format\n");
-//			throw new ValidationException("invalid number format");
 		}
 
 		return value;
 	}
 
+	/*
+	 * Validate if is number is valid
+	 *
+	 * @param value, field, error
+	 *
+	 * @return
+	 * Validate if is it a valid value, if there is any error, update error message
+	 */
 	public static void validValue_Number(Integer value, String field, StringBuilder error)
 	{
 		if (value != null &&(value < -1 || value > 1))
 			error.append(" invalid value for field {}: ").append(field).append("\n");
-			//throw new ValidationException("invalid value for field {}: " + field);
 	}
 
+	/*
+	 * Validate required fields
+	 *
+	 * @param item, error
+	 *
+	 * @return
+	 * Validate if field is required, if there is any error, update error message
+	 */
 	public static void validateIsRequired(InboundRegistration item, StringBuilder error)
 	{
 		if (item == null)
 		{
 			error.append(" Item should be present\n");
 			return;
-			//throw new ValidationException(" Item should be present");
 		}
 		validateRequired(item.getLanguage_Preference(), "language_pref", error);
 		validateRequired(item.getAsOfDate(), "as_of_date", error);
@@ -221,12 +322,19 @@ public class InboundValidator
 		validateRequired(item.getContent_6(), "content6", error);
 	}
 
+	/*
+	 * Validate required
+	 *
+	 * @param value, field, error
+	 *
+	 * @return
+	 * Validate if required value is not Null or blank, if there is any error, update error message
+	 */
 	public static void validateRequired(String value, String field, StringBuilder error)
 	{
 		if (value == null || value.isBlank())
 		{
 			error.append(field).append(" should be present\n");
-//			throw new ValidationException(field + " should be present");
 		}
 	}
 }
