@@ -34,16 +34,24 @@ import reactor.netty.resources.ConnectionProvider;
 public class PreferenceServiceImpl implements PreferenceService
 {
 
+	/**
+	 * The base url
+	 */
 	@Value("${service.preference.baseurl}")
 	public String baseUrl;
+
+	/**
+	 * The JDBC template
+	 */
 	private JdbcTemplate jdbcTemplate;
+
+	/**
+	 * The WebClient
+	 */
 	private WebClient webClient;
 
 	/**
 	 * Initialization of WebClient
-	 * 
-	 * @param no
-	 *           params
 	 */
 	@Autowired
 	public void setUpWebClient()
@@ -55,11 +63,9 @@ public class PreferenceServiceImpl implements PreferenceService
 
 
 	/**
-	 * Sent JdbcTemplate
-	 *
-	 * @param JdbcTemplate
-	 *           jdbcTemplate
-	 *
+	 * Sets JdbcTemplate
+	 * 
+	 * @param jdbcTemplate
 	 */
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
@@ -67,12 +73,22 @@ public class PreferenceServiceImpl implements PreferenceService
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
+	/**
+	 * Sets WebClient
+	 * 
+	 * @param webClient
+	 */
 	public void setWebClient(WebClient webClient)
 	{
 		this.webClient = webClient;
 	}
 
-
+	/**
+	 * Gets preferences
+	 * 
+	 * @param id
+	 * @return preference Item list
+	 */
 	public PreferenceItemList getPreferences(String id)
 	{
 		String path = baseUrl + "{id}/preferences";
@@ -87,11 +103,10 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 	/**
-	 * Send request to service for subscribe/unsubscribe from marketing programs
-	 *
-	 * @param List<?
-	 *           extends RegistrationRequest> items
-	 *
+	 * Sends to API LayoutC endpoint Registration information
+	 * 
+	 * @param items
+	 * @return registration response
 	 */
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
 	{
@@ -105,13 +120,11 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 	/**
-	 * Send request to service for SFMC unsubscribe
-	 *
-	 * @param List<?
-	 *           extends RegistrationRequest> items
-	 *
+	 * Sends to API Unsubscribed LAyoutB information
+	 * 
+	 * @param items
+	 * @return Registration Response with status
 	 */
-
 	@Override
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
 	{
@@ -126,10 +139,15 @@ public class PreferenceServiceImpl implements PreferenceService
 
 
 	/**
-	 * Save Job Information on persistence
-	 *
-	 * @param job_name,
-	 *           status, start_time, inserted_by, inserted_date
+	 * Inserts on persistence job information
+	 * 
+	 * @param job_name
+	 * @param status
+	 * @param status_id
+	 * @param start_time
+	 * @param inserted_by
+	 * @param inserted_date
+	 * @return inserted records
 	 */
 
 	@Override
@@ -141,10 +159,9 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 	/**
-	 * Gets Master's table information from persistence
-	 *
-	 * @param No
-	 *           params The List resulting will be on MasterProcessor list as static
+	 * Gets master's information
+	 * 
+	 * @return Master information
 	 */
 	@Override
 	public List<Master> getMasterInfo()
@@ -155,11 +172,11 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 	/**
-	 * Update Job status on persistence
-	 *
-	 * @param job,
-	 *           status
-	 *
+	 * Update job's status
+	 * 
+	 * @param job
+	 * @param status
+	 * @return updated records
 	 */
 	@Override
 	public int updateJob(Job job, String status)

@@ -20,21 +20,46 @@ import ca.homedepot.preference.service.FileService;
 @Service
 public class FileServiceImpl implements FileService
 {
-
+	/**
+	 * The JDBC template
+	 */
 	private JdbcTemplate jdbcTemplate;
 
-
+	/**
+	 * Gets JDBC template
+	 * 
+	 * @return JDBC template
+	 */
 	public JdbcTemplate getJdbcTemplate()
 	{
 		return jdbcTemplate;
 	}
 
+	/**
+	 * Sets JDBC template
+	 * 
+	 * @param jdbcTemplate
+	 */
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
 	{
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
+	/**
+	 * Inserts file on persistence
+	 * 
+	 * @param file_name
+	 * @param status
+	 * @param source_id
+	 * @param start_time
+	 * @param job_id
+	 * @param inserted_date
+	 * @param inserted_by
+	 * @param status_id
+	 * @param endTime
+	 * @return inserted records
+	 */
 	@Override
 	@Transactional
 	public int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id,
@@ -44,13 +69,25 @@ public class FileServiceImpl implements FileService
 				inserted_by, inserted_date, status_id, endTime);
 	}
 
-
+	/**
+	 * Gets job id
+	 * 
+	 * @param job_name
+	 * @return job id
+	 */
 	public BigDecimal getJobId(String job_name)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME,
 				(rs, RowNum) -> rs.getBigDecimal("job_id"), job_name);
 	}
 
+	/**
+	 * Gets last inserted file according to file name and job id
+	 * 
+	 * @param file_name
+	 * @param job_id
+	 * @return file id
+	 */
 	@Override
 	public BigDecimal getFile(String file_name, BigDecimal job_id)
 	{
@@ -58,12 +95,24 @@ public class FileServiceImpl implements FileService
 		{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal("file_id"));
 	}
 
+	/**
+	 * Gets last file
+	 * 
+	 * @return file id
+	 */
 	@Override
 	public BigDecimal getLasFile()
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE, (rs, RowNum) -> rs.getBigDecimal("file_id"));
 	}
 
+	/**
+	 * Gets source id from master
+	 * 
+	 * @param keyVal
+	 * @param valueVal
+	 * @return Master id
+	 */
 	@Override
 	public BigDecimal getSourceId(String keyVal, String valueVal)
 	{
@@ -71,6 +120,19 @@ public class FileServiceImpl implements FileService
 		{ keyVal, valueVal }, (rs, RowNum) -> rs.getBigDecimal("master_id"));
 	}
 
+	/**
+	 * Updates file's status
+	 * 
+	 * @param fileName
+	 * @param updatedDate
+	 * @param status
+	 * @param newStatus
+	 * @param jobId
+	 * @param endTime
+	 * @param updatedBy
+	 * @param statusId
+	 * @return records updated
+	 */
 	@Override
 	public int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus, BigDecimal jobId, Date endTime,
 			String updatedBy, BigDecimal statusId)
@@ -79,7 +141,14 @@ public class FileServiceImpl implements FileService
 				fileName, status, jobId);
 	}
 
-
+	/**
+	 * Updates file inbound staging's status
+	 * 
+	 * @param sequenceNbr
+	 * @param status
+	 * @param oldStatus
+	 * @return records updated
+	 */
 	@Override
 	public int updateInboundStgTableStatus(BigDecimal sequenceNbr, String status, String oldStatus)
 	{
@@ -87,6 +156,16 @@ public class FileServiceImpl implements FileService
 				sequenceNbr, sequenceNbr);
 	}
 
+	/**
+	 * Updates specific file's end time
+	 * 
+	 * @param fileId
+	 * @param updatedDate
+	 * @param updatedBy
+	 * @param endTime
+	 * @param status
+	 * @return records updated
+	 */
 	@Override
 	public int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy, Date endTime, Master status)
 	{
@@ -94,6 +173,11 @@ public class FileServiceImpl implements FileService
 				status.getValue_val(), status.getMaster_id(), fileId);
 	}
 
+	/**
+	 * Gets files to move to PROCESSED folder
+	 * 
+	 * @return files to move
+	 */
 	@Override
 	public List<FileDTO> getFilesToMove()
 	{
@@ -106,6 +190,12 @@ public class FileServiceImpl implements FileService
 		});
 	}
 
+	/**
+	 * Inserts failed records on persistence
+	 * 
+	 * @param fileInboundStgTable
+	 * @return inserted records
+	 */
 	@Override
 	public int insertInboundStgError(FileInboundStgTable stgTable)
 	{
