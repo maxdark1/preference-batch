@@ -17,6 +17,13 @@ public class ExactTargetEmailValidation
 	{ "Email Address", "Status", "Reason", "Date Unsubscribed" };
 
 	// TODO status number may change
+
+	/**
+	 * Gets SFMC status value
+	 * 
+	 * @param status
+	 * @return status value
+	 */
 	public static String getExactTargetStatus(String status)
 	{
 
@@ -27,12 +34,24 @@ public class ExactTargetEmailValidation
 
 	}
 
+	/**
+	 * Validate status email
+	 * 
+	 * @param status
+	 * @param error
+	 */
 	public static void validateStatusEmail(String status, StringBuilder error)
 	{
 		if (!status.trim().equalsIgnoreCase("Unsubscribed") && !status.trim().equalsIgnoreCase("held"))
 			error.append(" Email status: ").append(status).append(" is not equals to Unsubscribed or held");
 	}
 
+	/**
+	 * Gets source ID
+	 * 
+	 * @param reason
+	 * @return source Id
+	 */
 	public static BigDecimal getSourceId(@Nullable String reason)
 	{
 		if (reason == null)
@@ -46,6 +65,13 @@ public class ExactTargetEmailValidation
 		return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
 	}
 
+	/**
+	 * Validates date format
+	 * 
+	 * @param date
+	 * @param error
+	 * @return a valid date
+	 */
 	public static Date validateDateFormat(String date, StringBuilder error)
 	{
 		Date asOfDate = null;
@@ -58,7 +84,13 @@ public class ExactTargetEmailValidation
 		{
 			try
 			{
+				/**
+				 * Validates date format
+				 */
 				asOfDate = simpleDateFormat.parse(date);
+				/**
+				 * Validates that day and month are valid
+				 */
 				InboundValidator.validateDayMonth(date, "/", error);
 				return asOfDate;
 			}
@@ -67,11 +99,18 @@ public class ExactTargetEmailValidation
 				// Nothing to do in here
 			}
 		}
+		/**
+		 * If it doesn't returns before the date, means that the date format is not valid
+		 */
 		error.append("invalid date format ").append(date).append("\n");
 		return asOfDate;
 	}
 
-
+	/**
+	 * Validates headers values
+	 * 
+	 * @return line call back handler
+	 */
 	public static LineCallbackHandler lineCallbackHandler()
 	{
 

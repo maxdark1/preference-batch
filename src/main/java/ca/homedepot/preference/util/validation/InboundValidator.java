@@ -30,13 +30,18 @@ public class InboundValidator
 			"Content_14", "Value_14", "Content_15", "Value_15", "Content_16", "Value_16", "Content_17", "Value_17", "Content_18",
 			"Value_18", "Content_19", "Value_19", "Content_20", "Value_20" };
 
+	/**
+	 * Sets valid email pattern
+	 * 
+	 * @param validEmailPattern
+	 */
 	public static void setValidEmailPattern(String validEmailPattern)
 	{
 		VALID_EMAIL_PATTERN = validEmailPattern;
 	}
 
 
-	/*
+	/**
 	 * Error's validation.
 	 * 
 	 * @param errors
@@ -50,10 +55,11 @@ public class InboundValidator
 			throw new ValidationException(" The item processed has the above validations erros: \n" + errors);
 	}
 
-	/*
+	/**
 	 * Error's validation.
 	 *
-	 * @param field, value, maxLength, error
+	 * @param field,
+	 *           value, maxLength, error
 	 *
 	 * @return String If there is any error, it returns String with maxLength
 	 */
@@ -64,10 +70,11 @@ public class InboundValidator
 		return value;
 	}
 
-	/*
+	/**
 	 * Validates field length
 	 *
-	 * @param field, value, maxLength, error
+	 * @param field,
+	 *           value, maxLength, error
 	 *
 	 * @return String If there is any error, it returns String with maxLength
 	 */
@@ -84,10 +91,11 @@ public class InboundValidator
 
 	}
 
-	/*
+	/**
 	 * Validate Lenguage Pref
 	 *
-	 * @param item, error
+	 * @param item,
+	 *           error
 	 *
 	 * @return It update message error if there's any Error
 	 */
@@ -98,10 +106,11 @@ public class InboundValidator
 					.append(" not matches with: E, EN, F, FR\n");
 	}
 
-	/*
+	/**
 	 * Validate email format
 	 *
-	 * @param email, error
+	 * @param email,
+	 *           error
 	 *
 	 * @return Validate email according to email pattern (on configuration file)
 	 */
@@ -114,10 +123,11 @@ public class InboundValidator
 
 	}
 
-	/*
+	/**
 	 * Validate date format
 	 *
-	 * @param date, error
+	 * @param date,
+	 *           error
 	 *
 	 * @return Validate date format, if there's any error update error message
 	 */
@@ -140,10 +150,11 @@ public class InboundValidator
 	}
 
 
-	/*
+	/**
 	 * Validate Day and Month value
 	 *
-	 * @param date, separator, error
+	 * @param date,
+	 *           separator, error
 	 *
 	 * @return Validate Day and Moth value, if there's any error update error message
 	 */
@@ -158,10 +169,11 @@ public class InboundValidator
 
 	}
 
-	/*
+	/**
 	 * Validate Month's value
 	 *
-	 * @param month, error
+	 * @param month,
+	 *           error
 	 *
 	 * @return Validate Moth's value, if there's any error update error message
 	 */
@@ -171,10 +183,11 @@ public class InboundValidator
 			error.append(" Invalid Month: ").append(month).append(" \n");
 	}
 
-	/*
+	/**
 	 * Validate day's value
 	 *
-	 * @param day, month, year, error
+	 * @param day,
+	 *           month, year, error
 	 *
 	 * @return Validate day's value according to Month and year value, if there's any error update error message
 	 */
@@ -192,10 +205,11 @@ public class InboundValidator
 			error.append(" Invalid day: ").append(day).append("\n");
 	}
 
-	/*
+	/**
 	 * Validate number format
 	 *
-	 * @param item, error
+	 * @param item,
+	 *           error
 	 *
 	 * @return Validate number format for fields with number values, if there's any error, update error message
 	 */
@@ -235,7 +249,7 @@ public class InboundValidator
 		}
 	}
 
-	/*
+	/**
 	 * Gets source_id for specific record
 	 *
 	 * @param source
@@ -252,10 +266,11 @@ public class InboundValidator
 
 	}
 
-	/*
+	/**
 	 * Validate if is number
 	 *
-	 * @param number, error
+	 * @param number,
+	 *           error
 	 *
 	 * @return Integer Validate if it is number, if there's any error, update error message
 	 */
@@ -274,10 +289,11 @@ public class InboundValidator
 		return value;
 	}
 
-	/*
+	/**
 	 * Validate if is number is valid
 	 *
-	 * @param value, field, error
+	 * @param value,
+	 *           field, error
 	 *
 	 * @return Validate if is it a valid value, if there is any error, update error message
 	 */
@@ -287,10 +303,11 @@ public class InboundValidator
 			error.append(" invalid value for field {}: ").append(field).append("\n");
 	}
 
-	/*
+	/**
 	 * Validate required fields
 	 *
-	 * @param item, error
+	 * @param item,
+	 *           error
 	 *
 	 * @return Validate if field is required, if there is any error, update error message
 	 */
