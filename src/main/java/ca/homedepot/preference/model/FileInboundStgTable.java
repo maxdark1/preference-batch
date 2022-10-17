@@ -209,60 +209,182 @@ public class FileInboundStgTable
 	 */
 	String fax_extension;
 
-	//----------------------
-	// Content - Value pair on persistence
-	//----------------------
+	/**
+	 * The content Value pair
+	 */
+
+	/**
+	 * Field comtent1 on persistence
+	 */
 	String content1;
+	/**
+	 * Field value1 on persistence
+	 */
 	String value1;
+	/***
+	 * Field content2 on persistence
+	 */
 	String content2;
+	/**
+	 * Field value2 on persistence
+	 */
 	String value2;
+	/**
+	 * Field content3 on persistence
+	 */
 	String content3;
+	/**
+	 * Field value3 on persistence
+	 */
 	String value3;
+	/**
+	 * Field content4 on persistence
+	 */
 	String content4;
+	/**
+	 * Field value4 on persistence
+	 */
 	String value4;
+	/**
+	 * Field content5 on persistence
+	 */
 	String content5;
+	/**
+	 * Field value5 on persistence
+	 */
 	String value5;
+	/**
+	 * Field content6 on persistence
+	 */
 	String content6;
+	/**
+	 * Field value6 on persistence
+	 */
 	String value6;
+	/**
+	 * Field content7 on persistence
+	 */
 	String content7;
+	/**
+	 * Field value7 on persistence
+	 */
 	String value7;
+	/**
+	 * Field content8 on persistence
+	 */
 	String content8;
+	/**
+	 * Field value8 on persistence
+	 */
 	String value8;
+	/**
+	 * Field content9 on persistence
+	 */
 	String content9;
+	/**
+	 * Field value9 on persistence
+	 */
 	String value9;
+	/**
+	 * Field content10 on persistence
+	 */
 	String content10;
+	/**
+	 * Field value10 on persistence
+	 */
 	String value10;
+	/**
+	 * Field content11 on persistence
+	 */
 	String content11;
+	/**
+	 * Field value11 on persistence
+	 */
 	String value11;
+	/**
+	 * Field content12 on persistence
+	 */
 	String content12;
+	/**
+	 * Field value12 on persistence
+	 */
 	String value12;
+	/**
+	 * Field content13 on persistence
+	 */
 	String content13;
+	/**
+	 * Field value13 on persistence
+	 */
 	String value13;
+	/**
+	 * Field content14 on persistence
+	 */
 	String content14;
+	/**
+	 * Field value14 on persistence
+	 */
 	String value14;
+	/**
+	 * Field content15 on persistence
+	 */
 	String content15;
+	/**
+	 * Field value15 on persistence
+	 */
 	String value15;
+	/**
+	 * Field content16 on persistence
+	 */
 	String content16;
+	/**
+	 * Field value16 on persistence
+	 */
 	String value16;
+	/**
+	 * Field content17 on persistence
+	 */
 	String content17;
+	/**
+	 * Field value17 on persistence
+	 */
 	String value17;
+	/**
+	 * Field content18 on persistence
+	 */
 	String content18;
+	/**
+	 * Field value18 on persistence
+	 */
 	String value18;
+	/**
+	 * Field content19 on persistence
+	 */
 	String content19;
+	/**
+	 * Field value19 on persistence
+	 */
 	String value19;
+	/**
+	 * Field content20 on persistence
+	 */
 	String content20;
+	/**
+	 * Field value20 on persistence
+	 */
 	String value20;
 
-	/*
+	/**
 	 * Field inserted_by on persistence
-	 *
 	 */
 	private String inserted_by;
 
-	/*
+	/**
 	 * Field inserted_date on persistence
-	 *
 	 */
 	private Date inserted_date;
+	/**
+	 * Field updated date
+	 */
 	Date updated_date;
 }

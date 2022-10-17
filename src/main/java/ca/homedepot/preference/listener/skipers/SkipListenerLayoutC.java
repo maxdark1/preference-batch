@@ -19,22 +19,45 @@ import java.util.Date;
 public class SkipListenerLayoutC extends SkipFileService implements SkipListener<InboundRegistration, FileInboundStgTable>
 {
 
-
+	/**
+	 * The job name that is currently being executed
+	 */
 	@Value("#{jobParameters['job_name']}")
 	private String jobName;
 
+	/**
+	 * +
+	 *
+	 * @param t
+	 *           cause of the failure
+	 */
 	@Override
 	public void onSkipInRead(Throwable t)
 	{
-
+		// Nothing to do in here
 	}
 
+	/**
+	 *
+	 * @param item
+	 *           the failed item
+	 * @param t
+	 *           the cause of the failure
+	 */
 	@Override
 	public void onSkipInWrite(FileInboundStgTable item, Throwable t)
 	{
-
+		// Nothing to do in here
 	}
 
+	/**
+	 * Skip in process item when it throws a ValidationException
+	 * 
+	 * @param item
+	 *           the failed item
+	 * @param t
+	 *           the cause of the failure
+	 */
 	@Override
 	public void onSkipInProcess(InboundRegistration item, Throwable t)
 	{
@@ -65,6 +88,9 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 				.content19(item.getContent_19()).value19(item.getValue_19()).content20(item.getContent_20())
 				.value20(item.getValue_20()).inserted_by("test_batch").inserted_date(new Date()).build();
 
+		/**
+		 * Insertion to staging error on failed item
+		 */
 		fileService.insertInboundStgError(fileInboundStgTable);
 	}
 }

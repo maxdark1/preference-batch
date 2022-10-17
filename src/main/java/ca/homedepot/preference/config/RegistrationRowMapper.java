@@ -15,10 +15,12 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 {
 
 	/**
-	* Mapper for request of LayoutC
-	* @param rs, rowNum
+	 * Mapper for request of LayoutC
+	 * 
+	 * @param rs,
+	 *           rowNum
 	 *
-	* */
+	 */
 	@Override
 	public RegistrationRequest mapRow(ResultSet rs, int rowNum) throws SQLException
 	{

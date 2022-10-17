@@ -20,16 +20,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Source value Where item comes from
-	 *
 	 */
 	private String source;
 
 	/**
-	 * Constructor with source
-	 *
+	 * Constructor with resource
+	 * 
 	 * @param source
-	 *
-	 *
 	 */
 	public RegistrationItemProcessor(String source)
 	{
@@ -37,12 +34,12 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	}
 
 	/**
-	 * Process items
-	 *
+	 * Process item
+	 * 
 	 * @param item
-	 *
-	 * @return FileInboundStgTable
-	 *
+	 *           to be processed
+	 * @return Item to be writing on persistence
+	 * @throws Exception
 	 */
 	@Override
 	public FileInboundStgTable process(InboundRegistration item) throws Exception
@@ -54,11 +51,18 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		{
 			StringBuilder error = validate(item);
 			asOfDate = validateDateFormat(asOfDateStr, error);
+
+			/**
+			 * Throws an exception if it finds any Error message on StringBuilder container
+			 */
 			InboundValidator.isValidationsErros(error);
 		}
 		catch (ValidationException e)
 		{
 			LOG.error(" Validation error: {} ", e.getMessage());
+			/**
+			 * Throws the exception again after is being log This is catch on the LayoutC's skippers
+			 */
 			throw e;
 		}
 		LOG.info(" Processing inbound item {}: ", item);
@@ -93,10 +97,9 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Validate item's values
-	 *
+	 * 
 	 * @param item
-	 *
-	 * @return StringBuilder Returns error message
+	 * @return
 	 */
 	private StringBuilder validate(final InboundRegistration item)
 	{
@@ -116,11 +119,9 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Validate Max Length of required fields
-	 *
-	 * @param item,
-	 *           error
-	 *
-	 * @return
+	 * 
+	 * @param item
+	 * @param error
 	 */
 	private void validateMaxLengthReqField(InboundRegistration item, StringBuilder error)
 	{
@@ -142,11 +143,9 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Validate Max Length of not required fields
-	 *
-	 * @param item,
-	 *           error
-	 *
-	 * @return
+	 * 
+	 * @param item
+	 * @param error
 	 */
 	private void validateMaxLength(InboundRegistration item, StringBuilder error)
 	{
