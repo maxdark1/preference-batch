@@ -761,6 +761,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationFBSFMCGardenClubInbound() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
+
 				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
 
@@ -772,14 +773,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Job
 	 *
 	 */
-
 	public Job sfmcOptOutsEmailOutlookClient()
 	{
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readDBSFMCOptOutsStep2()).build().build();
 	}
-
 
 	/**
 	 * Step 1 for hybris process.

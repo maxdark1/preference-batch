@@ -133,4 +133,11 @@ public interface SqlQueriesConstants
 	 * To update hdpc_file_inbound_stg once either step 1 or step 2 ends.
 	 */
 	String SQL_UPDATE_STATUS_INBOUND = "UPDATE hdpc_file_inbound_stg SET status = ?, updated_date = ?, updated_by = ? WHERE status = ? and (sequence_nbr = ? or file_id = ?)";
+
+	/*******************************
+	 *  DELETE
+	 ********************************/
+
+	String SQL_PURGE_SUCCESS_STG_TABLE = "DELETE FROM public.hdpc_file_inbound_stg WHERE status = 'S';";
+
 }

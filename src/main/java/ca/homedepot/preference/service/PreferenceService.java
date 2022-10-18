@@ -65,4 +65,10 @@ public interface PreferenceService
 	 * @return updated records
 	 */
 	int updateJob(Job job, String status);
+
+	/**
+	 * Purge records with Sucess status
+	 * @return
+	 */
+	int purgeStagingTableSuccessRecords();
 }

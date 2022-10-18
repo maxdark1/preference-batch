@@ -69,6 +69,7 @@ public class JobListenerTest
 	@Before
 	public void setUp()
 	{
+		MockitoAnnotations.initMocks(this);
 		masterList = new ArrayList<>();
 		masterList.add(new Master(new BigDecimal("15"), new BigDecimal("5"), "JOB_STATUS", "STARTED", true));
 		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true));
@@ -77,11 +78,9 @@ public class JobListenerTest
 
 		MasterProcessor.setMasterList(masterList);
 
-		jobListener = new JobListener();
-		MockitoAnnotations.initMocks(this.getClass());
-		preferenceService = Mockito.mock(PreferenceServiceImpl.class);
 
-		jobListener.setPreferenceService(preferenceService);
+
+
 		JobParameters jobParameters = new JobParameters();
 		jobExecution = new JobExecution(jobInstance, jobParameters);
 		jobInstance = new JobInstance(1L, "TEST_JOB");
@@ -106,5 +105,12 @@ public class JobListenerTest
 		Assertions.assertEquals(masterList.get(2), jobListener.status(batchStatusCompleted));
 		Assertions.assertEquals(masterList.get(3), jobListener.status(batchStatusFailed));
 	}
+	 @Test
+	public void testAfterJob(){
+		jobExecution.setEndTime(new Date());
+		jobExecution.setStatus(BatchStatus.COMPLETED);
+
+		jobListener.afterJob(jobExecution);
+	 }
 
 }

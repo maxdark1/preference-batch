@@ -1,13 +1,11 @@
 package ca.homedepot.preference.service.impl;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +19,6 @@ import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
@@ -183,6 +180,15 @@ public class PreferenceServiceImpl implements PreferenceService
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus_id(), job.getUpdated_date(),
 				job.getUpdated_by(), job.getStatus(), job.getEnd_time(), job.getStart_time(), job.getJob_name(), status);
+	}
+
+	/**
+	 * Purge
+	 * @return
+	 */
+	@Override
+	public int purgeStagingTableSuccessRecords() {
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_PURGE_SUCCESS_STG_TABLE);
 	}
 
 

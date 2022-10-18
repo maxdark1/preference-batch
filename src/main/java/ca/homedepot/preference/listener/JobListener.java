@@ -49,6 +49,15 @@ public class JobListener implements JobExecutionListener
 	public void beforeJob(JobExecution jobExecution)
 	{
 		log.debug("Batch Started.");
+
+		/**
+		 * Before anything else, It purges the staging table
+		 */
+		purgeStagingTableRecordsWithSuccessedStatus();
+
+		/**
+		 * Gets Job's information
+		 */
 		ca.homedepot.preference.dto.Job job = new ca.homedepot.preference.dto.Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
 
@@ -86,6 +95,14 @@ public class JobListener implements JobExecutionListener
 			default:
 				return MasterProcessor.getSourceId("JOB_STATUS", "ERROR");
 		}
+	}
+
+	/**
+	 * Purge staging table records with success status
+	 */
+	public void purgeStagingTableRecordsWithSuccessedStatus(){
+		int purgeRecords = preferenceService.purgeStagingTableSuccessRecords();
+		log.info( " {} records has been purged from Staging table.", purgeRecords);
 	}
 
 	/**
