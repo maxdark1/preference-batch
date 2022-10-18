@@ -97,7 +97,7 @@ public class BatchTasklet implements Tasklet
 		log.debug("Tasklet is executing");
 		try
 		{
-			getPreferences();
+			//getPreferences();
 		}
 		catch (Exception e)
 		{
@@ -106,15 +106,6 @@ public class BatchTasklet implements Tasklet
 
 		return RepeatStatus.FINISHED;
 	}
-
-	public void getPreferences()
-	{
-		String email = "email@example";
-		log.debug("Started get prefereces ");
-		PreferenceItemList response = backinStockService.getPreferences(email);
-		log.info(" Preferences of user {}" + email, response);
-	}
-
 
 
 	/**

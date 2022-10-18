@@ -62,9 +62,11 @@ class FileServiceImplTest
 
 		when(jdbcTemplate.update(anyString(), eq(file_name), eq(status), eq(sourceId), eq(startTime), eq(job_id), eq(insertedDate),
 				eq(inserted_by))).thenReturn(value);
-		when(fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId, endTiem)).thenReturn(value);
+		when(fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId, endTiem))
+				.thenReturn(value);
 
-		int result = fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId, endTiem);
+		int result = fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId,
+				endTiem);
 
 		assertEquals(value, result);
 
@@ -118,7 +120,7 @@ class FileServiceImplTest
 		BigDecimal masterId = new BigDecimal("123456");
 
 		when(jdbcTemplate.queryForObject(anyString(), eq(new Object[]
-		{ keyVal, valueVal }),   any(RowMapper.class) )).thenReturn(masterId);
+		{ keyVal, valueVal }), any(RowMapper.class))).thenReturn(masterId);
 		when(fileService.getSourceId(keyVal, valueVal)).thenReturn(masterId);
 		BigDecimal currentMasterId = fileService.getSourceId(keyVal, valueVal);
 
@@ -133,22 +135,26 @@ class FileServiceImplTest
 		BigDecimal jobId = BigDecimal.ONE, statusId = BigDecimal.TEN;
 		int rowAffected = 1;
 
-		when(jdbcTemplate.update(anyString(), eq(newStatus), eq(statusId), eq(updatedDate), eq(endTime), eq(updatedBy),eq(fileName), eq(status), eq(jobId))).thenReturn(rowAffected);
+		when(jdbcTemplate.update(anyString(), eq(newStatus), eq(statusId), eq(updatedDate), eq(endTime), eq(updatedBy),
+				eq(fileName), eq(status), eq(jobId))).thenReturn(rowAffected);
 
-		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus, jobId, endTime, updatedBy, statusId);
+		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus, jobId, endTime, updatedBy,
+				statusId);
 
 		assertEquals(rowAffected, currentRowAffected);
 	}
 
 	@Test
-	void updateInboundStgTableStatus(){
+	void updateInboundStgTableStatus()
+	{
 		String insertedBy = "BATCH", status = "IP", oldStatus = "NS";
 		BigDecimal fileId = BigDecimal.ONE;
 		Date updatedDate = new Date();
 
 		int updatedRecords = 1;
 
-		when(jdbcTemplate.update(anyString(), eq(status), any(Date.class), anyString(),anyString(),eq(fileId), eq(fileId))).thenReturn(updatedRecords);
+		when(jdbcTemplate.update(anyString(), eq(status), any(Date.class), anyString(), anyString(), eq(fileId), eq(fileId)))
+				.thenReturn(updatedRecords);
 		when(fileService.updateInboundStgTableStatus(fileId, status, oldStatus)).thenReturn(updatedRecords);
 
 		int currentUpdatedRecords = fileService.updateInboundStgTableStatus(fileId, status, oldStatus);
@@ -157,7 +163,8 @@ class FileServiceImplTest
 	}
 
 	@Test
-	void updateFileEndTime(){
+	void updateFileEndTime()
+	{
 		String updatedBy = "BATCH", status = "IP";
 		BigDecimal fileId = BigDecimal.ONE;
 		Date updatedDate = new Date(), endTime = new Date();
@@ -165,15 +172,17 @@ class FileServiceImplTest
 
 		int updatedRecords = 1;
 
-		when(jdbcTemplate.update(anyString(), eq(endTime), eq(updatedDate), eq(updatedBy), eq(fileId), eq(statusMaster.getMaster_id()), eq(statusMaster.getValue_val()))).thenReturn(updatedRecords);
-		when(fileService.updateFileEndTime( fileId,  updatedDate,  updatedBy , endTime, statusMaster)).thenReturn(updatedRecords);
+		when(jdbcTemplate.update(anyString(), eq(endTime), eq(updatedDate), eq(updatedBy), eq(fileId),
+				eq(statusMaster.getMaster_id()), eq(statusMaster.getValue_val()))).thenReturn(updatedRecords);
+		when(fileService.updateFileEndTime(fileId, updatedDate, updatedBy, endTime, statusMaster)).thenReturn(updatedRecords);
 
-		int currentUpdatedRecords = fileService.updateFileEndTime(fileId,  updatedDate,  updatedBy , endTime, statusMaster);
+		int currentUpdatedRecords = fileService.updateFileEndTime(fileId, updatedDate, updatedBy, endTime, statusMaster);
 		assertEquals(updatedRecords, currentUpdatedRecords);
 	}
 
 	@Test
-	void getFilesToMove() {
+	void getFilesToMove()
+	{
 		List<FileDTO> files = new ArrayList<>();
 		files.add(new FileDTO());
 
@@ -183,29 +192,33 @@ class FileServiceImplTest
 		List<FileDTO> currentFiles = fileService.getFilesToMove();
 		assertEquals(files, currentFiles);
 	}
+
 	@Test
-	void insertInboundStgError() {
+	void insertInboundStgError()
+	{
 		FileInboundStgTable stgTable = FileInboundStgTable.builder().build();
 		int updated = 1;
 
 		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_FILE_INBOUND_STG_ERROR, stgTable.getFile_id(), stgTable.getStatus(),
-				stgTable.getSource_id(), stgTable.getSrc_phone_number(), stgTable.getSrc_first_name(),
-				stgTable.getSrc_last_name(), stgTable.getSrc_address1(), stgTable.getSrc_address2(), stgTable.getSrc_city(),
-				stgTable.getSrc_state(), stgTable.getSrc_postal_code(), stgTable.getSrc_language_pref(),
-				stgTable.getSrc_email_address(), stgTable.getSrc_title_name(), stgTable.getPhone_pref(),
-				stgTable.getEmail_address_pref(), stgTable.getMail_address_pref(), stgTable.getSrc_date(), stgTable.getEmail_status(),
-				stgTable.getSrc_phone_extension(), stgTable.getEmail_pref_hd_ca(), stgTable.getEmail_pref_garden_club(), stgTable.getEmail_pref_pro(),
-				stgTable.getEmail_pref_new_mover(), stgTable.getCell_sms_flag(), stgTable.getBusiness_name(),
-				stgTable.getCustomer_nbr(), stgTable.getOrg_name(), stgTable.getStore_nbr(),
+				stgTable.getSource_id(), stgTable.getSrc_phone_number(), stgTable.getSrc_first_name(), stgTable.getSrc_last_name(),
+				stgTable.getSrc_address1(), stgTable.getSrc_address2(), stgTable.getSrc_city(), stgTable.getSrc_state(),
+				stgTable.getSrc_postal_code(), stgTable.getSrc_language_pref(), stgTable.getSrc_email_address(),
+				stgTable.getSrc_title_name(), stgTable.getPhone_pref(), stgTable.getEmail_address_pref(),
+				stgTable.getMail_address_pref(), stgTable.getSrc_date(), stgTable.getEmail_status(),
+				stgTable.getSrc_phone_extension(), stgTable.getEmail_pref_hd_ca(), stgTable.getEmail_pref_garden_club(),
+				stgTable.getEmail_pref_pro(), stgTable.getEmail_pref_new_mover(), stgTable.getCell_sms_flag(),
+				stgTable.getBusiness_name(), stgTable.getCustomer_nbr(), stgTable.getOrg_name(), stgTable.getStore_nbr(),
 				stgTable.getCust_type_cd(), stgTable.getContent1(), stgTable.getValue1(), stgTable.getContent2(),
-				stgTable.getValue2(), stgTable.getContent3(), stgTable.getValue3(), stgTable.getContent4(),
-				stgTable.getValue4(), stgTable.getContent5(), stgTable.getValue5(), stgTable.getContent6(), stgTable.getValue6(),
-				stgTable.getContent7(), stgTable.getValue7(), stgTable.getContent8(), stgTable.getValue8(), stgTable.getContent9(),
-				stgTable.getValue9() ,stgTable.getContent10(), stgTable.getValue10(), stgTable.getContent11(), stgTable.getValue11(),
-				stgTable.getContent12(), stgTable.getValue12(), stgTable.getContent13(), stgTable.getValue13(), stgTable.getContent14(), stgTable.getValue14(),
-				stgTable.getContent15(), stgTable.getValue15(), stgTable.getContent16(), stgTable.getValue16(), stgTable.getContent17(), stgTable.getValue17(),
-				stgTable.getContent18(), stgTable.getValue18(), stgTable.getContent19(), stgTable.getValue19() ,stgTable.getContent20(), stgTable.getValue20(),
-				stgTable.getInserted_by(), stgTable.getInserted_date())).thenReturn(updated);
+				stgTable.getValue2(), stgTable.getContent3(), stgTable.getValue3(), stgTable.getContent4(), stgTable.getValue4(),
+				stgTable.getContent5(), stgTable.getValue5(), stgTable.getContent6(), stgTable.getValue6(), stgTable.getContent7(),
+				stgTable.getValue7(), stgTable.getContent8(), stgTable.getValue8(), stgTable.getContent9(), stgTable.getValue9(),
+				stgTable.getContent10(), stgTable.getValue10(), stgTable.getContent11(), stgTable.getValue11(),
+				stgTable.getContent12(), stgTable.getValue12(), stgTable.getContent13(), stgTable.getValue13(),
+				stgTable.getContent14(), stgTable.getValue14(), stgTable.getContent15(), stgTable.getValue15(),
+				stgTable.getContent16(), stgTable.getValue16(), stgTable.getContent17(), stgTable.getValue17(),
+				stgTable.getContent18(), stgTable.getValue18(), stgTable.getContent19(), stgTable.getValue19(),
+				stgTable.getContent20(), stgTable.getValue20(), stgTable.getInserted_by(), stgTable.getInserted_date()))
+						.thenReturn(updated);
 		when(fileService.insertInboundStgError(stgTable)).thenReturn(updated);
 
 		int currentUpdated = fileService.insertInboundStgError(stgTable);

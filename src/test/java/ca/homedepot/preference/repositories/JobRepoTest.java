@@ -16,7 +16,8 @@ import com.github.javafaker.service.RandomService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class JobRepoTest {
+class JobRepoTest
+{
 
 
 	Faker faker;
@@ -31,7 +32,8 @@ class JobRepoTest {
 	PreferenceItem preferenceItem;
 
 	@BeforeEach
-	void setUp() throws ParseException {
+	void setUp() throws ParseException
+	{
 		createRegistrationRequestObj();
 		createFileDTO();
 		createJobDTO();
@@ -40,7 +42,7 @@ class JobRepoTest {
 
 	void createMaster()
 	{
-		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"),"SOURCE", "hybris", true);
+		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"), "SOURCE", "hybris", true);
 
 	}
 

@@ -30,7 +30,8 @@ public class InboundValidator
 			"Content_14", "Value_14", "Content_15", "Value_15", "Content_16", "Value_16", "Content_17", "Value_17", "Content_18",
 			"Value_18", "Content_19", "Value_19", "Content_20", "Value_20" };
 
-	public static void setValidEmailPattern(String validEmailPattern) {
+	public static void setValidEmailPattern(String validEmailPattern)
+	{
 		VALID_EMAIL_PATTERN = validEmailPattern;
 	}
 
@@ -43,8 +44,9 @@ public class InboundValidator
 	 * @return
 	 */
 
-	public static void isValidationsErros(StringBuilder errors){
-		if(errors.length() > 0)
+	public static void isValidationsErros(StringBuilder errors)
+	{
+		if (errors.length() > 0)
 			throw new ValidationException(" The item processed has the above validations erros: \n" + errors);
 	}
 
@@ -53,8 +55,7 @@ public class InboundValidator
 	 *
 	 * @param field, value, maxLength, error
 	 *
-	 * @return String
-	 *  If there is any error, it returns String with maxLength
+	 * @return String If there is any error, it returns String with maxLength
 	 */
 	public static String validateMaxLengthNotReq(String field, String value, int maxLength, StringBuilder error)
 	{
@@ -68,13 +69,12 @@ public class InboundValidator
 	 *
 	 * @param field, value, maxLength, error
 	 *
-	 * @return String
-	 *  If there is any error, it returns String with maxLength
+	 * @return String If there is any error, it returns String with maxLength
 	 */
 	public static String validateMaxLength(String field, String value, int maxLength, StringBuilder error)
 	{
 
-		if (value != null &&(value.length() > maxLength))
+		if (value != null && (value.length() > maxLength))
 		{
 			error.append(String.format("The length of %s field  must be %d caracters or fewer.\n", field, maxLength));
 			return value.substring(0, maxLength);
@@ -89,13 +89,13 @@ public class InboundValidator
 	 *
 	 * @param item, error
 	 *
-	 * @return
-	 *  It update message error if there's any Error
+	 * @return It update message error if there's any Error
 	 */
 	public static void validateLanguagePref(InboundRegistration item, StringBuilder error)
 	{
 		if (!item.getLanguage_Preference().trim().matches("e|E|f|F|fr|FR|en|EN"))
-			error.append("invalid value for language_pref {}: ").append(item.getLanguage_Preference()).append(" not matches with: E, EN, F, FR\n");
+			error.append("invalid value for language_pref {}: ").append(item.getLanguage_Preference())
+					.append(" not matches with: E, EN, F, FR\n");
 	}
 
 	/*
@@ -103,15 +103,14 @@ public class InboundValidator
 	 *
 	 * @param email, error
 	 *
-	 * @return
-	 *  Validate email according to email pattern (on configuration file)
+	 * @return Validate email according to email pattern (on configuration file)
 	 */
 	public static void validateEmailFormat(String email, StringBuilder error)
 	{
 
 		if (email != null)
 			if (!email.matches(VALID_EMAIL_PATTERN))
-				error.append(" email address does not have a valid format {}: " ).append( email).append("\n");
+				error.append(" email address does not have a valid format {}: ").append(email).append("\n");
 
 	}
 
@@ -120,8 +119,7 @@ public class InboundValidator
 	 *
 	 * @param date, error
 	 *
-	 * @return
-	 *  Validate date format, if there's any error update error message
+	 * @return Validate date format, if there's any error update error message
 	 */
 	public static Date validateDateFormat(String date, StringBuilder error)
 	{
@@ -147,10 +145,9 @@ public class InboundValidator
 	 *
 	 * @param date, separator, error
 	 *
-	 * @return
-	 *  Validate Day and Moth value, if there's any error update error message
+	 * @return Validate Day and Moth value, if there's any error update error message
 	 */
-	public static void validateDayMonth(String date, String separator,StringBuilder error)
+	public static void validateDayMonth(String date, String separator, StringBuilder error)
 	{
 		String[] mmddyy = date.split(" ")[0].split(separator);
 		int month = Integer.valueOf(mmddyy[0]);
@@ -164,14 +161,14 @@ public class InboundValidator
 	/*
 	 * Validate Month's value
 	 *
-	 * @param month,  error
+	 * @param month, error
 	 *
-	 * @return
-	 *  Validate Moth's value, if there's any error update error message
+	 * @return Validate Moth's value, if there's any error update error message
 	 */
-	public static void validateMonth(int month, StringBuilder error){
-		if(!(month >=1 && month <= 12))
-			error.append(" Invalid Month: " ).append(month).append(" \n");
+	public static void validateMonth(int month, StringBuilder error)
+	{
+		if (!(month >= 1 && month <= 12))
+			error.append(" Invalid Month: ").append(month).append(" \n");
 	}
 
 	/*
@@ -179,19 +176,19 @@ public class InboundValidator
 	 *
 	 * @param day, month, year, error
 	 *
-	 * @return
-	 *  Validate day's value according to Month and year value, if there's any error update error message
+	 * @return Validate day's value according to Month and year value, if there's any error update error message
 	 */
-	public static  void validateDay(int day, int month, int year, StringBuilder error){
+	public static void validateDay(int day, int month, int year, StringBuilder error)
+	{
 		GregorianCalendar calendar = new GregorianCalendar();
 		int maxDays = 31;
-		if(month == 4 || month == 5 || month == 9 || month == 11)
+		if (month == 4 || month == 5 || month == 9 || month == 11)
 			maxDays = 30;
-		if(month == 2)
+		if (month == 2)
 		{
-			maxDays = calendar.isLeapYear(year)? 29:28;
+			maxDays = calendar.isLeapYear(year) ? 29 : 28;
 		}
-		if(day < 1 || day > maxDays)
+		if (day < 1 || day > maxDays)
 			error.append(" Invalid day: ").append(day).append("\n");
 	}
 
@@ -200,8 +197,7 @@ public class InboundValidator
 	 *
 	 * @param item, error
 	 *
-	 * @return
-	 *  Validate number format for fields with number values, if there's any error, update error message
+	 * @return Validate number format for fields with number values, if there's any error, update error message
 	 */
 	public static void validateNumberFormat(InboundRegistration item, StringBuilder error)
 	{
@@ -235,7 +231,7 @@ public class InboundValidator
 			value = validateIsNumber(item.getValue_5(), error);
 			if (value != null && value != 1 && value != 2 && value != 5)
 				error.append("invalid value for field {}: value5 =\n" + value);
-				//throw new ValidationException();
+			//throw new ValidationException();
 		}
 	}
 
@@ -247,10 +243,12 @@ public class InboundValidator
 	 * @return BigDecimal
 	 *
 	 */
-	public static BigDecimal getSourceID(String source){
+	public static BigDecimal getSourceID(String source)
+	{
 
-		return MasterProcessor.getSourceId("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC)?
-				SourceDelimitersConstants.SFMC: source).getMaster_id();
+		return MasterProcessor
+				.getSourceId("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)
+				.getMaster_id();
 
 	}
 
@@ -259,8 +257,7 @@ public class InboundValidator
 	 *
 	 * @param number, error
 	 *
-	 * @return Integer
-	 * Validate if it is number, if there's any error, update error message
+	 * @return Integer Validate if it is number, if there's any error, update error message
 	 */
 	public static Integer validateIsNumber(String number, StringBuilder error)
 	{
@@ -282,12 +279,11 @@ public class InboundValidator
 	 *
 	 * @param value, field, error
 	 *
-	 * @return
-	 * Validate if is it a valid value, if there is any error, update error message
+	 * @return Validate if is it a valid value, if there is any error, update error message
 	 */
 	public static void validValue_Number(Integer value, String field, StringBuilder error)
 	{
-		if (value != null &&(value < -1 || value > 1))
+		if (value != null && (value < -1 || value > 1))
 			error.append(" invalid value for field {}: ").append(field).append("\n");
 	}
 
@@ -296,8 +292,7 @@ public class InboundValidator
 	 *
 	 * @param item, error
 	 *
-	 * @return
-	 * Validate if field is required, if there is any error, update error message
+	 * @return Validate if field is required, if there is any error, update error message
 	 */
 	public static void validateIsRequired(InboundRegistration item, StringBuilder error)
 	{
@@ -327,8 +322,7 @@ public class InboundValidator
 	 *
 	 * @param value, field, error
 	 *
-	 * @return
-	 * Validate if required value is not Null or blank, if there is any error, update error message
+	 * @return Validate if required value is not Null or blank, if there is any error, update error message
 	 */
 	public static void validateRequired(String value, String field, StringBuilder error)
 	{

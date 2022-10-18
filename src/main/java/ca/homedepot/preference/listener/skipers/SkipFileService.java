@@ -7,13 +7,14 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 @Component
-public class SkipFileService {
-    @Autowired
-    FileService fileService;
+public class SkipFileService
+{
+	@Autowired
+	FileService fileService;
 
-    public BigDecimal getFromTableFileID(String fileName, String jobName)
-    {
-        BigDecimal jobId = fileService.getJobId(jobName);
-        return fileService.getFile(fileName, jobId);
-    }
+	public BigDecimal getFromTableFileID(String fileName, String jobName)
+	{
+		BigDecimal jobId = fileService.getJobId(jobName);
+		return fileService.getFile(fileName, jobId);
+	}
 }

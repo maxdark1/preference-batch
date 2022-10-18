@@ -27,6 +27,7 @@
         <jacoco.out.unit.test.file>jacoco.exec</jacoco.out.unit.test.file>
         <jacoco.outputDir>${project.build.directory}/jacoco</jacoco.outputDir>
         <sonar.jacoco.reportPath>${jacoco.outputDir}/${jacoco.out.unit.test.file}</sonar.jacoco.reportPath>
+        <spring.cloud-version>Hoxton.SR8</spring.cloud-version>
     </properties>
 
     <dependencies>
@@ -134,22 +135,56 @@
             <artifactId>gson</artifactId>
             <version>2.9.0</version>
         </dependency>
-        <!--		<dependency>-->
-        <!--			<groupId>io.github.openfeign</groupId>-->
-        <!--			<artifactId>feign-httpclient</artifactId>-->
-        <!--			<version>10.4.0</version>-->
-        <!--		</dependency>-->
-
-        <!--		<dependency>-->
-        <!--			<groupId>org.springframework.cloud</groupId>-->
-        <!--			<artifactId>spring-cloud-starter-openfeign</artifactId>-->
-        <!--		</dependency>-->
-
-        <!--		<dependency>-->
-        <!--			<groupId>io.github.openfeign</groupId>-->
-        <!--			<artifactId>feign-gson</artifactId>-->
-        <!--			<version>10.4.0</version>-->
-        <!--		</dependency>-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-pubsub</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-gcp-starter-storage</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>10.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-gson</artifactId>
+            <version>10.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>10.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.12.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.12.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+        </dependency>
     </dependencies>
 
     <repositories>
