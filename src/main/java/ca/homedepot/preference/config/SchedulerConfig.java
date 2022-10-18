@@ -22,6 +22,8 @@ import org.springframework.batch.core.annotation.AfterWrite;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -30,6 +32,7 @@ import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.validator.ValidationException;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,6 +82,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private static final String JOB_NAME_REGISTRATION_FBSFMC_INBOUND = "registrationFBSFMCGardenClubInbound";
 
 	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
+
+    private static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 	/**
 	 * The Job builder factory.
 	 */
@@ -121,7 +126,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String folderError;
 	@Value("${folders.processed}")
 	String folderProcessed;
-
+    @Value("${folders.outbound}")
+    String folderOutbound;
 	@Value("${inbound.files.registration}")
 	String hybrisCrmRegistrationFile;
 
@@ -275,7 +281,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 	///***************************************************
 
-	@Scheduled(cron = "${cron.job.registration}")
+	//@Scheduled(cron = "${cron.job.registration}")
 	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -321,7 +327,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info("Registration Inbound finished with status :" + execution.getStatus());
 	}
 
-	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
+	//@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processsSFMCOptOutsEmail() throws Exception
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
@@ -334,6 +340,20 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(), param);
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
 	}
+
+    @Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
+    public void sendPreferencesToCRM() throws Exception
+    {
+        log.info(" Send Preferences To CRM Job started at: {} ", new Date());
+        JobParameters param = new JobParametersBuilder()
+                .addString(JOB_NAME_SEND_PREFERENCES_TO_CRM, String.valueOf(System.currentTimeMillis()))
+                .addString("directory", crmPath+folderOutbound)
+                .addString("source", SourceDelimitersConstants.CRM)
+                .addString("job_name",JOB_NAME_SEND_PREFERENCES_TO_CRM)
+                .toJobParameters();
+        JobExecution execution = jobLauncher.run(crmSendPreferencesToCRM(), param);
+        log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
+    }
 
 	/*
 	 * Read inbound files
@@ -476,11 +496,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
+    public Job crmSendPreferencesToCRM() throws Exception
+    {
+		return jobBuilderFactory.get("First Job").start(readSendPreferencesToCRMStep1())
+				.build();
+    }
 	public Job registrationHybrisInbound() throws Exception
 	{
-		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS).to(readLayoutCInboundBDStep2()).build()
-				.build();
 
 	}
 
@@ -514,6 +536,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the step
 	 */
+
+    public Step readSendPreferencesToCRMStep1() throws Exception
+    {
+		return stepBuilderFactory.get("readSendPreferencesToCRMStep1").tasklet(new Tasklet() {
+			@Override
+			public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
+				System.out.println("Step 1 Logic");
+				return RepeatStatus.FINISHED;
+			}
+		}).build();
+    }
+
 
 	public Step readInboundHybrisFileStep1(String jobName) throws Exception
 	{
