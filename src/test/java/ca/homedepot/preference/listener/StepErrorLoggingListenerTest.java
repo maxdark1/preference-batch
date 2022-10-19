@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class StepErrorLoggingListenerTest
 {
@@ -32,24 +31,18 @@ class StepErrorLoggingListenerTest
 	@Test
 	void beforeStep()
 	{
-		/**
-		 * List<Throwable> exceptions = stepExecution.getFailureExceptions();
-		 *
-		 * if (exceptions.isEmpty()) { moveFile(); return ExitStatus.COMPLETED; } log.info(" The step: {} has {} erros. ",
-		 * stepExecution.getStepName(), exceptions.size()); exceptions.forEach(ex -> log.info(" Exception has ocurred: " +
-		 * ex.getMessage()));
-		 *
-		 *
-		 *
-		 * return ExitStatus.FAILED;
-		 */
+		// given
 		List<Throwable> exceptions = new ArrayList<>();
 		StepExecution stepExecution = mock(StepExecution.class);
 		when(stepExecution.getFailureExceptions()).thenReturn(exceptions);
-		String stepName = null;
-		JobExecution jobExecution = null;
-		Long id = null;
+		String stepName = "someStep";
+		JobExecution jobExecution = mock(JobExecution.class);
+		doNothing().when(jobExecution).addStepExecutions(anyList());
+		Long id = 1l;
+		// when
 		stepErrorLoggingListener.beforeStep(new StepExecution(stepName, jobExecution, id));
+		// then
+		assertTrue(true);
 	}
 
 

@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -13,6 +15,8 @@ import ca.homedepot.preference.dto.RegistrationRequest;
 
 public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 {
+
+	private static final Logger logger = LoggerFactory.getLogger(RegistrationRowMapper.class);
 
 	@Override
 	public RegistrationRequest mapRow(ResultSet rs, int rowNum) throws SQLException
@@ -105,9 +109,9 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		{
 			intValue = Integer.parseInt(value);
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			//
+			logger.info("An error occurred {0}", ex);
 		}
 
 		return intValue;
