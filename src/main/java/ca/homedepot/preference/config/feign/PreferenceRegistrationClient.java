@@ -11,7 +11,7 @@ import java.util.List;
 
 
 /**
- * The interface Product ms client.
+ * The interface defines Preference Registration rest API client.
  */
 @FeignClient(name = "preferenceRegistrationClient", configuration = RegistrationFeignConfig.class)
 public interface PreferenceRegistrationClient
@@ -20,7 +20,7 @@ public interface PreferenceRegistrationClient
 	@RequestMapping(method = RequestMethod.POST, value = "/preferences/registration", consumes = "application/json")
 	RegistrationResponse registration(@RequestBody List<? extends RegistrationRequest> registrationRequest);
 
-	@RequestMapping(method = RequestMethod.POST, value = "/preferences/registration/", consumes = "application/json")
+	@RequestMapping(method = RequestMethod.POST, value = "/preferences/registration/layoutB", consumes = "application/json")
 	RegistrationResponse registrationLayoutB(@RequestBody List<? extends RegistrationRequest> registrationRequest);
 
 }
