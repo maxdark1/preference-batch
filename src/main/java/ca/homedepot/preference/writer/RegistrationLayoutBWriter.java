@@ -16,18 +16,20 @@ import java.util.List;
 @Slf4j
 @Component
 @Setter
-public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest> {
-    private PreferenceService preferenceService;
+public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest>
+{
+	private PreferenceService preferenceService;
 
-    private FileService fileService;
+	private FileService fileService;
 
-    @Override
-    public void write(List<? extends RegistrationRequest> items) throws Exception
-    {
-        RegistrationResponse response = preferenceService.preferencesSFMCEmailOptOutsLayoutB(items);
+	@Override
+	public void write(List<? extends RegistrationRequest> items) throws Exception
+	{
+		RegistrationResponse response = preferenceService.preferencesSFMCEmailOptOutsLayoutB(items);
 
-        response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus( new BigDecimal(resp.getId()), resp.getStatus().substring(0,1), "IP"));
-        log.info("Service Response: {} ", response);
+		response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus(new BigDecimal(resp.getId()),
+				resp.getStatus().substring(0, 1), "IP"));
+		log.info("Service Response: {} ", response);
 
-    }
+	}
 }

@@ -62,6 +62,7 @@ public class JobListenerTest
 	JobInstance jobInstance;
 
 	List<Master> masterList;
+
 	/**
 	 * Sets up.
 	 */

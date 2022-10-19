@@ -37,7 +37,8 @@ class ExactTargetEmailProcessorTest
 		emailOptOuts.setStatus("unsubscribed");
 		emailOptOuts.setDateUnsubscribed("09/19/2022 8 :11");
 
-		InboundValidator.setValidEmailPattern("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+		InboundValidator
+				.setValidEmailPattern("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 
 		List<Master> masterList = new ArrayList<>();
 
@@ -60,7 +61,8 @@ class ExactTargetEmailProcessorTest
 		FileInboundStgTable fileInboundStgTable = exactTargetEmailProcessor.process(emailOptOuts);
 		emailOptOuts.setEmailAddress(null);
 
-		ValidationException validationException = assertThrows(ValidationException.class, ()-> exactTargetEmailProcessor.process(emailOptOuts));
+		ValidationException validationException = assertThrows(ValidationException.class,
+				() -> exactTargetEmailProcessor.process(emailOptOuts));
 
 
 		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));

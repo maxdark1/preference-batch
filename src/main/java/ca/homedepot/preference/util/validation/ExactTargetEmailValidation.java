@@ -13,73 +13,72 @@ import java.util.Date;
 
 public class ExactTargetEmailValidation
 {
-    public static final String[] FIELD_NAMES_SFMC_OPTOUTS = new String[]{
-            "Email Address", "Status", "Reason", "Date Unsubscribed"
-    };
+	public static final String[] FIELD_NAMES_SFMC_OPTOUTS = new String[]
+	{ "Email Address", "Status", "Reason", "Date Unsubscribed" };
 
-    // TODO status number may change
-    public static String getExactTargetStatus(String status)
-    {
+	// TODO status number may change
+	public static String getExactTargetStatus(String status)
+	{
 
-        if(status.equalsIgnoreCase("unsubscribed"))
-            return "98";
-        // In case is 'held'
-        return "50";
+		if (status.equalsIgnoreCase("unsubscribed"))
+			return "98";
+		// In case is 'held'
+		return "50";
 
-    }
+	}
 
-    public static void validateStatusEmail(String status, StringBuilder error){
-        if(!status.trim().equalsIgnoreCase("Unsubscribed")&&!status.trim().equalsIgnoreCase("held"))
-            error.append(" Email status: ").append(status).append(" is not equals to Unsubscribed or held" );
-    }
+	public static void validateStatusEmail(String status, StringBuilder error)
+	{
+		if (!status.trim().equalsIgnoreCase("Unsubscribed") && !status.trim().equalsIgnoreCase("held"))
+			error.append(" Email status: ").append(status).append(" is not equals to Unsubscribed or held");
+	}
 
-    public static BigDecimal getSourceId(@Nullable String reason)
-    {
-        if(reason == null)
-            return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
-        String reasonUp = reason.toUpperCase();
-        if(reasonUp.contains("AOL"))
-            return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT AOL-CAN").getMaster_id();
-        if (reasonUp.contains("SCAMCOP") || reasonUp.contains("SPAM COP REPORT"))
-            return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT OTH-CAN").getMaster_id();
+	public static BigDecimal getSourceId(@Nullable String reason)
+	{
+		if (reason == null)
+			return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
+		String reasonUp = reason.toUpperCase();
+		if (reasonUp.contains("AOL"))
+			return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT AOL-CAN").getMaster_id();
+		if (reasonUp.contains("SCAMCOP") || reasonUp.contains("SPAM COP REPORT"))
+			return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT OTH-CAN").getMaster_id();
 
-        return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
-    }
+		return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
+	}
 
-    public static Date validateDateFormat(String date, StringBuilder error)
-    {
-        Date asOfDate = null;
+	public static Date validateDateFormat(String date, StringBuilder error)
+	{
+		Date asOfDate = null;
 
-        SimpleDateFormat simpleDateFormatArray[] = {
-                new SimpleDateFormat("MM/dd/yyyy H :mm"),
-                new SimpleDateFormat("MM/dd/yyyy HH:mm"),
-                new SimpleDateFormat( "MM/dd/yyyy HH:m"),
-                new SimpleDateFormat( "MM/dd/yyyy H :m"),
-        };
+		SimpleDateFormat simpleDateFormatArray[] =
+		{ new SimpleDateFormat("MM/dd/yyyy H :mm"), new SimpleDateFormat("MM/dd/yyyy HH:mm"),
+				new SimpleDateFormat("MM/dd/yyyy HH:m"), new SimpleDateFormat("MM/dd/yyyy H :m"), };
 
-        for (SimpleDateFormat simpleDateFormat: simpleDateFormatArray) {
-            try
-            {
-               asOfDate = simpleDateFormat.parse(date);
-               InboundValidator.validateDayMonth(date, "/", error);
-                return asOfDate;
-            }
-            catch (ParseException ex)
-            {
-                // Nothing to do in here
-            }
-        }
-        error.append("invalid date format ").append(date).append("\n");
-        return asOfDate;
-    }
+		for (SimpleDateFormat simpleDateFormat : simpleDateFormatArray)
+		{
+			try
+			{
+				asOfDate = simpleDateFormat.parse(date);
+				InboundValidator.validateDayMonth(date, "/", error);
+				return asOfDate;
+			}
+			catch (ParseException ex)
+			{
+				// Nothing to do in here
+			}
+		}
+		error.append("invalid date format ").append(date).append("\n");
+		return asOfDate;
+	}
 
 
-    public static LineCallbackHandler lineCallbackHandler() {
+	public static LineCallbackHandler lineCallbackHandler()
+	{
 
-        return line -> {
-            String[] header = line.split("\\t");
-            if (!Arrays.equals(header, FIELD_NAMES_SFMC_OPTOUTS))
-                throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
-        };
-    }
+		return line -> {
+			String[] header = line.split("\\t");
+			if (!Arrays.equals(header, FIELD_NAMES_SFMC_OPTOUTS))
+				throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
+		};
+	}
 }

@@ -16,52 +16,58 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
-class SkipListenerLayoutCTest {
+class SkipListenerLayoutCTest
+{
 
-    @Mock
-    FileServiceImpl fileService;
-    @InjectMocks
-    SkipListenerLayoutC skipListenerLayoutC;
+	@Mock
+	FileServiceImpl fileService;
+	@InjectMocks
+	SkipListenerLayoutC skipListenerLayoutC;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-        skipListenerLayoutC.setJobName("JOB_NAME");
-    }
+	@BeforeEach
+	void setUp()
+	{
+		MockitoAnnotations.initMocks(this);
+		skipListenerLayoutC.setJobName("JOB_NAME");
+	}
 
-    @Test
-    void onSkipInRead() {
-        Throwable t = Mockito.mock(Throwable.class);
-        skipListenerLayoutC.onSkipInRead(t);
-    }
+	@Test
+	void onSkipInRead()
+	{
+		Throwable t = Mockito.mock(Throwable.class);
+		skipListenerLayoutC.onSkipInRead(t);
+	}
 
-    @Test
-    void onSkipInWrite() {
-        Throwable t = Mockito.mock(Throwable.class);
-        FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
+	@Test
+	void onSkipInWrite()
+	{
+		Throwable t = Mockito.mock(Throwable.class);
+		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
 
-        skipListenerLayoutC.onSkipInWrite(fileInboundStgTable, t);
-    }
+		skipListenerLayoutC.onSkipInWrite(fileInboundStgTable, t);
+	}
 
-    @Test
-    void onSkipInProcess() {
-        BigDecimal jobId = BigDecimal.ONE, fileId = BigDecimal.ONE;
-        String fileName = "TEST";
-        FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
-        InboundRegistration item = new InboundRegistration();
-        item.setFileName(fileName);
-        item.setLanguage_Preference("F");
-        Throwable t = Mockito.mock(Throwable.class);
+	@Test
+	void onSkipInProcess()
+	{
+		BigDecimal jobId = BigDecimal.ONE, fileId = BigDecimal.ONE;
+		String fileName = "TEST";
+		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
+		InboundRegistration item = new InboundRegistration();
+		item.setFileName(fileName);
+		item.setLanguage_Preference("F");
+		Throwable t = Mockito.mock(Throwable.class);
 
-        Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
-        Mockito.when(fileService.getFile(eq(fileName), eq(jobId))).thenReturn(fileId);
-        Mockito.when(fileService.insertInboundStgError(eq(fileInboundStgTable))).thenReturn(1);
+		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
+		Mockito.when(fileService.getFile(eq(fileName), eq(jobId))).thenReturn(fileId);
+		Mockito.when(fileService.insertInboundStgError(eq(fileInboundStgTable))).thenReturn(1);
 
-        skipListenerLayoutC.onSkipInProcess(item, t);
-    }
+		skipListenerLayoutC.onSkipInProcess(item, t);
+	}
 
-    @Test
-    void getJobName() {
-        assertEquals("JOB_NAME",skipListenerLayoutC.getJobName());
-    }
+	@Test
+	void getJobName()
+	{
+		assertEquals("JOB_NAME", skipListenerLayoutC.getJobName());
+	}
 }

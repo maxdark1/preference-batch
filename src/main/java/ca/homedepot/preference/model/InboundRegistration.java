@@ -14,152 +14,151 @@ public class InboundRegistration implements ResourceAware
 	/*
 	 * Field Language_Preference on LayoutC
 	 *
-	 * */
+	 */
 	private String Language_Preference;
 
 	/*
-	 * Field AsOfDate on LayoutC
-	 * MM-dd-yyyy HH:mm:ss
-	 * */
+	 * Field AsOfDate on LayoutC MM-dd-yyyy HH:mm:ss
+	 */
 	private String AsOfDate;
 
 	/*
 	 * Field Email_Address on LayoutC
 	 *
-	 * */
+	 */
 	private String Email_Address;
 
 	/*
 	 * Field Email_Permission on LayoutC
 	 *
-	 * */
+	 */
 	private String Email_Permission;
 
 	/*
 	 * Field Phone_Permission on LayoutC
 	 *
-	 * */
+	 */
 	private String Phone_Permission;
 
 
 	/*
 	 * Field Phone_Number on LayoutC
 	 *
-	 * */
+	 */
 	private String Phone_Number;
 
 	/*
 	 * Field Phone_Extension on LayoutC
 	 *
-	 * */
+	 */
 	private String Phone_Extension;
 
 	/*
 	 * Field Phone_Extension on LayoutC
 	 *
-	 * */
+	 */
 	private String Title;
 
 	/*
 	 * Field First_Name on LayoutC
 	 *
-	 * */
+	 */
 	private String First_Name;
 
 	/*
 	 * Field Last_Name on LayoutC
 	 *
-	 * */
+	 */
 	private String Last_Name;
 
 	/*
 	 * Field Address_1 on LayoutC
 	 *
-	 * */
+	 */
 	private String Address_1;
 
 	/*
 	 * Field Address_2 on LayoutC
 	 *
-	 * */
+	 */
 	private String Address_2;
 
 	/*
 	 * Field City on LayoutC
 	 *
-	 * */
+	 */
 	private String City;
 
 	/*
 	 * Field Province on LayoutC
 	 *
-	 * */
+	 */
 	private String Province;
 
 	/*
 	 * Field Postal_Code on LayoutC
 	 *
-	 * */
+	 */
 	private String Postal_Code;
 
 	/*
 	 * Field Mail_Permission on LayoutC
 	 *
-	 * */
+	 */
 	private String Mail_Permission;
 
 	/*
 	 * Field EmailPrefHDCA on LayoutC
 	 *
-	 * */
+	 */
 	private String EmailPrefHDCA;
 
 	/*
 	 * Field GardenClub on LayoutC
 	 *
-	 * */
+	 */
 	private String GardenClub;
 
 	/*
 	 * Field EmailPrefPRO on LayoutC
 	 *
-	 * */
+	 */
 	private String EmailPrefPRO;
 
 	/*
 	 * Field NewMover on LayoutC
 	 *
-	 * */
+	 */
 	private String NewMover;
 
 	/*
 	 * Field For_Future_Use on LayoutC
 	 *
-	 * */
+	 */
 	private String For_Future_Use;
 
 	/*
 	 * Field Source_ID on LayoutC
 	 *
-	 * */
+	 */
 	private String Source_ID;
 
 	/*
 	 * Field SMS_Flag on LayoutC
 	 *
-	 * */
+	 */
 	private String SMS_Flag;
 
 	/*
 	 * Field Fax_Number on LayoutC
 	 *
-	 * */
+	 */
 	private String Fax_Number;
 
 	/*
 	 * Field Fax_Extension on LayoutC
 	 *
-	 * */
+	 */
 	private String Fax_Extension;
 
 	///----------------------
@@ -208,7 +207,8 @@ public class InboundRegistration implements ResourceAware
 	private String fileName;
 
 	@Override
-	public void setResource(Resource resource) {
+	public void setResource(Resource resource)
+	{
 		this.fileName = resource.getFilename();
 	}
 }

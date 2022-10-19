@@ -14,33 +14,39 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class APIWriterListener implements ItemWriteListener<RegistrationRequest> {
+public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
+{
 
-    private FileService fileService;
+	private FileService fileService;
 
-    @Autowired
-    public void setFileService(FileService fileService){
-        this.fileService = fileService;
-    }
+	@Autowired
+	public void setFileService(FileService fileService)
+	{
+		this.fileService = fileService;
+	}
 
-    @Override
-    public void beforeWrite(List<? extends RegistrationRequest> items) {
+	@Override
+	public void beforeWrite(List<? extends RegistrationRequest> items)
+	{
 
-    }
+	}
 
-    @Override
-    public void afterWrite(List<? extends RegistrationRequest> items) {
-        List<BigDecimal> filesId = getMapFileNameFileId(items);
+	@Override
+	public void afterWrite(List<? extends RegistrationRequest> items)
+	{
+		List<BigDecimal> filesId = getMapFileNameFileId(items);
 
-        filesId.forEach(fileId ->  fileService.updateInboundStgTableStatus(fileId,"S", "IP"));
-    }
+		filesId.forEach(fileId -> fileService.updateInboundStgTableStatus(fileId, "S", "IP"));
+	}
 
-    public List<BigDecimal> getMapFileNameFileId(List<? extends RegistrationRequest> items){
-        return items.stream().map(RegistrationRequest::getFileId).distinct().collect(Collectors.toList());
-    }
+	public List<BigDecimal> getMapFileNameFileId(List<? extends RegistrationRequest> items)
+	{
+		return items.stream().map(RegistrationRequest::getFileId).distinct().collect(Collectors.toList());
+	}
 
-    @Override
-    public void onWriteError(Exception exception, List<? extends RegistrationRequest> items) {
+	@Override
+	public void onWriteError(Exception exception, List<? extends RegistrationRequest> items)
+	{
 
-    }
+	}
 }
