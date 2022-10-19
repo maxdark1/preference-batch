@@ -1,0 +1,39 @@
+package ca.homedepot.preference.mapper;
+
+import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class PreferenceOutboundMapper implements RowMapper<PreferenceOutboundDto> {
+    @Override
+    public PreferenceOutboundDto mapRow(ResultSet rs, int i) throws SQLException {
+        PreferenceOutboundDto outboundData = new PreferenceOutboundDto();
+        outboundData.setEmail(rs.getString("email"));
+        outboundData.setEffective_date(rs.getDate("effective_date"));
+        outboundData.setSource_id(rs.getBigDecimal("source_id"));
+        outboundData.setEmail_status(rs.getBigDecimal("email_status"));
+        outboundData.setEmail_permission(rs.getString("email_permission").charAt(0));
+        outboundData.setLanguage_pref(rs.getString("language_preference"));
+        outboundData.setEarly_opt_in_date(rs.getDate("early_opt_in_date"));
+        outboundData.setCnd_compliant_flag(rs.getString("cnd_compliant_flag").charAt(0));
+        outboundData.setEmail_pref_hd_ca(rs.getString("email_pref_hd_ca").charAt(0));
+        outboundData.setEmail_pref_garden_club(rs.getString("email_pref_garden_club").charAt(0));
+        outboundData.setEmail_pref_pro(rs.getString("email_pref_pro").charAt(0));
+        outboundData.setPostal_code(rs.getString("src_postal_code"));
+        outboundData.setCustomer_nbr(rs.getString("customer_nbr"));
+        outboundData.setPhone_ptc_flag(rs.getString("phone_ptc_flag").charAt(0));
+        outboundData.setDncl_suppresion(rs.getString("dncl_suppresion").charAt(0));
+        outboundData.setPhone_number(rs.getString("phone_number"));
+        outboundData.setFirst_name(rs.getString("first_name"));
+        outboundData.setLast_name(rs.getString("last_name"));
+        outboundData.setBusiness_name(rs.getString("business_name"));
+        outboundData.setIndustry_code(rs.getString("industry_code"));
+        outboundData.setCity(rs.getString("city"));
+        outboundData.setProvince(rs.getString("province"));
+        outboundData.setHd_ca_pro_src_id(rs.getBigDecimal("hd_ca_pro_src_id"));
+
+        return outboundData;
+    }
+}
