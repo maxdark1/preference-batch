@@ -18,53 +18,59 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
-class SkipListenerLayoutBTest {
+class SkipListenerLayoutBTest
+{
 
-    @Mock
-    FileServiceImpl fileService;
+	@Mock
+	FileServiceImpl fileService;
 
-    @InjectMocks
-    SkipListenerLayoutB skipListenerLayoutB;
+	@InjectMocks
+	SkipListenerLayoutB skipListenerLayoutB;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-        skipListenerLayoutB.setJobName("JOB_NAME");
-    }
+	@BeforeEach
+	void setUp()
+	{
+		MockitoAnnotations.initMocks(this);
+		skipListenerLayoutB.setJobName("JOB_NAME");
+	}
 
-    @Test
-    void onSkipInRead() {
-        Throwable t = Mockito.mock(Throwable.class);
-        skipListenerLayoutB.onSkipInRead(t);
-    }
+	@Test
+	void onSkipInRead()
+	{
+		Throwable t = Mockito.mock(Throwable.class);
+		skipListenerLayoutB.onSkipInRead(t);
+	}
 
-    @Test
-    void onSkipInWrite() {
-        FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
-        Throwable t = Mockito.mock(Throwable.class);
-        skipListenerLayoutB.onSkipInWrite(fileInboundStgTable, t);
-    }
+	@Test
+	void onSkipInWrite()
+	{
+		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
+		Throwable t = Mockito.mock(Throwable.class);
+		skipListenerLayoutB.onSkipInWrite(fileInboundStgTable, t);
+	}
 
-    @Test
-    void onSkipInProcess() {
+	@Test
+	void onSkipInProcess()
+	{
 
-        BigDecimal jobId = BigDecimal.ONE, fileId = BigDecimal.ONE;
-        String fileName = "TEST";
-        FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
-        EmailOptOuts item = new EmailOptOuts();
-        item.setFileName(fileName);
-        item.setStatus("held");
-        Throwable t = Mockito.mock(Throwable.class);
+		BigDecimal jobId = BigDecimal.ONE, fileId = BigDecimal.ONE;
+		String fileName = "TEST";
+		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
+		EmailOptOuts item = new EmailOptOuts();
+		item.setFileName(fileName);
+		item.setStatus("held");
+		Throwable t = Mockito.mock(Throwable.class);
 
-        Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
-        Mockito.when(fileService.getFile(eq(fileName), eq(jobId))).thenReturn(fileId);
-        Mockito.when(fileService.insertInboundStgError(eq(fileInboundStgTable))).thenReturn(1);
+		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
+		Mockito.when(fileService.getFile(eq(fileName), eq(jobId))).thenReturn(fileId);
+		Mockito.when(fileService.insertInboundStgError(eq(fileInboundStgTable))).thenReturn(1);
 
-        skipListenerLayoutB.onSkipInProcess(item, t);
-    }
+		skipListenerLayoutB.onSkipInProcess(item, t);
+	}
 
-    @Test
-    void getJobName() {
-        assertEquals("JOB_NAME", skipListenerLayoutB.getJobName());
-    }
+	@Test
+	void getJobName()
+	{
+		assertEquals("JOB_NAME", skipListenerLayoutB.getJobName());
+	}
 }

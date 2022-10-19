@@ -176,5 +176,5 @@ public interface PreferenceBatchConstants
 
 	String SRC_ZIPCODE = "src_zipcode";
 	String SRC_DATE = "src_date";
-    String UPDATED_BY = "updated_by";
+	String UPDATED_BY = "updated_by";
 }

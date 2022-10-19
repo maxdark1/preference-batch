@@ -185,7 +185,8 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	void setUpTest(){
+	void setUpTest()
+	{
 		assertNotNull(schedulerConfig);
 		schedulerConfig.setUpListener();
 	}
@@ -199,19 +200,22 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void testinboundEmailPreferencesSMFCReader(){
+	public void testinboundEmailPreferencesSMFCReader()
+	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader());
 	}
 
 	@Test
-	public void testingestOptOutsGmailClientUnsubscribedReader(){
+	public void testingestOptOutsGmailClientUnsubscribedReader()
+	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.ingestOptOutsGmailClientUnsubscribedReader());
 	}
 
 	@Test
-	public void testlineTokenizer(){
+	public void testlineTokenizer()
+	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.lineTokenizer());
 	}
@@ -321,8 +325,10 @@ class SchedulerConfigTest
 
 		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));
 	}
+
 	@Test
-	void readInboundFBSFMCFileStep1() throws Exception {
+	void readInboundFBSFMCFileStep1() throws Exception
+	{
 		schedulerConfig.setFbsfmcWriterListener(writerListener);
 
 
@@ -344,7 +350,8 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	void readInboundDBStep2() throws Exception {
+	void readInboundDBStep2() throws Exception
+	{
 
 		schedulerConfig.setApiWriter(apiWriter);
 		schedulerConfig.setApiWriterListener(apiWriterListener);
@@ -361,7 +368,8 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	void readDBSFMCOptOutsStep2(){
+	void readDBSFMCOptOutsStep2()
+	{
 		schedulerConfig.setApiWriterListener(apiWriterListener);
 		schedulerConfig.chunkLayoutB = 20;
 
@@ -385,7 +393,8 @@ class SchedulerConfigTest
 
 
 	@Test
-	public void readSFMCOptOutsGmailStep(){
+	public void readSFMCOptOutsGmailStep()
+	{
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(eq(100))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(FlatFileItemReader.class))).thenReturn(simpleStepBuilder);

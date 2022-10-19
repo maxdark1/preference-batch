@@ -33,11 +33,12 @@ public interface FileService
 	 */
 	BigDecimal getSourceId(String keyVal, String valueVal);
 
-	int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus, BigDecimal jobId, Date endTime, String updatedBy, BigDecimal statusId);
+	int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus, BigDecimal jobId, Date endTime,
+			String updatedBy, BigDecimal statusId);
 
-    int updateInboundStgTableStatus(BigDecimal sequenceNbr, String status, String oldStatus);
+	int updateInboundStgTableStatus(BigDecimal sequenceNbr, String status, String oldStatus);
 
-	int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy ,Date endTime, Master status);
+	int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy, Date endTime, Master status);
 
 	List<FileDTO> getFilesToMove();
 

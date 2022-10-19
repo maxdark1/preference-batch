@@ -22,7 +22,8 @@ public class FileDTO
 	private String updated_by;
 	private Date updated_date;
 
-	public FileDTO(String file_name){
+	public FileDTO(String file_name)
+	{
 		this.file_name = file_name;
 	}
 }

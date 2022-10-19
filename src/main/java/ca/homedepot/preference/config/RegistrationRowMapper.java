@@ -31,7 +31,7 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setSrcLastName(rs.getString(PreferenceBatchConstants.SRC_LAST_NAME));
 		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
 
-		Integer emailStatus = getIntegerValue( rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
+		Integer emailStatus = getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
 		registrationRequest.setEmailStatus(emailStatus == null ? 0 : emailStatus);
 		registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
 		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
@@ -81,10 +81,10 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		/*
 		 * Deletes any null value before send it to the service
 		 */
-			contentValue.forEach((key, value) -> {
-				if (key == null || value == null)
-					contentValue.remove(key, value);
-			});
+		contentValue.forEach((key, value) -> {
+			if (key == null || value == null)
+				contentValue.remove(key, value);
+		});
 
 
 		registrationRequest.setContentValue(contentValue);
@@ -97,12 +97,16 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 
 	}
 
-	public static Integer getIntegerValue(String value){
+	public static Integer getIntegerValue(String value)
+	{
 		Integer intValue = null;
 
-		try{
+		try
+		{
 			intValue = Integer.parseInt(value);
-		}catch(Exception e){
+		}
+		catch (Exception e)
+		{
 			//
 		}
 

@@ -1,14 +1,13 @@
 package ca.homedepot.preference.service.impl;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
+import feign.jackson.JacksonEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
@@ -39,10 +37,11 @@ public class PreferenceServiceImpl implements PreferenceService
 	private JdbcTemplate jdbcTemplate;
 	private WebClient webClient;
 
+	private PreferenceRegistrationClient preferenceRegistrationClient;
+
 	/**
-	* Initialization of WebClient
-	* @param no params
-	* */
+	 * Initialization of WebClient
+	 */
 	@Autowired
 	public void setUpWebClient()
 	{
@@ -55,7 +54,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	/**
 	 * Sent JdbcTemplate
 	 *
-	 * @param JdbcTemplate jdbcTemplate
+	 * @param jdbcTemplate
 	 *
 	 */
 	@Autowired
@@ -69,23 +68,29 @@ public class PreferenceServiceImpl implements PreferenceService
 		this.webClient = webClient;
 	}
 
-
-	public PreferenceItemList getPreferences(String id)
+	@Autowired
+	public void setPreferenceRegistrationFeignClient(PreferenceRegistrationClient preferenceRegistrationClient)
 	{
-		String path = baseUrl + "{id}/preferences";
-
-		PreferenceItemList response = webClient.get().uri(uriBuilder -> uriBuilder.path(path).build(id)).accept(MediaType.APPLICATION_JSON)
-				.retrieve().bodyToMono(PreferenceItemList.class).doOnError(e-> log.error(e.getMessage())).block();
-
-		log.info("Response {} ", response);
-		return response;
-
+		this.preferenceRegistrationClient = preferenceRegistrationClient;
 	}
+
+	//	public PreferenceItemList getPreferences(String id)
+	//	{
+	//		String path = baseUrl + "{id}/preferences";
+	//
+	//		PreferenceItemList response = webClient.get().uri(uriBuilder -> uriBuilder.path(path).build(id))
+	//				.accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(PreferenceItemList.class)
+	//				.doOnError(e -> log.error(e.getMessage())).block();
+	//
+	//		log.info("Response {} ", response);
+	//		return response;
+	//
+	//	}
 
 	/**
 	 * Send request to service for subscribe/unsubscribe from marketing programs
 	 *
-	 * @param List<? extends RegistrationRequest> items
+	 * @param items
 	 *
 	 */
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
@@ -95,17 +100,16 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
 
-		return webClient.post().uri(path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).bodyValue(items)
-				.retrieve().bodyToMono(RegistrationResponse.class).doOnError(e-> log.error(e.getMessage())).block();
+
+		return preferenceRegistrationClient.registration(items);
 	}
 
 	/**
 	 * Send request to service for SFMC unsubscribe
 	 *
-	 * @param List<? extends RegistrationRequest> items
+	 * @param items
 	 *
 	 */
-
 	@Override
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
 	{
@@ -114,8 +118,7 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		log.info(" {} item(s) has been sent through Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
 
-		return webClient.post().uri(path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(items).retrieve().bodyToMono(RegistrationResponse.class).doOnError(e-> log.error(e.getMessage())).block();
+		return preferenceRegistrationClient.registrationLayoutB(items);
 	}
 
 
@@ -127,7 +130,8 @@ public class PreferenceServiceImpl implements PreferenceService
 	 */
 
 	@Override
-	public int insert(String job_name, String status,BigDecimal status_id, Date start_time, String inserted_by, Date inserted_date)
+	public int insert(String job_name, String status, BigDecimal status_id, Date start_time, String inserted_by,
+			Date inserted_date)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_JOB, job_name, status, status_id, start_time, inserted_by,
 				inserted_date);
@@ -136,27 +140,27 @@ public class PreferenceServiceImpl implements PreferenceService
 	/**
 	 * Gets Master's table information from persistence
 	 *
-	 * @param No params
-	 *           The List resulting will be on MasterProcessor list as static
 	 */
 	@Override
 	public List<Master> getMasterInfo()
 	{
-		return jdbcTemplate.query(SqlQueriesConstants.SQL_SELECT_MASTER_ID, (rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"),rs.getString("key_value"), rs.getString("value_val"),
-						rs.getBoolean("active")));
+		return jdbcTemplate.query(SqlQueriesConstants.SQL_SELECT_MASTER_ID,
+				(rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"), rs.getString("key_value"),
+						rs.getString("value_val"), rs.getBoolean("active")));
 	}
 
 	/**
 	 * Update Job status on persistence
 	 *
-	 * @param job, status
+	 * @param job,
+	 *           status
 	 *
 	 */
 	@Override
 	public int updateJob(Job job, String status)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus_id(), job.getUpdated_date(), job.getUpdated_by(),job.getStatus(), job.getEnd_time(),
-				job.getStart_time(), job.getJob_name(), status);
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus_id(), job.getUpdated_date(),
+				job.getUpdated_by(), job.getStatus(), job.getEnd_time(), job.getStart_time(), job.getJob_name(), status);
 	}
 
 
