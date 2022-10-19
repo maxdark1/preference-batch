@@ -17,19 +17,20 @@ import java.util.Date;
 @Component
 @Slf4j
 @Data
-public class preferenceOutboundReader  {
-    private DataSource dataSource;
+public class preferenceOutboundReader
+{
+	private DataSource dataSource;
 
-    public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBReader()
-    {
-        log.info(" Preference Outbound : Preference Outbound Reader Starter :" + new Date());
-        JdbcCursorItemReader<PreferenceOutboundDto> reader = new JdbcCursorItemReader<>();
+	public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBReader()
+	{
+		log.info(" Preference Outbound : Preference Outbound Reader Starter :" + new Date());
+		JdbcCursorItemReader<PreferenceOutboundDto> reader = new JdbcCursorItemReader<>();
 
-        reader.setDataSource(dataSource);
-        reader.setSql(SqlQueriesConstants.SQL_GET_CRM_OUTBOUND);
-        reader.setRowMapper(new PreferenceOutboundMapper());
+		reader.setDataSource(dataSource);
+		reader.setSql(SqlQueriesConstants.SQL_GET_CRM_OUTBOUND);
+		reader.setRowMapper(new PreferenceOutboundMapper());
 
-        log.info(" Preference Outbound : Preference Outbound Reader End :" + new Date());
-        return reader;
-    }
+		log.info(" Preference Outbound : Preference Outbound Reader End :" + new Date());
+		return reader;
+	}
 }

@@ -54,6 +54,8 @@ feign:
     period: 3000
     maxPeriod: 3000
     maxAttempts: 3
+  restapi:
+    baseurl: http://localhost:8081/hdpc/v1/
 
 #
 inbound:
@@ -86,4 +88,6 @@ preference:
     layoutb:
       chunk: 20
     layoutc:
+      chunk: 10
+    outboundCRM:
       chunk: 10

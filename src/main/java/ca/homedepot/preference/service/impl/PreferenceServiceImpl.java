@@ -9,6 +9,7 @@ import feign.jackson.JacksonEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,6 +23,8 @@ import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
+
+import javax.sql.DataSource;
 
 
 /**
@@ -163,5 +166,33 @@ public class PreferenceServiceImpl implements PreferenceService
 				job.getUpdated_by(), job.getStatus(), job.getEnd_time(), job.getStart_time(), job.getJob_name(), status);
 	}
 
-
+	@Override
+	public void preferenceOutbound(PreferenceOutboundDto item, DataSource dataSource) {
+		jdbcTemplate = new JdbcTemplate();
+		jdbcTemplate.setDataSource(dataSource);
+		jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_STG_PREFERENCE_OUTBOUND,
+				item.getEmail(),
+				item.getEffective_date(),
+				item.getSource_id(),
+				item.getEmail_status(),
+				item.getEmail_permission(),
+				item.getLanguage_pref(),
+				item.getEarly_opt_in_date(),
+				item.getCnd_compliant_flag(),
+				item.getEmail_pref_hd_ca(),
+				item.getEmail_pref_garden_club(),
+				item.getEmail_pref_pro(),
+				item.getPostal_code(),
+				item.getCustomer_nbr(),
+				item.getPhone_ptc_flag(),
+				item.getDncl_suppresion(),
+				item.getPhone_number(),
+				item.getFirst_name(),
+				item.getLast_name(),
+				item.getBusiness_name(),
+				item.getIndustry_code(),
+				item.getCity(),
+				item.getProvince(),
+				item.getHd_ca_pro_src_id());
+	}
 }

@@ -6,6 +6,8 @@ import java.util.List;
 
 import ca.homedepot.preference.dto.*;
 
+import javax.sql.DataSource;
+
 
 /**
  * The interface Preference service.
@@ -23,4 +25,6 @@ public interface PreferenceService
 	List<Master> getMasterInfo();
 
 	int updateJob(Job job, String status);
+
+	void preferenceOutbound(PreferenceOutboundDto item, DataSource dataSource);
 }

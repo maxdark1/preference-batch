@@ -7,12 +7,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class preferenceOutboundProcessor implements ItemProcessor<PreferenceOutboundDto, PreferenceOutboundDto> {
+public class preferenceOutboundProcessor implements ItemProcessor<PreferenceOutboundDto, PreferenceOutboundDto>
+{
 
-    @Override
-    public PreferenceOutboundDto process(PreferenceOutboundDto preferenceOutboundDto) throws Exception {
-        log.info("Nothing to DO on Preference Outbound Processor");
-        return preferenceOutboundDto;
-    }
+	@Override
+	public PreferenceOutboundDto process(PreferenceOutboundDto preferenceOutboundDto) throws Exception
+	{
+		log.info("Nothing to DO on Preference Outbound Processor");
+		return preferenceOutboundDto;
+	}
 
 }
