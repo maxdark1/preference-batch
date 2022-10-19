@@ -5,8 +5,6 @@ import feign.Feign;
 import feign.Logger;
 import feign.Retryer;
 import feign.codec.ErrorDecoder;
-import feign.gson.GsonDecoder;
-import feign.gson.GsonEncoder;
 import feign.httpclient.ApacheHttpClient;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
@@ -16,7 +14,6 @@ import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 
 
 /**
@@ -58,9 +55,7 @@ public class RegistrationFeignConfig
 	@Bean
 	public PreferenceRegistrationClient preferenceRegistrationClient()
 	{
-		return Feign.builder().client(new ApacheHttpClient())
-				.encoder(new JacksonEncoder())
-				.decoder(new JacksonDecoder())
+		return Feign.builder().client(new ApacheHttpClient()).encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
 				.contract(new SpringMvcContract()).errorDecoder(new FeignErrorDecoder())
 				.logger(new Slf4jLogger(PreferenceRegistrationClient.class))
 				.retryer(new Retryer.Default(period, maxPeriod, maxAttempts))

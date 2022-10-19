@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
+import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
 import ca.homedepot.preference.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,15 +17,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import org.springframework.web.util.UriBuilder;
-import org.springframework.web.util.UriBuilderFactory;
-import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 class PreferenceServiceImplTest
@@ -56,6 +52,9 @@ class PreferenceServiceImplTest
 
 	@Mock
 	private List<RegistrationRequest> itemsRequest;
+
+	@Mock
+	private PreferenceRegistrationClient preferenceRegistrationClient;
 
 	@InjectMocks
 	private PreferenceServiceImpl preferenceServiceImpl;
@@ -111,7 +110,7 @@ class PreferenceServiceImplTest
 	}
 
 	@Test
-	void preferencesRegistrationtest()
+	void testPreferencesRegistration()
 	{
 
 		String id = "13";
@@ -128,7 +127,7 @@ class PreferenceServiceImplTest
 		Mockito.when(requestBodySpec.bodyValue(itemsRequest)).thenReturn(requestHeadersSpec);
 		Mockito.when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
 		Mockito.when(responseSpec.bodyToMono(RegistrationResponse.class)).thenReturn(Mono.just(registrationResponse));
-
+		Mockito.when(preferenceRegistrationClient.registration(any(List.class))).thenReturn(registrationResponse);
 
 		RegistrationResponse registrationResponseCurrent = preferenceServiceImpl.preferencesRegistration(itemsRequest);
 		assertEquals(registrationResponse, registrationResponseCurrent);
@@ -153,7 +152,7 @@ class PreferenceServiceImplTest
 		Mockito.when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
 		Mockito.when(responseSpec.bodyToMono(RegistrationResponse.class)).thenReturn(Mono.just(registrationResponse));
 
-
+		Mockito.when(preferenceRegistrationClient.registrationLayoutB(any(List.class))).thenReturn(registrationResponse);
 		RegistrationResponse registrationResponseCurrent = preferenceServiceImpl.preferencesSFMCEmailOptOutsLayoutB(itemsRequest);
 		assertEquals(registrationResponse, registrationResponseCurrent);
 	}
