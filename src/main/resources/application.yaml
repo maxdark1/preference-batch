@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: postgres
+    password:
     driverClassName: org.postgresql.Driver
   batch:
     job:
@@ -53,6 +53,8 @@ feign:
     period: 3000
     maxPeriod: 3000
     maxAttempts: 3
+  restapi:
+    baseurl: http://localhost:8081/hdpc/v1/
 
 #
 inbound:

@@ -25,7 +25,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Constructor with resource
-	 * 
+	 *
 	 * @param source
 	 */
 	public RegistrationItemProcessor(String source)
@@ -35,7 +35,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Process item
-	 * 
+	 *
 	 * @param item
 	 *           to be processed
 	 * @return Item to be writing on persistence
@@ -97,7 +97,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Validate item's values
-	 * 
+	 *
 	 * @param item
 	 * @return
 	 */
@@ -119,7 +119,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Validate Max Length of required fields
-	 * 
+	 *
 	 * @param item
 	 * @param error
 	 */
@@ -143,9 +143,10 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	/**
 	 * Validate Max Length of not required fields
-	 * 
-	 * @param item
-	 * @param error
+	 *
+	 * @param item, error
+	 *
+	 * @return
 	 */
 	private void validateMaxLength(InboundRegistration item, StringBuilder error)
 	{

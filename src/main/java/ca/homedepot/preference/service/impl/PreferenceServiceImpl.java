@@ -1,9 +1,12 @@
 package ca.homedepot.preference.service.impl;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
+import feign.jackson.JacksonEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -47,6 +50,8 @@ public class PreferenceServiceImpl implements PreferenceService
 	 */
 	private WebClient webClient;
 
+	private PreferenceRegistrationClient preferenceRegistrationClient;
+
 	/**
 	 * Initialization of WebClient
 	 */
@@ -61,7 +66,7 @@ public class PreferenceServiceImpl implements PreferenceService
 
 	/**
 	 * Sets JdbcTemplate
-	 * 
+	 *
 	 * @param jdbcTemplate
 	 */
 	@Autowired
@@ -72,7 +77,7 @@ public class PreferenceServiceImpl implements PreferenceService
 
 	/**
 	 * Sets WebClient
-	 * 
+	 *
 	 * @param webClient
 	 */
 	public void setWebClient(WebClient webClient)
@@ -80,30 +85,17 @@ public class PreferenceServiceImpl implements PreferenceService
 		this.webClient = webClient;
 	}
 
-	/**
-	 * Gets preferences
-	 * 
-	 * @param id
-	 * @return preference Item list
-	 */
-	public PreferenceItemList getPreferences(String id)
-	{
-		String path = baseUrl + "{id}/preferences";
 
-		PreferenceItemList response = webClient.get().uri(uriBuilder -> uriBuilder.path(path).build(id))
-				.accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(PreferenceItemList.class)
-				.doOnError(e -> log.error(e.getMessage())).block();
-
-		log.info("Response {} ", response);
-		return response;
-
+	@Autowired
+	public void setPreferenceRegistrationFeignClient(PreferenceRegistrationClient preferenceRegistrationClient)
+		this.preferenceRegistrationClient = preferenceRegistrationClient;
 	}
 
 	/**
-	 * Sends to API LayoutC endpoint Registration information
-	 * 
+	 * Send request to service for subscribe/unsubscribe from marketing programs
+	 *
 	 * @param items
-	 * @return registration response
+	 *
 	 */
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
 	{
@@ -112,15 +104,15 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
 
-		return webClient.post().uri(path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(items).retrieve().bodyToMono(RegistrationResponse.class).doOnError(e -> log.error(e.getMessage())).block();
+
+		return preferenceRegistrationClient.registration(items);
 	}
 
 	/**
-	 * Sends to API Unsubscribed LAyoutB information
-	 * 
+	 * Send request to service for SFMC unsubscribe
+	 *
 	 * @param items
-	 * @return Registration Response with status
+	 *
 	 */
 	@Override
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
@@ -130,14 +122,13 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		log.info(" {} item(s) has been sent through Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
 
-		return webClient.post().uri(path).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(items).retrieve().bodyToMono(RegistrationResponse.class).doOnError(e -> log.error(e.getMessage())).block();
+		return preferenceRegistrationClient.registrationLayoutB(items);
 	}
 
 
 	/**
 	 * Inserts on persistence job information
-	 * 
+	 *
 	 * @param job_name
 	 * @param status
 	 * @param status_id
@@ -157,7 +148,7 @@ public class PreferenceServiceImpl implements PreferenceService
 
 	/**
 	 * Gets master's information
-	 * 
+	 *
 	 * @return Master information
 	 */
 	@Override
@@ -170,7 +161,7 @@ public class PreferenceServiceImpl implements PreferenceService
 
 	/**
 	 * Update job's status
-	 * 
+	 *
 	 * @param job
 	 * @param status
 	 * @return updated records
