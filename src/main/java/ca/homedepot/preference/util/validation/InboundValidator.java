@@ -1,20 +1,18 @@
 package ca.homedepot.preference.util.validation;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
-import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.experimental.UtilityClass;
 import org.springframework.batch.item.validator.ValidationException;
 
-import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
 
+@UtilityClass
 public class InboundValidator
 {
 
@@ -30,17 +28,22 @@ public class InboundValidator
 			"Content_14", "Value_14", "Content_15", "Value_15", "Content_16", "Value_16", "Content_17", "Value_17", "Content_18",
 			"Value_18", "Content_19", "Value_19", "Content_20", "Value_20" };
 
+	/**
+	 * Sets valid email pattern
+	 *
+	 * @param validEmailPattern
+	 */
 	public static void setValidEmailPattern(String validEmailPattern)
 	{
 		VALID_EMAIL_PATTERN = validEmailPattern;
 	}
 
 
-	/*
+	/**
 	 * Error's validation.
-	 * 
+	 *
 	 * @param errors
-	 * 
+	 *
 	 * @return
 	 */
 
@@ -50,10 +53,11 @@ public class InboundValidator
 			throw new ValidationException(" The item processed has the above validations erros: \n" + errors);
 	}
 
-	/*
+	/**
 	 * Error's validation.
 	 *
-	 * @param field, value, maxLength, error
+	 * @param field,
+	 *           value, maxLength, error
 	 *
 	 * @return String If there is any error, it returns String with maxLength
 	 */
@@ -64,10 +68,11 @@ public class InboundValidator
 		return value;
 	}
 
-	/*
+	/**
 	 * Validates field length
 	 *
-	 * @param field, value, maxLength, error
+	 * @param field,
+	 *           value, maxLength, error
 	 *
 	 * @return String If there is any error, it returns String with maxLength
 	 */
@@ -76,7 +81,7 @@ public class InboundValidator
 
 		if (value != null && (value.length() > maxLength))
 		{
-			error.append(String.format("The length of %s field  must be %d caracters or fewer.\n", field, maxLength));
+			error.append("The length of ").append(field).append("field  must be").append(maxLength).append(" caracters or fewer.\n");
 			return value.substring(0, maxLength);
 		}
 		return value;
@@ -84,10 +89,11 @@ public class InboundValidator
 
 	}
 
-	/*
+	/**
 	 * Validate Lenguage Pref
 	 *
-	 * @param item, error
+	 * @param item,
+	 *           error
 	 *
 	 * @return It update message error if there's any Error
 	 */
@@ -98,26 +104,26 @@ public class InboundValidator
 					.append(" not matches with: E, EN, F, FR\n");
 	}
 
-	/*
+	/**
 	 * Validate email format
 	 *
-	 * @param email, error
+	 * @param email,
+	 *           error
 	 *
 	 * @return Validate email according to email pattern (on configuration file)
 	 */
 	public static void validateEmailFormat(String email, StringBuilder error)
 	{
-
-		if (email != null)
-			if (!email.matches(VALID_EMAIL_PATTERN))
-				error.append(" email address does not have a valid format {}: ").append(email).append("\n");
+		if (email != null && !email.matches(VALID_EMAIL_PATTERN))
+			error.append(" email address does not have a valid format {}: ").append(email).append("\n");
 
 	}
 
-	/*
+	/**
 	 * Validate date format
 	 *
-	 * @param date, error
+	 * @param date,
+	 *           error
 	 *
 	 * @return Validate date format, if there's any error update error message
 	 */
@@ -140,28 +146,30 @@ public class InboundValidator
 	}
 
 
-	/*
+	/**
 	 * Validate Day and Month value
 	 *
-	 * @param date, separator, error
+	 * @param date,
+	 *           separator, error
 	 *
 	 * @return Validate Day and Moth value, if there's any error update error message
 	 */
 	public static void validateDayMonth(String date, String separator, StringBuilder error)
 	{
 		String[] mmddyy = date.split(" ")[0].split(separator);
-		int month = Integer.valueOf(mmddyy[0]);
+		int month = Integer.parseInt(mmddyy[0]);
 		validateMonth(month, error);
-		int day = Integer.valueOf(mmddyy[1]);
-		int year = Integer.valueOf(mmddyy[2]);
+		int day = Integer.parseInt(mmddyy[1]);
+		int year = Integer.parseInt(mmddyy[2]);
 		validateDay(day, month, year, error);
 
 	}
 
-	/*
+	/**
 	 * Validate Month's value
 	 *
-	 * @param month, error
+	 * @param month,
+	 *           error
 	 *
 	 * @return Validate Moth's value, if there's any error update error message
 	 */
@@ -171,10 +179,11 @@ public class InboundValidator
 			error.append(" Invalid Month: ").append(month).append(" \n");
 	}
 
-	/*
+	/**
 	 * Validate day's value
 	 *
-	 * @param day, month, year, error
+	 * @param day,
+	 *           month, year, error
 	 *
 	 * @return Validate day's value according to Month and year value, if there's any error update error message
 	 */
@@ -192,10 +201,11 @@ public class InboundValidator
 			error.append(" Invalid day: ").append(day).append("\n");
 	}
 
-	/*
+	/**
 	 * Validate number format
 	 *
-	 * @param item, error
+	 * @param item,
+	 *           error
 	 *
 	 * @return Validate number format for fields with number values, if there's any error, update error message
 	 */
@@ -203,59 +213,95 @@ public class InboundValidator
 	{
 		Integer value = null;
 		value = validateIsNumber(item.getEmail_Permission(), error);
-		validValue_Number(value, "email_permission", error);
+		validValueNumber(value, "email_permission", error);
 
 		if (item.getPhone_Permission() != null)
 		{
 			value = validateIsNumber(item.getPhone_Permission(), error);
-			validValue_Number(value, "phone_permission", error);
+			validValueNumber(value, "phone_permission", error);
 		}
 
 		value = validateIsNumber(item.getMail_Permission(), error);
-		validValue_Number(value, "mail_permission", error);
+		validValueNumber(value, "mail_permission", error);
 
 		value = validateIsNumber(item.getEmailPrefHDCA(), error);
-		validValue_Number(value, "email_pref_hd_ca", error);
+		validValueNumber(value, "email_pref_hd_ca", error);
 
 		value = validateIsNumber(item.getGardenClub(), error);
-		validValue_Number(value, "email_pref_garden_club", error);
+		validValueNumber(value, "email_pref_garden_club", error);
 
 		value = validateIsNumber(item.getEmailPrefPRO(), error);
-		validValue_Number(value, "email_pref_pro", error);
+		validValueNumber(value, "email_pref_pro", error);
 
 		value = validateIsNumber(item.getNewMover(), error);
-		validValue_Number(value, "email_pref_new_mover", error);
+		validValueNumber(value, "email_pref_new_mover", error);
 
 		if (item.getValue_5() != null)
 		{
 			value = validateIsNumber(item.getValue_5(), error);
 			if (value != null && value != 1 && value != 2 && value != 5)
 				error.append("invalid value for field {}: value5 =\n" + value);
-			//throw new ValidationException();
 		}
 	}
 
-	/*
+	/**
 	 * Gets source_id for specific record
-	 *
+	 * 
+	 * @param value
 	 * @param source
-	 *
-	 * @return BigDecimal
-	 *
+	 * @param error
+	 * @return corresponding master_id
 	 */
-	public static BigDecimal getSourceID(String source)
+	public static BigDecimal validateSourceID(String value, String source, StringBuilder error)
 	{
 
-		return MasterProcessor
-				.getSourceId("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)
-				.getMaster_id();
-
+		/**
+		 * If it doesn't have assign any Source_ID
+		 */
+		if (value == null || value.isEmpty() || value.isBlank())
+		{
+			return MasterProcessor.getSourceID("SOURCE_ID", getSource(source)).getMaster_id();
+		}
+		BigDecimal masterId = MasterProcessor.getSourceID(value);
+		/**
+		 * If it has one assign, validates that is a VALID masterId
+		 */
+		if (masterId.equals(new BigDecimal("-400")))
+		{
+			error.append("  Not a valid Source ID ").append(value).append(" for this source. \n");
+			return null;
+		}
+		return masterId;
 	}
 
-	/*
+	/**
+	 * Gets Source name that's being use in persistence
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public static String getSource(String source)
+	{
+
+		switch (source)
+		{
+			case SourceDelimitersConstants.HYBRIS:
+				return "nurun";
+			case SourceDelimitersConstants.CRM:
+				return "CANADA SAP CRM";
+			default:
+				/**
+				 * FB_SFMC
+				 */
+				return "Facebook Opt in campaign";
+		}
+	}
+
+	/**
 	 * Validate if is number
 	 *
-	 * @param number, error
+	 * @param number,
+	 *           error
 	 *
 	 * @return Integer Validate if it is number, if there's any error, update error message
 	 */
@@ -274,23 +320,25 @@ public class InboundValidator
 		return value;
 	}
 
-	/*
+	/**
 	 * Validate if is number is valid
 	 *
-	 * @param value, field, error
+	 * @param value,
+	 *           field, error
 	 *
 	 * @return Validate if is it a valid value, if there is any error, update error message
 	 */
-	public static void validValue_Number(Integer value, String field, StringBuilder error)
+	public static void validValueNumber(Integer value, String field, StringBuilder error)
 	{
 		if (value != null && (value < -1 || value > 1))
 			error.append(" invalid value for field {}: ").append(field).append("\n");
 	}
 
-	/*
+	/**
 	 * Validate required fields
 	 *
-	 * @param item, error
+	 * @param item,
+	 *           error
 	 *
 	 * @return Validate if field is required, if there is any error, update error message
 	 */
@@ -309,7 +357,6 @@ public class InboundValidator
 		validateRequired(item.getGardenClub(), "email_pref_garden_club", error);
 		validateRequired(item.getEmailPrefPRO(), "email_pref_pro", error);
 		validateRequired(item.getNewMover(), "email_pref_new_mover", error);
-		validateRequired(item.getSource_ID(), "source_id", error);
 		validateRequired(item.getContent_1(), "content1", error);
 		validateRequired(item.getContent_2(), "content2", error);
 		validateRequired(item.getContent_3(), "content3", error);

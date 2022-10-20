@@ -12,15 +12,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Master
 {
-
+	/**
+	 * The master_id
+	 */
 	private BigDecimal master_id;
-
+	/**
+	 * The key_id
+	 */
 	private BigDecimal key_id;
-
+	/**
+	 * The key_value
+	 */
 	private String key_value;
 
+	/**
+	 * The value_val
+	 */
 	private String value_val;
-
+	/**
+	 * The active value
+	 */
 	private Boolean active;
+
+	/**
+	 * The old id
+	 */
+	private BigDecimal old_id;
 
 }

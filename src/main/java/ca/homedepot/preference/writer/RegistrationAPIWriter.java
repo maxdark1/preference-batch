@@ -18,16 +18,31 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class RegistrationAPIWriter implements ItemWriter<RegistrationRequest>
 {
+	/**
+	 * The preference service
+	 */
 	private PreferenceService preferenceService;
 
+	/**
+	 * The file service
+	 */
 	private FileService fileService;
 
-
+	/**
+	 * Sends the item to the API via LayoutC endpoint
+	 * 
+	 * @param items
+	 *           items to be written
+	 * @throws Exception
+	 */
 	@Override
 	public void write(List<? extends RegistrationRequest> items) throws Exception
 	{
 		RegistrationResponse response = preferenceService.preferencesRegistration(items);
 
+		/**
+		 * Updates status for each record
+		 */
 		response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus(new BigDecimal(resp.getId()),
 				resp.getStatus().substring(0, 1), "IP"));
 		log.info("Service Response {} :", response);

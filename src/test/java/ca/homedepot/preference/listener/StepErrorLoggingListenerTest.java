@@ -1,58 +1,59 @@
 package ca.homedepot.preference.listener;
 
-import org.junit.jupiter.api.AfterEach;
+import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.batch.item.validator.ValidationException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class StepErrorLoggingListenerTest
 {
 
-	private StepErrorLoggingListener stepErrorLoggingListener;
+	@Mock
+	FileServiceImpl fileService;
+
+	@Mock
+	JobExecution jobExecution;
+
+	@Mock
+	StepExecution stepExecution;
+
+	@InjectMocks
+	StepErrorLoggingListener stepErrorLoggingListener;
 
 	@BeforeEach
-	void setUp()
+	void setup()
 	{
-		stepErrorLoggingListener = new StepErrorLoggingListener();
-	}
-
-	@AfterEach
-	void tearDown()
-	{
+		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
 	void beforeStep()
 	{
-		// given
-		List<Throwable> exceptions = new ArrayList<>();
-		StepExecution stepExecution = mock(StepExecution.class);
-		when(stepExecution.getFailureExceptions()).thenReturn(exceptions);
-		String stepName = "someStep";
-		JobExecution jobExecution = mock(JobExecution.class);
-		doNothing().when(jobExecution).addStepExecutions(anyList());
-		Long id = 1l;
-		// when
-		stepErrorLoggingListener.beforeStep(new StepExecution(stepName, jobExecution, id));
-		// then
-		assertTrue(true);
+		stepErrorLoggingListener.beforeStep(stepExecution);
 	}
 
-
 	@Test
-	void afterStep()
+	void afterStepFailedCase()
 	{
+		stepExecution = new StepExecution("TEST step", jobExecution, 1L);
+		stepExecution.addFailureException(new ValidationException("This is just an Example"));
+
+		ExitStatus exitStatus = stepErrorLoggingListener.afterStep(stepExecution);
+		assertEquals(ExitStatus.FAILED, exitStatus);
 	}
 
 	@Test
 	void moveFile()
 	{
+
 	}
 }

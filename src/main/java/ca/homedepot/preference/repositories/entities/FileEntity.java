@@ -12,17 +12,23 @@ import lombok.Data;
 @Table(name = "hdpc_file")
 public class FileEntity
 {
+	/**
+	 * The file id
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "file_id")
 	private Long fileId;
 
 	/**
-	 * The article id.
+	 * The file name.
 	 */
 	@Column(name = "file_name")
 	private String fileName;
 
+	/**
+	 * The job
+	 */
 	@ManyToOne
 	@JoinColumn(name = "job_id")
 	private JobEntity job;
@@ -33,30 +39,42 @@ public class FileEntity
 	@Column(name = "status")
 	private String status;
 
+	/**
+	 * The file source id
+	 */
 	@Column(name = "file_source_id")
 	private BigDecimal fileSourceId;
 
 	/**
-	 * The Phone number.
+	 * The start time.
 	 */
 	@Column(name = "start_time")
 	private Date startTime;
 
 	/**
-	 * The notification type.
+	 * The end tiem.
 	 */
 	@Column(name = "end_time")
 	private Date endTime;
-
+	/**
+	 * The inserted by
+	 */
 	@Column(name = "inserted_by")
 	private String insertedBy;
-
+	/**
+	 * The inserted date
+	 */
 	@Column(name = "inserted_date")
 	private Date insertedDate;
-
+	/**
+	 * The updated by
+	 */
 	@Column(name = "updated_by")
 	private String updatedBy;
 
+	/**
+	 * The updated date.
+	 */
 	@Column(name = "updated_date")
 	private Date updatedDate;
 }

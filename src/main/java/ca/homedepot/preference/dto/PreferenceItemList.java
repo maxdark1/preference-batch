@@ -10,9 +10,15 @@ import lombok.Data;
 @Data
 public class PreferenceItemList
 {
+	/**
+	 * The preference Item List
+	 */
 	@JsonProperty("items")
 	List<PreferenceItem> items;
 
+	/**
+	 * To initialize object
+	 */
 	public PreferenceItemList()
 	{
 		items = new ArrayList<>();

@@ -2,6 +2,7 @@ package ca.homedepot.preference.listener;
 
 import java.util.Date;
 
+import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import org.springframework.batch.core.BatchStatus;
@@ -14,6 +15,8 @@ import ca.homedepot.preference.dto.Job;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.JOB_STATUS;
+
 
 /**
  * The type Job listener.
@@ -22,8 +25,16 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JobListener implements JobExecutionListener
 {
+	/**
+	 * Preference service
+	 */
 	private PreferenceService preferenceService;
 
+	/**
+	 * Set preference service
+	 * 
+	 * @param preferenceService
+	 */
 	@Autowired
 	public void setPreferenceService(PreferenceService preferenceService)
 	{
@@ -41,6 +52,15 @@ public class JobListener implements JobExecutionListener
 	public void beforeJob(JobExecution jobExecution)
 	{
 		log.debug("Batch Started.");
+
+		/**
+		 * Before anything else, It purges the staging table
+		 */
+		purgeStagingTableRecordsWithSuccessedStatus();
+
+		/**
+		 * Gets Job's information
+		 */
 		ca.homedepot.preference.dto.Job job = new ca.homedepot.preference.dto.Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
 
@@ -70,14 +90,23 @@ public class JobListener implements JobExecutionListener
 		switch (batchStatus)
 		{
 			case STARTING:
-				return MasterProcessor.getSourceId("JOB_STATUS", "STARTED");
+				return MasterProcessor.getSourceID(JOB_STATUS, "STARTED");
 			case STARTED:
-				return MasterProcessor.getSourceId("JOB_STATUS", "IN PROGRESS");
+				return MasterProcessor.getSourceID(JOB_STATUS, "IN PROGRESS");
 			case COMPLETED:
-				return MasterProcessor.getSourceId("JOB_STATUS", "COMPLETED");
+				return MasterProcessor.getSourceID(JOB_STATUS, "COMPLETED");
 			default:
-				return MasterProcessor.getSourceId("JOB_STATUS", "ERROR");
+				return MasterProcessor.getSourceID(JOB_STATUS, "ERROR");
 		}
+	}
+
+	/**
+	 * Purge staging table records with success status
+	 */
+	public void purgeStagingTableRecordsWithSuccessedStatus()
+	{
+		int purgeRecords = preferenceService.purgeStagingTableSuccessRecords();
+		log.info(" {} records has been purged from Staging table.", purgeRecords);
 	}
 
 	/**
@@ -93,6 +122,10 @@ public class JobListener implements JobExecutionListener
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED)
 			log.info(" Job {} ends with completes status ", jobExecution.getJobInstance().getJobName());
 
+		/**
+		 * Gets the current value for
+		 * the job that is ending
+		 */
 		Job job = new Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
 
@@ -106,9 +139,12 @@ public class JobListener implements JobExecutionListener
 		job.setUpdated_by("BATCH JobListener");
 
 
-		int insert = preferenceService.updateJob(job, "IN PROGRESS");
+		/**
+		 * Updates the job record with the end_time and status
+		 */
+		int updatedRecords = preferenceService.updateJob(job, "IN PROGRESS");
 
-		log.info("  {} Job(s) updated", insert);
+		log.info("  {} Job(s) updated", updatedRecords);
 
 	}
 

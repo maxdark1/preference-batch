@@ -1,6 +1,7 @@
 package ca.homedepot.preference.service.impl;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
 import feign.jackson.JacksonEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -32,40 +34,32 @@ import reactor.netty.resources.ConnectionProvider;
 public class PreferenceServiceImpl implements PreferenceService
 {
 
+	/**
+	 * The base url
+	 */
 	@Value("${service.preference.baseurl}")
 	public String baseUrl;
-	private JdbcTemplate jdbcTemplate;
-	private WebClient webClient;
 
+	/**
+	 * The JDBC template
+	 */
+	private JdbcTemplate jdbcTemplate;
+
+	/**
+	 * The preference registration client
+	 */
 	private PreferenceRegistrationClient preferenceRegistrationClient;
 
-	/**
-	 * Initialization of WebClient
-	 */
-	@Autowired
-	public void setUpWebClient()
-	{
-		this.webClient = WebClient.builder()
-				.clientConnector(new ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection())))
-				.baseUrl(baseUrl).build();
-	}
-
 
 	/**
-	 * Sent JdbcTemplate
+	 * Sets JdbcTemplate
 	 *
 	 * @param jdbcTemplate
-	 *
 	 */
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
 	{
 		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	public void setWebClient(WebClient webClient)
-	{
-		this.webClient = webClient;
 	}
 
 	@Autowired
@@ -74,18 +68,6 @@ public class PreferenceServiceImpl implements PreferenceService
 		this.preferenceRegistrationClient = preferenceRegistrationClient;
 	}
 
-	//	public PreferenceItemList getPreferences(String id)
-	//	{
-	//		String path = baseUrl + "{id}/preferences";
-	//
-	//		PreferenceItemList response = webClient.get().uri(uriBuilder -> uriBuilder.path(path).build(id))
-	//				.accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(PreferenceItemList.class)
-	//				.doOnError(e -> log.error(e.getMessage())).block();
-	//
-	//		log.info("Response {} ", response);
-	//		return response;
-	//
-	//	}
 
 	/**
 	 * Send request to service for subscribe/unsubscribe from marketing programs
@@ -95,8 +77,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	 */
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
 	{
-
-		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
 
 		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
 
@@ -114,8 +94,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
 	{
 
-		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL;
-
 		log.info(" {} item(s) has been sent through Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
 
 		return preferenceRegistrationClient.registrationLayoutB(items);
@@ -123,10 +101,15 @@ public class PreferenceServiceImpl implements PreferenceService
 
 
 	/**
-	 * Save Job Information on persistence
+	 * Inserts on persistence job information
 	 *
-	 * @param job_name,
-	 *           status, start_time, inserted_by, inserted_date
+	 * @param job_name
+	 * @param status
+	 * @param status_id
+	 * @param start_time
+	 * @param inserted_by
+	 * @param inserted_date
+	 * @return inserted records
 	 */
 
 	@Override
@@ -138,29 +121,41 @@ public class PreferenceServiceImpl implements PreferenceService
 	}
 
 	/**
-	 * Gets Master's table information from persistence
+	 * Gets master's information
 	 *
+	 * @return Master information
 	 */
 	@Override
 	public List<Master> getMasterInfo()
 	{
 		return jdbcTemplate.query(SqlQueriesConstants.SQL_SELECT_MASTER_ID,
 				(rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"), rs.getString("key_value"),
-						rs.getString("value_val"), rs.getBoolean("active")));
+						rs.getString("value_val"), rs.getBoolean("active"), rs.getBigDecimal("old_id")));
 	}
 
 	/**
-	 * Update Job status on persistence
+	 * Update job's status
 	 *
-	 * @param job,
-	 *           status
-	 *
+	 * @param job
+	 * @param status
+	 * @return updated records
 	 */
 	@Override
 	public int updateJob(Job job, String status)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatus_id(), job.getUpdated_date(),
 				job.getUpdated_by(), job.getStatus(), job.getEnd_time(), job.getStart_time(), job.getJob_name(), status);
+	}
+
+	/**
+	 * Purge
+	 * 
+	 * @return
+	 */
+	@Override
+	public int purgeStagingTableSuccessRecords()
+	{
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_PURGE_SUCCESS_STG_TABLE);
 	}
 
 

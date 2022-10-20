@@ -20,15 +20,18 @@ class ExactTargetEmailValidationTest
 	{
 		List<Master> masterList = new ArrayList<>();
 
-		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true));
-		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true));
-		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true));
-		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true));
-		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true));
-		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true));
-		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT AOL-CAN", true));
-		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true));
-
+		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true, null));
+		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true, null));
+		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true, null));
+		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true, null));
+		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true, null));
+		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE_ID", "EXACT TARGET OPT OUT-CAN", true,
+				new BigDecimal("188")));
+		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE_ID", "EXACT TARGET OPT OUT AOL-CAN", true,
+				new BigDecimal("189")));
+		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true, null));
+		masterList.add(new Master(new BigDecimal("24"), BigDecimal.TEN, "SOURCE_ID", "HELD", true, new BigDecimal("50")));
+		masterList.add(new Master(new BigDecimal("25"), BigDecimal.TEN, "SOURCE_ID", "UNSUBSCRIBE", true, new BigDecimal("98")));
 		MasterProcessor.setMasterList(masterList);
 	}
 
@@ -51,10 +54,10 @@ class ExactTargetEmailValidationTest
 	void getExactTargetStatus()
 	{
 		String statusUnsubscribed = "unsubscribed", statusHeld = "held";
-		String validationUnsubscribed = ExactTargetEmailValidation.getExactTargetStatus(statusUnsubscribed);
-		String validationHeld = ExactTargetEmailValidation.getExactTargetStatus(statusHeld);
-		assertEquals("98", validationUnsubscribed);
-		assertEquals("50", validationHeld);
+		String validationUnsubscribed = ExactTargetEmailValidation.getExactTargetStatus(statusUnsubscribed).toPlainString();
+		String validationHeld = ExactTargetEmailValidation.getExactTargetStatus(statusHeld).toPlainString();
+		assertEquals("25", validationUnsubscribed);
+		assertEquals("24", validationHeld);
 	}
 
 	@Test

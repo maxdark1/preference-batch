@@ -18,15 +18,30 @@ import java.util.List;
 @Setter
 public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest>
 {
+	/**
+	 * The prefernce service
+	 */
 	private PreferenceService preferenceService;
-
+	/**
+	 * The File Service
+	 */
 	private FileService fileService;
 
+	/**
+	 * Sends the items processed to the API LayoutB end point
+	 * 
+	 * @param items
+	 *           items to be written
+	 * @throws Exception
+	 */
 	@Override
 	public void write(List<? extends RegistrationRequest> items) throws Exception
 	{
 		RegistrationResponse response = preferenceService.preferencesSFMCEmailOptOutsLayoutB(items);
 
+		/**
+		 * Updates the status of each record
+		 */
 		response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus(new BigDecimal(resp.getId()),
 				resp.getStatus().substring(0, 1), "IP"));
 		log.info("Service Response: {} ", response);
