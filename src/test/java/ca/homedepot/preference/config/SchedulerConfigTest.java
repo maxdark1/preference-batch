@@ -10,8 +10,8 @@ import java.lang.reflect.Modifier;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
-import ca.homedepot.preference.listener.skipers.SkipListenerLayoutB;
-import ca.homedepot.preference.listener.skipers.SkipListenerLayoutC;
+import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
+import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;

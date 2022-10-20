@@ -1,4 +1,4 @@
-package ca.homedepot.preference.listener.skipers;
+package ca.homedepot.preference.listener.skippers;
 
 import ca.homedepot.preference.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;

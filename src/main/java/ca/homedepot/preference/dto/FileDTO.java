@@ -3,10 +3,12 @@ package ca.homedepot.preference.dto;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class FileDTO
 {
@@ -30,6 +32,11 @@ public class FileDTO
 	 * The status
 	 */
 	private String status;
+
+	/**
+	 * The status ID
+	 */
+	private BigDecimal status_id;
 	/**
 	 * The start_time
 	 */

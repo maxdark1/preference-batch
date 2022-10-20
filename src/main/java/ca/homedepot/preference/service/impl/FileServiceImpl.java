@@ -64,11 +64,10 @@ public class FileServiceImpl implements FileService
 	 */
 	@Override
 	@Transactional
-	public int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id,
-			Date inserted_date, String inserted_by, BigDecimal status_id, Date endTime)
+	public int insert(FileDTO file)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file_name, job_id, source_id, status, start_time,
-				inserted_by, inserted_date, status_id, endTime);
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFile_name(), file.getJob(), file.getFile_source_id(), file.getStatus(), file.getStart_time(),
+				file.getInserted_by(), file.getInserted_date(), file.getStatus_id(), file.getEnd_time());
 	}
 
 	/**
@@ -122,26 +121,6 @@ public class FileServiceImpl implements FileService
 		{ keyVal, valueVal }, (rs, RowNum) -> rs.getBigDecimal("master_id"));
 	}
 
-	/**
-	 * Updates file's status
-	 * 
-	 * @param fileName
-	 * @param updatedDate
-	 * @param status
-	 * @param newStatus
-	 * @param jobId
-	 * @param endTime
-	 * @param updatedBy
-	 * @param statusId
-	 * @return records updated
-	 */
-	@Override
-	public int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus, BigDecimal jobId, Date endTime,
-			String updatedBy, BigDecimal statusId)
-	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_FILE, newStatus, statusId, updatedDate, endTime, updatedBy,
-				fileName, status, jobId);
-	}
 
 	/**
 	 * Updates file inbound staging's status

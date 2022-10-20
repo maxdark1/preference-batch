@@ -30,20 +30,10 @@ public interface FileService
 
 	/**
 	 * Inserts a record on staging table on persistence
-	 * 
-	 * @param file_name
-	 * @param status
-	 * @param source_id
-	 * @param start_time
-	 * @param job_id
-	 * @param inserted_date
-	 * @param inserted_by
-	 * @param status_id
-	 * @param endTime
+	 * @param file
 	 * @return how many records have been inserted
 	 */
-	int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id, Date inserted_date,
-			String inserted_by, BigDecimal status_id, Date endTime);
+	int insert(FileDTO file);
 
 	/**
 	 * Gets job id
@@ -73,22 +63,6 @@ public interface FileService
 	 * Gets source id from master Table: pcam.hdpc_master
 	 */
 	BigDecimal getSourceId(String keyVal, String valueVal);
-
-	/**
-	 * Updates file's status
-	 * 
-	 * @param fileName
-	 * @param updatedDate
-	 * @param status
-	 * @param newStatus
-	 * @param jobId
-	 * @param endTime
-	 * @param updatedBy
-	 * @param statusId
-	 * @return records updated
-	 */
-	int updateFileStatus(String fileName, Date updatedDate, String status, String newStatus, BigDecimal jobId, Date endTime,
-			String updatedBy, BigDecimal statusId);
 
 	/**
 	 * Updates file inbound staging's status
