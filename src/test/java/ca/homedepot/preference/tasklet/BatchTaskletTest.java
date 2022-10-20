@@ -63,13 +63,6 @@ public class BatchTaskletTest
 		chunkContext = Mockito.mock(ChunkContext.class);
 
 		jobEntity = new JobEntity();
-		/*
-		 * jobEntity.setRegId("876bd496-4712-4499-a236-e86be5a6ed2c"); jobEntity.setNotificationType("EMAIL");
-		 * jobEntity.setArticleId("1000834262"); jobEntity.setEmailId("naruto_uzumaki9@homedepot.com");
-		 * jobEntity.setLangcode("fr"); jobEntity.setSubscriptionType("EMAIL");
-		 * jobEntity.setUom("02521474-1a85-44d2-8c57-12e456a53608"); jobEntity.setCreatedOn(new Date());
-		 * jobEntity.setPhoneNo("+1-613-555-0121");
-		 */
 
 	}
 
@@ -115,6 +108,8 @@ public class BatchTaskletTest
 	public void testExecuteWithException()
 	{
 		batchTasklet.execute(stepContribution, chunkContext);
+
+
 	}
 
 }

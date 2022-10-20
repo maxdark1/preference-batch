@@ -1,4 +1,4 @@
-package ca.homedepot.preference.listener.skipers;
+package ca.homedepot.preference.listener.skippers;
 
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;

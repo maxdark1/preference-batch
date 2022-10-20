@@ -1,6 +1,7 @@
 package ca.homedepot.preference.read;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
+import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
@@ -175,9 +176,10 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		 */
 		if (status)
 			endTime = null;
+		System.out.println(fileName);
+		FileDTO file = new FileDTO(null, fileName, jobId, masterId, fileStatus.getValue_val(),fileStatus.getMaster_id(), new Date(), endTime, "BATCH", new Date(), null, null);
 
-		fileService.insert(fileName, fileStatus.getValue_val(), masterId, new Date(), jobId, new Date(), "BATCH",
-				fileStatus.getMaster_id(), endTime);
+		fileService.insert(file);
 	}
 
 }

@@ -78,7 +78,7 @@ public class ExactTargetEmailValidation
 	{
 		Date asOfDate = null;
 
-		SimpleDateFormat simpleDateFormatArray[] =
+		SimpleDateFormat[] simpleDateFormatArray =
 		{ new SimpleDateFormat("MM/dd/yyyy H :mm"), new SimpleDateFormat("MM/dd/yyyy HH:mm"),
 				new SimpleDateFormat("MM/dd/yyyy HH:m"), new SimpleDateFormat("MM/dd/yyyy H :m"), };
 
