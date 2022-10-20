@@ -3,7 +3,6 @@ package ca.homedepot.preference.util;
 import ca.homedepot.preference.util.validation.FileValidation;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -27,7 +26,7 @@ public final class FileUtil
 	private static String fileExtTargetEmail;
 	private static String hybrisPath;
 	private static String crmPath;
-	private static String fbsfmcPath;
+	private static String fbSfmcPath;
 
 	private static String sfmcPath;
 
@@ -134,14 +133,14 @@ public final class FileUtil
 		FileUtil.sfmcPath = sfmcPath;
 	}
 
-	public static String getFbsfmcPath()
+	public static String getFbSfmcPath()
 	{
-		return fbsfmcPath;
+		return fbSfmcPath;
 	}
 
-	public static void setFbsfmcPath(String fbsfmcPath)
+	public static void setFbSfmcPath(String fbsfmcPath)
 	{
-		FileUtil.fbsfmcPath = fbsfmcPath;
+		FileUtil.fbSfmcPath = fbsfmcPath;
 	}
 
 	public static void moveFile(String file, boolean status, String value_val) throws IOException
@@ -194,7 +193,7 @@ public final class FileUtil
 			case "SFMC":
 				return sfmcPath;
 		}
-		return fbsfmcPath;
+		return fbSfmcPath;
 	}
 
 	/*

@@ -5,7 +5,8 @@ import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class FileValidation
@@ -104,17 +105,56 @@ public class FileValidation
 		return hybrisBaseName;
 	}
 
-	public static boolean validateSimpleFileDateFormat(String date, String formatDate)
+	public static boolean validateSimpleFileDateFormat(String strDate, String formatDate)
 	{
 		try
 		{
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatDate);
-			simpleDateFormat.parse(date);
-			return true;
+			simpleDateFormat.parse(strDate);
+			return deepCheckDateFormat(formatDate, strDate);
 		}
 		catch (Exception e)
 		{
 			return false;
 		}
+	}
+
+	public static boolean deepCheckDateFormat(String format, String strDate)
+	{
+		assert format.equals("yyyyMMdd");
+		Map<Integer, Integer> counter = new LinkedHashMap<>();
+
+		format.chars().forEach(iChar -> {
+			if (counter.containsKey(iChar))
+			{
+				counter.put(iChar, counter.get(iChar) + 1);
+			}
+			else
+			{
+				counter.put(iChar, 1);
+			}
+		});
+		int index = 0;
+		for (Integer key : counter.keySet())
+		{
+			String token = strDate.substring(index, index + counter.get(key));
+			if (token != null)
+			{
+				if (token.length() == 4 && Integer.valueOf(token) < 2000)
+				{
+					return false;
+				}
+				if (token.length() == 2 && Integer.valueOf(token) < 0 && Integer.valueOf(token) > 12)
+				{
+					return false;
+				}
+				if (token.length() == 2 && Integer.valueOf(token) < 0 && Integer.valueOf(token) > 31)
+				{
+					return false;
+				}
+			}
+			index += counter.get(key);
+		}
+		return true;
 	}
 }

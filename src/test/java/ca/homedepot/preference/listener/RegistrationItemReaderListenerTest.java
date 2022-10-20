@@ -25,7 +25,7 @@ class RegistrationItemReaderListenerTest
 	Master master;
 
 	@InjectMocks
-    RegistrationItemReaderListener registrationItemReaderListener;
+	RegistrationItemReaderListener registrationItemReaderListener;
 
 	@BeforeEach
 	void beforeRead()

@@ -7,6 +7,7 @@ import org.springframework.batch.item.validator.ValidationException;
 
 import java.io.File;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileValidationTest
@@ -50,7 +51,9 @@ class FileValidationTest
 		String format = "yyyyMMdd";
 		String date = "2/2/2022";
 
-		assertTrue(!FileValidation.validateSimpleFileDateFormat(date, format));
+		assertThat(FileValidation.validateSimpleFileDateFormat("20221020", format)).isTrue();
+		assertThat(FileValidation.validateSimpleFileDateFormat(date, format)).isFalse();
+		assertThat(FileValidation.validateSimpleFileDateFormat("19102022", format)).isFalse();
 	}
 
 	@Test

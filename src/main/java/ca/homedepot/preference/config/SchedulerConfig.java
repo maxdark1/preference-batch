@@ -197,7 +197,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		FileUtil.setCrmPath(crmPath);
 		FileUtil.setHybrisPath(hybrisPath);
 		FileUtil.setSfmcPath(sfmcPath);
-		FileUtil.setFbsfmcPath(fbsfmcPath);
+		FileUtil.setFbSfmcPath(fbsfmcPath);
 		FileUtil.setError(folderError);
 		FileUtil.setProcessed(folderProcessed);
 		FileUtil.setInbound(folderInbound);

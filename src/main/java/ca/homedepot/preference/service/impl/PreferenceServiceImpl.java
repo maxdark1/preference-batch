@@ -1,27 +1,24 @@
 package ca.homedepot.preference.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
 import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
-import feign.jackson.JacksonEncoder;
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
+import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.Job;
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.service.PreferenceService;
+import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.google.gson.Gson;
-
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.*;
-import ca.homedepot.preference.service.PreferenceService;
-import lombok.extern.slf4j.Slf4j;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -38,18 +35,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	private WebClient webClient;
 
 	private PreferenceRegistrationClient preferenceRegistrationClient;
-
-	/**
-	 * Initialization of WebClient
-	 */
-	@Autowired
-	public void setUpWebClient()
-	{
-		this.webClient = WebClient.builder()
-				.clientConnector(new ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection())))
-				.baseUrl(baseUrl).build();
-	}
-
 
 	/**
 	 * Sent JdbcTemplate
@@ -74,19 +59,6 @@ public class PreferenceServiceImpl implements PreferenceService
 		this.preferenceRegistrationClient = preferenceRegistrationClient;
 	}
 
-	//	public PreferenceItemList getPreferences(String id)
-	//	{
-	//		String path = baseUrl + "{id}/preferences";
-	//
-	//		PreferenceItemList response = webClient.get().uri(uriBuilder -> uriBuilder.path(path).build(id))
-	//				.accept(MediaType.APPLICATION_JSON).retrieve().bodyToMono(PreferenceItemList.class)
-	//				.doOnError(e -> log.error(e.getMessage())).block();
-	//
-	//		log.info("Response {} ", response);
-	//		return response;
-	//
-	//	}
-
 	/**
 	 * Send request to service for subscribe/unsubscribe from marketing programs
 	 *
@@ -99,7 +71,6 @@ public class PreferenceServiceImpl implements PreferenceService
 		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
 
 		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
-
 
 		return preferenceRegistrationClient.registration(items);
 	}
@@ -128,7 +99,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	 * @param job_name,
 	 *           status, start_time, inserted_by, inserted_date
 	 */
-
 	@Override
 	public int insert(String job_name, String status, BigDecimal status_id, Date start_time, String inserted_by,
 			Date inserted_date)

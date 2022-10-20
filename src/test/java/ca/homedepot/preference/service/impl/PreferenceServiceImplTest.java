@@ -207,9 +207,5 @@ class PreferenceServiceImplTest
 		assertEquals(rowsAffected, currentRowsAffected);
 	}
 
-	@Test
-	void setupWebClient()
-	{
-		preferenceServiceImpl.setUpWebClient();
-	}
+
 }

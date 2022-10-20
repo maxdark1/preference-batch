@@ -43,8 +43,6 @@ public class StepErrorLoggingListener implements StepExecutionListener
 		log.info(" The step: {} has {} erros. ", stepExecution.getStepName(), exceptions.size());
 		exceptions.forEach(ex -> log.info(" Exception has ocurred:  " + ex.getMessage()));
 
-
-
 		return ExitStatus.FAILED;
 	}
 
