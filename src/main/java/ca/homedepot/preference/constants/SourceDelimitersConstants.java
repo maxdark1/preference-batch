@@ -35,4 +35,8 @@ public interface SourceDelimitersConstants
 	 * The delimiter tab
 	 */
 	String DELIMITER_TAB = "\\t";
+
+	String JOB_STATUS = "JOB_STATUS";
+
+	String VALID = "VALID";
 }

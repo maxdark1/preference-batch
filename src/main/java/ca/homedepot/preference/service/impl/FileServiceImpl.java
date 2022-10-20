@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.service.FileService;
 
+import static ca.homedepot.preference.constants.PreferenceBatchConstants.FILE_ID;
+
 
 @Service
 public class FileServiceImpl implements FileService
@@ -92,7 +94,7 @@ public class FileServiceImpl implements FileService
 	public BigDecimal getFile(String file_name, BigDecimal job_id)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE_INSERT, new Object[]
-		{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal("file_id"));
+		{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal(FILE_ID));
 	}
 
 	/**
@@ -103,7 +105,7 @@ public class FileServiceImpl implements FileService
 	@Override
 	public BigDecimal getLasFile()
 	{
-		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE, (rs, RowNum) -> rs.getBigDecimal("file_id"));
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE, (rs, RowNum) -> rs.getBigDecimal(FILE_ID));
 	}
 
 	/**
@@ -183,7 +185,7 @@ public class FileServiceImpl implements FileService
 	{
 		return jdbcTemplate.query(SqlQueriesConstants.SQL_GET_FILES_TO_MOVE, (rs, numRow) -> {
 			FileDTO fileDTO = new FileDTO();
-			fileDTO.setFile_id(rs.getBigDecimal("file_id"));
+			fileDTO.setFile_id(rs.getBigDecimal(FILE_ID));
 			fileDTO.setFile_name(rs.getString("file_name"));
 			fileDTO.setFile_source_id(rs.getBigDecimal("source_type"));
 			return fileDTO;

@@ -2,9 +2,7 @@ package ca.homedepot.preference.listener.skipers;
 
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
-import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
-import net.bytebuddy.description.field.FieldList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

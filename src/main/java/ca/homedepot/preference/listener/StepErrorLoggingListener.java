@@ -88,7 +88,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 		if (filesToMove != null && !filesToMove.isEmpty())
 		{
 			filesToMove.forEach(file -> {
-				Boolean status = true;
+				boolean status = true;
 				try
 				{
 					FileUtil.moveFile(file.getFile_name(), true, MasterProcessor.getValueVal(file.getFile_source_id()));
@@ -98,7 +98,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 					status = false;
 					log.error("An exception occurs while trying to move the file " + file.getFile_name());
 				}
-				Master fileStatus = MasterProcessor.getSourceId("STATUS", status ? "VALID" : "INVALID");
+				Master fileStatus = MasterProcessor.getSourceID("STATUS", status ? "VALID" : "INVALID");
 				fileService.updateFileEndTime(file.getFile_id(), new Date(), "BATCH", new Date(), fileStatus);
 			});
 

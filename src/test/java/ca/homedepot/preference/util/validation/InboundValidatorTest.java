@@ -14,10 +14,11 @@ import ca.homedepot.preference.processor.MasterProcessor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.InboundRegistration;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 class InboundValidatorTest
 {
@@ -32,13 +33,17 @@ class InboundValidatorTest
 	{
 		List<Master> masterList = new ArrayList<>();
 
-		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true));
-		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true));
-		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true));
-		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true));
-		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true));
-		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true));
-		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true));
+		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true, null));
+		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true, null));
+		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true, null));
+		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true, null));
+		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true, null));
+		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true, null));
+		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT AOL-CAN", true, null));
+		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true, null));
+		masterList.add(new Master(new BigDecimal("24"), BigDecimal.TEN, "SOURCE_ID", "HELD", true, new BigDecimal("50")));
+		masterList.add(new Master(new BigDecimal("25"), BigDecimal.TEN, "SOURCE_ID", "UNSUBSCRIBE", true, new BigDecimal("98")));
+		masterList.add(new Master(new BigDecimal("26"), BigDecimal.TEN, "SOURCE_ID", "nurun", true, new BigDecimal("123")));
 
 		MasterProcessor.setMasterList(masterList);
 	}
@@ -233,7 +238,7 @@ class InboundValidatorTest
 	void validValue_Number()
 	{
 		String field = "test_field";
-		InboundValidator.validValue_Number(2, field, error);
+		InboundValidator.validValueNumber(2, field, error);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
 			InboundValidator.isValidationsErros(error);
 		});
@@ -280,5 +285,40 @@ class InboundValidatorTest
 		});
 
 		assertTrue(exception.getMessage().contains(field));
+	}
+
+	@Test
+	void validateSourceIDTest()
+	{
+		BigDecimal sourceIdNull = InboundValidator.validateSourceID(null, "hybris", error);
+		BigDecimal sourceIdNotNull = InboundValidator.validateSourceID("123", "hybris", error);
+
+		assertEquals(new BigDecimal("26"), sourceIdNull);
+		assertEquals(new BigDecimal("26"), sourceIdNotNull);
+	}
+
+	@Test
+	void validateSourceIdTestINvalidSourceID()
+	{
+		BigDecimal sourceId = InboundValidator.validateSourceID("-2", "hybris", error);
+
+		ValidationException exception = assertThrows(ValidationException.class, () -> {
+			InboundValidator.isValidationsErros(error);
+		});
+
+		assertNull(sourceId);
+		assertTrue(exception.getMessage().contains("Source ID"));
+	}
+
+	@Test
+	void getSourceTest()
+	{
+		String nurun = InboundValidator.getSource("hybris");
+		String sapCRM = InboundValidator.getSource("CRM");
+		String faceOptIn = InboundValidator.getSource("FB_SFMC");
+
+		assertEquals("nurun", nurun);
+		assertEquals("CANADA SAP CRM", sapCRM);
+		assertEquals("Facebook Opt in campaign", faceOptIn);
 	}
 }

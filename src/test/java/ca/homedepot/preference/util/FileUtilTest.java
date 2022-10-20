@@ -80,10 +80,11 @@ class FileUtilTest
 	}
 
 	@Test
-	void renameFile(){
+	void renameFile()
+	{
 		FileValidation.setExtensionRegex(".txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT");
 		String fileName = "OPTIN_STANDARD_FLEX_20221216.TXT";
-		String fileNameWithout  = "OPTIN_STANDARD_FLEX_20221216";
+		String fileNameWithout = "OPTIN_STANDARD_FLEX_20221216";
 
 		String newFile = FileUtil.renameFile(fileName);
 		assertNotEquals(fileName.length(), newFile.length());
@@ -91,7 +92,8 @@ class FileUtilTest
 	}
 
 	@Test
-	void isFBSFMC(){
+	void isFBSFMC()
+	{
 		FileValidation.setFbSFMCBaseName("OPTIN_STANDARD_FLEX_GCFB_");
 		String fileName = "OPTIN_STANDARD_FLEX_20221216.TXT";
 
@@ -99,7 +101,8 @@ class FileUtilTest
 	}
 
 	@Test
-	void getSfmcPath(){
+	void getSfmcPath()
+	{
 		String sfmcPath = "C:/BatchFiles/SFMC";
 
 		FileUtil.setSfmcPath(sfmcPath);
@@ -107,7 +110,8 @@ class FileUtilTest
 	}
 
 	@Test
-	void getFbSfmcPath(){
+	void getFbSfmcPath()
+	{
 		String fbSFMCPath = "C:/BatchFiles/FB_SFMC";
 
 		FileUtil.setFbsfmcPath(fbSFMCPath);

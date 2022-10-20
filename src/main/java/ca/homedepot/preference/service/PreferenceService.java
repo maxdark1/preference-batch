@@ -14,14 +14,6 @@ public interface PreferenceService
 {
 
 	/**
-	 * Gets preferences
-	 * 
-	 * @param id
-	 * @return preference Item list
-	 */
-	PreferenceItemList getPreferences(String id);
-
-	/**
 	 * Sends to API LayoutC endpoint Registration information
 	 * 
 	 * @param items
@@ -68,6 +60,7 @@ public interface PreferenceService
 
 	/**
 	 * Purge records with Sucess status
+	 * 
 	 * @return
 	 */
 	int purgeStagingTableSuccessRecords();

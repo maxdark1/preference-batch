@@ -8,8 +8,9 @@ import ca.homedepot.preference.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -79,8 +80,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 */
 	public void setResources(Map<String, List<Resource>> resources)
 	{
-		Resource[] resourcesArray = new Resource[resources.get("VALID").size()];
-		resources.get("VALID").toArray(resourcesArray);
+		Resource[] resourcesArray = new Resource[resources.get(VALID).size()];
+		resources.get(VALID).toArray(resourcesArray);
 		this.setResources(resourcesArray);
 		/**
 		 * Writes all INVALID files
@@ -136,9 +137,11 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		{
 			resource = getCurrentResource();
 			status = !status;
-			FileUtil.moveFile(resource.getFilename(), status, source);
-			log.error(" An exception has ocurred reading file: " + getCurrentResource().getFilename() + "\n "
-					+ e.getCause().getMessage());
+			if (resource != null)
+			{
+				FileUtil.moveFile(resource.getFilename(), status, source);
+				log.error(" An exception has ocurred reading file: " + resource.getFilename() + "\n " + e.getCause().getMessage());
+			}
 		}
 		/**
 		 * Validates that a resources is not null and can be writing
@@ -162,9 +165,9 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	public void writeFile(String fileName, Boolean status)
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-		Master fileStatus = MasterProcessor.getSourceId("STATUS", status ? "VALID" : "INVALID");
+		Master fileStatus = MasterProcessor.getSourceID("STATUS", status ? VALID : "INVALID");
 		BigDecimal masterId = MasterProcessor
-				.getSourceId("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)
+				.getSourceID("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)
 				.getMaster_id();
 		Date endTime = new Date();
 		/**

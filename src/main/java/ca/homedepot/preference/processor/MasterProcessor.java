@@ -9,21 +9,17 @@ import org.springframework.stereotype.Component;
 
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.service.PreferenceService;
-import lombok.Setter;
-import lombok.Getter;
 
 /**
  * Master Processor obtains information from Master catalog
  */
 @Component
-@Setter
 public class MasterProcessor
 {
 
 	/**
 	 * The preference Service
 	 */
-	@Autowired
 	private PreferenceService preferenceService;
 
 	/**
@@ -46,7 +42,7 @@ public class MasterProcessor
 	 * @param value_val
 	 * @return the current Master value
 	 */
-	public static Master getSourceId(String key_val, String value_val)
+	public static Master getSourceID(String key_val, String value_val)
 	{
 		return masterList.stream()
 				.filter(master -> master.getKey_value().equals(key_val) && master.getValue_val().equals(value_val)).findFirst().get();
@@ -62,6 +58,34 @@ public class MasterProcessor
 	{
 		return masterList.stream().filter(master -> master.getMaster_id().equals(masterId)).map(master -> master.getValue_val())
 				.findFirst().get();
+	}
+
+	/**
+	 * Gets the actual MasterID for the current source
+	 * 
+	 * @param oldId
+	 * @return MasterID
+	 */
+	public static BigDecimal getSourceID(String oldId)
+	{
+
+		BigDecimal masterId = new BigDecimal("-400");
+
+		try
+		{
+			/**
+			 * Gets the MasterID from the Master List
+			 */
+			return masterList.stream().filter(master -> master.getOld_id() != null && master.getKey_value().equals("SOURCE_ID")
+					&& master.getOld_id().toPlainString().equals(oldId)).findFirst().get().getMaster_id();
+		}
+		catch (Exception e)
+		{
+			/**
+			 * If it founds any exception return an invalid ID that's a flag for the validation
+			 */
+			return masterId;
+		}
 	}
 
 	/**
@@ -82,5 +106,11 @@ public class MasterProcessor
 	public static void setMasterList(List<Master> masterList)
 	{
 		MasterProcessor.masterList = masterList;
+	}
+
+	@Autowired
+	public void setPreferenceService(PreferenceService preferenceService)
+	{
+		this.preferenceService = preferenceService;
 	}
 }

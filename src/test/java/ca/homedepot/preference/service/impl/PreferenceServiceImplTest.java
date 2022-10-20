@@ -68,46 +68,9 @@ class PreferenceServiceImplTest
 	public void setUp()
 	{
 		MockitoAnnotations.initMocks(this);
-		//		preferenceServiceImpl = new PreferenceServiceImpl();
 		preferenceServiceImpl.baseUrl = "test/";
-		// Mocking webClient obj
-		//		webClient = Mockito.mock(WebClient.class);
-		//		requestBodyUriSpec = Mockito.mock(WebClient.RequestBodyUriSpec.class);
-		//		requestBodySpec = Mockito.mock(WebClient.RequestBodySpec.class);
-		//		requestHeadersSpec = Mockito.mock(WebClient.RequestHeadersSpec.class);
-		//		responseSpec = Mockito.mock(WebClient.ResponseSpec.class);
-		//
-		//		jdbcTemplate = Mockito.mock(JdbcTemplate.class);
-		//
-		//		preferenceServiceImpl.setJdbcTemplate(jdbcTemplate);
-		//		preferenceServiceImpl.setWebClient(webClient);
-		//
-		//
-		//		items = new ArrayList<>();
-		//		RegistrationRequest registration = new RegistrationRequest();
-		//		items.add(registration);
-
 	}
 
-
-	@Test
-	void getPreferencesTests()
-	{
-
-		String id = "13";
-		String path = "test/" + "{id}/preferences";
-		PreferenceItemList preferenceItemList = new PreferenceItemList();
-
-		Mockito.when(webClient.get()).thenReturn(requestHeadersUriSpec);
-		Mockito.when(requestHeadersUriSpec.uri(any(Function.class))).thenReturn(requestHeadersSpec);
-		Mockito.when(requestHeadersSpec.accept(MediaType.APPLICATION_JSON)).thenReturn(requestHeadersSpec);
-		Mockito.when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-		Mockito.when(responseSpec.bodyToMono(PreferenceItemList.class)).thenReturn(Mono.just(preferenceItemList));
-
-
-		//		PreferenceItemList preferenceItemListCurrent = preferenceServiceImpl.getPreferences(id);
-		//		assertEquals(preferenceItemList, preferenceItemListCurrent);
-	}
 
 	@Test
 	void testPreferencesRegistration()
@@ -181,7 +144,7 @@ class PreferenceServiceImplTest
 		Master master = new Master();
 		listMaster.add(master);
 		RowMapper rowMapper = (rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"),
-				rs.getString("key_value"), rs.getString("value_val"), rs.getBoolean("active"));
+				rs.getString("key_value"), rs.getString("value_val"), rs.getBoolean("active"), rs.getBigDecimal("old_id"));
 		Mockito.when(jdbcTemplate.query(anyString(), eq(rowMapper))).thenReturn(listMaster);
 		Mockito.when(preferenceServiceImpl.getMasterInfo()).thenReturn(listMaster);
 
@@ -207,9 +170,4 @@ class PreferenceServiceImplTest
 		assertEquals(rowsAffected, currentRowsAffected);
 	}
 
-	@Test
-	void setupWebClient()
-	{
-		preferenceServiceImpl.setUpWebClient();
-	}
 }

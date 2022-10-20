@@ -233,11 +233,11 @@ public final class FileUtil
 
 		if (temp != null)
 		{
-			log.info(" File {} moved successfully to folder: {} ", temp.getFileName(), folder);
+			log.info(" File {} moved successfully to folder: {} ", file, folder);
 		}
 		else
 		{
-			log.info(" Failed to move the file {} ", temp.getFileName());
+			log.info(" Failed to move the file {} ", file);
 		}
 	}
 
@@ -264,7 +264,7 @@ public final class FileUtil
 	{
 		String baseName = FileValidation.getFileName(file);
 		String extension = FileValidation.getExtension(file, baseName);
-		return baseName + "_" + (new SimpleDateFormat("YYYYMMSSHHmmssSSSS")).format(new Date()) + extension;
+		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + extension;
 	}
 
 	/**
@@ -280,8 +280,10 @@ public final class FileUtil
 				return crmPath;
 			case "SFMC":
 				return sfmcPath;
+			default:
+				return fbsfmcPath;
 		}
-		return fbsfmcPath;
+
 	}
 
 	/**

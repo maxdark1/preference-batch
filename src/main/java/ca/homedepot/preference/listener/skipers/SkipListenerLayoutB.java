@@ -9,7 +9,6 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Component
@@ -68,9 +67,8 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 		 */
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
 				.file_id(getFromTableFileID(item.getFileName(), jobName)).src_email_address(item.getEmailAddress())
-				.fileName(item.getFileName())
-				.email_status(new BigDecimal(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus()))).status("E")
-				.email_address_pref("0").email_pref_hd_ca("0").email_pref_garden_club("-1").email_pref_pro("-1")
+				.fileName(item.getFileName()).email_status(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus()))
+				.status("E").email_address_pref("0").email_pref_hd_ca("0").email_pref_garden_club("-1").email_pref_pro("-1")
 				.email_pref_new_mover("-1").inserted_by("tested_batch").inserted_date(new Date()).build();
 
 		/**

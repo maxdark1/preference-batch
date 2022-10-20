@@ -2,12 +2,9 @@ package ca.homedepot.preference.listener.skipers;
 
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.service.FileService;
 import lombok.Data;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
-import org.springframework.batch.item.ExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

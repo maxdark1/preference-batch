@@ -46,22 +46,9 @@ public class PreferenceServiceImpl implements PreferenceService
 	private JdbcTemplate jdbcTemplate;
 
 	/**
-	 * The WebClient
+	 * The preference registration client
 	 */
-	private WebClient webClient;
-
 	private PreferenceRegistrationClient preferenceRegistrationClient;
-
-	/**
-	 * Initialization of WebClient
-	 */
-	@Autowired
-	public void setUpWebClient()
-	{
-		this.webClient = WebClient.builder()
-				.clientConnector(new ReactorClientHttpConnector(HttpClient.create(ConnectionProvider.newConnection())))
-				.baseUrl(baseUrl).build();
-	}
 
 
 	/**
@@ -75,21 +62,12 @@ public class PreferenceServiceImpl implements PreferenceService
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	/**
-	 * Sets WebClient
-	 *
-	 * @param webClient
-	 */
-	public void setWebClient(WebClient webClient)
-	{
-		this.webClient = webClient;
-	}
-
-
 	@Autowired
 	public void setPreferenceRegistrationFeignClient(PreferenceRegistrationClient preferenceRegistrationClient)
+	{
 		this.preferenceRegistrationClient = preferenceRegistrationClient;
 	}
+
 
 	/**
 	 * Send request to service for subscribe/unsubscribe from marketing programs
@@ -99,8 +77,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	 */
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
 	{
-
-		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_URL;
 
 		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
 
@@ -117,8 +93,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	@Override
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
 	{
-
-		String path = PreferenceBatchConstants.PREFERENCE_CENTER_REGISTRATION_SFMC_EXTACT_TARGET_EMAIL;
 
 		log.info(" {} item(s) has been sent through Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
 
@@ -156,7 +130,7 @@ public class PreferenceServiceImpl implements PreferenceService
 	{
 		return jdbcTemplate.query(SqlQueriesConstants.SQL_SELECT_MASTER_ID,
 				(rs, rowNum) -> new Master(rs.getBigDecimal("master_id"), rs.getBigDecimal("key_id"), rs.getString("key_value"),
-						rs.getString("value_val"), rs.getBoolean("active")));
+						rs.getString("value_val"), rs.getBoolean("active"), rs.getBigDecimal("old_id")));
 	}
 
 	/**
@@ -175,10 +149,12 @@ public class PreferenceServiceImpl implements PreferenceService
 
 	/**
 	 * Purge
+	 * 
 	 * @return
 	 */
 	@Override
-	public int purgeStagingTableSuccessRecords() {
+	public int purgeStagingTableSuccessRecords()
+	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_PURGE_SUCCESS_STG_TABLE);
 	}
 

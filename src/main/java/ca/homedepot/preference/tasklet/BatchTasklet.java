@@ -61,9 +61,10 @@ public class BatchTasklet implements Tasklet
 	/**
 	 * Purge staging table records with success status
 	 */
-	public void purgeStagingTableRecordsWithSuccessedStatus(){
+	public void purgeStagingTableRecordsWithSuccessedStatus()
+	{
 		int purgeRecords = backinStockService.purgeStagingTableSuccessRecords();
-		log.info( " {} records has been purged.", purgeRecords);
+		log.info(" {} records has been purged.", purgeRecords);
 	}
 
 }

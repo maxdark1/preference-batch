@@ -34,4 +34,9 @@ public class Master
 	 */
 	private Boolean active;
 
+	/**
+	 * The old id
+	 */
+	private BigDecimal old_id;
+
 }

@@ -11,8 +11,9 @@ public interface SqlQueriesConstants
 	/**
 	 * SELECT to get master information from hdpc_master
 	 */
-	String SQL_SELECT_MASTER_ID = "SELECT master_id, mk.key_id, mk.key_value, value_val, active\n" + "\tFROM hdpc_master m\n"
-			+ "\tINNER JOIN hdpc_master_key mk ON mk.key_id = m.key_id\n" + "\tWHERE active = true;";
+	String SQL_SELECT_MASTER_ID = "SELECT master_id, mk.key_id, mk.key_value, value_val, active, mir.old_id FROM hdpc_master m\n"
+			+ "INNER JOIN hdpc_master_key mk ON mk.key_id = m.key_id\n"
+			+ "LEFT JOIN public.hdpc_master_id_rel mir ON m.master_id = mir.pcam_id \n" + "WHERE m.active = true;\n";
 
 	/**
 	 * SELECT to get last file id from hdpc_file
@@ -135,7 +136,7 @@ public interface SqlQueriesConstants
 	String SQL_UPDATE_STATUS_INBOUND = "UPDATE hdpc_file_inbound_stg SET status = ?, updated_date = ?, updated_by = ? WHERE status = ? and (sequence_nbr = ? or file_id = ?)";
 
 	/*******************************
-	 *  DELETE
+	 * DELETE
 	 ********************************/
 
 	String SQL_PURGE_SUCCESS_STG_TABLE = "DELETE FROM public.hdpc_file_inbound_stg WHERE status = 'S';";

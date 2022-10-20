@@ -1,5 +1,6 @@
 package ca.homedepot.preference.util.validation;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
@@ -8,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 @Slf4j
+@UtilityClass
 public class FileValidation
 {
 	/**
@@ -181,8 +183,10 @@ public class FileValidation
 				return fbSFMCBaseName;
 			case "SFMC":
 				return sfmcBaseName;
+			default:
+				return hybrisBaseName;
 		}
-		return hybrisBaseName;
+
 	}
 
 	/**

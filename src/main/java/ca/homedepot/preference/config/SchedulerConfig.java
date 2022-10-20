@@ -265,8 +265,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public void setUpListener()
 	{
 		jobListener.setPreferenceService(batchTasklet.getBackinStockService());
-
-		//hybrisWriterListener.setFileName(hybrisRegistrationFile);
 		hybrisWriterListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
 
 		apiWriter.setPreferenceService(batchTasklet.getBackinStockService());
@@ -447,7 +445,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.registration}")
+	@Scheduled(cron = "${cron.job.hybrisIngestion}")
 	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -470,7 +468,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	//@Scheduled(cron = "${cron.job.registration}")
+	//@Scheduled(cron = "${cron.job.crmIngestion}")
 	public void processRegistrationCRMInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -492,7 +490,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	//@Scheduled(cron = "${cron.job.registrationFBSFMC}")
+	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
 	public void processFBSFMCInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -506,13 +504,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	/**
+	 *
 	 * Triggers SFMC job in a determinated period of time
 	 *
 	 * The fields read from the left to the right (for scheduled param) second, minute, hour, day of month, month, day of
 	 * week
 	 * 
-	 * @return void
-	 *
+	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processsSFMCOptOutsEmail() throws Exception
@@ -729,7 +727,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationHybrisInbound() throws Exception
+	public Job registrationHybrisInbound()
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
@@ -743,7 +741,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Job
 	 *
 	 */
-	public Job registrationCRMInbound() throws Exception
+	public Job registrationCRMInbound()
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
@@ -758,10 +756,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	public Job registrationFBSFMCGardenClubInbound() throws Exception
+	public Job registrationFBSFMCGardenClubInbound()
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-
 				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
 
@@ -857,7 +854,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 
 	@Bean
-	public Step readLayoutCInboundBDStep2() throws Exception
+	public Step readLayoutCInboundBDStep2()
 	{
 		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
 				.reader(inboundDBReader()).writer(apiWriter).build();
