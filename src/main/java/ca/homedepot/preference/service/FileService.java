@@ -30,6 +30,7 @@ public interface FileService
 
 	/**
 	 * Inserts a record on staging table on persistence
+	 * 
 	 * @param file
 	 * @return how many records have been inserted
 	 */

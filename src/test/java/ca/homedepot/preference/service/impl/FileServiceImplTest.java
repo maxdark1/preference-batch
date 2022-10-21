@@ -57,14 +57,15 @@ class FileServiceImplTest
 		Date startTime = new Date(), insertedDate = new Date(), endTiem = new Date();
 		String file_name = "fileName", inserted_by = "test";
 		BigDecimal statusId = BigDecimal.ONE;
-		FileDTO file = new FileDTO(null, file_name, job_id,sourceId, status, statusId, startTime, endTiem, inserted_by, insertedDate, null, null);
+		FileDTO file = new FileDTO(null, file_name, job_id, sourceId, status, statusId, startTime, endTiem, inserted_by,
+				insertedDate, null, null);
 
 		int value = 1;
 
-		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFile_name(), file.getJob(), file.getFile_source_id(), file.getStatus(), file.getStart_time(),
-				file.getInserted_by(), file.getInserted_date(), file.getStatus_id(), file.getEnd_time())).thenReturn(value);
-		when(fileService.insert(file))
-				.thenReturn(value);
+		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFile_name(), file.getJob(),
+				file.getFile_source_id(), file.getStatus(), file.getStart_time(), file.getInserted_by(), file.getInserted_date(),
+				file.getStatus_id(), file.getEnd_time())).thenReturn(value);
+		when(fileService.insert(file)).thenReturn(value);
 
 		int result = fileService.insert(file);
 
