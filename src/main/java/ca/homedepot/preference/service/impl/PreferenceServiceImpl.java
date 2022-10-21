@@ -1,12 +1,19 @@
 package ca.homedepot.preference.service.impl;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
 import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
-import feign.jackson.JacksonEncoder;
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
+import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.Job;
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.service.PreferenceService;
+import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -15,15 +22,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.google.gson.Gson;
-
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.*;
-import ca.homedepot.preference.service.PreferenceService;
-import lombok.extern.slf4j.Slf4j;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -80,7 +81,6 @@ public class PreferenceServiceImpl implements PreferenceService
 
 		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
 
-
 		return preferenceRegistrationClient.registration(items);
 	}
 
@@ -111,7 +111,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	 * @param inserted_date
 	 * @return inserted records
 	 */
-
 	@Override
 	public int insert(String job_name, String status, BigDecimal status_id, Date start_time, String inserted_by,
 			Date inserted_date)
@@ -149,7 +148,7 @@ public class PreferenceServiceImpl implements PreferenceService
 
 	/**
 	 * Purge
-	 * 
+	 *
 	 * @return
 	 */
 	@Override

@@ -123,8 +123,7 @@ public class JobListener implements JobExecutionListener
 			log.info(" Job {} ends with completes status ", jobExecution.getJobInstance().getJobName());
 
 		/**
-		 * Gets the current value for
-		 * the job that is ending
+		 * Gets the current value for the job that is ending
 		 */
 		Job job = new Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());

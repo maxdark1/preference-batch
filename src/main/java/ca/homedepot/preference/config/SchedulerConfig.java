@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
+import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
@@ -441,7 +442,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * The fields read from the left to the right (for scheduled param) second, minute, hour, day of month, month, day of
 	 * week
-	 * 
+	 *
 	 * @return void
 	 *
 	 */
@@ -464,7 +465,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * The fields read from the left to the right (for scheduled param) second, minute, hour, day of month, month, day of
 	 * week
-	 * 
+	 *
 	 * @return void
 	 *
 	 */
@@ -486,7 +487,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * The fields read from the left to the right (for scheduled param) second, minute, hour, day of month, month, day of
 	 * week
-	 * 
+	 *
 	 * @return void
 	 *
 	 */
@@ -509,7 +510,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * The fields read from the left to the right (for scheduled param) second, minute, hour, day of month, month, day of
 	 * week
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
@@ -706,7 +707,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Writer for persistence LayoutC
-	 * 
+	 *
 	 * @return JdbcBatchItemWriter<FileInboundStgTable>
 	 */
 	@Bean
@@ -737,7 +738,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * CRM job process
-	 * 
+	 *
 	 * @return Job
 	 *
 	 */
@@ -751,7 +752,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * FB_SFMC job process
-	 * 
+	 *
 	 * @return Job
 	 *
 	 */
@@ -766,7 +767,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * SFMC Opt Outs Job
-	 * 
+	 *
 	 * @return Job
 	 *
 	 */
@@ -779,7 +780,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 1 for hybris process.
-	 * 
+	 *
 	 * @param jobName
 	 *           The job_name that is processing
 	 * @return the step
@@ -797,7 +798,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 1 for CRM proocess.
-	 * 
+	 *
 	 * @param jobName
 	 *           The job_name that is processing
 	 * @return the step
@@ -814,7 +815,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 1 for FB_SFMC proocess.
-	 * 
+	 *
 	 * @param jobName
 	 *           The job_name that is processing
 	 * @return the step
@@ -832,7 +833,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 2 for SFMC proocess.
-	 * 
+	 *
 	 * @param jobName
 	 *           The job_name that is processing
 	 * @return the step

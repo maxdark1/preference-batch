@@ -170,4 +170,5 @@ class PreferenceServiceImplTest
 		assertEquals(rowsAffected, currentRowsAffected);
 	}
 
+
 }

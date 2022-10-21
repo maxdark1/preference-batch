@@ -55,7 +55,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 
 	/**
 	 * Set resource
-	 * 
+	 *
 	 * @param source
 	 */
 	public void setSource(String source)
@@ -65,7 +65,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 
 	/**
 	 * Sets file service
-	 * 
+	 *
 	 * @param fileService
 	 */
 	@Autowired
@@ -76,7 +76,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 
 	/**
 	 * Sets resources and writes INVALID files with INVALID filesNames on persitence
-	 * 
+	 *
 	 * @param resources
 	 */
 	public void setResources(Map<String, List<Resource>> resources)
@@ -101,7 +101,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 
 	/**
 	 * Set resources
-	 * 
+	 *
 	 * @param resources
 	 *           input resources
 	 */
@@ -143,6 +143,9 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 				FileUtil.moveFile(resource.getFilename(), status, source);
 				log.error(" An exception has ocurred reading file: " + resource.getFilename() + "\n " + e.getCause().getMessage());
 			}
+			FileUtil.moveFile(resource.getFilename(), !status, source);
+			log.error(" An exception has occurred reading file: " + getCurrentResource().getFilename() + "\n "
+					+ e.getCause().getMessage());
 		}
 		/**
 		 * Validates that a resources is not null and can be writing
@@ -159,14 +162,14 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 
 	/**
 	 * Write file into file table
-	 * 
+	 *
 	 * @param fileName
 	 * @param status
 	 */
 	public void writeFile(String fileName, Boolean status)
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-		Master fileStatus = MasterProcessor.getSourceID("STATUS", status ? VALID : "INVALID");
+		Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
 		BigDecimal masterId = MasterProcessor
 				.getSourceID("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)
 				.getMaster_id();
@@ -174,7 +177,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		/**
 		 * If status is valid do not need end_time
 		 */
-		if (status)
+		if (Boolean.TRUE.equals(status))
 			endTime = null;
 		System.out.println(fileName);
 		FileDTO file = new FileDTO(null, fileName, jobId, masterId, fileStatus.getValue_val(),fileStatus.getMaster_id(), new Date(), endTime, "BATCH", new Date(), null, null);

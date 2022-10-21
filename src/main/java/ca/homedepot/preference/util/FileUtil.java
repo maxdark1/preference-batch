@@ -3,7 +3,6 @@ package ca.homedepot.preference.util;
 import ca.homedepot.preference.util.validation.FileValidation;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -27,7 +26,7 @@ public final class FileUtil
 	private static String fileExtTargetEmail;
 	private static String hybrisPath;
 	private static String crmPath;
-	private static String fbsfmcPath;
+	private static String fbSfmcPath;
 
 	private static String sfmcPath;
 
@@ -81,7 +80,7 @@ public final class FileUtil
 
 	/**
 	 * Sets hyrbis path
-	 * 
+	 *
 	 * @param hybrisPath
 	 */
 	public static void setHybrisPath(String hybrisPath)
@@ -91,7 +90,7 @@ public final class FileUtil
 
 	/**
 	 * get CrmPath
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getCrmPath()
@@ -101,7 +100,7 @@ public final class FileUtil
 
 	/**
 	 * Sets CRM path
-	 * 
+	 *
 	 * @param crmPath
 	 */
 	public static void setCrmPath(String crmPath)
@@ -111,7 +110,7 @@ public final class FileUtil
 
 	/**
 	 * Gets inbound folder
-	 * 
+	 *
 	 * @return inbound folder
 	 */
 	public static String getInbound()
@@ -121,7 +120,7 @@ public final class FileUtil
 
 	/**
 	 * Sets inbound folder
-	 * 
+	 *
 	 * @param inbound
 	 */
 	public static void setInbound(String inbound)
@@ -131,7 +130,7 @@ public final class FileUtil
 
 	/**
 	 * Gets error folder location
-	 * 
+	 *
 	 * @return error folder location
 	 */
 	public static String getError()
@@ -141,7 +140,7 @@ public final class FileUtil
 
 	/**
 	 * Sets error folder location
-	 * 
+	 *
 	 * @param error
 	 */
 	public static void setError(String error)
@@ -151,7 +150,7 @@ public final class FileUtil
 
 	/**
 	 * Gets processed folder
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getProcessed()
@@ -161,7 +160,7 @@ public final class FileUtil
 
 	/**
 	 * Sets processed
-	 * 
+	 *
 	 * @param processed
 	 */
 	public static void setProcessed(String processed)
@@ -171,7 +170,7 @@ public final class FileUtil
 
 	/**
 	 * Gets sfmc path
-	 * 
+	 *
 	 * @return sfmc path
 	 */
 	public static String getSfmcPath()
@@ -181,7 +180,7 @@ public final class FileUtil
 
 	/**
 	 * Sets SFMC path
-	 * 
+	 *
 	 * @param sfmcPath
 	 */
 	public static void setSfmcPath(String sfmcPath)
@@ -191,27 +190,27 @@ public final class FileUtil
 
 	/**
 	 * Gets FB SFMC path
-	 * 
+	 *
 	 * @returnfb sfcm path
 	 */
 	public static String getFbsfmcPath()
 	{
-		return fbsfmcPath;
+		return fbSfmcPath;
 	}
 
 	/**
 	 * Sets fbsfmc path
-	 * 
+	 *
 	 * @param fbsfmcPath
 	 */
 	public static void setFbsfmcPath(String fbsfmcPath)
 	{
-		FileUtil.fbsfmcPath = fbsfmcPath;
+		FileUtil.fbSfmcPath = fbsfmcPath;
 	}
 
 	/**
 	 * Moves the current file that has being read to ERROR or PROCESSED folder
-	 * 
+	 *
 	 * @param file
 	 * @param status
 	 * @param value_val
@@ -243,7 +242,7 @@ public final class FileUtil
 
 	/**
 	 * To validate that the file being read is FB SFMC
-	 * 
+	 *
 	 * @param fileName
 	 * @return
 	 */
@@ -255,7 +254,7 @@ public final class FileUtil
 
 	/**
 	 * To rename the file
-	 * 
+	 *
 	 * @param file
 	 *           's name
 	 * @return new file name
@@ -281,14 +280,14 @@ public final class FileUtil
 			case "SFMC":
 				return sfmcPath;
 			default:
-				return fbsfmcPath;
+				return fbSfmcPath;
 		}
 
 	}
 
 	/**
 	 * Gets the files that are in certaing folder
-	 * 
+	 *
 	 * @param path
 	 * @param source
 	 * @return files in a folder
