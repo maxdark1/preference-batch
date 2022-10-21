@@ -16,36 +16,64 @@ public class ExactTargetEmailValidation
 	public static final String[] FIELD_NAMES_SFMC_OPTOUTS = new String[]
 	{ "Email Address", "Status", "Reason", "Date Unsubscribed" };
 
-	// TODO status number may change
-	public static String getExactTargetStatus(String status)
+	private ExactTargetEmailValidation()
+	{
+	}
+
+	/**
+	 * Gets SFMC status value
+	 * 
+	 * @param status
+	 * @return status value
+	 */
+	public static BigDecimal getExactTargetStatus(String status)
 	{
 
 		if (status.equalsIgnoreCase("unsubscribed"))
-			return "98";
+			return MasterProcessor.getSourceID("98");
 		// In case is 'held'
-		return "50";
+		return MasterProcessor.getSourceID("50");
 
 	}
 
+	/**
+	 * Validate status email
+	 * 
+	 * @param status
+	 * @param error
+	 */
 	public static void validateStatusEmail(String status, StringBuilder error)
 	{
 		if (!status.trim().equalsIgnoreCase("Unsubscribed") && !status.trim().equalsIgnoreCase("held"))
 			error.append(" Email status: ").append(status).append(" is not equals to Unsubscribed or held");
 	}
 
+	/**
+	 * Gets source ID
+	 * 
+	 * @param reason
+	 * @return source Id
+	 */
 	public static BigDecimal getSourceId(@Nullable String reason)
 	{
 		if (reason == null)
-			return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
+			return MasterProcessor.getSourceID("188");
 		String reasonUp = reason.toUpperCase();
 		if (reasonUp.contains("AOL"))
-			return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT AOL-CAN").getMaster_id();
+			return MasterProcessor.getSourceID("189");
 		if (reasonUp.contains("SCAMCOP") || reasonUp.contains("SPAM COP REPORT"))
-			return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT OTH-CAN").getMaster_id();
+			return MasterProcessor.getSourceID("SOURCE", "EXACT TARGET OPT OUT OTH-CAN").getMaster_id();
 
-		return MasterProcessor.getSourceId("SOURCE", "EXACT TARGET OPT OUT-CAN").getMaster_id();
+		return MasterProcessor.getSourceID("188");
 	}
 
+	/**
+	 * Validates date format
+	 * 
+	 * @param date
+	 * @param error
+	 * @return a valid date
+	 */
 	public static Date validateDateFormat(String date, StringBuilder error)
 	{
 		Date asOfDate = null;
@@ -58,7 +86,13 @@ public class ExactTargetEmailValidation
 		{
 			try
 			{
+				/**
+				 * Validates date format
+				 */
 				asOfDate = simpleDateFormat.parse(date);
+				/**
+				 * Validates that day and month are valid
+				 */
 				InboundValidator.validateDayMonth(date, "/", error);
 				return asOfDate;
 			}
@@ -67,11 +101,18 @@ public class ExactTargetEmailValidation
 				// Nothing to do in here
 			}
 		}
+		/**
+		 * If it doesn't returns before the date, means that the date format is not valid
+		 */
 		error.append("invalid date format ").append(date).append("\n");
 		return asOfDate;
 	}
 
-
+	/**
+	 * Validates headers values
+	 * 
+	 * @return line call back handler
+	 */
 	public static LineCallbackHandler lineCallbackHandler()
 	{
 

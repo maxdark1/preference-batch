@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
+import org.mockito.MockitoAnnotations;
 
 class MasterProcessorTest
 {
@@ -43,20 +44,24 @@ class MasterProcessorTest
 	@BeforeEach
 	void setUp()
 	{
-		preferenceService = Mockito.mock(PreferenceServiceImpl.class);
-		masterProcessor = Mockito.mock(MasterProcessor.class);
-		masterList = Mockito.mock((new ArrayList<Master>()).getClass());
-
-		masterProcessor.setPreferenceService(preferenceService);
-
+		MockitoAnnotations.initMocks(this);
 
 		master = new Master();
-		master.setMaster_id(new BigDecimal("12345"));
+		master.setMaster_id(new BigDecimal("1"));
 		master.setKey_value("SOURCE");
 		master.setValue_val("hybris");
+		master.setOld_id(BigDecimal.ONE);
+
+		Master master2 = new Master();
+		master2.setMaster_id(new BigDecimal("2"));
+		master2.setKey_value("SOURCE_ID");
+		master2.setValue_val("nurun");
+		master2.setOld_id(BigDecimal.ONE);
 
 		masterInfo = new ArrayList<>();
 		masterInfo.add(master);
+		masterInfo.add(master2);
+		masterProcessor.setPreferenceService(preferenceService);
 		masterProcessor.setMasterList(masterInfo);
 
 	}
@@ -64,10 +69,11 @@ class MasterProcessorTest
 	@Test
 	void getMasterInfo()
 	{
-		masterProcessor.getMasterInfo();
-		Mockito.doNothing().when(masterProcessor).getMasterInfo();
 
-		Mockito.verify(masterProcessor).getMasterInfo();
+		Mockito.when(preferenceService.getMasterInfo()).thenReturn(masterList);
+
+		masterProcessor.getMasterInfo();
+		assertNotNull(MasterProcessor.getMasterList());
 
 	}
 
@@ -75,10 +81,28 @@ class MasterProcessorTest
 	@Test
 	void getSourceId()
 	{
-
-		Master master1 = masterProcessor.getSourceId("SOURCE", "hybris");
+		Master master1 = masterProcessor.getSourceID("SOURCE", "hybris");
 
 		assertEquals(this.master.getMaster_id(), master1.getMaster_id());
+	}
+
+	@Test
+	void getSourceIDByOldIDTest()
+	{
+		BigDecimal masterValid = MasterProcessor.getSourceID("1");
+		BigDecimal masterInvalid = MasterProcessor.getSourceID("2");
+
+		assertEquals(BigDecimal.valueOf(2), masterValid);
+		assertEquals(new BigDecimal("-400"), masterInvalid);
+	}
+
+
+	@Test
+	void getValueValTest()
+	{
+		String ValueVal = MasterProcessor.getValueVal(BigDecimal.ONE);
+
+		assertEquals("hybris", ValueVal);
 	}
 
 	@Test

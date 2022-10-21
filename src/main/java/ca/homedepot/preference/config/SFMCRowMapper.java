@@ -12,6 +12,15 @@ import static ca.homedepot.preference.config.RegistrationRowMapper.getIntegerVal
 
 public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 {
+	/**
+	 *
+	 * @param rs
+	 *           the ResultSet to map (pre-initialized for the current row)
+	 * @param rowNum
+	 *           the number of the current row
+	 * @return
+	 * @throws SQLException
+	 */
 	@Override
 	public RegistrationRequest mapRow(ResultSet rs, int rowNum) throws SQLException
 	{
@@ -40,6 +49,13 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 
 	}
 
+	/**
+	 * Gets the String value from date
+	 *
+	 * @param date
+	 *
+	 * @return String
+	 */
 	public static String getDate(Date date)
 	{
 		if (date != null)

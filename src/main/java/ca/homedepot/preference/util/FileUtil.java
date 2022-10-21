@@ -78,71 +78,144 @@ public final class FileUtil
 		FileUtil.fileExtTargetEmail = fileExtTargetEmail;
 	}
 
+	/**
+	 * Sets hyrbis path
+	 *
+	 * @param hybrisPath
+	 */
 	public static void setHybrisPath(String hybrisPath)
 	{
 		FileUtil.hybrisPath = hybrisPath;
 	}
 
+	/**
+	 * get CrmPath
+	 *
+	 * @return
+	 */
 	public static String getCrmPath()
 	{
 		return crmPath;
 	}
 
+	/**
+	 * Sets CRM path
+	 *
+	 * @param crmPath
+	 */
 	public static void setCrmPath(String crmPath)
 	{
 		FileUtil.crmPath = crmPath;
 	}
 
+	/**
+	 * Gets inbound folder
+	 *
+	 * @return inbound folder
+	 */
 	public static String getInbound()
 	{
 		return inbound;
 	}
 
+	/**
+	 * Sets inbound folder
+	 *
+	 * @param inbound
+	 */
 	public static void setInbound(String inbound)
 	{
 		FileUtil.inbound = inbound;
 	}
 
+	/**
+	 * Gets error folder location
+	 *
+	 * @return error folder location
+	 */
 	public static String getError()
 	{
 		return error;
 	}
 
+	/**
+	 * Sets error folder location
+	 *
+	 * @param error
+	 */
 	public static void setError(String error)
 	{
 		FileUtil.error = error;
 	}
 
+	/**
+	 * Gets processed folder
+	 *
+	 * @return
+	 */
 	public static String getProcessed()
 	{
 		return processed;
 	}
 
+	/**
+	 * Sets processed
+	 *
+	 * @param processed
+	 */
 	public static void setProcessed(String processed)
 	{
 		FileUtil.processed = processed;
 	}
 
+	/**
+	 * Gets sfmc path
+	 *
+	 * @return sfmc path
+	 */
 	public static String getSfmcPath()
 	{
 		return sfmcPath;
 	}
 
+	/**
+	 * Sets SFMC path
+	 *
+	 * @param sfmcPath
+	 */
 	public static void setSfmcPath(String sfmcPath)
 	{
 		FileUtil.sfmcPath = sfmcPath;
 	}
 
-	public static String getFbSfmcPath()
+	/**
+	 * Gets FB SFMC path
+	 *
+	 * @returnfb sfcm path
+	 */
+	public static String getFbsfmcPath()
 	{
 		return fbSfmcPath;
 	}
 
-	public static void setFbSfmcPath(String fbsfmcPath)
+	/**
+	 * Sets fbsfmc path
+	 *
+	 * @param fbsfmcPath
+	 */
+	public static void setFbsfmcPath(String fbsfmcPath)
 	{
 		FileUtil.fbSfmcPath = fbsfmcPath;
 	}
 
+	/**
+	 * Moves the current file that has being read to ERROR or PROCESSED folder
+	 *
+	 * @param file
+	 * @param status
+	 * @param value_val
+	 * @throws IOException
+	 */
 	public static void moveFile(String file, boolean status, String value_val) throws IOException
 	{
 		String folder = ((status) ? processed : error);
@@ -159,29 +232,43 @@ public final class FileUtil
 
 		if (temp != null)
 		{
-			log.info(" File {} moved successfully to folder: {} ", temp.getFileName(), folder);
+			log.info(" File {} moved successfully to folder: {} ", file, folder);
 		}
 		else
 		{
-			log.info(" Failed to move the file {} ", temp.getFileName());
+			log.info(" Failed to move the file {} ", file);
 		}
 	}
+
+	/**
+	 * To validate that the file being read is FB SFMC
+	 *
+	 * @param fileName
+	 * @return
+	 */
 
 	public static boolean isFBSFMC(String fileName)
 	{
 		return fileName.contains(FileValidation.getFbSFMCBaseName());
 	}
 
+	/**
+	 * To rename the file
+	 *
+	 * @param file
+	 *           's name
+	 * @return new file name
+	 */
 	public static String renameFile(String file)
 	{
 		String baseName = FileValidation.getFileName(file);
 		String extension = FileValidation.getExtension(file, baseName);
-		return baseName + "_" + (new SimpleDateFormat("YYYYMMSSHHmmssSSSS")).format(new Date()) + extension;
+		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + extension;
 	}
-	/*
-	 * Get path
-	 */
 
+	/**
+	 * Gets path
+	 */
 	public static String getPath(String value_val)
 	{
 		switch (value_val)
@@ -192,12 +279,18 @@ public final class FileUtil
 				return crmPath;
 			case "SFMC":
 				return sfmcPath;
+			default:
+				return fbSfmcPath;
 		}
-		return fbSfmcPath;
+
 	}
 
-	/*
-	 * List of files in certain folder
+	/**
+	 * Gets the files that are in certaing folder
+	 *
+	 * @param path
+	 * @param source
+	 * @return files in a folder
 	 */
 	public static Map<String, List<Resource>> getFilesOnFolder(String path, String source)
 	{
@@ -205,20 +298,32 @@ public final class FileUtil
 		List<Resource> validFilesNames = new ArrayList<>(), invalidFileNames = new ArrayList<>();
 		String[] files = folder.list();
 
+
 		if (files != null)
 			for (String fileName : files)
 			{
-
+				/**
+				 * Validate files names that are contain in that folder
+				 */
 				if (FileValidation.validateFileName(fileName, source))
 				{
+					/**
+					 * It saves all the files that are valid and can be processed
+					 */
 					validFilesNames.add(new FileSystemResource(path + fileName));
 				}
 				else
 				{
+					/**
+					 * Saves all the files that are not valid and cannot be processed
+					 */
 					invalidFileNames.add(new FileSystemResource(fileName));
 					log.error(" File name invalid: " + fileName);
 					try
 					{
+						/**
+						 * Moves the file, with error name to ERROR folder
+						 */
 						moveFile(fileName, false, source);
 					}
 					catch (IOException e)
@@ -227,7 +332,9 @@ public final class FileUtil
 					}
 				}
 			}
-
+		/**
+		 * Returns all the files found on the folder
+		 */
 		Map<String, List<Resource>> filesNames = new HashMap<>();
 		filesNames.put("VALID", validFilesNames);
 		filesNames.put("INVALID", invalidFileNames);

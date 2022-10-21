@@ -35,7 +35,7 @@ class RegistrationItemReaderListenerTest
 		fileName = "TEST";
 		jobName = "TEST_JOB";
 		fileID = new BigDecimal("12345");
-		master = new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true);
+		master = new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true, BigDecimal.TEN);
 
 		registrationItemReaderListener.setFileName(fileName);
 		registrationItemReaderListener.setJobName(jobName);

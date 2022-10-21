@@ -15,6 +15,13 @@ import java.util.Date;
 public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, FileInboundStgTable>
 {
 
+	/**
+	 * Process the item from LayoutB (SFMC)
+	 * 
+	 * @param item
+	 *           to be processed
+	 * @return File Inbound Staging table object ready to insert on persistence
+	 */
 	@Override
 	public FileInboundStgTable process(EmailOptOuts item)
 	{
@@ -47,13 +54,19 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		catch (ValidationException e)
 		{
 			log.error(" Validation error: {} ", e.getMessage());
+			/**
+			 * Throws the exception again after is being log This is catch on the Skipper of LayoutB
+			 */
 			throw e;
 		}
 
+		/**
+		 * Create the object if every field is valid
+		 */
 		return builder.src_email_address(item.getEmailAddress()).fileName(item.getFileName())
 				.source_id(ExactTargetEmailValidation.getSourceId(item.getReason()))
-				.email_status(new BigDecimal(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus()))).status("NS")
-				.src_date(srcDate).email_address_pref("0").email_pref_hd_ca("0").email_pref_garden_club("-1").email_pref_pro("-1")
+				.email_status(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status("NS").src_date(srcDate)
+				.email_address_pref("0").email_pref_hd_ca("0").email_pref_garden_club("-1").email_pref_pro("-1")
 				.email_pref_new_mover("-1").inserted_by("BATCH").inserted_date(new Date()).build();
 	}
 }

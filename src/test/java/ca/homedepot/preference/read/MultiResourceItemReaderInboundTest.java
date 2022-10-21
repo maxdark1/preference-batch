@@ -41,9 +41,9 @@ class MultiResourceItemReaderInboundTest
 		multiResourceItemReaderInbound.setFileService(fileService);
 		List<Master> masterList = new ArrayList<>();
 
-		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "hybris", true));
-		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true));
-		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "hybris", true, null));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true, null));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true, null));
 		MasterProcessor.setMasterList(masterList);
 
 		multiResourceItemReaderInbound.writeFile(fileName, status);

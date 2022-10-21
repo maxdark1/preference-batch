@@ -71,16 +71,6 @@ public class BatchTaskletTest
 		 * jobEntity.setPhoneNo("+1-613-555-0121");
 		 */
 
-
-
-
-		ReflectionTestUtils.setField(batchTasklet, "purgeDaysforAnalytics", 1);
-		ReflectionTestUtils.setField(batchTasklet, "purgeDaysforInventoryStatus", 1);
-		ReflectionTestUtils.setField(batchTasklet, "templateIdEn", "492");
-		ReflectionTestUtils.setField(batchTasklet, "templateIdFr", "492");
-		ReflectionTestUtils.setField(batchTasklet, "subjectEn", "Test Subject");
-		ReflectionTestUtils.setField(batchTasklet, "subjectFr", "Test Subject");
-		ReflectionTestUtils.setField(batchTasklet, "environment", "https://api.qa-gcp.homedepot.ca/");
 	}
 
 	/**
@@ -124,12 +114,7 @@ public class BatchTaskletTest
 	@Test
 	public void testExecuteWithException()
 	{
-		//when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
-
-
 		batchTasklet.execute(stepContribution, chunkContext);
-
-		//verify(preferenceService).getAllNotificationsCreatedBefore(any(Date.class));
 	}
 
 }

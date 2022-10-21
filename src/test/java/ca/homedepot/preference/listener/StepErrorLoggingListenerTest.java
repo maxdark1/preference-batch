@@ -5,6 +5,7 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
+import com.google.api.pathtemplate.ValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.test.context.SpringBatchTest;
@@ -66,21 +68,19 @@ class StepErrorLoggingListenerTest
 		assertTrue(true);
 	}
 
-
 	@Test
-	void afterStep()
+	void afterStepFailedCase()
 	{
 		// given
 		List<Throwable> exceptions = new ArrayList<>();
 		StepExecution stepExecution = mock(StepExecution.class);
 		when(stepExecution.getFailureExceptions()).thenReturn(exceptions);
-		String stepName = "someStep";
 		JobExecution jobExecution = mock(JobExecution.class);
 		doNothing().when(jobExecution).addStepExecutions(anyList());
-		Long id = 1l;
 		// when
-		stepErrorLoggingListener.beforeStep(new StepExecution(stepName, jobExecution, id));
+		ExitStatus exitStatus = stepErrorLoggingListener.afterStep(stepExecution);
 		// then
+		assertEquals(ExitStatus.COMPLETED, exitStatus);
 		assertTrue(true);
 	}
 
@@ -105,7 +105,7 @@ class StepErrorLoggingListenerTest
 		// when
 		try
 		{ // bypass due urgent delivery of bug fix<
-			// as todo: fix the static mock due technical debt
+		  // as todo: fix the static mock due technical debt
 			stepErrorLoggingListener.moveFile();
 		}
 		catch (Exception ex)

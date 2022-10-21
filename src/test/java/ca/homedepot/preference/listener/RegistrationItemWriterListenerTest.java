@@ -52,7 +52,7 @@ class RegistrationItemWriterListenerTest
 		String fileName = "TEST_FILE";
 		String jobName = "JOB_NAME";
 		String insertedBy = "insertedBy";
-		Master fileStatus = new Master(BigDecimal.ZERO, BigDecimal.ZERO, "STATUS", "VALID", true);
+		Master fileStatus = new Master(BigDecimal.ZERO, BigDecimal.ZERO, "STATUS", "VALID", true, null);
 
 		MasterProcessor.setMasterList(List.of(fileStatus));
 		Integer records = 1;

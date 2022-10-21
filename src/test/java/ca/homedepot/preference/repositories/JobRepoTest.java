@@ -42,7 +42,7 @@ class JobRepoTest
 
 	void createMaster()
 	{
-		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"), "SOURCE", "hybris", true);
+		masterDTO = new Master(new BigDecimal("1"), new BigDecimal("1"), "SOURCE", "hybris", true, null);
 
 	}
 

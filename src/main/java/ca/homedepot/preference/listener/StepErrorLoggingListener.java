@@ -21,39 +21,72 @@ import java.util.List;
 public class StepErrorLoggingListener implements StepExecutionListener
 {
 
+	/**
+	 * The FileService
+	 */
 	@Autowired
 	FileService fileService;
 
+	/**
+	 *
+	 * @param stepExecution
+	 *           instance of {@link StepExecution}.
+	 */
 	@Override
 	public void beforeStep(StepExecution stepExecution)
 	{
-
+		// Nothing to do in here
 	}
 
+	/**
+	 *
+	 * @param stepExecution
+	 *           {@link StepExecution} instance.
+	 * @return
+	 */
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution)
 	{
+		/**
+		 * Gets all exceptions found in StepExecution
+		 */
 		List<Throwable> exceptions = stepExecution.getFailureExceptions();
 
 		if (exceptions.isEmpty())
 		{
+			/**
+			 * If everything is fine, means that we can move the file to PROCESSED
+			 */
 			moveFile();
 			return ExitStatus.COMPLETED;
 		}
+
+		/**
+		 * Print the exceptions founds
+		 */
 		log.info(" The step: {} has {} erros. ", stepExecution.getStepName(), exceptions.size());
 		exceptions.forEach(ex -> log.info(" Exception has ocurred:  " + ex.getMessage()));
 
 		return ExitStatus.FAILED;
 	}
 
+	/**
+	 * Move file to another location on specific folder
+	 */
 	public void moveFile()
 	{
+		/**
+		 * Gets all files that don't haave end time
+		 */
 		List<FileDTO> filesToMove = fileService.getFilesToMove();
 
+		/**
+		 * If is it there AnyFile To move, it will move it
+		 */
 		if (filesToMove != null && !filesToMove.isEmpty())
 		{
 			filesToMove.forEach(file -> {
-				Boolean status = true;
+				boolean status = true;
 				try
 				{
 					FileUtil.moveFile(file.getFile_name(), true, MasterProcessor.getValueVal(file.getFile_source_id()));
@@ -63,7 +96,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 					status = false;
 					log.error("An exception occurs while trying to move the file " + file.getFile_name());
 				}
-				Master fileStatus = MasterProcessor.getSourceId("STATUS", status ? "VALID" : "INVALID");
+				Master fileStatus = MasterProcessor.getSourceID("STATUS", status ? "VALID" : "INVALID");
 				fileService.updateFileEndTime(file.getFile_id(), new Date(), "BATCH", new Date(), fileStatus);
 			});
 
