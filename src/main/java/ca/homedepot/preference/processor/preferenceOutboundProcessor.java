@@ -9,12 +9,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class preferenceOutboundProcessor implements ItemProcessor<PreferenceOutboundDto, PreferenceOutboundDto>
 {
-
 	@Override
 	public PreferenceOutboundDto process(PreferenceOutboundDto preferenceOutboundDto) throws Exception
 	{
-		log.info("Nothing to DO on Preference Outbound Processor");
+		log.info("Write into File Table");
 		return preferenceOutboundDto;
 	}
-
 }

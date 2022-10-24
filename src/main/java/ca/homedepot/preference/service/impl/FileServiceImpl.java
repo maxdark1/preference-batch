@@ -20,7 +20,7 @@ import ca.homedepot.preference.service.FileService;
 @Service
 public class FileServiceImpl implements FileService
 {
-
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 

@@ -26,5 +26,5 @@ public interface PreferenceService
 
 	int updateJob(Job job, String status);
 
-	void preferenceOutbound(PreferenceOutboundDto item, DataSource dataSource);
+
 }

@@ -16,9 +16,11 @@ import ca.homedepot.preference.listener.skipers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skipers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.preferenceOutboundProcessor;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
+import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.preferenceOutboundReader;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
+import ca.homedepot.preference.writer.PreferenceOutboundFileWriter;
 import ca.homedepot.preference.writer.PreferenceOutboundWriter;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
@@ -46,6 +48,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -185,6 +188,19 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private StepErrorLoggingListener stepListener;
 
+	@Autowired
+	private PreferenceOutboundWriter preferenceOutboundWriter;
+
+	@Autowired
+	private preferenceOutboundProcessor preferenceOutboundProcessor;
+
+	@Autowired
+	private preferenceOutboundReader preferenceOutboundReader;
+
+	@Autowired
+	private PreferenceOutboundDBReader preferenceOutboundDBReader;
+	@Autowired
+	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
 	@Autowired
 	public void setUpListener()
 	{
@@ -554,33 +570,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public Step readSendPreferencesToCRMStep1() throws Exception
 	{
-		//Reader instace
-		preferenceOutboundReader read = new preferenceOutboundReader();
-		read.setDataSource(dataSource);
-		//Processor instance
-		preferenceOutboundProcessor proc = new preferenceOutboundProcessor();
-		//Writer instance
-		PreferenceOutboundWriter write = new PreferenceOutboundWriter();
-		write.setDataSource(dataSource);
-
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep1").<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
-				.reader(read.outboundDBReader())
-				.processor(proc)
-				.writer(write)
+				.reader(preferenceOutboundReader.outboundDBReader())
+				.writer(preferenceOutboundWriter)
 				.build();
 	}
 
 	public Step readSendPreferencesToCRMStep2() throws Exception
 	{
-		return stepBuilderFactory.get("readSendPreferencesToCRMStep2").tasklet(new Tasklet()
-		{
-			@Override
-			public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception
-			{
-				System.out.println("Step 2 implementation");
-				return RepeatStatus.FINISHED;
-			}
-		}).build();
+		return stepBuilderFactory.get("readSendPreferencesToCRMStep2").<PreferenceOutboundDto, PreferenceOutboundDto>chunk(chunkOutboundCRM)
+				.reader(preferenceOutboundDBReader.outboundDBReader())
+			    .writer(preferenceOutboundFileWriter)
+				.build();
 	}
 
 

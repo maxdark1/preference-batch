@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
-    password: sasa
+    password:
     driverClassName: org.postgresql.Driver
   batch:
     job:
@@ -63,6 +63,10 @@ inbound:
     registration: OPTIN_STANDARD_FLEX_
     registrationFbSfmc: OPTIN_STANDARD_FLEX_GCFB_
     sfmcUnsubscribedOutlook: ET.CAN.
+
+outbound:
+  files:
+    compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
 
 folders:
   inbound: \INBOUND\

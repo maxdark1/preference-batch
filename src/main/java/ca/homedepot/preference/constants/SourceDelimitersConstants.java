@@ -18,4 +18,6 @@ public interface SourceDelimitersConstants
 	String DELIMITER_PIPELINE = "\\|";
 
 	String DELIMITER_TAB = "\\t";
+
+	String SINGLE_DELIMITER_TAB = "\t";
 }
