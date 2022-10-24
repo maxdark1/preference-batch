@@ -1,60 +1,112 @@
 package ca.homedepot.preference.util.validation;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Slf4j
+@UtilityClass
 public class FileValidation
 {
-
+	/**
+	 * The extension regex
+	 */
 	private static String extensionRegex;
-
+	/**
+	 * The hybris base name
+	 */
 	private static String hybrisBaseName;
-
+	/**
+	 * The FB SFMC base name
+	 */
 	private static String fbSFMCBaseName;
-
+	/**
+	 * The SFMC base name
+	 */
 	private static String sfmcBaseName;
 
-
+	/**
+	 * Gets hybris base name
+	 *
+	 * @return hybris base name
+	 */
 	public static String getHybrisBaseName()
 	{
 		return hybrisBaseName;
 	}
 
+	/**
+	 * Sets hybris base name
+	 *
+	 * @param hybrisBaseName
+	 */
 	public static void setHybrisBaseName(String hybrisBaseName)
 	{
 		FileValidation.hybrisBaseName = hybrisBaseName;
 	}
 
+	/**
+	 * Gets FB SFMC base name
+	 *
+	 * @return
+	 */
 	public static String getFbSFMCBaseName()
 	{
 		return fbSFMCBaseName;
 	}
 
+	/**
+	 * Sets FB SFMC base name
+	 *
+	 * @param fbSFMCBaseName
+	 */
 	public static void setFbSFMCBaseName(String fbSFMCBaseName)
 	{
 		FileValidation.fbSFMCBaseName = fbSFMCBaseName;
 	}
 
+	/**
+	 * Gets SFMC base name
+	 *
+	 * @return SFMC base name
+	 */
 	public static String getSfmcBaseName()
 	{
 		return sfmcBaseName;
 	}
 
+	/**
+	 * Sets SFMC base name
+	 *
+	 * @param sfmcBaseName
+	 */
 	public static void setSfmcBaseName(String sfmcBaseName)
 	{
 		FileValidation.sfmcBaseName = sfmcBaseName;
 	}
 
+	/**
+	 * Sets extension regex
+	 *
+	 * @param extensionRegex
+	 */
 	public static void setExtensionRegex(String extensionRegex)
 	{
 		FileValidation.extensionRegex = extensionRegex;
 	}
 
+	/**
+	 * Returns the line call back Which validates the headers
+	 *
+	 * @param headerFile
+	 * @param separator
+	 * @return line calll back handler
+	 */
 	public static LineCallbackHandler lineCallbackHandler(String[] headerFile, String separator)
 	{
 		return line -> {
@@ -64,6 +116,13 @@ public class FileValidation
 		};
 	}
 
+	/**
+	 * Validates file's name
+	 *
+	 * @param fileName
+	 * @param source
+	 * @return is file valid
+	 */
 	public static boolean validateFileName(String fileName, String source)
 	{
 		String formatDate = "yyyyMMdd";
@@ -76,21 +135,46 @@ public class FileValidation
 		return validateSimpleFileDateFormat(fileName.substring(start, end), formatDate);
 	}
 
+	/**
+	 * Returns file's name without extension
+	 *
+	 * @param fileName
+	 * @return file's name
+	 */
 	public static String getFileName(String fileName)
 	{
 		return fileName.replaceAll(extensionRegex, "");
 	}
 
+	/**
+	 * Gets extension without file's name
+	 *
+	 * @param fileName
+	 * @param baseName
+	 * @return file extension
+	 */
 	public static String getExtension(String fileName, String baseName)
 	{
 		return fileName.replaceAll(baseName, "");
 	}
 
+	/**
+	 * Validate file's extension
+	 *
+	 * @param extension
+	 * @return is it valid
+	 */
 	public static Boolean validateExtension(String extension)
 	{
 		return extension.matches(extensionRegex);
 	}
 
+	/**
+	 * Gets base name
+	 *
+	 * @param source
+	 * @return base name
+	 */
 	public static String getBaseName(String source)
 	{
 
@@ -100,21 +184,79 @@ public class FileValidation
 				return fbSFMCBaseName;
 			case "SFMC":
 				return sfmcBaseName;
+			default:
+				return hybrisBaseName;
 		}
-		return hybrisBaseName;
+
 	}
 
-	public static boolean validateSimpleFileDateFormat(String date, String formatDate)
+	/**
+	 * Validate date format of filename
+	 * 
+	 * @param strDate
+	 * @param formatDate
+	 * @return says that if its valid
+	 */
+	public static boolean validateSimpleFileDateFormat(String strDate, String formatDate)
 	{
 		try
 		{
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(formatDate);
-			simpleDateFormat.parse(date);
-			return true;
+			simpleDateFormat.parse(strDate);
+			/**
+			 * Returns that the date is valid
+			 */
+			return deepCheckDateFormat(formatDate, strDate);
 		}
 		catch (Exception e)
 		{
+			/**
+			 * Returns that the file name is not valid
+			 */
 			return false;
 		}
+	}
+
+	/**
+	 * Ad hoc validation for string date wiht format yyyyMMdd
+	 * 
+	 * @param format
+	 * @param strDate
+	 * @return
+	 */
+	public static boolean deepCheckDateFormat(String format, String strDate)
+	{
+		assert format.equals("yyyyMMdd");
+		Map<Integer, Integer> counter = new LinkedHashMap<>();
+
+		format.chars().forEach(iChar -> {
+			if (counter.containsKey(iChar))
+			{
+				counter.put(iChar, counter.get(iChar) + 1);
+			}
+			else
+			{
+				counter.put(iChar, 1);
+			}
+		});
+		int index = 0;
+		for (Integer key : counter.keySet())
+		{
+			String token = strDate.substring(index, index + counter.get(key));
+			if (token.length() == 4 && Integer.valueOf(token) < 2000)
+			{
+				return false;
+			}
+			if (token.length() == 2 && Integer.valueOf(token) < 0 && Integer.valueOf(token) > 12)
+			{
+				return false;
+			}
+			if (token.length() == 2 && Integer.valueOf(token) < 0 && Integer.valueOf(token) > 31)
+			{
+				return false;
+			}
+			index += counter.get(key);
+		}
+		return true;
 	}
 }

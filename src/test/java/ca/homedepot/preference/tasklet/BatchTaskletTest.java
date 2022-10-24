@@ -63,24 +63,7 @@ public class BatchTaskletTest
 		chunkContext = Mockito.mock(ChunkContext.class);
 
 		jobEntity = new JobEntity();
-		/*
-		 * jobEntity.setRegId("876bd496-4712-4499-a236-e86be5a6ed2c"); jobEntity.setNotificationType("EMAIL");
-		 * jobEntity.setArticleId("1000834262"); jobEntity.setEmailId("naruto_uzumaki9@homedepot.com");
-		 * jobEntity.setLangcode("fr"); jobEntity.setSubscriptionType("EMAIL");
-		 * jobEntity.setUom("02521474-1a85-44d2-8c57-12e456a53608"); jobEntity.setCreatedOn(new Date());
-		 * jobEntity.setPhoneNo("+1-613-555-0121");
-		 */
 
-
-
-
-		ReflectionTestUtils.setField(batchTasklet, "purgeDaysforAnalytics", 1);
-		ReflectionTestUtils.setField(batchTasklet, "purgeDaysforInventoryStatus", 1);
-		ReflectionTestUtils.setField(batchTasklet, "templateIdEn", "492");
-		ReflectionTestUtils.setField(batchTasklet, "templateIdFr", "492");
-		ReflectionTestUtils.setField(batchTasklet, "subjectEn", "Test Subject");
-		ReflectionTestUtils.setField(batchTasklet, "subjectFr", "Test Subject");
-		ReflectionTestUtils.setField(batchTasklet, "environment", "https://api.qa-gcp.homedepot.ca/");
 	}
 
 	/**
@@ -124,12 +107,9 @@ public class BatchTaskletTest
 	@Test
 	public void testExecuteWithException()
 	{
-		//when(preferenceService.getAllNotificationsCreatedBefore(any(Date.class))).thenReturn(Arrays.asList(jobEntity));
-
-
 		batchTasklet.execute(stepContribution, chunkContext);
 
-		//verify(preferenceService).getAllNotificationsCreatedBefore(any(Date.class));
+
 	}
 
 }

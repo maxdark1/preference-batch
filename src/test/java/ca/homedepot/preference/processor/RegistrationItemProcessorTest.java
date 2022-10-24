@@ -42,7 +42,7 @@ public class RegistrationItemProcessorTest
 		input.setGardenClub("1");
 		input.setEmailPrefPRO("1");
 		input.setNewMover("-1");
-		input.setSource_ID("12345");
+		input.setSource_ID("1");
 		input.setContent_1("CUSTOMER_NBR");
 		input.setContent_2("STORE_NBR");
 		input.setContent_3("ORG_NAME");
@@ -51,14 +51,26 @@ public class RegistrationItemProcessorTest
 
 		List<Master> masterList = new ArrayList<>();
 
-		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true));
-		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true));
-		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true));
-		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true));
-		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true));
-		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true));
-		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT AOL-CAN", true));
-		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true));
+		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true, null));
+		masterList.add(new Master(new BigDecimal("2"), BigDecimal.ONE, "SOURCE", "hybris", true, null));
+		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true, null));
+		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true, null));
+		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true, null));
+		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true, null));
+		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT AOL-CAN", true, null));
+		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true, null));
+		masterList
+				.add(new Master(new BigDecimal("24"), BigDecimal.TEN, "EMAIL_STATUS", "Hard Bounces", true, new BigDecimal("50")));
+		masterList
+				.add(new Master(new BigDecimal("25"), BigDecimal.TEN, "EMAIL_STATUS", "ET SPAM List", true, new BigDecimal("98")));
+		masterList.add(new Master(new BigDecimal("26"), BigDecimal.TEN, "EMAIL_STATUS", "Valid Email Addresses", true,
+				new BigDecimal("98")));
+
+		masterList.add(new Master(new BigDecimal("56"), BigDecimal.TEN, "SOURCE_ID", "nurun", true, new BigDecimal("1")));
+		masterList
+				.add(new Master(new BigDecimal("99"), BigDecimal.TEN, "SOURCE_ID", "CANADA SAP CRM", true, new BigDecimal("100")));
+		masterList.add(new Master(new BigDecimal("128"), BigDecimal.TEN, "SOURCE_ID", "Facebook Opt in campaign", true,
+				new BigDecimal("188")));
 
 		MasterProcessor.setMasterList(masterList);
 	}

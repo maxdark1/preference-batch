@@ -14,6 +14,13 @@ import ca.homedepot.preference.dto.RegistrationRequest;
 public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 {
 
+	/**
+	 * Mapper for request of LayoutC
+	 * 
+	 * @param rs,
+	 *           rowNum
+	 *
+	 */
 	@Override
 	public RegistrationRequest mapRow(ResultSet rs, int rowNum) throws SQLException
 	{
@@ -22,7 +29,6 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 
 
 		registrationRequest.setFileId(rs.getBigDecimal(PreferenceBatchConstants.FILE_ID));
-		registrationRequest.setStatus(rs.getString(PreferenceBatchConstants.STATUS).equals("IP"));
 		registrationRequest.setSequenceNbr(rs.getString(PreferenceBatchConstants.SEQUENCE_NBR));
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
 		registrationRequest.setLanguagePreference(rs.getString(PreferenceBatchConstants.SRC_LANGUAGE_PREF));
@@ -78,8 +84,8 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT19), rs.getString(PreferenceBatchConstants.VALUE19));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT20), rs.getString(PreferenceBatchConstants.VALUE20));
 
-		/*
-		 * Deletes any null value before send it to the service
+		/**
+		 * Deletes any empty value before send it to the service
 		 */
 		contentValue.forEach((key, value) -> {
 			if (key == null || value == null)

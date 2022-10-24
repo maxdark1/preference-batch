@@ -49,7 +49,6 @@ class RegistrationRowMapperTest
 
 		registrationRequest = new RegistrationRequest();
 
-
 		registrationRequest.setFileId(fileId);
 		registrationRequest.setStatus(true);
 		registrationRequest.setSequenceNbr(sequenceNbr);
@@ -168,6 +167,6 @@ class RegistrationRowMapperTest
 		Integer currentWrong = RegistrationRowMapper.getIntegerValue(wrongValue);
 
 		assertEquals(expected, current);
-		assertEquals(null, currentWrong);
+		assertNull(currentWrong);
 	}
 }

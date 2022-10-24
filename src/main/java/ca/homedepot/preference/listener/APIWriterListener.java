@@ -1,15 +1,12 @@
 package ca.homedepot.preference.listener;
 
 import ca.homedepot.preference.dto.RegistrationRequest;
-
-import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.service.FileService;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +25,7 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 	@Override
 	public void beforeWrite(List<? extends RegistrationRequest> items)
 	{
-
+		// nothing to do here for the moment
 	}
 
 	@Override
@@ -47,6 +44,6 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 	@Override
 	public void onWriteError(Exception exception, List<? extends RegistrationRequest> items)
 	{
-
+		// nothing to do here for the moment
 	}
 }

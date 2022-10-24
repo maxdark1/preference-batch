@@ -1,10 +1,10 @@
-package ca.homedepot.preference.listener.skipers;
+package ca.homedepot.preference.listener.skippers;
 
-import ca.homedepot.preference.model.EmailOptOuts;
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
-import net.bytebuddy.description.field.FieldList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,64 +13,69 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
-class SkipListenerLayoutBTest
+class SkipListenerLayoutCTest
 {
 
 	@Mock
 	FileServiceImpl fileService;
-
 	@InjectMocks
-	SkipListenerLayoutB skipListenerLayoutB;
+	SkipListenerLayoutC skipListenerLayoutC;
 
 	@BeforeEach
 	void setUp()
 	{
 		MockitoAnnotations.initMocks(this);
-		skipListenerLayoutB.setJobName("JOB_NAME");
+		skipListenerLayoutC.setJobName("JOB_NAME");
+
+		MasterProcessor.setMasterList(
+				List.of(new Master(BigDecimal.ONE, BigDecimal.ONE, "EMAIL_STATUS", "Valid Email Addresses", true, BigDecimal.ONE),
+						new Master(BigDecimal.TEN, BigDecimal.ONE, "EMAIL_STATUS", "Invalid Email Addresses", true, BigDecimal.TEN)));
+
 	}
 
 	@Test
 	void onSkipInRead()
 	{
 		Throwable t = Mockito.mock(Throwable.class);
-		skipListenerLayoutB.onSkipInRead(t);
+		skipListenerLayoutC.onSkipInRead(t);
 	}
 
 	@Test
 	void onSkipInWrite()
 	{
-		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
 		Throwable t = Mockito.mock(Throwable.class);
-		skipListenerLayoutB.onSkipInWrite(fileInboundStgTable, t);
+		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
+
+		skipListenerLayoutC.onSkipInWrite(fileInboundStgTable, t);
 	}
 
 	@Test
 	void onSkipInProcess()
 	{
-
 		BigDecimal jobId = BigDecimal.ONE, fileId = BigDecimal.ONE;
 		String fileName = "TEST";
 		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
-		EmailOptOuts item = new EmailOptOuts();
+		InboundRegistration item = new InboundRegistration();
 		item.setFileName(fileName);
-		item.setStatus("held");
-		Throwable t = Mockito.mock(Throwable.class);
+		item.setLanguage_Preference("F");
+		Throwable t = new Exception("message");
 
 		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
 		Mockito.when(fileService.getFile(eq(fileName), eq(jobId))).thenReturn(fileId);
 		Mockito.when(fileService.insertInboundStgError(eq(fileInboundStgTable))).thenReturn(1);
 
-		skipListenerLayoutB.onSkipInProcess(item, t);
+		skipListenerLayoutC.onSkipInProcess(item, t);
 	}
 
 	@Test
 	void getJobName()
 	{
-		assertEquals("JOB_NAME", skipListenerLayoutB.getJobName());
+		assertEquals("JOB_NAME", skipListenerLayoutC.getJobName());
 	}
 }

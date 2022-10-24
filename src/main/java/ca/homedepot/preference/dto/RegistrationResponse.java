@@ -11,5 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegistrationResponse
 {
+	/**
+	 * The list of Responses from service
+	 */
 	private List<Response> registration;
 }

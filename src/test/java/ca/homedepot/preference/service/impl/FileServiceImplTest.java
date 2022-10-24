@@ -57,16 +57,17 @@ class FileServiceImplTest
 		Date startTime = new Date(), insertedDate = new Date(), endTiem = new Date();
 		String file_name = "fileName", inserted_by = "test";
 		BigDecimal statusId = BigDecimal.ONE;
+		FileDTO file = new FileDTO(null, file_name, job_id, sourceId, status, statusId, startTime, endTiem, inserted_by,
+				insertedDate, null, null);
 
 		int value = 1;
 
-		when(jdbcTemplate.update(anyString(), eq(file_name), eq(status), eq(sourceId), eq(startTime), eq(job_id), eq(insertedDate),
-				eq(inserted_by))).thenReturn(value);
-		when(fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId, endTiem))
-				.thenReturn(value);
+		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFile_name(), file.getJob(),
+				file.getFile_source_id(), file.getStatus(), file.getStart_time(), file.getInserted_by(), file.getInserted_date(),
+				file.getStatus_id(), file.getEnd_time())).thenReturn(value);
+		when(fileService.insert(file)).thenReturn(value);
 
-		int result = fileService.insert(file_name, status, sourceId, startTime, job_id, insertedDate, inserted_by, statusId,
-				endTiem);
+		int result = fileService.insert(file);
 
 		assertEquals(value, result);
 
@@ -127,22 +128,6 @@ class FileServiceImplTest
 		assertEquals(masterId, currentMasterId);
 	}
 
-	@Test
-	void updateFileStatus()
-	{
-		String fileName = "TEST_FILE", status = "S", newStatus = "P", updatedBy = "TEST";
-		Date updatedDate = new Date(), endTime = new Date();
-		BigDecimal jobId = BigDecimal.ONE, statusId = BigDecimal.TEN;
-		int rowAffected = 1;
-
-		when(jdbcTemplate.update(anyString(), eq(newStatus), eq(statusId), eq(updatedDate), eq(endTime), eq(updatedBy),
-				eq(fileName), eq(status), eq(jobId))).thenReturn(rowAffected);
-
-		int currentRowAffected = fileService.updateFileStatus(fileName, updatedDate, status, newStatus, jobId, endTime, updatedBy,
-				statusId);
-
-		assertEquals(rowAffected, currentRowAffected);
-	}
 
 	@Test
 	void updateInboundStgTableStatus()

@@ -2,7 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/preference-centre-db
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password:
     driverClassName: org.postgresql.Driver
@@ -38,7 +38,9 @@ spring:
 #      enabled: false
 cron:
   job:
-    registration: 30 * * * * *
+    hybrisIngestion: 30 * * * * *
+    crmIngestion: 30 * * * * *
+    fbsfmcIngestion: 30 * * * * *
     ingestSFMCOutlookUnsubscribed: 30 * * * * *
     sendPreferencesToCRM: 30 * * * * *
 
@@ -60,9 +62,9 @@ feign:
 #
 inbound:
   files:
-    registration: OPTIN_STANDARD_FLEX_
-    registrationFbSfmc: OPTIN_STANDARD_FLEX_GCFB_
-    sfmcUnsubscribedOutlook: ET.CAN.
+     registration: OPTIN_STANDARD_FLEX_
+     registrationFbSfmc: OPTIN_STANDARD_FLEX_GCFB_
+     sfmcUnsubscribedOutlook: ET.CAN.
 
 outbound:
   files:

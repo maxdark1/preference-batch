@@ -11,13 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PreferenceItem
 {
-
+	/**
+	 * The id
+	 */
 	@JsonProperty("id")
 	private String id;
-
+	/**
+	 * The type
+	 */
 	@JsonProperty("type")
 	private String type;
 
+	/**
+	 * The value
+	 */
 	@JsonProperty("value")
 	private String value;
 }

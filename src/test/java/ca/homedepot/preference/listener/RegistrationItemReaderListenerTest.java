@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ItemReaderListenerTest
+class RegistrationItemReaderListenerTest
 {
 
 	@Mock
@@ -25,51 +25,51 @@ class ItemReaderListenerTest
 	Master master;
 
 	@InjectMocks
-	ItemReaderListener itemReaderListener;
+	RegistrationItemReaderListener registrationItemReaderListener;
 
 	@BeforeEach
 	void beforeRead()
 	{
 		fileService = Mockito.mock(FileService.class);
-		itemReaderListener = new ItemReaderListener(fileService);
+		registrationItemReaderListener = new RegistrationItemReaderListener(fileService);
 		fileName = "TEST";
 		jobName = "TEST_JOB";
 		fileID = new BigDecimal("12345");
-		master = new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true);
+		master = new Master(BigDecimal.ONE, BigDecimal.ONE, "TEST", "TEST", true, BigDecimal.TEN);
 
-		itemReaderListener.setFileName(fileName);
-		itemReaderListener.setJobName(jobName);
-		itemReaderListener.setFileID(fileID);
-		itemReaderListener.setMaster(master);
+		registrationItemReaderListener.setFileName(fileName);
+		registrationItemReaderListener.setJobName(jobName);
+		registrationItemReaderListener.setFileID(fileID);
+		registrationItemReaderListener.setMaster(master);
 	}
 
 	@Test
 	void getFileService()
 	{
-		assertNotNull(itemReaderListener.getFileService());
+		assertNotNull(registrationItemReaderListener.getFileService());
 	}
 
 	@Test
 	void getFileName()
 	{
-		assertEquals(fileName, itemReaderListener.getFileName());
+		assertEquals(fileName, registrationItemReaderListener.getFileName());
 	}
 
 	@Test
 	void getJobName()
 	{
-		assertEquals(jobName, itemReaderListener.getJobName());
+		assertEquals(jobName, registrationItemReaderListener.getJobName());
 	}
 
 	@Test
 	void getFileID()
 	{
-		assertEquals(fileID, itemReaderListener.getFileID());
+		assertEquals(fileID, registrationItemReaderListener.getFileID());
 	}
 
 	@Test
 	void getMaster()
 	{
-		assertEquals(master, itemReaderListener.getMaster());
+		assertEquals(master, registrationItemReaderListener.getMaster());
 	}
 }
