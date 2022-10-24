@@ -1,7 +1,9 @@
 package ca.homedepot.preference.listener.skippers;
 
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,6 +32,11 @@ class SkipListenerLayoutCTest
 	{
 		MockitoAnnotations.initMocks(this);
 		skipListenerLayoutC.setJobName("JOB_NAME");
+
+		MasterProcessor.setMasterList(
+				List.of(new Master(BigDecimal.ONE, BigDecimal.ONE, "EMAIL_STATUS", "Valid Email Addresses", true, BigDecimal.ONE),
+						new Master(BigDecimal.TEN, BigDecimal.ONE, "EMAIL_STATUS", "Invalid Email Addresses", true, BigDecimal.TEN)));
+
 	}
 
 	@Test
@@ -56,7 +64,7 @@ class SkipListenerLayoutCTest
 		InboundRegistration item = new InboundRegistration();
 		item.setFileName(fileName);
 		item.setLanguage_Preference("F");
-		Throwable t = Mockito.mock(Throwable.class);
+		Throwable t = new Exception("message");
 
 		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
 		Mockito.when(fileService.getFile(eq(fileName), eq(jobId))).thenReturn(fileId);

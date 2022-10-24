@@ -28,11 +28,15 @@ public class ExactTargetEmailValidation
 	 */
 	public static BigDecimal getExactTargetStatus(String status)
 	{
-
+		/**
+		 * In case of unsubscribe... old_id was '98'
+		 */
 		if (status.equalsIgnoreCase("unsubscribed"))
-			return MasterProcessor.getSourceID("98");
-		// In case is 'held'
-		return MasterProcessor.getSourceID("50");
+			return MasterProcessor.getSourceID("EMAIL_STATUS", "ET SPAM List").getMaster_id();
+		/**
+		 * In case is held because... old_id was '50'
+		 */
+		return MasterProcessor.getSourceID("EMAIL_STATUS", "Hard Bounces").getMaster_id();
 
 	}
 

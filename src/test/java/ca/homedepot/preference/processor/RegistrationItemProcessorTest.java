@@ -59,6 +59,12 @@ public class RegistrationItemProcessorTest
 		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT-CAN", true, null));
 		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT AOL-CAN", true, null));
 		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true, null));
+		masterList
+				.add(new Master(new BigDecimal("24"), BigDecimal.TEN, "EMAIL_STATUS", "Hard Bounces", true, new BigDecimal("50")));
+		masterList
+				.add(new Master(new BigDecimal("25"), BigDecimal.TEN, "EMAIL_STATUS", "ET SPAM List", true, new BigDecimal("98")));
+		masterList.add(new Master(new BigDecimal("26"), BigDecimal.TEN, "EMAIL_STATUS", "Valid Email Addresses", true,
+				new BigDecimal("98")));
 
 		masterList.add(new Master(new BigDecimal("56"), BigDecimal.TEN, "SOURCE_ID", "nurun", true, new BigDecimal("1")));
 		masterList

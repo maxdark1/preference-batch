@@ -1,7 +1,9 @@
 package ca.homedepot.preference.listener.skippers;
 
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -30,6 +33,11 @@ class SkipListenerLayoutBTest
 	{
 		MockitoAnnotations.initMocks(this);
 		skipListenerLayoutB.setJobName("JOB_NAME");
+
+		MasterProcessor.setMasterList(
+				List.of(new Master(BigDecimal.ONE, BigDecimal.ONE, "EMAIL_STATUS", "Valid Email Addresses", true, BigDecimal.ONE),
+						new Master(BigDecimal.TEN, BigDecimal.ONE, "EMAIL_STATUS", "Invalid Email Addresses", true, BigDecimal.TEN),
+						new Master(new BigDecimal("24"), BigDecimal.TEN, "EMAIL_STATUS", "Hard Bounces", true, new BigDecimal("50"))));
 	}
 
 	@Test
@@ -37,6 +45,7 @@ class SkipListenerLayoutBTest
 	{
 		Throwable t = Mockito.mock(Throwable.class);
 		skipListenerLayoutB.onSkipInRead(t);
+
 	}
 
 	@Test
@@ -45,6 +54,7 @@ class SkipListenerLayoutBTest
 		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
 		Throwable t = Mockito.mock(Throwable.class);
 		skipListenerLayoutB.onSkipInWrite(fileInboundStgTable, t);
+
 	}
 
 	@Test
@@ -57,7 +67,7 @@ class SkipListenerLayoutBTest
 		EmailOptOuts item = new EmailOptOuts();
 		item.setFileName(fileName);
 		item.setStatus("held");
-		Throwable t = Mockito.mock(Throwable.class);
+		Throwable t = new Exception("message");
 
 		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
 		Mockito.when(fileService.getFile(eq(fileName), eq(jobId))).thenReturn(fileId);
