@@ -71,6 +71,14 @@ public class FileServiceImpl implements FileService
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file_name, job_id, source_id, status, start_time,
 				inserted_by, inserted_date, status_id, endTime);
 	}
+	@Override
+	@Transactional
+	public int insert(FileDTO file)
+	{
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFile_name(), file.getJob(),
+				file.getFile_source_id(), file.getStatus(), file.getStart_time(), file.getInserted_by(), file.getInserted_date(),
+				file.getStatus_id(), file.getEnd_time());
+	}
 
 	/**
 	 * Gets job id

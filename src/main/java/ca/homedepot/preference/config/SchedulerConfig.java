@@ -9,10 +9,7 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
-import ca.homedepot.preference.listener.APIWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
-import ca.homedepot.preference.listener.skipers.SkipListenerLayoutB;
-import ca.homedepot.preference.listener.skipers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.preferenceOutboundProcessor;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
@@ -774,8 +771,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationHybrisInbound()
-	{
+	public Job registrationHybrisInbound() throws Exception {
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
@@ -833,13 +829,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.to(readDBSFMCOptOutsStep2()).build().build();
 	}
 
-	/**
-	 * Step 1 for hybris process.
-	 *
-	 * @param jobName
-	 *           The job_name that is processing
-	 * @return the step
-	 */
+
 
 	public Step readSendPreferencesToCRMStep1() throws Exception
 	{
@@ -857,7 +847,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
-
+	/**
+	 * Step 1 for hybris process.
+	 *
+	 * @param jobName
+	 *           The job_name that is processing
+	 * @return the step
+	 */
 	public Step readInboundHybrisFileStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
