@@ -471,7 +471,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.hybrisIngestion}")
+	//@Scheduled(cron = "${cron.job.hybrisIngestion}")
 	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -516,7 +516,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
+	//@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
 	public void processFBSFMCInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -550,6 +550,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
 	}
 
+	/**
+	 * Triggers CRM Outbound Process in a determinated period of time
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
 	public void sendPreferencesToCRM() throws Exception
 	{
@@ -771,14 +775,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationHybrisInbound() throws Exception {
+	public Job registrationHybrisInbound()  {
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
-
 	}
 
-	public Job crmSendPreferencesToCRM() throws Exception
+	public Job crmSendPreferencesToCRM()
 	{
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSendPreferencesToCRMStep1())
@@ -830,16 +833,22 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 
-
-	public Step readSendPreferencesToCRMStep1() throws Exception
+	/**
+	 * Step 1 for Send Preferences to CRM Outbound
+	 * @return
+	 */
+	public Step readSendPreferencesToCRMStep1()
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep1").<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
 				.reader(preferenceOutboundReader.outboundDBReader())
 				.writer(preferenceOutboundWriter)
 				.build();
 	}
-
-	public Step readSendPreferencesToCRMStep2() throws Exception
+	/**
+	 * Step 2 for Send Preferences to CRM Outbound
+	 * @return
+	 */
+	public Step readSendPreferencesToCRMStep2()
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2").<PreferenceOutboundDto, PreferenceOutboundDto>chunk(chunkOutboundCRM)
 				.reader(preferenceOutboundDBReader.outboundDBReader())
@@ -854,7 +863,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *           The job_name that is processing
 	 * @return the step
 	 */
-	public Step readInboundHybrisFileStep1(String jobName) throws Exception
+	public Step readInboundHybrisFileStep1(String jobName)
 	{
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(

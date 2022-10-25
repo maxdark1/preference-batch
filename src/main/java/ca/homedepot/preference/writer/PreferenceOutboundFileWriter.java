@@ -27,7 +27,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @Data
-public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutboundDto>, StepExecutionListener {
+public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutboundDto> {
     @Value("${folders.crm.path}")
     private String repository_source;
     @Value("${folders.outbound}")
@@ -42,6 +42,11 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
     @Autowired
     private FileService fileService ;
 
+    /**
+     * Method used to generate a plain text file
+     * @param items items to be written
+     * @throws Exception
+     */
     @Override
     public void write(List<? extends PreferenceOutboundDto> items) throws Exception {
         sourceId = items.get(0).getSource_id();
@@ -82,7 +87,12 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
     }
 
-    public void generateFile(String file) throws IOException {
+    /**
+     * This Method saves in a plain text file the string that receives as parameter
+     * @param file
+     * @throws IOException
+     */
+    private void generateFile(String file) throws IOException {
         Format formatter = new SimpleDateFormat("YYYYMMDD");
         String file_name = file_name_format.replaceAll("YYYYMMDD", formatter.format(new Date()));
 
@@ -93,21 +103,13 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
         setFileRecord(file_name);
     }
 
-    public void setFileRecord(String file_name){
-        ExecutionContext stepExec = this.stepExecution.getExecutionContext();
-        JobExecution jobExec = this.stepExecution.getJobExecution();
+    /**
+     * This method registry in file table the generated file
+     * @param file_name
+     */
+    private void setFileRecord(String file_name){
         BigDecimal jobId = fileService.getJobId("sendPreferencesToCRM");
         fileService.insert(file_name,"VALID",sourceId,new Date(),jobId,new Date(),"BATCH",BigDecimal.valueOf(19),new Date());
-
     }
 
-    @Override
-    public void beforeStep(StepExecution stepExecution) {
-        this.stepExecution = stepExecution;
-    }
-
-    @Override
-    public ExitStatus afterStep(StepExecution stepExecution) {
-        return stepExecution.getExitStatus();
-    }
 }

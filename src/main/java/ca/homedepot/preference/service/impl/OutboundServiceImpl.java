@@ -13,6 +13,11 @@ public class OutboundServiceImpl implements OutboundService {
     @Autowired
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
+
+    /**
+     * This methos is used to make a connection with DB and execute a query to get necessary data
+     * @param item
+     */
     @Override
     public void preferenceOutbound(PreferenceOutboundDto item) {
         jdbcTemplate = new JdbcTemplate();
@@ -43,6 +48,9 @@ public class OutboundServiceImpl implements OutboundService {
                 item.getHd_ca_pro_src_id());
     }
 
+    /**
+     * This method is used to connect with the database and truncate a passtrougths table
+     */
     @Override
     public void truncateCompliantTable() {
         jdbcTemplate = new JdbcTemplate();

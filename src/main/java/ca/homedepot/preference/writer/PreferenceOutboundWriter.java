@@ -20,6 +20,11 @@ public class PreferenceOutboundWriter implements ItemWriter<PreferenceOutboundDt
 	@Autowired
 	private OutboundService outboundService;
 
+	/**
+	 * This method is used for get the data read by reader and generate a plain text file
+	 * @param list items to be written
+	 * @throws Exception
+	 */
 	@Override
 	public void write(List<? extends PreferenceOutboundDto> list) throws Exception
 	{

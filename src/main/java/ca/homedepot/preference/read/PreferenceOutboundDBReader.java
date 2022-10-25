@@ -19,6 +19,10 @@ public class PreferenceOutboundDBReader {
     @Autowired
     private DataSource dataSource;
 
+    /**
+     * Method used to get the necessary data from DB in Step 2
+     * @return
+     */
     public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBReader()
     {
         log.info(" Preference Outbound : Preference Outbound Step 2 Reader Starter :" + new Date());
