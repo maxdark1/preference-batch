@@ -2,9 +2,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
-    password: postgres
+    password:
     driverClassName: org.postgresql.Driver
   batch:
     job:
@@ -42,6 +42,7 @@ cron:
     crmIngestion: 30 * * * * *
     fbsfmcIngestion: 30 * * * * *
     ingestSFMCOutlookUnsubscribed: 30 * * * * *
+    sendPreferencesToCRM: 30 * * * * *
 
 server:
   port: 8080
@@ -65,18 +66,23 @@ inbound:
      registrationFbSfmc: OPTIN_STANDARD_FLEX_GCFB_
      sfmcUnsubscribedOutlook: ET.CAN.
 
+outbound:
+  files:
+    compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
+
 folders:
-   inbound: \INBOUND\
-   error: \ERROR\
-   processed: \PROCESSED\
-   crm:
-     path: C:\batchFiles\CRM
-   fb-sfmc:
-     path: C:\batchFiles\FB-SFMC
-   hybris:
-     path: C:\batchFiles\Hybris
-   sfmc:
-     path: C:\batchFiles\SFMC
+  inbound: \INBOUND\
+  error: \ERROR\
+  processed: \PROCESSED\
+  outbound: \OUTBOUND\
+  crm:
+    path: C:\batchFiles\CRM
+  fb-sfmc:
+    path: C:\batchFiles\FB-SFMC
+  hybris:
+    path: C:\batchFiles\Hybris
+  sfmc:
+    path: C:\batchFiles\SFMC
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -88,4 +94,6 @@ preference:
     layoutb:
       chunk: 20
     layoutc:
+      chunk: 10
+    outboundCRM:
       chunk: 10

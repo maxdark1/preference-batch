@@ -25,11 +25,12 @@ public class FileServiceImpl implements FileService
 	/**
 	 * The JDBC template
 	 */
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	/**
 	 * Gets JDBC template
-	 * 
+	 *
 	 * @return JDBC template
 	 */
 	public JdbcTemplate getJdbcTemplate()
@@ -39,7 +40,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Sets JDBC template
-	 * 
+	 *
 	 * @param jdbcTemplate
 	 */
 	@Autowired
@@ -50,7 +51,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Inserts file on persistence
-	 * 
+	 *
 	 * @param file_name
 	 * @param status
 	 * @param source_id
@@ -64,6 +65,14 @@ public class FileServiceImpl implements FileService
 	 */
 	@Override
 	@Transactional
+	public int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id,
+			Date inserted_date, String inserted_by, BigDecimal status_id, Date endTime)
+	{
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file_name, job_id, source_id, status, start_time,
+				inserted_by, inserted_date, status_id, endTime);
+	}
+	@Override
+	@Transactional
 	public int insert(FileDTO file)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFile_name(), file.getJob(),
@@ -73,7 +82,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Gets job id
-	 * 
+	 *
 	 * @param job_name
 	 * @return job id
 	 */
@@ -85,7 +94,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Gets last inserted file according to file name and job id
-	 * 
+	 *
 	 * @param file_name
 	 * @param job_id
 	 * @return file id
@@ -99,7 +108,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Gets last file
-	 * 
+	 *
 	 * @return file id
 	 */
 	@Override
@@ -110,7 +119,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Gets source id from master
-	 * 
+	 *
 	 * @param keyVal
 	 * @param valueVal
 	 * @return Master id
@@ -125,7 +134,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Updates file inbound staging's status
-	 * 
+	 *
 	 * @param sequenceNbr
 	 * @param status
 	 * @param oldStatus
@@ -140,7 +149,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Updates specific file's end time
-	 * 
+	 *
 	 * @param fileId
 	 * @param updatedDate
 	 * @param updatedBy
@@ -157,7 +166,7 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Gets files to move to PROCESSED folder
-	 * 
+	 *
 	 * @return files to move
 	 */
 	@Override
@@ -174,8 +183,8 @@ public class FileServiceImpl implements FileService
 
 	/**
 	 * Inserts failed records on persistence
-	 * 
-	 * @param fileInboundStgTable
+	 *
+	 * @param stgTable
 	 * @return inserted records
 	 */
 	@Override

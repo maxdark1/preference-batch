@@ -362,4 +362,7 @@ public interface PreferenceBatchConstants
 	 * The constant src_date
 	 */
 	String SRC_DATE = "src_date";
+	String UPDATED_BY = "updated_by";
+
+	String PREFERENCE_OUTBOUND_COMPLIANT_HEADERS = "email	effective_date	source_id	email_status	email_permission	language_preference	early_opt_in_date	cnd_compliant_flag	email_preference_hd_ca	email_pref_garden_club	email_pref_pro	src_postal_code	customer_nbr	phone_ptc_flag	dncl_supression	phone_number	first_name	last_name	industry_code	city	province	hd_ca_pro_src_id\n";
 }

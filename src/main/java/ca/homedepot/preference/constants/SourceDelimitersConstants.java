@@ -39,4 +39,6 @@ public interface SourceDelimitersConstants
 	String JOB_STATUS = "JOB_STATUS";
 
 	String VALID = "VALID";
+
+	String SINGLE_DELIMITER_TAB = "\t";
 }

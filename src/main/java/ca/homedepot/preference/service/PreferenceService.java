@@ -15,7 +15,7 @@ public interface PreferenceService
 
 	/**
 	 * Sends to API LayoutC endpoint Registration information
-	 * 
+	 *
 	 * @param items
 	 * @return registration response
 	 */
@@ -23,7 +23,7 @@ public interface PreferenceService
 
 	/**
 	 * Sends to API Unsubscribed LAyoutB information
-	 * 
+	 *
 	 * @param items
 	 * @return Registration Response with status
 	 */
@@ -31,7 +31,7 @@ public interface PreferenceService
 
 	/**
 	 * Inserts on persistence job information
-	 * 
+	 *
 	 * @param job_name
 	 * @param status
 	 * @param status_id
@@ -44,14 +44,14 @@ public interface PreferenceService
 
 	/**
 	 * Gets master's information
-	 * 
+	 *
 	 * @return Master information
 	 */
 	List<Master> getMasterInfo();
 
 	/**
 	 * Update job's status
-	 * 
+	 *
 	 * @param job
 	 * @param status
 	 * @return updated records
@@ -60,7 +60,7 @@ public interface PreferenceService
 
 	/**
 	 * Purge records with Sucess status
-	 * 
+	 *
 	 * @return
 	 */
 	int purgeStagingTableSuccessRecords();

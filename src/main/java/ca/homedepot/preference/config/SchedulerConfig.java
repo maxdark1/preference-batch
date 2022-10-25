@@ -8,18 +8,25 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
-import ca.homedepot.preference.listener.APIWriterListener;
+import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
+import ca.homedepot.preference.processor.preferenceOutboundProcessor;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
+import ca.homedepot.preference.read.PreferenceOutboundDBReader;
+import ca.homedepot.preference.read.preferenceOutboundReader;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
+import ca.homedepot.preference.writer.PreferenceOutboundFileWriter;
+import ca.homedepot.preference.writer.PreferenceOutboundWriter;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -28,6 +35,7 @@ import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.validator.ValidationException;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +44,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -79,6 +88,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private static final String JOB_NAME_REGISTRATION_FBSFMC_INBOUND = "registrationFBSFMCGardenClubInbound";
 
 	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
+
+	private static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 	/**
 	 * The Job builder factory.
 	 */
@@ -118,6 +129,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Value("${preference.centre.layoutb.chunk}")
 	Integer chunkLayoutB;
+	@Value("${preference.centre.outboundCRM.chunk}")
+	Integer chunkOutboundCRM;
 	/**
 	 * The folders paths
 	 */
@@ -154,6 +167,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String folderError;
 	@Value("${folders.processed}")
 	String folderProcessed;
+	@Value("${folders.outbound}")
+	String folderOutbound;
 
 	/**
 	 * Document's base name
@@ -262,6 +277,16 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return void
 	 */
+	@Autowired
+	private PreferenceOutboundWriter preferenceOutboundWriter;
+	@Autowired
+	private preferenceOutboundProcessor preferenceOutboundProcessor;
+	@Autowired
+	private preferenceOutboundReader preferenceOutboundReader;
+	@Autowired
+	private PreferenceOutboundDBReader preferenceOutboundDBReader;
+	@Autowired
+	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
 	@Autowired
 	public void setUpListener()
 	{
@@ -525,6 +550,24 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
 	}
 
+	@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
+	public void sendPreferencesToCRM() throws Exception
+	{
+		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_SEND_PREFERENCES_TO_CRM, String.valueOf(System.currentTimeMillis()))
+				.addString("directory", crmPath + folderOutbound).addString("source", SourceDelimitersConstants.CRM)
+				.addString("job_name", JOB_NAME_SEND_PREFERENCES_TO_CRM).toJobParameters();
+		JobExecution execution = jobLauncher.run(crmSendPreferencesToCRM(), param);
+		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
+	}
+
+	/*
+	 * Read inbound files
+	 */
+
+	/*
+	 * MultipleResourceItemReaders Use to read the existing files on the directory
 	/**
 	 * Create Multi Resource reader for LayoutC
 	 *
@@ -728,12 +771,20 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationHybrisInbound()
-	{
+	public Job registrationHybrisInbound() throws Exception {
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
 
+	}
+
+	public Job crmSendPreferencesToCRM() throws Exception
+	{
+		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readSendPreferencesToCRMStep1())
+				.on(PreferenceBatchConstants.COMPLETED_STATUS)
+				.to(readSendPreferencesToCRMStep2()).build()
+				.build();
 	}
 
 	/**
@@ -778,6 +829,24 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.to(readDBSFMCOptOutsStep2()).build().build();
 	}
 
+
+
+	public Step readSendPreferencesToCRMStep1() throws Exception
+	{
+		return stepBuilderFactory.get("readSendPreferencesToCRMStep1").<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
+				.reader(preferenceOutboundReader.outboundDBReader())
+				.writer(preferenceOutboundWriter)
+				.build();
+	}
+
+	public Step readSendPreferencesToCRMStep2() throws Exception
+	{
+		return stepBuilderFactory.get("readSendPreferencesToCRMStep2").<PreferenceOutboundDto, PreferenceOutboundDto>chunk(chunkOutboundCRM)
+				.reader(preferenceOutboundDBReader.outboundDBReader())
+			    .writer(preferenceOutboundFileWriter)
+				.build();
+	}
+
 	/**
 	 * Step 1 for hybris process.
 	 *
@@ -785,8 +854,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *           The job_name that is processing
 	 * @return the step
 	 */
-
-	public Step readInboundHybrisFileStep1(String jobName)
+	public Step readInboundHybrisFileStep1(String jobName) throws Exception
 	{
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(
