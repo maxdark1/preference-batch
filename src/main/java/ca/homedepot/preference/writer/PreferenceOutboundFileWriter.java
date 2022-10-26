@@ -2,20 +2,18 @@ package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
+import ca.homedepot.preference.dto.FileDTO;
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.batch.core.JobExecution;
 
 import java.math.BigDecimal;
 import java.text.Format;
@@ -51,12 +49,11 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
     public void write(List<? extends PreferenceOutboundDto> items) throws Exception {
         sourceId = items.get(0).getSource_id();
         String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
-        String line = "";
         String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
-        Format formatter = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 
         for (PreferenceOutboundDto preference: items) {
-            line = "";
+            String line = "";
             line = preference.getEmail() + split;
             line += formatter.format(preference.getEffective_date()) + split;
             line += preference.getSource_id() + split;
@@ -93,8 +90,8 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
      * @throws IOException
      */
     private void generateFile(String file) throws IOException {
-        Format formatter = new SimpleDateFormat("YYYYMMDD");
-        String file_name = file_name_format.replaceAll("YYYYMMDD", formatter.format(new Date()));
+        Format formatter = new SimpleDateFormat("yyyyMMdd");
+        String file_name = file_name_format.replace("yyyyMMdd", formatter.format(new Date()));
 
         writer = new FileOutputStream(repository_source + folder_source + file_name,false);
         byte toFile[] = file.getBytes();
@@ -109,7 +106,11 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
      */
     private void setFileRecord(String file_name){
         BigDecimal jobId = fileService.getJobId("sendPreferencesToCRM");
-        fileService.insert(file_name,"VALID",sourceId,new Date(),jobId,new Date(),"BATCH",BigDecimal.valueOf(19),new Date());
+        Master fileStatus = MasterProcessor.getSourceID("STATUS", SourceDelimitersConstants.VALID);
+        FileDTO file = new FileDTO(null, file_name, jobId, sourceId, fileStatus.getValue_val(), fileStatus.getMaster_id(),
+                new Date(), new Date(), "BATCH", new Date(), null, null);
+
+        fileService.insert(file);
     }
 
 }

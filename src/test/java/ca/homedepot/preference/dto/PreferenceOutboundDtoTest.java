@@ -27,7 +27,7 @@ class PreferenceOutboundDtoTest {
     void testHashCode() {
         preferenceOutboundDto = new PreferenceOutboundDto();
         int test = preferenceOutboundDto.hashCode();
-        assertNotNull(test);
+        assertEquals(test, preferenceOutboundDto.hashCode());
     }
 
     @Test

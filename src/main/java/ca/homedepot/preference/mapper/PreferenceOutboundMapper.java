@@ -10,6 +10,13 @@ import java.sql.SQLException;
 @Service
 public class PreferenceOutboundMapper implements RowMapper<PreferenceOutboundDto>
 {
+	/**
+	 * This mapped is used to get the data for Inbound Tables
+	 * @param rs the ResultSet to map (pre-initialized for the current row)
+	 * @param i the number of the current row
+	 * @return
+	 * @throws SQLException
+	 */
 	@Override
 	public PreferenceOutboundDto mapRow(ResultSet rs, int i) throws SQLException
 	{
