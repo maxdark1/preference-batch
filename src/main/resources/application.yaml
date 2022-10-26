@@ -2,7 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/preference-centre-db
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password:
     driverClassName: org.postgresql.Driver
@@ -43,6 +43,7 @@ cron:
     fbsfmcIngestion: 30 * * * * *
     ingestSFMCOutlookUnsubscribed: 30 * * * * *
     sendPreferencesToCRM: 30 * * * * *
+    sendPreferencesToCitiSuppresion: 30 * * * * *
 
 server:
   port: 8080
@@ -69,6 +70,8 @@ inbound:
 outbound:
   files:
     compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
+  citi:
+    mastersuppresion: ACXIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.csv
 
 folders:
   inbound: \INBOUND\
@@ -83,6 +86,8 @@ folders:
     path: C:\batchFiles\Hybris
   sfmc:
     path: C:\batchFiles\SFMC
+  citi:
+    path: C:\batchFiles\CITI
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT

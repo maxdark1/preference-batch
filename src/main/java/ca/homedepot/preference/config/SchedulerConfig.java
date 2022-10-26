@@ -7,9 +7,12 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
+import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
+import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.processor.preferenceOutboundProcessor;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
@@ -18,9 +21,7 @@ import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.preferenceOutboundReader;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
-import ca.homedepot.preference.writer.PreferenceOutboundFileWriter;
-import ca.homedepot.preference.writer.PreferenceOutboundWriter;
-import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
+import ca.homedepot.preference.writer.*;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -61,7 +62,6 @@ import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import ca.homedepot.preference.util.validation.InboundValidator;
-import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -90,6 +90,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
 
 	private static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
+
+	private static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
 	/**
 	 * The Job builder factory.
 	 */
@@ -287,6 +289,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private PreferenceOutboundDBReader preferenceOutboundDBReader;
 	@Autowired
 	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
+
+
+	@Autowired
+	private CitiSupressionFileWriter citiSupressionFileWriter;
+
 	@Autowired
 	public void setUpListener()
 	{
@@ -562,21 +569,30 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
 	}
 
+	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
+	public void sendCitiSuppresionToCitiSuppresion() throws Exception
+	{
+		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_CITI_SUPPRESION, String.valueOf(System.currentTimeMillis()))
+				.addString("job_name", JOB_NAME_CITI_SUPPRESION).toJobParameters();
+		JobExecution execution = jobLauncher.run(sendCitiSuppresionToCiti(), param);
+		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
+	}
+
 	/*
 	 * Read inbound files
 	 */
 
 	/*
-	 * MultipleResourceItemReaders Use to read the existing files on the directory
-	/**
-	 * Create Multi Resource reader for LayoutC
+	 * MultipleResourceItemReaders Use to read the existing files on the directory /** Create Multi Resource reader for
+	 * LayoutC
 	 *
-	 * @param directory:
-	 *           directory where the file comes from
-	 * @param source:
-	 *           source where the file comes from
-	 * @param jobName:
-	 *           job that is in execution
+	 * @param directory: directory where the file comes from
+	 * 
+	 * @param source: source where the file comes from
+	 * 
+	 * @param jobName: job that is in execution
 	 *
 	 * @return MultiResourceItemReader<InboundRegistration>
 	 */
@@ -765,13 +781,27 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
+	@Bean
+	public JdbcBatchItemWriter<CitiSuppresionOutboundDTO> outboundDTOJdbcBatchItemWriter()
+	{
+		JdbcBatchItemWriter<CitiSuppresionOutboundDTO> writer = new JdbcBatchItemWriter<>();
+
+		writer.setDataSource(dataSource);
+		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_CITI_SUPPRESION);
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<CitiSuppresionOutboundDTO>());
+		writer.setItemPreparedStatementSetter(new CitiSuppresionPreparedStatement());
+
+		return writer;
+	}
+
 
 	/**
 	 * Hybris job process.
 	 *
 	 * @return the job
 	 */
-	public Job registrationHybrisInbound() throws Exception {
+	public Job registrationHybrisInbound() throws Exception
+	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
@@ -781,10 +811,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job crmSendPreferencesToCRM() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSendPreferencesToCRMStep1())
-				.on(PreferenceBatchConstants.COMPLETED_STATUS)
-				.to(readSendPreferencesToCRMStep2()).build()
-				.build();
+				.start(readSendPreferencesToCRMStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
+				.to(readSendPreferencesToCRMStep2()).build().build();
 	}
 
 	/**
@@ -829,22 +857,28 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.to(readDBSFMCOptOutsStep2()).build().build();
 	}
 
+	public Job sendCitiSuppresionToCiti()
+	{
+		return jobBuilderFactory.get(JOB_NAME_CITI_SUPPRESION).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(citiSuppresionDBReaderStep1()).build();
+	}
+
 
 
 	public Step readSendPreferencesToCRMStep1() throws Exception
 	{
-		return stepBuilderFactory.get("readSendPreferencesToCRMStep1").<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
-				.reader(preferenceOutboundReader.outboundDBReader())
-				.writer(preferenceOutboundWriter)
-				.build();
+		return stepBuilderFactory.get("readSendPreferencesToCRMStep1")
+				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
+				.reader(preferenceOutboundReader.outboundDBReader()).writer(preferenceOutboundWriter).build();
 	}
+
 
 	public Step readSendPreferencesToCRMStep2() throws Exception
 	{
-		return stepBuilderFactory.get("readSendPreferencesToCRMStep2").<PreferenceOutboundDto, PreferenceOutboundDto>chunk(chunkOutboundCRM)
-				.reader(preferenceOutboundDBReader.outboundDBReader())
-			    .writer(preferenceOutboundFileWriter)
-				.build();
+		System.out.println("HELLO EJECUTANDOME");
+		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
+				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
+				.reader(preferenceOutboundDBReader.outboundDBReader()).writer(preferenceOutboundFileWriter).build();
 	}
 
 	/**
@@ -943,6 +977,25 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutB)
 				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).build();
 
+	}
+
+	/**
+	 * Out bound process
+	 */
+	@Bean
+	public Step citiSuppresionDBReaderStep1()
+	{
+		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
+				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkValue)
+				.reader(preferenceOutboundReader.outboundCitiSuppresionDBReader()).writer(outboundDTOJdbcBatchItemWriter()).build();
+	}
+
+
+	public Step citiSuppresionDBReaderFileWriterStep2()
+	{
+		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
+				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkValue)
+				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter).build();
 	}
 
 	/**

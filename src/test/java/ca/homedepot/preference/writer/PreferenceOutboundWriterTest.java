@@ -9,56 +9,66 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-class PreferenceOutboundWriterTest {
+class PreferenceOutboundWriterTest
+{
 
-    @Mock
-    OutboundService outboundService;
-    @InjectMocks
-    PreferenceOutboundWriter writer = new PreferenceOutboundWriter();
-
-
-
-
-
-    @Test
-    @DisplayName("Should write the data into de DB")
-
-    void testWrite() throws Exception {
-        //Given
+	@Mock
+	OutboundService outboundService;
+	@InjectMocks
+	PreferenceOutboundWriter writer = new PreferenceOutboundWriter();
 
 
 
-    }
 
-    @Test
-    void getDataSource() {
-    }
 
-    @Test
-    void getOutboundService() {
-    }
+	@Test
+	@DisplayName("Should write the data into de DB")
 
-    @Test
-    void setDataSource() {
-    }
+	void testWrite() throws Exception
+	{
+		//Given
 
-    @Test
-    void setOutboundService() {
-    }
 
-    @Test
-    void testEquals() {
-    }
 
-    @Test
-    void canEqual() {
-    }
+	}
 
-    @Test
-    void testHashCode() {
-    }
+	@Test
+	void getDataSource()
+	{
+	}
 
-    @Test
-    void testToString() {
-    }
+	@Test
+	void getOutboundService()
+	{
+	}
+
+	@Test
+	void setDataSource()
+	{
+	}
+
+	@Test
+	void setOutboundService()
+	{
+	}
+
+	@Test
+	void testEquals()
+	{
+	}
+
+	@Test
+	void canEqual()
+	{
+	}
+
+	@Test
+	void testHashCode()
+	{
+	}
+
+	@Test
+	void testToString()
+	{
+	}
 }

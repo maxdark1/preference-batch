@@ -7,8 +7,12 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 
 @Service
-public interface OutboundService {
-    void preferenceOutbound(PreferenceOutboundDto item);
+public interface OutboundService
+{
+	void preferenceOutbound(PreferenceOutboundDto item);
 
-    void truncateCompliantTable();
+	void truncateCompliantTable();
+
+
+	int purgeCitiSuppresionTable();
 }

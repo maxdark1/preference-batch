@@ -3,7 +3,9 @@ package ca.homedepot.preference.read;
 
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
 import ca.homedepot.preference.service.OutboundService;
 import lombok.Data;
@@ -40,9 +42,29 @@ public class preferenceOutboundReader
 		return reader;
 	}
 
-	public void truncateTable(){
+	public JdbcCursorItemReader<CitiSuppresionOutboundDTO> outboundCitiSuppresionDBReader()
+	{
+		purgeCitiSuppresionTable();
+		log.info(" Preference Outbound : Preference Outbound Reader for Citi Suppresion Started at:" + new Date());
+		JdbcCursorItemReader<CitiSuppresionOutboundDTO> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1);
+		reader.setRowMapper(new CitiSuppresionOutboundMapper());
+
+		return reader;
+	}
+
+	public void truncateTable()
+	{
 		log.info("Deleting hdpc_out_daily_compliant Table :" + new Date());
 		outboundService.truncateCompliantTable();
+	}
 
+	public void purgeCitiSuppresionTable()
+	{
+
+		outboundService.purgeCitiSuppresionTable();
+		log.info("Deleting hdpc_out_citi_suppression records at: {}", new Date());
 	}
 }
