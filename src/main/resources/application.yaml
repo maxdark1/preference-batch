@@ -102,3 +102,5 @@ preference:
       chunk: 10
     outboundCRM:
       chunk: 10
+    outboundCiti:
+      chunk: 20

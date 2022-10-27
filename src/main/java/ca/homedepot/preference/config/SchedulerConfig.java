@@ -133,6 +133,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	Integer chunkLayoutB;
 	@Value("${preference.centre.outboundCRM.chunk}")
 	Integer chunkOutboundCRM;
+	@Value("${preference.centre.outboundCiti.chunk}")
+	Integer chunkOutboundCiti;
 	/**
 	 * The folders paths
 	 */
@@ -860,7 +862,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job sendCitiSuppresionToCiti()
 	{
 		return jobBuilderFactory.get(JOB_NAME_CITI_SUPPRESION).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(citiSuppresionDBReaderStep1()).build();
+				.start(citiSuppresionDBReaderStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
+				.to(citiSuppresionDBReaderFileWriterStep2()).build().build();
 	}
 
 
@@ -868,16 +871,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readSendPreferencesToCRMStep1() throws Exception
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep1")
-				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
+				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundReader.outboundDBReader()).writer(preferenceOutboundWriter).build();
 	}
 
 
 	public Step readSendPreferencesToCRMStep2() throws Exception
 	{
-		System.out.println("HELLO EJECUTANDOME");
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
-				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
+				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundDBReader.outboundDBReader()).writer(preferenceOutboundFileWriter).build();
 	}
 

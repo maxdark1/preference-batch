@@ -11,7 +11,6 @@ public class CitiSuppresionPreparedStatement implements ItemPreparedStatementSet
 	@Override
 	public void setValues(CitiSuppresionOutboundDTO item, PreparedStatement ps) throws SQLException
 	{
-		System.out.println(item);
 		ps.setString(1, item.getFirstName());
 		ps.setString(2, item.getMiddleInitial());
 		ps.setString(3, item.getLastName());

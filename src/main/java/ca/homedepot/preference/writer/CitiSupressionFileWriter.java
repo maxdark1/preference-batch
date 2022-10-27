@@ -1,15 +1,10 @@
 package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
-import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
@@ -20,8 +15,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.Writer;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -39,7 +32,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	@Value("${folders.outbound}")
 	private String folderSource;
 	@Value("${outbound.citi.mastersuppresion}")
-	private String file_name_format;
+	private String fileNameFormat;
 
 	@Autowired
 	private FileService fileService;
@@ -58,7 +51,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	public void setResourcePostConstruct()
 	{
 		Format formatter = new SimpleDateFormat("YYYYMMDD");
-		fileName = file_name_format.replaceAll("YYYYMMDD", formatter.format(new Date()));
+		fileName = fileNameFormat.replaceAll("YYYYMMDD", formatter.format(new Date()));
 
 		setResource(new FileSystemResource(repositorySource + folderSource + fileName));
 	}
