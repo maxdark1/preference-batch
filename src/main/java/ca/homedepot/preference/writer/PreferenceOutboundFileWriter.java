@@ -43,79 +43,77 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Autowired
 	private FileService fileService;
 
-	@Override
-	public void write(List<? extends PreferenceOutboundDto> items) throws Exception
-	{
-		sourceId = items.get(0).getSource_id();
-		String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
-		String line = "";
-		String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
-		Format formatter = new SimpleDateFormat("YYYY-MM-DD HH:MM:SS");
+    /**
+     * Method used to generate a plain text file
+     * @param items items to be written
+     * @throws Exception
+     */
+    @Override
+    public void write(List<? extends PreferenceOutboundDto> items) throws Exception {
+        sourceId = items.get(0).getSourceId();
+        String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
+        String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 
-		for (PreferenceOutboundDto preference : items)
-		{
-			line = "";
-			line = preference.getEmail() + split;
-			line += formatter.format(preference.getEffective_date()) + split;
-			line += preference.getSource_id() + split;
-			line += preference.getEmail_status() + split;
-			line += preference.getPhone_ptc_flag() + split;
-			line += preference.getLanguage_pref() + split;
-			line += formatter.format(preference.getEarly_opt_in_date()) + split;
-			line += preference.getCnd_compliant_flag() + split;
-			line += preference.getEmail_pref_hd_ca() + split;
-			line += preference.getEmail_pref_garden_club() + split;
-			line += preference.getEmail_pref_pro() + split;
-			line += preference.getPostal_code() + split;
-			line += preference.getCustomer_nbr() + split;
-			line += preference.getPhone_ptc_flag() + split;
-			line += preference.getDncl_suppresion() + split;
-			line += preference.getPhone_number() + split;
-			line += preference.getFirst_name() + split;
-			line += preference.getLast_name() + split;
-			line += preference.getBusiness_name() + split;
-			line += preference.getIndustry_code() + split;
-			line += preference.getCity() + split;
-			line += preference.getProvince() + split;
-			line += preference.getHd_ca_pro_src_id() + "\n";
-			file += line;
-		}
+        for (PreferenceOutboundDto preference: items) {
+            String line = "";
+            line = preference.getEmail() + split;
+            line += formatter.format(preference.getEffectiveDate()) + split;
+            line += preference.getSourceId() + split;
+            line += preference.getEmailStatus() +split;
+            line += preference.getPhonePtcFlag() + split;
+            line += preference.getLanguagePref() +split;
+            line += formatter.format(preference.getEarlyOptInDate()) + split;
+            line += preference.getCndCompliantFlag() + split;
+            line += preference.getEmailPrefHdCa() + split;
+            line += preference.getEmailPrefGardenClub() + split;
+            line += preference.getEmailPrefPro() + split;
+            line += preference.getPostalCode() + split;
+            line += preference.getCustomerNbr() + split;
+            line += preference.getPhonePtcFlag() + split;
+            line += preference.getDnclSuppresion() + split;
+            line += preference.getPhoneNumber() + split;
+            line += preference.getFirstName() + split;
+            line += preference.getLastName() + split;
+            line += preference.getBusinessName() + split;
+            line += preference.getIndustryCode() + split;
+            line += preference.getCity() + split;
+            line += preference.getProvince() + split;
+            line += preference.getHdCaProSrcId() + "\n";
+            file += line;
+    }
 
 		generateFile(file);
 
 	}
 
-	public void generateFile(String file) throws IOException
-	{
-		Format formatter = new SimpleDateFormat("YYYYMMDD");
-		String file_name = file_name_format.replaceAll("YYYYMMDD", formatter.format(new Date()));
+    /**
+     * This Method saves in a plain text file the string that receives as parameter
+     * @param file
+     * @throws IOException
+     */
+    private void generateFile(String file) throws IOException {
+        Format formatter = new SimpleDateFormat("yyyyMMdd");
+        String fileName = file_name_format.replace("yyyyMMdd", formatter.format(new Date()));
 
-		writer = new FileOutputStream(repository_source + folder_source + file_name, false);
-		byte toFile[] = file.getBytes();
-		writer.write(toFile);
-		writer.close();
-		setFileRecord(file_name);
-	}
+        writer = new FileOutputStream(repository_source + folder_source + fileName,false);
+        byte toFile[] = file.getBytes();
+        writer.write(toFile);
+        writer.close();
+        setFileRecord(fileName);
+    }
 
-	public void setFileRecord(String file_name)
-	{
-		ExecutionContext stepExec = this.stepExecution.getExecutionContext();
-		JobExecution jobExec = this.stepExecution.getJobExecution();
-		BigDecimal jobId = fileService.getJobId("sendPreferencesToCRM");
-		fileService.insert(file_name, "VALID", sourceId, new Date(), jobId, new Date(), "BATCH", BigDecimal.valueOf(19),
-				new Date());
+    /**
+     * This method registry in file table the generated file
+     * @param fileName
+     */
+    private void setFileRecord(String fileName){
+        BigDecimal jobId = fileService.getJobId("sendPreferencesToCRM");
+        Master fileStatus = MasterProcessor.getSourceID("STATUS", SourceDelimitersConstants.VALID);
+        FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(),
+                new Date(), new Date(), "BATCH", new Date(), null, null);
 
-	}
+        fileService.insert(file);
+    }
 
-	@Override
-	public void beforeStep(StepExecution stepExecution)
-	{
-		this.stepExecution = stepExecution;
-	}
-
-	@Override
-	public ExitStatus afterStep(StepExecution stepExecution)
-	{
-		return stepExecution.getExitStatus();
-	}
 }

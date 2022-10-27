@@ -65,8 +65,8 @@ public class JobListener implements JobExecutionListener
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
 
 		Master master = status(jobExecution.getStatus());
-		job.setStatus(master.getValue_val());
-		job.setStatus_id(master.getMaster_id());
+		job.setStatus(master.getValueVal());
+		job.setStatus_id(master.getMasterId());
 		job.setStart_time(jobExecution.getStartTime());
 		job.setInserted_by("BATCH");
 		job.setInserted_date(new Date());
@@ -129,8 +129,8 @@ public class JobListener implements JobExecutionListener
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
 
 		Master master = status(jobExecution.getStatus());
-		job.setStatus(master.getValue_val());
-		job.setStatus_id(master.getMaster_id());
+		job.setStatus(master.getValueVal());
+		job.setStatus_id(master.getMasterId());
 
 		job.setUpdated_date(new Date());
 		job.setStart_time(jobExecution.getStartTime());

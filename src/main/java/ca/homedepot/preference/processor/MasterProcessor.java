@@ -45,7 +45,7 @@ public class MasterProcessor
 	public static Master getSourceID(String key_val, String value_val)
 	{
 		return masterList.stream()
-				.filter(master -> master.getKey_value().equals(key_val) && master.getValue_val().equals(value_val)).findFirst().get();
+				.filter(master -> master.getKeyValue().equals(key_val) && master.getValueVal().equals(value_val)).findFirst().get();
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class MasterProcessor
 	 */
 	public static String getValueVal(BigDecimal masterId)
 	{
-		return masterList.stream().filter(master -> master.getMaster_id().equals(masterId)).map(master -> master.getValue_val())
+		return masterList.stream().filter(master -> master.getMasterId().equals(masterId)).map(master -> master.getValueVal())
 				.findFirst().get();
 	}
 
@@ -76,8 +76,8 @@ public class MasterProcessor
 			/**
 			 * Gets the MasterID from the Master List
 			 */
-			return masterList.stream().filter(master -> master.getOld_id() != null && master.getKey_value().equals("SOURCE_ID")
-					&& master.getOld_id().toPlainString().equals(oldId)).findFirst().get().getMaster_id();
+			return masterList.stream().filter(master -> master.getOldID() != null && master.getKeyValue().equals("SOURCE_ID")
+					&& master.getOldID().toPlainString().equals(oldId)).findFirst().get().getMasterId();
 		}
 		catch (Exception e)
 		{

@@ -26,13 +26,12 @@ class PreferenceOutboundDtoTest
 		assertTrue(test);
 	}
 
-	@Test
-	void testHashCode()
-	{
-		preferenceOutboundDto = new PreferenceOutboundDto();
-		int test = preferenceOutboundDto.hashCode();
-		assertNotNull(test);
-	}
+    @Test
+    void testHashCode() {
+        preferenceOutboundDto = new PreferenceOutboundDto();
+        int test = preferenceOutboundDto.hashCode();
+        assertEquals(test, preferenceOutboundDto.hashCode());
+    }
 
 	@Test
 	void testToString()

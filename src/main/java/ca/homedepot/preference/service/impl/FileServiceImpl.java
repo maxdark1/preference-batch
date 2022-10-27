@@ -52,26 +52,9 @@ public class FileServiceImpl implements FileService
 	/**
 	 * Inserts file on persistence
 	 *
-	 * @param file_name
-	 * @param status
-	 * @param source_id
-	 * @param start_time
-	 * @param job_id
-	 * @param inserted_date
-	 * @param inserted_by
-	 * @param status_id
-	 * @param endTime
+	 * @param file
 	 * @return inserted records
 	 */
-	@Override
-	@Transactional
-	public int insert(String file_name, String status, BigDecimal source_id, Date start_time, BigDecimal job_id,
-			Date inserted_date, String inserted_by, BigDecimal status_id, Date endTime)
-	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file_name, job_id, source_id, status, start_time,
-				inserted_by, inserted_date, status_id, endTime);
-	}
-
 	@Override
 	@Transactional
 	public int insert(FileDTO file)
@@ -162,7 +145,7 @@ public class FileServiceImpl implements FileService
 	public int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy, Date endTime, Master status)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_ENDTIME_FILE, endTime, updatedDate, updatedBy,
-				status.getValue_val(), status.getMaster_id(), fileId);
+				status.getValueVal(), status.getMasterId(), fileId);
 	}
 
 	/**
