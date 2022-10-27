@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
-import ca.homedepot.preference.processor.preferenceOutboundProcessor;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
@@ -25,8 +24,6 @@ import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -35,7 +32,6 @@ import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.validator.ValidationException;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +40,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -280,8 +275,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private PreferenceOutboundWriter preferenceOutboundWriter;
 	@Autowired
-	private preferenceOutboundProcessor preferenceOutboundProcessor;
-	@Autowired
 	private preferenceOutboundReader preferenceOutboundReader;
 	@Autowired
 	private PreferenceOutboundDBReader preferenceOutboundDBReader;
@@ -471,7 +464,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	//@Scheduled(cron = "${cron.job.hybrisIngestion}")
+	@Scheduled(cron = "${cron.job.hybrisIngestion}")
 	public void processRegistrationHybrisInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -538,7 +531,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	//@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
+	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processsSFMCOptOutsEmail() throws Exception
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
@@ -566,11 +559,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
 	}
 
-	/*
+	/**
 	 * Read inbound files
 	 */
 
-	/*
+	/**
 	 * MultipleResourceItemReaders Use to read the existing files on the directory
 	/**
 	 * Create Multi Resource reader for LayoutC

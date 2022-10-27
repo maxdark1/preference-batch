@@ -260,7 +260,7 @@ public class InboundValidator
 		 */
 		if (value == null || value.isEmpty() || value.isBlank())
 		{
-			return MasterProcessor.getSourceID("SOURCE_ID", getSource(source)).getMaster_id();
+			return MasterProcessor.getSourceID("SOURCE_ID", getSource(source)).getMasterId();
 		}
 		BigDecimal masterId = MasterProcessor.getSourceID(value);
 		/**

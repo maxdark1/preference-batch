@@ -43,7 +43,7 @@ class PreferenceOutboundMapperStep2Test {
 
         PreferenceOutboundDto preferenceOutboundDto = PreferenceOutboundMapperStep2.mapRow(resultSet, row);
         assertNotNull(preferenceOutboundDto);
-        assertEquals(preferenceOutboundDto.getSource_id(), BigDecimal.ONE);
+        assertEquals(preferenceOutboundDto.getSourceId(), BigDecimal.ONE);
         assertEquals(preferenceOutboundDto.getEmail(), "juan@lara.com");
 
     }

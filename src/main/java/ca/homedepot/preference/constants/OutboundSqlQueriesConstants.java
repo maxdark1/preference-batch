@@ -19,16 +19,16 @@ public final class OutboundSqlQueriesConstants {
             "\t  MIN(pref.opt_in_date) early_opt_in_date,\n" +
             "\t  CASE\n" +
             "\t  \tWHEN cust_email.permission_val = true AND email.status_id <> '00' then 'Y' else 'N' end cnd_compliant_flag,\n" +
-            "\t  CASE WHEN pref.preference_type = 6 AND pref.active then 'Y' else 'N' end email_pref_hd_ca,\n" +
-            "      CASE WHEN pref.preference_type = 7 AND pref.active then 'Y' else 'N' end email_pref_garden_club,\n" +
-            "      CASE WHEN pref.preference_type = 8 AND pref.active then 'Y' else 'N' end email_pref_pro,\n" +
+            "\t  CASE WHEN pref.preference_type = 6 AND pref.permission_val then 'Y' else 'N' end email_pref_hd_ca,\n" +
+            "      CASE WHEN pref.preference_type = 7 AND pref.permission_val then 'Y' else 'N' end email_pref_garden_club,\n" +
+            "      CASE WHEN pref.preference_type = 8 AND pref.permission_val then 'Y' else 'N' end email_pref_pro,\n" +
             "\t  addr.postal_code          src_postal_code,\n" +
             "\t  cust_extn.customer_nbr    customer_nbr,\n" +
-            "   CASE \n" +
+            "\t  CASE \n" +
             "\t  \tWHEN cust_phone.text_permission is null then 'U'  \n" +
             "\t\tWHEN cust_phone.text_permission = true then 'Y'\n" +
             "\t\tWHEN cust_phone.text_permission = false then 'N' end phone_ptc_flag,\n" +
-            "\t  CASE \n" +
+            "\t  CASE " +
             "\t  \tWHEN cust_phone.call_permission is null then 'U'  \n" +
             "\t\tWHEN cust_phone.call_permission = true then 'Y'\n" +
             "\t\tWHEN cust_phone.call_permission = false then 'N' end dncl_suppresion,\n" +
@@ -63,7 +63,7 @@ public final class OutboundSqlQueriesConstants {
             "\temail.source_type,\n" +
             "\temail.status_id,\n" +
             "\tcust_email.permission_val,\n" +
-            "\tpref.active,\n" +
+            "\tpref.permission_val,\n" +
             "\tcust.language_pref,\n" +
             "\tpref.opt_in_date,\n" +
             "\tpref.preference_type,\n" +
@@ -77,13 +77,7 @@ public final class OutboundSqlQueriesConstants {
             "\tcust_extn.business_name,\n" +
             "\tcust_extn.industry_code,\n" +
             "\taddr.city,\n" +
-            "\taddr.province\n" +
-            "\n" +
-            "\t\n" +
-            "\t--select * from hdpc_customer_preference\n" +
-            "\t--select * from hdpc_customer_email\n" +
-            "\t--select * from hdpc_email\n" +
-            "\t--select * from hdpc_customer";
+            "\taddr.province";
 
     public static final String SQL_INSERT_STG_PREFERENCE_OUTBOUND = "INSERT INTO public.hdpc_out_daily_compliant(\n" +
             "\temail_addr, \n" +

@@ -145,7 +145,7 @@ public class FileServiceImpl implements FileService
 	public int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy, Date endTime, Master status)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_ENDTIME_FILE, endTime, updatedDate, updatedBy,
-				status.getValue_val(), status.getMaster_id(), fileId);
+				status.getValueVal(), status.getMasterId(), fileId);
 	}
 
 	/**
