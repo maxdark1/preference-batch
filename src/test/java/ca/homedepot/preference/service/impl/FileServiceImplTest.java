@@ -158,7 +158,7 @@ class FileServiceImplTest
 		int updatedRecords = 1;
 
 		when(jdbcTemplate.update(anyString(), eq(endTime), eq(updatedDate), eq(updatedBy), eq(fileId),
-				eq(statusMaster.getMaster_id()), eq(statusMaster.getValue_val()))).thenReturn(updatedRecords);
+				eq(statusMaster.getMasterId()), eq(statusMaster.getValueVal()))).thenReturn(updatedRecords);
 		when(fileService.updateFileEndTime(fileId, updatedDate, updatedBy, endTime, statusMaster)).thenReturn(updatedRecords);
 
 		int currentUpdatedRecords = fileService.updateFileEndTime(fileId, updatedDate, updatedBy, endTime, statusMaster);

@@ -44,8 +44,8 @@ public class MasterProcessor
 	 */
 	public static Master getSourceID(String key_val, String value_val)
 	{
-		return masterList.stream()
-				.filter(master -> master.getKeyValue().equals(key_val) && master.getValueVal().equals(value_val)).findFirst().get();
+		return masterList.stream().filter(master -> master.getKeyValue().equals(key_val) && master.getValueVal().equals(value_val))
+				.findFirst().get();
 	}
 
 	/**

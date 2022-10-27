@@ -22,7 +22,9 @@ public class PreferenceOutboundWriter implements ItemWriter<PreferenceOutboundDt
 
 	/**
 	 * This method is used for get the data read by reader and generate a plain text file
-	 * @param list items to be written
+	 * 
+	 * @param list
+	 *           items to be written
 	 * @throws Exception
 	 */
 	@Override

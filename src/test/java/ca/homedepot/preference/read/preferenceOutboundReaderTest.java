@@ -21,37 +21,42 @@ import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
 import org.mockito.Mockito;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 
-class preferenceOutboundReaderTest {
+class preferenceOutboundReaderTest
+{
 
-    @Mock
-    DataSource dataSource = null;
+	@Mock
+	DataSource dataSource = null;
 
-    @Mock
-    PreferenceOutboundMapper mapper;
-    @InjectMocks
-    private preferenceOutboundReader reader = new preferenceOutboundReader();
+	@Mock
+	PreferenceOutboundMapper mapper;
+	@InjectMocks
+	private preferenceOutboundReader reader = new preferenceOutboundReader();
 
-    @Test
-    void getDataSource() {
-        dataSource = reader.getDataSource();
-        assertNull(dataSource);
-    }
+	@Test
+	void getDataSource()
+	{
+		dataSource = reader.getDataSource();
+		assertNull(dataSource);
+	}
 
-    @Test
-    void setDataSource() {
-        reader.setDataSource(dataSource);
-        assertNull(reader.getDataSource());
-    }
-
-
-    @Test
-    void canEqual() {
-        assertTrue(reader.canEqual(reader));
-    }
+	@Test
+	void setDataSource()
+	{
+		reader.setDataSource(dataSource);
+		assertNull(reader.getDataSource());
+	}
 
 
-    @Test
-    void testToString() {
-        assertNotNull(reader.toString());
-    }
+	@Test
+	void canEqual()
+	{
+		assertTrue(reader.canEqual(reader));
+	}
+
+
+	@Test
+	void testToString()
+	{
+		assertNotNull(reader.toString());
+	}
 }
