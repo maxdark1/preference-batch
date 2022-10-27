@@ -47,16 +47,16 @@ class MasterProcessorTest
 		MockitoAnnotations.initMocks(this);
 
 		master = new Master();
-		master.setMaster_id(new BigDecimal("1"));
-		master.setKey_value("SOURCE");
-		master.setValue_val("hybris");
-		master.setOld_id(BigDecimal.ONE);
+		master.setMasterId(new BigDecimal("1"));
+		master.setKeyValue("SOURCE");
+		master.setValueVal("hybris");
+		master.setOldID(BigDecimal.ONE);
 
 		Master master2 = new Master();
-		master2.setMaster_id(new BigDecimal("2"));
-		master2.setKey_value("SOURCE_ID");
-		master2.setValue_val("nurun");
-		master2.setOld_id(BigDecimal.ONE);
+		master2.setMasterId(new BigDecimal("2"));
+		master2.setKeyValue("SOURCE_ID");
+		master2.setValueVal("nurun");
+		master2.setOldID(BigDecimal.ONE);
 
 		masterInfo = new ArrayList<>();
 		masterInfo.add(master);
@@ -83,7 +83,7 @@ class MasterProcessorTest
 	{
 		Master master1 = masterProcessor.getSourceID("SOURCE", "hybris");
 
-		assertEquals(this.master.getMaster_id(), master1.getMaster_id());
+		assertEquals(this.master.getMasterId(), master1.getMasterId());
 	}
 
 	@Test

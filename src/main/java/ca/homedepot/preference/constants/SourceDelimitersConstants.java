@@ -3,7 +3,8 @@ package ca.homedepot.preference.constants;
 public final class SourceDelimitersConstants
 {
 
-	private SourceDelimitersConstants(){
+	private SourceDelimitersConstants()
+	{
 
 	}
 

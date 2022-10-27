@@ -5,9 +5,11 @@ package ca.homedepot.preference.constants;
  */
 public final class SqlQueriesConstants
 {
-	private SqlQueriesConstants(){
+	private SqlQueriesConstants()
+	{
 
 	}
+
 	/**************************************
 	 * SELECTS
 	 ***************************************/
@@ -54,8 +56,9 @@ public final class SqlQueriesConstants
 	/**
 	 * Gets all files to move, Those that don't have "end_time"
 	 */
-	public static String SQL_GET_FILES_TO_MOVE = "SELECT file_id, file_name, source_type, hdpc_master.value_val\n" + "\tFROM public.hdpc_file\n"
-			+ "\tINNER JOIN hdpc_master ON hdpc_master.master_id = hdpc_file.source_type\n" + "\tWHERE end_time is null;";
+	public static String SQL_GET_FILES_TO_MOVE = "SELECT file_id, file_name, source_type, hdpc_master.value_val\n"
+			+ "\tFROM public.hdpc_file\n" + "\tINNER JOIN hdpc_master ON hdpc_master.master_id = hdpc_file.source_type\n"
+			+ "\tWHERE end_time is null;";
 
 
 	/**************************************
