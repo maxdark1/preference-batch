@@ -879,7 +879,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readSendPreferencesToCRMStep1()
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep1")
-				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCiti)
+				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
 				.reader(preferenceOutboundReader.outboundDBReader()).writer(preferenceOutboundWriter).build();
 	}
 
@@ -891,7 +891,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readSendPreferencesToCRMStep2()
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
-				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCiti)
+				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
 				.reader(preferenceOutboundDBReader.outboundDBReader()).writer(preferenceOutboundFileWriter).build();
 	}
 
@@ -1000,7 +1000,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step citiSuppresionDBReaderStep1()
 	{
 		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
-				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkValue)
+				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundReader.outboundCitiSuppresionDBReader()).writer(outboundDTOJdbcBatchItemWriter()).build();
 	}
 
@@ -1008,7 +1008,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step citiSuppresionDBReaderFileWriterStep2()
 	{
 		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
-				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkValue)
+				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter).build();
 	}
 
