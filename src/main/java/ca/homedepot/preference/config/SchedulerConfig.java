@@ -487,7 +487,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	//@Scheduled(cron = "${cron.job.crmIngestion}")
+	@Scheduled(cron = "${cron.job.crmIngestion}")
 	public void processRegistrationCRMInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
@@ -509,7 +509,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	//@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
+	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
 	public void processFBSFMCInbound() throws Exception
 	{
 		log.info(" Registration Inbound : Registration Job started at :" + new Date());
