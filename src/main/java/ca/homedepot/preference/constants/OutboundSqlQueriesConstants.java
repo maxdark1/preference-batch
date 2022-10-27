@@ -17,11 +17,13 @@ public final class OutboundSqlQueriesConstants {
             "\t\tWHEN cust_email.permission_val = false then 'N' end email_permission,\n" +
             "\t  cust.language_pref language_preference,\n" +
             "\t  MIN(pref.opt_in_date) early_opt_in_date,\n" +
-            "\t  CASE\n" +
-            "\t  \tWHEN cust_email.permission_val = true AND email.status_id <> '00' then 'Y' else 'N' end cnd_compliant_flag,\n" +
-            "\t  CASE WHEN pref.preference_type = 6 AND pref.permission_val then 'Y' else 'N' end email_pref_hd_ca,\n" +
-            "      CASE WHEN pref.preference_type = 7 AND pref.permission_val then 'Y' else 'N' end email_pref_garden_club,\n" +
-            "      CASE WHEN pref.preference_type = 8 AND pref.permission_val then 'Y' else 'N' end email_pref_pro,\n" +
+            "\t  CASE " +
+            "\t  \tWHEN cust_email.permission_val = true AND email.status_id <> \n" +
+            "\t\t(select old_id from hdpc_master_id_rel where pcam_id = (select master_id from hdpc_master where value_val = 'Valid Email Addresses'))\n" +
+            "\t\tthen 'Y' else 'N' end cnd_compliant_flag,\n" +
+            "\t  CASE WHEN pref.preference_type = (select master_id from hdpc_master where value_val = 'hd_ca') AND pref.permission_val then 'Y' else 'N' end email_pref_hd_ca,\n" +
+            "      CASE WHEN pref.preference_type = (select master_id from hdpc_master where value_val = 'garden_club') AND pref.permission_val then 'Y' else 'N' end email_pref_garden_club,\n" +
+            "      CASE WHEN pref.preference_type = (select master_id from hdpc_master where value_val = 'Pro') AND pref.permission_val then 'Y' else 'N' end email_pref_pro,\n" +
             "\t  addr.postal_code          src_postal_code,\n" +
             "\t  cust_extn.customer_nbr    customer_nbr,\n" +
             "\t  CASE \n" +
@@ -57,7 +59,7 @@ public final class OutboundSqlQueriesConstants {
             "        ON cust_addr.address_id = addr.address_id\n" +
             "    LEFT JOIN hdpc_customer_preference pref\n" +
             "        ON cust.customer_id = pref.customer_id\n" +
-            "\tWHERE pref.preference_type = 8 --Preference Type for CRM\n" +
+            "\tWHERE pref.preference_type = (select master_id from hdpc_master where value_val = 'Pro')\n" +
             "\tGROUP BY email.email,\n" +
             "\tcust_email.effective_date,\n" +
             "\temail.source_type,\n" +
