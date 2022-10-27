@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
-    password: sasa
+    password:
     driverClassName: org.postgresql.Driver
   batch:
     job:

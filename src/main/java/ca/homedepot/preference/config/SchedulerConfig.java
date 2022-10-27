@@ -538,7 +538,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
+	//@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processsSFMCOptOutsEmail() throws Exception
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
@@ -781,6 +781,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.to(readLayoutCInboundBDStep2()).build().build();
 	}
 
+	/**
+	 * Crm outbound job process.
+	 * @return
+	 */
 	public Job crmSendPreferencesToCRM()
 	{
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
