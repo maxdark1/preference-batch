@@ -47,12 +47,14 @@ class APIWriterListenerTest
 	void beforeWrite()
 	{
 		apiWriterListener.beforeWrite(items);
+
 	}
 
 	@Test
 	void afterWrite()
 	{
 		apiWriterListener.afterWrite(items);
+
 	}
 
 	@Test
@@ -67,5 +69,6 @@ class APIWriterListenerTest
 	void onWriteError()
 	{
 		apiWriterListener.onWriteError(new Exception(), items);
+
 	}
 }

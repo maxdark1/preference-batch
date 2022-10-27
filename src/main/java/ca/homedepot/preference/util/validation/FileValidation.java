@@ -226,7 +226,6 @@ public class FileValidation
 	 */
 	public static boolean deepCheckDateFormat(String format, String strDate)
 	{
-		assert format.equals("yyyyMMdd");
 		Map<Integer, Integer> counter = new LinkedHashMap<>();
 
 		format.chars().forEach(iChar -> {

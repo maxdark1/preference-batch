@@ -29,7 +29,7 @@ public class RegistrationItemReaderListener implements ItemReadListener<InboundR
 	public void beforeRead()
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-		BigDecimal masterId = master.getMaster_id();
+		BigDecimal masterId = master.getMasterId();
 
 		//fileService.insert(fileName, "G", masterId, new Date(), jobId, new Date(), "BATCH");
 	}

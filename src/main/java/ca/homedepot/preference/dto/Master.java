@@ -15,20 +15,20 @@ public class Master
 	/**
 	 * The master_id
 	 */
-	private BigDecimal master_id;
+	private BigDecimal masterId;
 	/**
 	 * The key_id
 	 */
-	private BigDecimal key_id;
+	private BigDecimal keyId;
 	/**
 	 * The key_value
 	 */
-	private String key_value;
+	private String keyValue;
 
 	/**
 	 * The value_val
 	 */
-	private String value_val;
+	private String valueVal;
 	/**
 	 * The active value
 	 */
@@ -37,6 +37,6 @@ public class Master
 	/**
 	 * The old id
 	 */
-	private BigDecimal old_id;
+	private BigDecimal oldID;
 
 }

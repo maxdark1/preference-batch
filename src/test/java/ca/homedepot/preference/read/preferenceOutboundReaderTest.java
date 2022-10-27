@@ -1,6 +1,8 @@
 package ca.homedepot.preference.read;
 
+import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import lombok.ToString;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -11,10 +13,12 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
+import org.mockito.Mockito;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 
 class preferenceOutboundReaderTest {
@@ -26,7 +30,6 @@ class preferenceOutboundReaderTest {
     PreferenceOutboundMapper mapper;
     @InjectMocks
     private preferenceOutboundReader reader = new preferenceOutboundReader();
-
 
     @Test
     void getDataSource() {
@@ -40,20 +43,12 @@ class preferenceOutboundReaderTest {
         assertNull(reader.getDataSource());
     }
 
-    @Test
-    void testEquals() {
-        assertTrue(reader.equals(reader));
-    }
 
     @Test
     void canEqual() {
         assertTrue(reader.canEqual(reader));
     }
 
-    @Test
-    void testHashCode() {
-        assertNotNull(reader.hashCode());
-    }
 
     @Test
     void testToString() {

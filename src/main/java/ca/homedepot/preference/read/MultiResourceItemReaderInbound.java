@@ -172,7 +172,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
 		BigDecimal masterId = MasterProcessor
 				.getSourceID("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)
-				.getMaster_id();
+				.getMasterId();
 		Date endTime = new Date();
 		/**
 		 * If status is valid do not need end_time
@@ -180,7 +180,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		if (Boolean.TRUE.equals(status))
 			endTime = null;
 		System.out.println(fileName);
-		FileDTO file = new FileDTO(null, fileName, jobId, masterId, fileStatus.getValue_val(), fileStatus.getMaster_id(),
+		FileDTO file = new FileDTO(null, fileName, jobId, masterId, fileStatus.getValueVal(), fileStatus.getMasterId(),
 				new Date(), endTime, "BATCH", new Date(), null, null);
 
 		fileService.insert(file);

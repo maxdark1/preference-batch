@@ -43,7 +43,7 @@ public class SkipFileService
 	{
 		String isValid = (isEmailInvalid(t)) ? "Invalid" : "Valid";
 
-		return MasterProcessor.getSourceID("EMAIL_STATUS", isValid + " Email Addresses").getMaster_id();
+		return MasterProcessor.getSourceID("EMAIL_STATUS", isValid + " Email Addresses").getMasterId();
 	}
 
 	/**

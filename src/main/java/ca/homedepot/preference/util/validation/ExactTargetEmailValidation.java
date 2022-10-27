@@ -32,11 +32,11 @@ public class ExactTargetEmailValidation
 		 * In case of unsubscribe... old_id was '98'
 		 */
 		if (status.equalsIgnoreCase("unsubscribed"))
-			return MasterProcessor.getSourceID("EMAIL_STATUS", "ET SPAM List").getMaster_id();
+			return MasterProcessor.getSourceID("EMAIL_STATUS", "ET SPAM List").getMasterId();
 		/**
 		 * In case is held because... old_id was '50'
 		 */
-		return MasterProcessor.getSourceID("EMAIL_STATUS", "Hard Bounces").getMaster_id();
+		return MasterProcessor.getSourceID("EMAIL_STATUS", "Hard Bounces").getMasterId();
 
 	}
 
@@ -66,7 +66,7 @@ public class ExactTargetEmailValidation
 		if (reasonUp.contains("AOL"))
 			return MasterProcessor.getSourceID("189");
 		if (reasonUp.contains("SCAMCOP") || reasonUp.contains("SPAM COP REPORT"))
-			return MasterProcessor.getSourceID("SOURCE", "EXACT TARGET OPT OUT OTH-CAN").getMaster_id();
+			return MasterProcessor.getSourceID("SOURCE", "EXACT TARGET OPT OUT OTH-CAN").getMasterId();
 
 		return MasterProcessor.getSourceID("188");
 	}
