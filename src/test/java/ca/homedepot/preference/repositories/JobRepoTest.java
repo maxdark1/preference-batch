@@ -214,11 +214,11 @@ class JobRepoTest
 	{
 		Master master2 = new Master();
 		assertNotNull(masterDTO);
-		assertEquals("SOURCE", masterDTO.getKey_value());
-		assertEquals(BigDecimal.ONE, masterDTO.getKey_id());
+		assertEquals("SOURCE", masterDTO.getKeyValue());
+		assertEquals(BigDecimal.ONE, masterDTO.getKeyId());
 		assertNotNull(master2);
 		assertNotEquals(master2, masterDTO);
-		assertEquals("hybris", masterDTO.getValue_val());
+		assertEquals("hybris", masterDTO.getValueVal());
 		assertEquals(true, masterDTO.getActive());
 	}
 

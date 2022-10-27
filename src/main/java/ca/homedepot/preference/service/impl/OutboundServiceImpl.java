@@ -10,44 +10,29 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 
 @Service
-public class OutboundServiceImpl implements OutboundService {
-    @Autowired
-    private DataSource dataSource;
-    private JdbcTemplate jdbcTemplate;
+public class OutboundServiceImpl implements OutboundService
+{
+	@Autowired
+	private DataSource dataSource;
+	private JdbcTemplate jdbcTemplate;
 
-    /**
-     * This methos is used to make a connection with DB and execute a query to get necessary data
-     * @param item
-     */
-    @Override
-    public void preferenceOutbound(PreferenceOutboundDto item) {
-        jdbcTemplate = new JdbcTemplate();
-        jdbcTemplate.setDataSource(dataSource);
-        jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_INSERT_STG_PREFERENCE_OUTBOUND,
-                item.getEmail(),
-                item.getEffectiveDate(),
-                item.getSourceId(),
-                item.getEmailStatus(),
-                item.getEmailPermission(),
-                item.getLanguagePref(),
-                item.getEarlyOptInDate(),
-                item.getCndCompliantFlag(),
-                item.getEmailPrefHdCa(),
-                item.getEmailPrefGardenClub(),
-                item.getEmailPrefPro(),
-                item.getPostalCode(),
-                item.getCustomerNbr(),
-                item.getPhonePtcFlag(),
-                item.getDnclSuppresion(),
-                item.getPhoneNumber(),
-                item.getFirstName(),
-                item.getLastName(),
-                item.getBusinessName(),
-                item.getIndustryCode(),
-                item.getCity(),
-                item.getProvince(),
-                item.getHdCaProSrcId());
-    }
+	/**
+	 * This methos is used to make a connection with DB and execute a query to get necessary data
+	 * 
+	 * @param item
+	 */
+	@Override
+	public void preferenceOutbound(PreferenceOutboundDto item)
+	{
+		jdbcTemplate = new JdbcTemplate();
+		jdbcTemplate.setDataSource(dataSource);
+		jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_INSERT_STG_PREFERENCE_OUTBOUND, item.getEmail(),
+				item.getEffectiveDate(), item.getSourceId(), item.getEmailStatus(), item.getEmailPermission(), item.getLanguagePref(),
+				item.getEarlyOptInDate(), item.getCndCompliantFlag(), item.getEmailPrefHdCa(), item.getEmailPrefGardenClub(),
+				item.getEmailPrefPro(), item.getPostalCode(), item.getCustomerNbr(), item.getPhonePtcFlag(), item.getDnclSuppresion(),
+				item.getPhoneNumber(), item.getFirstName(), item.getLastName(), item.getBusinessName(), item.getIndustryCode(),
+				item.getCity(), item.getProvince(), item.getHdCaProSrcId());
+	}
 
 
 	@Override
@@ -57,13 +42,15 @@ public class OutboundServiceImpl implements OutboundService {
 		jdbcTemplate.setDataSource(dataSource);
 		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_CITI_SUPPRESION);
 	}
-    /**
-     * This method is used to connect with the database and truncate a passtrougths table
-     */
-    @Override
-    public void truncateCompliantTable() {
-        jdbcTemplate = new JdbcTemplate();
-        jdbcTemplate.setDataSource(dataSource);
-        jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE);
-    }
+
+	/**
+	 * This method is used to connect with the database and truncate a passtrougths table
+	 */
+	@Override
+	public void truncateCompliantTable()
+	{
+		jdbcTemplate = new JdbcTemplate();
+		jdbcTemplate.setDataSource(dataSource);
+		jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE);
+	}
 }

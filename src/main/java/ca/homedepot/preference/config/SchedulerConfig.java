@@ -13,7 +13,6 @@ import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
-import ca.homedepot.preference.processor.preferenceOutboundProcessor;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
@@ -555,6 +554,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Triggers CRM Outbound Process in a determinated period of time
+	 * 
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
@@ -586,9 +586,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 
 	/**
-	 * MultipleResourceItemReaders Use to read the existing files on the directory
-	/**
-	 * Create Multi Resource reader for LayoutC
+	 * MultipleResourceItemReaders Use to read the existing files on the directory /** Create Multi Resource reader for
+	 * LayoutC
 	 *
 	 * @param directory:
 	 *           directory where the file comes from
@@ -803,7 +802,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationHybrisInbound()  {
+	public Job registrationHybrisInbound()
+	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
@@ -811,6 +811,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Crm outbound job process.
+	 * 
 	 * @return
 	 */
 	public Job crmSendPreferencesToCRM()
@@ -872,6 +873,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 1 for Send Preferences to CRM Outbound
+	 * 
 	 * @return
 	 */
 	public Step readSendPreferencesToCRMStep1()
@@ -880,8 +882,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundReader.outboundDBReader()).writer(preferenceOutboundWriter).build();
 	}
+
 	/**
 	 * Step 2 for Send Preferences to CRM Outbound
+	 * 
 	 * @return
 	 */
 	public Step readSendPreferencesToCRMStep2()

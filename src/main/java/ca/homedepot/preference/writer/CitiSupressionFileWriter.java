@@ -1,6 +1,8 @@
 package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
+import ca.homedepot.preference.dto.FileDTO;
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import lombok.Data;
@@ -88,9 +90,13 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	{
 
 		BigDecimal jobId = fileService.getJobId(JOB_NAME);
-		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE", "citi_bank").getMaster_id();
-		fileService.insert(file_name, "VALID", sourceId, new Date(), jobId, new Date(), "BATCH", BigDecimal.valueOf(19),
-				new Date());
+		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE", "citi_bank").getMasterId();
+		Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");
+
+		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
+				new Date(), "BATCH", new Date(), null, null);
+
+		fileService.insert(file);
 
 	}
 }

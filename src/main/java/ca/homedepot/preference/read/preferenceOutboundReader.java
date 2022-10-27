@@ -30,6 +30,7 @@ public class preferenceOutboundReader
 
 	/**
 	 * This method is used to read the necessary data from DB
+	 * 
 	 * @return
 	 */
 	public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBReader()
@@ -62,7 +63,8 @@ public class preferenceOutboundReader
 	/**
 	 * Method used to clear the passthroughs table in every execution
 	 */
-	private void truncateTable(){
+	private void truncateTable()
+	{
 		log.info("Deleting hdpc_out_daily_compliant Table :" + new Date());
 		outboundService.truncateCompliantTable();
 	}

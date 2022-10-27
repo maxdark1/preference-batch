@@ -1,7 +1,9 @@
 package ca.homedepot.preference.read;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapperStep2;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +22,15 @@ public class PreferenceOutboundDBReader
 	@Autowired
 	private DataSource dataSource;
 
-    /**
-     * Method used to get the necessary data from DB in Step 2
-     * @return
-     */
-    public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBReader()
-    {
-        log.info(" Preference Outbound : Preference Outbound Step 2 Reader Starter :" + new Date());
-        JdbcCursorItemReader<PreferenceOutboundDto> reader = new JdbcCursorItemReader<>();
+	/**
+	 * Method used to get the necessary data from DB in Step 2
+	 * 
+	 * @return
+	 */
+	public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBReader()
+	{
+		log.info(" Preference Outbound : Preference Outbound Step 2 Reader Starter :" + new Date());
+		JdbcCursorItemReader<PreferenceOutboundDto> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
 		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_STEP2);

@@ -32,27 +32,31 @@ class preferenceOutboundReaderTest
 	@InjectMocks
 	private preferenceOutboundReader reader = new preferenceOutboundReader();
 
-    @Test
-    void getDataSource() {
-        dataSource = reader.getDataSource();
-        assertNull(dataSource);
-    }
+	@Test
+	void getDataSource()
+	{
+		dataSource = reader.getDataSource();
+		assertNull(dataSource);
+	}
 
-    @Test
-    void setDataSource() {
-        reader.setDataSource(dataSource);
-        assertNull(reader.getDataSource());
-    }
-
-
-    @Test
-    void canEqual() {
-        assertTrue(reader.canEqual(reader));
-    }
+	@Test
+	void setDataSource()
+	{
+		reader.setDataSource(dataSource);
+		assertNull(reader.getDataSource());
+	}
 
 
-    @Test
-    void testToString() {
-        assertNotNull(reader.toString());
-    }
+	@Test
+	void canEqual()
+	{
+		assertTrue(reader.canEqual(reader));
+	}
+
+
+	@Test
+	void testToString()
+	{
+		assertNotNull(reader.toString());
+	}
 }
