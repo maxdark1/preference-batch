@@ -20,80 +20,87 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-class CitiSupressionFileWriterTest {
+class CitiSupressionFileWriterTest
+{
 
-    @Mock
-    FileServiceImpl fileService;
+	@Mock
+	FileServiceImpl fileService;
 
-    @InjectMocks
-    @Spy
-    CitiSupressionFileWriter citiSupressionFileWriter;
+	@InjectMocks
+	@Spy
+	CitiSupressionFileWriter citiSupressionFileWriter;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-        citiSupressionFileWriter.setRepositorySource("repositorySource");
-        citiSupressionFileWriter.setFolderSource("/folder/");
-        citiSupressionFileWriter.setFileName("filenameformat_YYYYMMDD");
+	@BeforeEach
+	void setUp()
+	{
+		MockitoAnnotations.initMocks(this);
+		citiSupressionFileWriter.setRepositorySource("repositorySource");
+		citiSupressionFileWriter.setFolderSource("/folder/");
+		citiSupressionFileWriter.setFileName("filenameformat_YYYYMMDD");
 
-        List<Master> masterList = new ArrayList<>();
-        Master sourceId = new Master();
-        sourceId.setMasterId(BigDecimal.ONE);
-        sourceId.setKeyValue("SOURCE");
-        sourceId.setValueVal("citi_bank");
+		List<Master> masterList = new ArrayList<>();
+		Master sourceId = new Master();
+		sourceId.setMasterId(BigDecimal.ONE);
+		sourceId.setKeyValue("SOURCE");
+		sourceId.setValueVal("citi_bank");
 
-        Master fileStatus = new Master();
-        fileStatus.setMasterId(BigDecimal.TEN);
-        fileStatus.setKeyValue("STATUS");
-        fileStatus.setValueVal("VALID");
-        masterList.add(sourceId);
-        masterList.add(fileStatus);
+		Master fileStatus = new Master();
+		fileStatus.setMasterId(BigDecimal.TEN);
+		fileStatus.setKeyValue("STATUS");
+		fileStatus.setValueVal("VALID");
+		masterList.add(sourceId);
+		masterList.add(fileStatus);
 
-        MasterProcessor.setMasterList(masterList);
-    }
+		MasterProcessor.setMasterList(masterList);
+	}
 
 
-    @Test
-    void doWrite() {
-        List<CitiSuppresionOutboundDTO> listCiti = new ArrayList<>();
-        listCiti.add(new CitiSuppresionOutboundDTO("example", "e", "john", "address1", "address2", "toronto", "on", "123456", "email@example.com", "1234567890", "1234056987", "bussinessName", "N","N", "N", "N"));
-        String result = "'FIRST_NAME','MIDDLE_INITIAL','LAST_NAME','ADDR_LINE_1','ADDR_LINE_2','CITY','STATE_CD','POSTAL_CD','EMAIL_ADDR','PHONE','SMS_MOBILE_PHONE','BUSINESS_NAME',DM_OPT_OUT,EMAIL_OPT_OUT,PHONE_OPT_OUT,SMS_OPT_OUT\nexample,e,john,address1,address2,toronto,on,123456,email@example.com,1234567890,1234056987,bussinessName,N,N,N,N";
+	@Test
+	void doWrite()
+	{
+		List<CitiSuppresionOutboundDTO> listCiti = new ArrayList<>();
+		listCiti.add(new CitiSuppresionOutboundDTO("example", "e", "john", "address1", "address2", "toronto", "on", "123456",
+				"email@example.com", "1234567890", "1234056987", "bussinessName", "N", "N", "N", "N"));
+		String result = "'FIRST_NAME','MIDDLE_INITIAL','LAST_NAME','ADDR_LINE_1','ADDR_LINE_2','CITY','STATE_CD','POSTAL_CD','EMAIL_ADDR','PHONE','SMS_MOBILE_PHONE','BUSINESS_NAME',DM_OPT_OUT,EMAIL_OPT_OUT,PHONE_OPT_OUT,SMS_OPT_OUT\nexample,e,john,address1,address2,toronto,on,123456,email@example.com,1234567890,1234056987,bussinessName,N,N,N,N";
 
-        Mockito.doNothing().when(citiSupressionFileWriter).saveFileRecord();
-        Mockito.when(citiSupressionFileWriter.doWrite(anyList())).thenReturn(result);
+		Mockito.doNothing().when(citiSupressionFileWriter).saveFileRecord();
+		Mockito.when(citiSupressionFileWriter.doWrite(anyList())).thenReturn(result);
 
-        String actualResult = citiSupressionFileWriter.doWrite(listCiti);
-        assertEquals(result, actualResult);
-    }
+		String actualResult = citiSupressionFileWriter.doWrite(listCiti);
+		assertEquals(result, actualResult);
+	}
 
-    @Test
-    void saveFileRecord() {
-        BigDecimal jobId = BigDecimal.TEN;
-        FileDTO fileDTO = Mockito.mock(FileDTO.class);
-        String fileName = "fileName";
-        int expectedValue = 1;
+	@Test
+	void saveFileRecord()
+	{
+		BigDecimal jobId = BigDecimal.TEN;
+		FileDTO fileDTO = Mockito.mock(FileDTO.class);
+		String fileName = "fileName";
+		int expectedValue = 1;
 
-        Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
-        Mockito.when(fileService.insert(fileDTO)).thenReturn(expectedValue);
+		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
+		Mockito.when(fileService.insert(fileDTO)).thenReturn(expectedValue);
 
-        citiSupressionFileWriter.saveFileRecord();
-        Mockito.verify(citiSupressionFileWriter).saveFileRecord();
+		citiSupressionFileWriter.saveFileRecord();
+		Mockito.verify(citiSupressionFileWriter).saveFileRecord();
 
-    }
+	}
 
-    @Test
-    void setResourcetest(){
-        citiSupressionFileWriter.setRepositorySource("repositorySource");
-        citiSupressionFileWriter.setFolderSource("/folder/");
-        citiSupressionFileWriter.setFileName("filenameformat_YYYYMMDD");
+	@Test
+	void setResourcetest()
+	{
+		citiSupressionFileWriter.setRepositorySource("repositorySource");
+		citiSupressionFileWriter.setFolderSource("/folder/");
+		citiSupressionFileWriter.setFileName("filenameformat_YYYYMMDD");
 
-        Mockito.doNothing().when(citiSupressionFileWriter).setResource();
-        citiSupressionFileWriter.setResource();
-    }
+		Mockito.doNothing().when(citiSupressionFileWriter).setResource();
+		citiSupressionFileWriter.setResource();
+	}
 
-    @Test
-    void getFileService() {
-        assertNotNull(citiSupressionFileWriter.getFileService());
-    }
+	@Test
+	void getFileService()
+	{
+		assertNotNull(citiSupressionFileWriter.getFileService());
+	}
 
 }

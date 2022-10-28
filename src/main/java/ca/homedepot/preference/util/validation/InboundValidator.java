@@ -382,14 +382,17 @@ public class InboundValidator
 
 	/**
 	 * Return SimpleDateFormat for LayoutC SrcDate
+	 * 
 	 * @param date
 	 * @return Return SimpleDateFormat for LayoutC SrcDate
 	 */
-	public static String dateYearMonthDay(Date date){
+	public static String dateYearMonthDay(Date date)
+	{
 		return new SimpleDateFormat("yyyy-MM-dd").format(date);
 	}
 
-	public static Date moveDate(String date){
+	public static Date moveDate(String date)
+	{
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		Date asOfDate = null;
 		try

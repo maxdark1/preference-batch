@@ -12,33 +12,37 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-class PreferenceOutboundWriterTest {
+class PreferenceOutboundWriterTest
+{
 
-    @Mock
-    OutboundServiceImpl outboundService;
+	@Mock
+	OutboundServiceImpl outboundService;
 
-    @InjectMocks
-    @Spy
-    PreferenceOutboundWriter preferenceOutboundWriter;
+	@InjectMocks
+	@Spy
+	PreferenceOutboundWriter preferenceOutboundWriter;
 
-    @BeforeEach
-    void setup(){
-        MockitoAnnotations.initMocks(this);
-    }
+	@BeforeEach
+	void setup()
+	{
+		MockitoAnnotations.initMocks(this);
+	}
 
-    @Test
-    void write() throws Exception {
-        List<PreferenceOutboundDto> list = new ArrayList<>();
-        list.add(new PreferenceOutboundDto());
+	@Test
+	void write() throws Exception
+	{
+		List<PreferenceOutboundDto> list = new ArrayList<>();
+		list.add(new PreferenceOutboundDto());
 
-        Mockito.doNothing().when(outboundService).preferenceOutbound(any(PreferenceOutboundDto.class));
-        preferenceOutboundWriter.write(list);
-        Mockito.verify(preferenceOutboundWriter).write(list);
+		Mockito.doNothing().when(outboundService).preferenceOutbound(any(PreferenceOutboundDto.class));
+		preferenceOutboundWriter.write(list);
+		Mockito.verify(preferenceOutboundWriter).write(list);
 
-    }
+	}
 
-    @Test
-    void getOutboundService() {
-        assertNotNull(preferenceOutboundWriter.getOutboundService());
-    }
+	@Test
+	void getOutboundService()
+	{
+		assertNotNull(preferenceOutboundWriter.getOutboundService());
+	}
 }

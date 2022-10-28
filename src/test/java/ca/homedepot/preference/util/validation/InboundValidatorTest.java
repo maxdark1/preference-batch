@@ -323,7 +323,8 @@ class InboundValidatorTest
 	}
 
 	@Test
-	void moveDateTestMakingAnException(){
+	void moveDateTestMakingAnException()
+	{
 		String dateStr = "something";
 
 		Date dateDT = InboundValidator.moveDate(dateStr);

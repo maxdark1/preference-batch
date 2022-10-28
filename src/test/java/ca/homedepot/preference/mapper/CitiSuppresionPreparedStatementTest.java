@@ -12,31 +12,34 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 
-class CitiSuppresionPreparedStatementTest {
+class CitiSuppresionPreparedStatementTest
+{
 
 
-    @Mock
-    CitiSuppresionOutboundDTO item;
+	@Mock
+	CitiSuppresionOutboundDTO item;
 
-    @Mock
-    PreparedStatement ps;
+	@Mock
+	PreparedStatement ps;
 
-    @InjectMocks
-    @Spy
-    CitiSuppresionPreparedStatement citiSuppresionPreparedStatement;
-
-
-    @BeforeEach
-    void setup(){
-        MockitoAnnotations.initMocks(this);
-    }
-
-    @Test
-    void setValues() throws SQLException {
+	@InjectMocks
+	@Spy
+	CitiSuppresionPreparedStatement citiSuppresionPreparedStatement;
 
 
-        citiSuppresionPreparedStatement.setValues(item, ps);
+	@BeforeEach
+	void setup()
+	{
+		MockitoAnnotations.initMocks(this);
+	}
 
-       Mockito.verify(citiSuppresionPreparedStatement).setValues(item, ps);
-    }
+	@Test
+	void setValues() throws SQLException
+	{
+
+
+		citiSuppresionPreparedStatement.setValues(item, ps);
+
+		Mockito.verify(citiSuppresionPreparedStatement).setValues(item, ps);
+	}
 }

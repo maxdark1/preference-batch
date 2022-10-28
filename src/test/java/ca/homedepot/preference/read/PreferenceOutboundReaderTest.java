@@ -27,7 +27,8 @@ class PreferenceOutboundReaderTest
 	private PreferenceOutboundReader preferenceOutboundReader;
 
 	@BeforeEach
-	void setup(){
+	void setup()
+	{
 		MockitoAnnotations.initMocks(this);
 	}
 
@@ -55,26 +56,30 @@ class PreferenceOutboundReaderTest
 
 
 
-    @Test
-    void getOutboundService() {
+	@Test
+	void getOutboundService()
+	{
 		assertNotNull(outboundService);
-    }
+	}
 
-    @Test
-    void testOutboundDBReader() {
+	@Test
+	void testOutboundDBReader()
+	{
 		assertNotNull(preferenceOutboundReader.outboundDBReader());
-    }
+	}
 
-    @Test
-    void testOutboundCitiSuppresionDBReader() {
+	@Test
+	void testOutboundCitiSuppresionDBReader()
+	{
 		assertNotNull(preferenceOutboundReader.outboundCitiSuppresionDBReader());
-    }
+	}
 
-    @Test
-    void testPurgeCitiSuppresionTable() {
+	@Test
+	void testPurgeCitiSuppresionTable()
+	{
 		Mockito.doNothing().when(preferenceOutboundReader).purgeCitiSuppresionTable();
 
 		preferenceOutboundReader.purgeCitiSuppresionTable();
 		Mockito.verify(preferenceOutboundReader).purgeCitiSuppresionTable();
-    }
+	}
 }
