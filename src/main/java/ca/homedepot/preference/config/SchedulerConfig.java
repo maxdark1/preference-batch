@@ -17,7 +17,7 @@ import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
-import ca.homedepot.preference.read.preferenceOutboundReader;
+import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -293,7 +292,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private PreferenceOutboundWriter preferenceOutboundWriter;
 	@Autowired
-	private preferenceOutboundReader preferenceOutboundReader;
+	private PreferenceOutboundReader preferenceOutboundReader;
 	@Autowired
 	private PreferenceOutboundDBReader preferenceOutboundDBReader;
 	@Autowired

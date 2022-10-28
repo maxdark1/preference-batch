@@ -34,7 +34,7 @@ class CitiSupressionFileWriterTest {
         MockitoAnnotations.initMocks(this);
         citiSupressionFileWriter.setRepositorySource("repositorySource");
         citiSupressionFileWriter.setFolderSource("/folder/");
-        citiSupressionFileWriter.setFileName("filenameformat");
+        citiSupressionFileWriter.setFileName("filenameformat_YYYYMMDD");
 
         List<Master> masterList = new ArrayList<>();
         Master sourceId = new Master();
@@ -59,7 +59,7 @@ class CitiSupressionFileWriterTest {
         listCiti.add(new CitiSuppresionOutboundDTO("example", "e", "john", "address1", "address2", "toronto", "on", "123456", "email@example.com", "1234567890", "1234056987", "bussinessName", "N","N", "N", "N"));
         String result = "'FIRST_NAME','MIDDLE_INITIAL','LAST_NAME','ADDR_LINE_1','ADDR_LINE_2','CITY','STATE_CD','POSTAL_CD','EMAIL_ADDR','PHONE','SMS_MOBILE_PHONE','BUSINESS_NAME',DM_OPT_OUT,EMAIL_OPT_OUT,PHONE_OPT_OUT,SMS_OPT_OUT\nexample,e,john,address1,address2,toronto,on,123456,email@example.com,1234567890,1234056987,bussinessName,N,N,N,N";
 
-        Mockito.doNothing().when(citiSupressionFileWriter).saveFileRecord(anyString());
+        Mockito.doNothing().when(citiSupressionFileWriter).saveFileRecord();
         Mockito.when(citiSupressionFileWriter.doWrite(anyList())).thenReturn(result);
 
         String actualResult = citiSupressionFileWriter.doWrite(listCiti);
@@ -76,11 +76,20 @@ class CitiSupressionFileWriterTest {
         Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
         Mockito.when(fileService.insert(fileDTO)).thenReturn(expectedValue);
 
-        citiSupressionFileWriter.saveFileRecord(fileName);
-        Mockito.verify(citiSupressionFileWriter).saveFileRecord(fileName);
+        citiSupressionFileWriter.saveFileRecord();
+        Mockito.verify(citiSupressionFileWriter).saveFileRecord();
 
     }
 
+    @Test
+    void setResourcetest(){
+        citiSupressionFileWriter.setRepositorySource("repositorySource");
+        citiSupressionFileWriter.setFolderSource("/folder/");
+        citiSupressionFileWriter.setFileName("filenameformat_YYYYMMDD");
+
+        Mockito.doNothing().when(citiSupressionFileWriter).setResource();
+        citiSupressionFileWriter.setResource();
+    }
 
     @Test
     void getFileService() {

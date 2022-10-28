@@ -57,7 +57,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 
 	public void setResource() {
 		Format formatter = new SimpleDateFormat("YYYYMMDD");
-		fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+		this.fileName = this.fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		Resource resource = new FileSystemResource(repositorySource+folderSource+fileName);
 		if(resource.exists()){
@@ -74,7 +74,6 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 
 	@Override
 	public void write(List<? extends CitiSuppresionOutboundDTO> items) throws Exception {
-
 		saveFileRecord();
 		super.write(items);
 	}
