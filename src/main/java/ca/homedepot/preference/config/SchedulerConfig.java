@@ -810,7 +810,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 
-	public CitiSupressionFileWriter citiSupressionFileWriter(){
+	public CitiSupressionFileWriter citiSupressionFileWriter()
+	{
 
 		citiSupressionFileWriter = new CitiSupressionFileWriter();
 
@@ -1025,7 +1026,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	public Step citiSuppresionDBReaderStep1()
 	{
-		return stepBuilderFactory.get("citiSuppresionDBReaderStep1").<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
+		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
+				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundReader.outboundCitiSuppresionDBReader()).writer(outboundDTOJdbcBatchItemWriter()).build();
 	}
 

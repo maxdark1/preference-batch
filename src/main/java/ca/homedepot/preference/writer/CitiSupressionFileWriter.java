@@ -55,16 +55,21 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 		setSaveState(false);
 	}
 
-	public void setResource() {
+	public void setResource()
+	{
 		Format formatter = new SimpleDateFormat("YYYYMMDD");
 		this.fileName = this.fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
-		Resource resource = new FileSystemResource(repositorySource+folderSource+fileName);
-		if(resource.exists()){
+		Resource resource = new FileSystemResource(repositorySource + folderSource + fileName);
+		if (resource.exists())
+		{
 			// removes if exists
-			try {
-				Files.delete(new File(repositorySource+folderSource+fileName).toPath());
-			} catch (IOException e) {
+			try
+			{
+				Files.delete(new File(repositorySource + folderSource + fileName).toPath());
+			}
+			catch (IOException e)
+			{
 				//
 			}
 		}
@@ -73,7 +78,8 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 
 
 	@Override
-	public void write(List<? extends CitiSuppresionOutboundDTO> items) throws Exception {
+	public void write(List<? extends CitiSuppresionOutboundDTO> items) throws Exception
+	{
 		saveFileRecord();
 		super.write(items);
 	}
@@ -88,8 +94,8 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	{
 		BeanWrapperFieldExtractor<CitiSuppresionOutboundDTO> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
 		beanWrapperFieldExtractor.setNames(new String[]
-				{ "FirstName", "MiddleInitial", "LastName", "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
-						"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
+		{ "FirstName", "MiddleInitial", "LastName", "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
+				"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
 
 		DelimitedLineAggregator<CitiSuppresionOutboundDTO> delimitedLineAggregator = new DelimitedLineAggregator<>();
 		delimitedLineAggregator.setDelimiter(",");

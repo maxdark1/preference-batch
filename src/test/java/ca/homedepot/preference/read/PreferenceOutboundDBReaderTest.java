@@ -11,31 +11,36 @@ import javax.sql.DataSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PreferenceOutboundDBReaderTest {
-    @Mock
-    DataSource dataSource;
+class PreferenceOutboundDBReaderTest
+{
+	@Mock
+	DataSource dataSource;
 
-    @InjectMocks
-    @Spy
-    PreferenceOutboundDBReader preferenceOutboundDBReader;
+	@InjectMocks
+	@Spy
+	PreferenceOutboundDBReader preferenceOutboundDBReader;
 
-    @BeforeEach
-    void setup(){
-        MockitoAnnotations.initMocks(this);
-    }
+	@BeforeEach
+	void setup()
+	{
+		MockitoAnnotations.initMocks(this);
+	}
 
-    @Test
-    void outboundDBReader() {
-        assertNotNull(preferenceOutboundDBReader.outboundDBReader());
-    }
+	@Test
+	void outboundDBReader()
+	{
+		assertNotNull(preferenceOutboundDBReader.outboundDBReader());
+	}
 
-    @Test
-    void citiSuppressionDBTableReader() {
-        assertNotNull(preferenceOutboundDBReader.citiSuppressionDBTableReader());
-    }
+	@Test
+	void citiSuppressionDBTableReader()
+	{
+		assertNotNull(preferenceOutboundDBReader.citiSuppressionDBTableReader());
+	}
 
-    @Test
-    void getDataSource() {
-        assertNotNull(preferenceOutboundDBReader.getDataSource());
-    }
+	@Test
+	void getDataSource()
+	{
+		assertNotNull(preferenceOutboundDBReader.getDataSource());
+	}
 }
