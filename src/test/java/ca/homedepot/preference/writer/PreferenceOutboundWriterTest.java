@@ -1,74 +1,44 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.service.OutboundService;
-import org.junit.jupiter.api.DisplayName;
+import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.*;
 
+import java.util.ArrayList;
+import java.util.List;
 
-@SpringBootTest
-class PreferenceOutboundWriterTest
-{
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
-	@Mock
-	OutboundService outboundService;
-	@InjectMocks
-	PreferenceOutboundWriter writer = new PreferenceOutboundWriter();
+class PreferenceOutboundWriterTest {
 
+    @Mock
+    OutboundServiceImpl outboundService;
 
+    @InjectMocks
+    @Spy
+    PreferenceOutboundWriter preferenceOutboundWriter;
 
+    @BeforeEach
+    void setup(){
+        MockitoAnnotations.initMocks(this);
+    }
 
+    @Test
+    void write() throws Exception {
+        List<PreferenceOutboundDto> list = new ArrayList<>();
+        list.add(new PreferenceOutboundDto());
 
-	@Test
-	@DisplayName("Should write the data into de DB")
+        Mockito.doNothing().when(outboundService).preferenceOutbound(any(PreferenceOutboundDto.class));
+        preferenceOutboundWriter.write(list);
+        Mockito.verify(preferenceOutboundWriter).write(list);
 
-	void testWrite() throws Exception
-	{
-		//Given
+    }
 
-
-
-	}
-
-	@Test
-	void getDataSource()
-	{
-	}
-
-	@Test
-	void getOutboundService()
-	{
-	}
-
-	@Test
-	void setDataSource()
-	{
-	}
-
-	@Test
-	void setOutboundService()
-	{
-	}
-
-	@Test
-	void testEquals()
-	{
-	}
-
-	@Test
-	void canEqual()
-	{
-	}
-
-	@Test
-	void testHashCode()
-	{
-	}
-
-	@Test
-	void testToString()
-	{
-	}
+    @Test
+    void getOutboundService() {
+        assertNotNull(preferenceOutboundWriter.getOutboundService());
+    }
 }

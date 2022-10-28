@@ -47,6 +47,8 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	{
 		setLineAggregator(getLineAgreggator());
 		setHeaderCallback(getHeaderCallBack());
+		setShouldDeleteIfExists(true);
+		setSaveState(false);
 	}
 
 	@PostConstruct

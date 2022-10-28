@@ -3,6 +3,7 @@ package ca.homedepot.preference.read;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import lombok.ToString;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -32,6 +33,7 @@ class preferenceOutboundReaderTest
 	@InjectMocks
 	private preferenceOutboundReader reader = new preferenceOutboundReader();
 
+
 	@Test
 	void getDataSource()
 	{
@@ -59,4 +61,28 @@ class preferenceOutboundReaderTest
 	{
 		assertNotNull(reader.toString());
 	}
+
+    @BeforeEach
+    void setUp() {
+    }
+
+    @Test
+    void outboundDBReader() {
+    }
+
+    @Test
+    void outboundCitiSuppresionDBReader() {
+    }
+
+    @Test
+    void purgeCitiSuppresionTable() {
+    }
+
+    @Test
+    void testGetDataSource() {
+    }
+
+    @Test
+    void getOutboundService() {
+    }
 }

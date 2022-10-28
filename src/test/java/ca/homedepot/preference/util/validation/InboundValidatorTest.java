@@ -321,4 +321,13 @@ class InboundValidatorTest
 		assertEquals("CANADA SAP CRM", sapCRM);
 		assertEquals("Facebook Opt in campaign", faceOptIn);
 	}
+
+	@Test
+	void moveDateTestMakingAnException(){
+		String dateStr = "something";
+
+		Date dateDT = InboundValidator.moveDate(dateStr);
+
+		assertNull(dateDT);
+	}
 }
