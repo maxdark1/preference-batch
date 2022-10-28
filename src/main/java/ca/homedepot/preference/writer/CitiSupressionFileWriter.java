@@ -14,10 +14,14 @@ import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,7 +43,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	@Autowired
 	private FileService fileService;
 
-	private static final String JOB_NAME = "sendCitiSuppresionToCiti";
+	private String jobName;
 
 	private String fileName;
 
@@ -51,21 +55,28 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 		setSaveState(false);
 	}
 
-	@PostConstruct
-	public void setResourcePostConstruct()
-	{
+	public void setResource() {
 		Format formatter = new SimpleDateFormat("YYYYMMDD");
-		fileName = fileNameFormat.replaceAll("YYYYMMDD", formatter.format(new Date()));
+		fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
-		setResource(new FileSystemResource(repositorySource + folderSource + fileName));
+		Resource resource = new FileSystemResource(repositorySource+folderSource+fileName);
+		if(resource.exists()){
+			// removes if exists
+			try {
+				Files.delete(new File(repositorySource+folderSource+fileName).toPath());
+			} catch (IOException e) {
+				//
+			}
+		}
+		super.setResource(resource);
 	}
 
-	@Override
-	public String doWrite(List<? extends CitiSuppresionOutboundDTO> items)
-	{
 
-		saveFileRecord(fileName);
-		return super.doWrite(items);
+	@Override
+	public void write(List<? extends CitiSuppresionOutboundDTO> items) throws Exception {
+
+		saveFileRecord();
+		super.write(items);
 	}
 
 	public FlatFileHeaderCallback getHeaderCallBack()
@@ -78,8 +89,8 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	{
 		BeanWrapperFieldExtractor<CitiSuppresionOutboundDTO> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
 		beanWrapperFieldExtractor.setNames(new String[]
-		{ "FirstName", "MiddleInitial", "LastName", "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
-				"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
+				{ "FirstName", "MiddleInitial", "LastName", "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
+						"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
 
 		DelimitedLineAggregator<CitiSuppresionOutboundDTO> delimitedLineAggregator = new DelimitedLineAggregator<>();
 		delimitedLineAggregator.setDelimiter(",");
@@ -88,10 +99,10 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	}
 
 
-	public void saveFileRecord(String file_name)
+	public void saveFileRecord()
 	{
 
-		BigDecimal jobId = fileService.getJobId(JOB_NAME);
+		BigDecimal jobId = fileService.getJobId(jobName);
 		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE", "citi_bank").getMasterId();
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");
 
