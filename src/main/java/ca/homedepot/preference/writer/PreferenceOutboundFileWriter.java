@@ -63,7 +63,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
             line = preference.getEmail() + split;
             line += formatter.format(preference.getEffectiveDate()) + split;
             line += preference.getSourceId() + split;
-            line += preference.getEmailStatus() +split;
+            line += (preference.getEmailStatus() == BigDecimal.ZERO ? PreferenceBatchConstants.VALID_EMAIL_CODE : preference.getEmailStatus()) + split;
             line += preference.getPhonePtcFlag() + split;
             line += preference.getLanguagePref() +split;
             line += formatter.format(preference.getEarlyOptInDate()) + split;
@@ -97,7 +97,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
      */
     private void generateFile(String file) throws IOException {
         Format formatter = new SimpleDateFormat("yyyyMMdd");
-        String fileName = file_name_format.replace("yyyyMMdd", formatter.format(new Date()));
+        String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 
         writer = new FileOutputStream(repository_source + folder_source + fileName,false);
         byte toFile[] = file.getBytes();
