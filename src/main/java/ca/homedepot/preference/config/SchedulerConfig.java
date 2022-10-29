@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -158,6 +159,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String sfmcPath;
 
 	/**
+	 * The citi path
+	 */
+	@Value("${folders.citi.path}")
+	String citiPath;
+
+	/**
 	 * Folders ERROR, INBOUND AND PROCCESED
 	 */
 	@Value("${folders.inbound}")
@@ -169,6 +176,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${folders.outbound}")
 	String folderOutbound;
 
+
+
+
 	/**
 	 * Document's base name
 	 *
@@ -177,11 +187,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${inbound.files.registration}")
 	String hybrisCrmRegistrationFile;
 
+
 	@Value("${inbound.files.sfmcUnsubscribedOutlook}")
 	String fileExtTargetEmail;
 
 	@Value("${inbound.files.registrationFbSfmc}")
 	String fileRegistrationFbSfmc;
+
+	@Value("${outbound.citi.mastersuppresion}")
+	String citiFileNameFormat;
 
 	/**
 	 * Patterns for validations
@@ -797,6 +811,20 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 
+	public CitiSupressionFileWriter citiSupressionFileWriter(){
+
+		citiSupressionFileWriter = new CitiSupressionFileWriter();
+
+		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
+		citiSupressionFileWriter.setFolderSource(folderOutbound);
+		citiSupressionFileWriter.setRepositorySource(citiPath);
+		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
+		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
+		citiSupressionFileWriter.setResource();
+
+		return citiSupressionFileWriter;
+	}
+
 	/**
 	 * Hybris job process.
 	 *
@@ -879,7 +907,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readSendPreferencesToCRMStep1()
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep1")
-				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCiti)
+				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
 				.reader(preferenceOutboundReader.outboundDBReader()).writer(preferenceOutboundWriter).build();
 	}
 
@@ -891,7 +919,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readSendPreferencesToCRMStep2()
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
-				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCiti)
+				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
 				.reader(preferenceOutboundDBReader.outboundDBReader()).writer(preferenceOutboundFileWriter).build();
 	}
 
@@ -996,11 +1024,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	/**
 	 * Out bound process
 	 */
-	@Bean
 	public Step citiSuppresionDBReaderStep1()
 	{
-		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
-				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkValue)
+		return stepBuilderFactory.get("citiSuppresionDBReaderStep1").<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundReader.outboundCitiSuppresionDBReader()).writer(outboundDTOJdbcBatchItemWriter()).build();
 	}
 
@@ -1008,8 +1034,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step citiSuppresionDBReaderFileWriterStep2()
 	{
 		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
-				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkValue)
-				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter).build();
+				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
+				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter()).build();
 	}
 
 	/**
