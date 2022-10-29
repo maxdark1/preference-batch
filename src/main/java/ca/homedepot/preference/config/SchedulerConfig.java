@@ -11,10 +11,12 @@ import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
+import ca.homedepot.preference.processor.preferenceOutboundProcessor;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.preferenceOutboundReader;
@@ -296,6 +298,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private preferenceOutboundReader preferenceOutboundReader;
 	@Autowired
 	private PreferenceOutboundDBReader preferenceOutboundDBReader;
+
+	@Autowired
+	private preferenceOutboundProcessor preferenceOutboundProcessor;
 	@Autowired
 	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
 
@@ -919,8 +924,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readSendPreferencesToCRMStep2()
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
-				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
-				.reader(preferenceOutboundDBReader.outboundDBReader()).writer(preferenceOutboundFileWriter).build();
+				.<PreferenceOutboundDto, PreferenceOutboundDtoProcessor> chunk(chunkOutboundCRM)
+				.reader(preferenceOutboundDBReader.outboundDBReader())
+				.processor(preferenceOutboundProcessor)
+				.writer(preferenceOutboundFileWriter).build();
 	}
 
 	/**
