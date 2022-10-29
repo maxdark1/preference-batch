@@ -103,7 +103,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	private void generateFile(String file) throws IOException
 	{
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = file_name_format.replace("yyyyMMdd", formatter.format(new Date()));
+		String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 
 		writer = new FileOutputStream(repository_source + folder_source + fileName, false);
 		byte toFile[] = file.getBytes();

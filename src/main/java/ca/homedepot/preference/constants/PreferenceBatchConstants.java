@@ -364,5 +364,5 @@ public interface PreferenceBatchConstants
 	String SRC_DATE = "src_date";
 	String UPDATED_BY = "updated_by";
 
-	String PREFERENCE_OUTBOUND_COMPLIANT_HEADERS = "email\teffective_date\tsource_id\temail_status\temail_permission\tlanguage_preference\tearly_opt_in_date\tcnd_compliant_flag\temail_preference_hd_ca\temail_pref_garden_club\temail_pref_pro\tsrc_postal_code\tcustomer_nbr	phone_ptc_flag\tdncl_supression\tphone_number\tfirst_name\tlast_name\tindustry_code	city\tprovince\thd_ca_pro_src_id\n";
+	String PREFERENCE_OUTBOUND_COMPLIANT_HEADERS = "email\teffective_date\tsource_id\temail_status\temail_permission\tlanguage_preference\tearly_opt_in_date\tcnd_compliant_flag\temail_preference_hd_ca\temail_pref_garden_club\temail_pref_pro\tsrc_postal_code\tcustomer_nbr\tphone_ptc_flag\tdncl_supression\tphone_number\tfirst_name\tlast_name\tbusiness_name\tindustry_code\tcity\tprovince\thd_ca_pro_src_id\n";
 }
