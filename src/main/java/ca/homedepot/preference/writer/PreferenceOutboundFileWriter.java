@@ -42,68 +42,62 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	private StepExecution stepExecution;
 
-	private BigDecimal sourceId;
+	private String sourceId;
 	@Autowired
 	private FileService fileService;
 
-	/**
-	 * Method used to generate a plain text file
-	 * 
-	 * @param items
-	 *           items to be written
-	 * @throws Exception
-	 */
-	@Override
-	public void write(List<? extends PreferenceOutboundDto> items) throws Exception
-	{
-		sourceId = items.get(0).getSourceId();
-		String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
-		String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+    /**
+     * Method used to generate a plain text file
+     * @param items items to be written
+     * @throws Exception
+     */
+    @Override
+    public void write(List<? extends PreferenceOutboundDtoProcessor> items) throws Exception {
+        sourceId = items.get(0).getSourceId().replace("\t","");
+        String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
+        String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 
-		for (PreferenceOutboundDto preference : items)
-		{
-			String line = "";
-			line = preference.getEmail() + split;
-			line += formatter.format(preference.getEffectiveDate()) + split;
-			line += preference.getSourceId() + split;
-			line += preference.getEmailStatus() + split;
-			line += preference.getPhonePtcFlag() + split;
-			line += preference.getLanguagePref() + split;
-			line += formatter.format(preference.getEarlyOptInDate()) + split;
-			line += preference.getCndCompliantFlag() + split;
-			line += preference.getEmailPrefHdCa() + split;
-			line += preference.getEmailPrefGardenClub() + split;
-			line += preference.getEmailPrefPro() + split;
-			line += preference.getPostalCode() + split;
-			line += preference.getCustomerNbr() + split;
-			line += preference.getPhonePtcFlag() + split;
-			line += preference.getDnclSuppresion() + split;
-			line += preference.getPhoneNumber() + split;
-			line += preference.getFirstName() + split;
-			line += preference.getLastName() + split;
-			line += preference.getBusinessName() + split;
-			line += preference.getIndustryCode() + split;
-			line += preference.getCity() + split;
-			line += preference.getProvince() + split;
-			line += preference.getHdCaProSrcId() + "\n";
-			file += line;
-		}
+        for (PreferenceOutboundDtoProcessor preference: items) {
+            String line = "";
+            line = preference.getEmail();
+            line += preference.getEffectiveDate();
+            line += preference.getSourceId();
+            line += preference.getEmailStatus();
+            line += preference.getPhonePtcFlag();
+            line += preference.getLanguagePref();
+            line += preference.getEarlyOptInDate();
+            line += preference.getCndCompliantFlag();
+            line += preference.getEmailPrefHdCa();
+            line += preference.getEmailPrefGardenClub();
+            line += preference.getEmailPrefPro();
+            line += preference.getPostalCode();
+            line += preference.getCustomerNbr();
+            line += preference.getPhonePtcFlag();
+            line += preference.getDnclSuppresion();
+            line += preference.getPhoneNumber();
+            line += preference.getFirstName();
+            line += preference.getLastName();
+            line += preference.getBusinessName();
+            line += preference.getIndustryCode();
+            line += preference.getCity();
+            line += preference.getProvince();
+            line += preference.getHdCaProSrcId();
+            file += line;
+    }
 
 		generateFile(file);
 
 	}
 
-	/**
-	 * This Method saves in a plain text file the string that receives as parameter
-	 * 
-	 * @param file
-	 * @throws IOException
-	 */
-	private void generateFile(String file) throws IOException
-	{
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = file_name_format.replace("yyyyMMdd", formatter.format(new Date()));
+    /**
+     * This Method saves in a plain text file the string that receives as parameter
+     * @param file
+     * @throws IOException
+     */
+    private void generateFile(String file) throws IOException {
+        Format formatter = new SimpleDateFormat("yyyyMMdd");
+        String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 
 		writer = new FileOutputStream(repository_source + folder_source + fileName, false);
 		byte toFile[] = file.getBytes();
@@ -112,17 +106,15 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		setFileRecord(fileName);
 	}
 
-	/**
-	 * This method registry in file table the generated file
-	 * 
-	 * @param fileName
-	 */
-	private void setFileRecord(String fileName)
-	{
-		BigDecimal jobId = fileService.getJobId("sendPreferencesToCRM");
-		Master fileStatus = MasterProcessor.getSourceID("STATUS", SourceDelimitersConstants.VALID);
-		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
-				new Date(), "BATCH", new Date(), null, null);
+    /**
+     * This method registry in file table the generated file
+     * @param fileName
+     */
+    private void setFileRecord(String fileName){
+        BigDecimal jobId = fileService.getJobId("sendPreferencesToCRM");
+        Master fileStatus = MasterProcessor.getSourceID("STATUS", SourceDelimitersConstants.VALID);
+        FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(), fileStatus.getMasterId(),
+                new Date(), new Date(), "BATCH", new Date(), null, null);
 
 		fileService.insert(file);
 	}
