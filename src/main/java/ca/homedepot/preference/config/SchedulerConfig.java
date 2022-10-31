@@ -16,10 +16,10 @@ import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
-import ca.homedepot.preference.processor.preferenceOutboundProcessor;
+import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
-import ca.homedepot.preference.read.preferenceOutboundReader;
+import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.util.FileUtil;
@@ -303,14 +303,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private PreferenceOutboundWriter preferenceOutboundWriter;
 	@Autowired
-	private preferenceOutboundReader preferenceOutboundReader;
-	@Autowired
 	private PreferenceOutboundDBReader preferenceOutboundDBReader;
 
 	@Autowired
-	private preferenceOutboundProcessor preferenceOutboundProcessor;
+	private PreferenceOutboundProcessor preferenceOutboundProcessor;
 	@Autowired
 	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
+	@Autowired
+	private PreferenceOutboundReader preferenceOutboundReader;
 
 
 	@Autowired

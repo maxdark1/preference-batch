@@ -2,6 +2,7 @@ package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ class PreferenceOutboundFileWriterTest
 	@Spy
 	PreferenceOutboundFileWriter preferenceOutboundFileWriter;
 
-	List<PreferenceOutboundDto> items;
+	List<PreferenceOutboundDtoProcessor> items;
 
 	@BeforeEach
 	void setup()
@@ -35,10 +36,10 @@ class PreferenceOutboundFileWriterTest
 		preferenceOutboundFileWriter.setFolder_source("");
 		preferenceOutboundFileWriter.setFile_name_format("LOYALTY_DAILY_YYYYMMDD.txt");
 
-		PreferenceOutboundDto preferenceOutboundDto = new PreferenceOutboundDto();
-		preferenceOutboundDto.setSourceId(BigDecimal.ONE);
-		preferenceOutboundDto.setEffectiveDate(new Date());
-		preferenceOutboundDto.setEarlyOptInDate(new Date());
+		PreferenceOutboundDtoProcessor preferenceOutboundDto = new PreferenceOutboundDtoProcessor();
+		preferenceOutboundDto.setSourceId(BigDecimal.ONE.toString());
+		preferenceOutboundDto.setEffectiveDate(new Date().toString());
+		preferenceOutboundDto.setEarlyOptInDate(new Date().toString());
 
 		items = new ArrayList<>();
 		items.add(preferenceOutboundDto);

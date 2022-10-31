@@ -25,7 +25,6 @@ class OutboundServiceImplTest {
     @BeforeEach
     void setup(){
         MockitoAnnotations.initMocks(this);
-        outboundService.setDataSource(dataSource);
     }
     @Test
     void preferenceOutbound() {
