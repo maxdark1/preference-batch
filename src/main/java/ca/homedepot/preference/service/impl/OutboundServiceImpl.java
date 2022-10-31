@@ -3,6 +3,7 @@ package ca.homedepot.preference.service.impl;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.service.OutboundService;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,12 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 
 @Service
+@Data
 public class OutboundServiceImpl implements OutboundService
 {
 	@Autowired
 	private DataSource dataSource;
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
 	/**
@@ -24,8 +27,6 @@ public class OutboundServiceImpl implements OutboundService
 	@Override
 	public void preferenceOutbound(PreferenceOutboundDto item)
 	{
-		jdbcTemplate = new JdbcTemplate();
-		jdbcTemplate.setDataSource(dataSource);
 		jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_INSERT_STG_PREFERENCE_OUTBOUND, item.getEmail(),
 				item.getEffectiveDate(), item.getSourceId(), item.getEmailStatus(), item.getEmailPermission(), item.getLanguagePref(),
 				item.getEarlyOptInDate(), item.getCndCompliantFlag(), item.getEmailPrefHdCa(), item.getEmailPrefGardenClub(),
@@ -38,8 +39,6 @@ public class OutboundServiceImpl implements OutboundService
 	@Override
 	public int purgeCitiSuppresionTable()
 	{
-		jdbcTemplate = new JdbcTemplate();
-		jdbcTemplate.setDataSource(dataSource);
 		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_CITI_SUPPRESION);
 	}
 
@@ -49,8 +48,6 @@ public class OutboundServiceImpl implements OutboundService
 	@Override
 	public void truncateCompliantTable()
 	{
-		jdbcTemplate = new JdbcTemplate();
-		jdbcTemplate.setDataSource(dataSource);
 		jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE);
 	}
 }

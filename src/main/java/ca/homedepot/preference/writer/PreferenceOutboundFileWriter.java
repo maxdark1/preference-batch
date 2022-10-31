@@ -96,16 +96,16 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
      * @param file
      * @throws IOException
      */
-    private void generateFile(String file) throws IOException {
+    private void generateFile(String file) throws Exception {
         Format formatter = new SimpleDateFormat("yyyyMMdd");
         String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 
-        writer = new FileOutputStream(repository_source + folder_source + fileName,false);
-        byte toFile[] = file.getBytes();
-        writer.write(toFile);
-        writer.close();
-        setFileRecord(fileName);
-    }
+		writer = new FileOutputStream(repository_source + folder_source + fileName, false);
+		byte toFile[] = file.getBytes();
+		writer.write(toFile);
+		writer.close();
+		setFileRecord(fileName);
+	}
 
     /**
      * This method registry in file table the generated file
@@ -117,7 +117,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
         FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(), fileStatus.getMasterId(),
                 new Date(), new Date(), "BATCH", new Date(), null, null);
 
-        fileService.insert(file);
-    }
+		fileService.insert(file);
+	}
 
 }

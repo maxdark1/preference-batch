@@ -20,7 +20,7 @@ import java.util.Date;
 @Component
 @Slf4j
 @Data
-public class preferenceOutboundReader
+public class PreferenceOutboundReader
 {
 	@Autowired
 	private DataSource dataSource;
