@@ -367,6 +367,4 @@ public interface PreferenceBatchConstants
 
 	String CITI_SUPPRESION_HEADER = "'FIRST_NAME','MIDDLE_INITIAL','LAST_NAME','ADDR_LINE_1','ADDR_LINE_2','CITY','STATE_CD','POSTAL_CD','EMAIL_ADDR','PHONE','SMS_MOBILE_PHONE','BUSINESS_NAME',DM_OPT_OUT,EMAIL_OPT_OUT,PHONE_OPT_OUT,SMS_OPT_OUT\n";
 	String PREFERENCE_OUTBOUND_COMPLIANT_HEADERS = "email\teffective_date\tsource_id\temail_status\temail_permission\tlanguage_preference\tearly_opt_in_date\tcnd_compliant_flag\temail_preference_hd_ca\temail_pref_garden_club\temail_pref_pro\tsrc_postal_code\tcustomer_nbr\tphone_ptc_flag\tdncl_supression\tphone_number\tfirst_name\tlast_name\tbusiness_name\tindustry_code\tcity\tprovince\thd_ca_pro_src_id\n";
-
-	String VALID_EMAIL_CODE = "00";
 }
