@@ -20,6 +20,8 @@ import ca.homedepot.preference.processor.preferenceOutboundProcessor;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.preferenceOutboundReader;
+import ca.homedepot.preference.service.OutboundService;
+import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
@@ -177,6 +179,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String folderProcessed;
 	@Value("${folders.outbound}")
 	String folderOutbound;
+	@Value("${folders.crm.path}")
+	String repositorySource;
+	@Value("${folders.outbound}")
+	String folderSource;
+	@Value("${outbound.files.compliant}")
+	String fileNameFormat;
 
 
 
@@ -847,8 +855,17 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * 
 	 * @return
 	 */
+
 	public Job crmSendPreferencesToCRM()
 	{
+		OutboundService outboundService = new OutboundServiceImpl();
+		try {
+			outboundService.createFile(repositorySource, folderSource, fileNameFormat);
+		}
+		catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
+
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSendPreferencesToCRMStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readSendPreferencesToCRMStep2()).build().build();
