@@ -26,7 +26,7 @@ public class PreferenceOutboundProcessor implements ItemProcessor<PreferenceOutb
 		preferenceOutboundDtoProcessor.setEmail(preferenceOutboundDto.getEmail() + split);
 		preferenceOutboundDtoProcessor.setEffectiveDate(formatter.format(preferenceOutboundDto.getEffectiveDate()) + split);
 		preferenceOutboundDtoProcessor.setSourceId(preferenceOutboundDto.getSourceId().toString() + split);
-		preferenceOutboundDtoProcessor.setEmailStatus((preferenceOutboundDto.getEmailStatus()  + split);
+		preferenceOutboundDtoProcessor.setEmailStatus(preferenceOutboundDto.getEmailStatus() + split);
 		preferenceOutboundDtoProcessor.setPhonePtcFlag(preferenceOutboundDto.getPhonePtcFlag().toString() + split);
 		preferenceOutboundDtoProcessor.setLanguagePref(preferenceOutboundDto.getLanguagePref() + split);
 		preferenceOutboundDtoProcessor.setEarlyOptInDate(formatter.format(preferenceOutboundDto.getEarlyOptInDate()) + split);

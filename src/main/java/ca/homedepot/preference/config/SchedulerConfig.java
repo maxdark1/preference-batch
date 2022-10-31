@@ -824,7 +824,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 
-	public CitiSupressionFileWriter citiSupressionFileWriter(){
+	public CitiSupressionFileWriter citiSupressionFileWriter()
+	{
 
 		citiSupressionFileWriter = new CitiSupressionFileWriter();
 
@@ -859,10 +860,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job crmSendPreferencesToCRM()
 	{
 		OutboundService outboundService = new OutboundServiceImpl();
-		try {
+		try
+		{
 			outboundService.createFile(repositorySource, folderSource, fileNameFormat);
 		}
-		catch (Exception ex) {
+		catch (Exception ex)
+		{
 			log.error(ex.getMessage());
 		}
 
@@ -942,8 +945,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
 				.<PreferenceOutboundDto, PreferenceOutboundDtoProcessor> chunk(chunkOutboundCRM)
-				.reader(preferenceOutboundDBReader.outboundDBReader())
-				.processor(preferenceOutboundProcessor)
+				.reader(preferenceOutboundDBReader.outboundDBReader()).processor(preferenceOutboundProcessor)
 				.writer(preferenceOutboundFileWriter).build();
 	}
 
@@ -1050,7 +1052,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	public Step citiSuppresionDBReaderStep1()
 	{
-		return stepBuilderFactory.get("citiSuppresionDBReaderStep1").<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
+		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
+				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundReader.outboundCitiSuppresionDBReader()).writer(outboundDTOJdbcBatchItemWriter()).build();
 	}
 
