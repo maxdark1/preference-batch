@@ -2,9 +2,12 @@ package ca.homedepot.preference.config;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import ca.homedepot.preference.util.validation.InboundValidator;
 import org.springframework.jdbc.core.RowMapper;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -80,7 +83,9 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT15), rs.getString(PreferenceBatchConstants.VALUE15));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT16), rs.getString(PreferenceBatchConstants.VALUE16));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT17), rs.getString(PreferenceBatchConstants.VALUE17));
-		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT18), rs.getString(PreferenceBatchConstants.VALUE18));
+
+		Date date = InboundValidator.moveDate(rs.getString(PreferenceBatchConstants.VALUE18));
+		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT18), InboundValidator.dateYearMonthDay(date));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT19), rs.getString(PreferenceBatchConstants.VALUE19));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT20), rs.getString(PreferenceBatchConstants.VALUE20));
 
@@ -118,6 +123,7 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 
 		return intValue;
 	}
+
 
 
 }

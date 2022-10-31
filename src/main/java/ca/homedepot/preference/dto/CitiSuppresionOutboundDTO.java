@@ -26,9 +26,4 @@ public class CitiSuppresionOutboundDTO
 	private String phoneOptOut;
 	private String smsOptOut;
 
-
-	public String rowOnFIle(){
-		return firstName+","+middleInitial+","+lastName+","+addrLine1
-				+","+addrLine2+","+city+","+stateCd+","+postalCd+","+emailAddr+","+phone+","+smsMobilePhone+","+businessName+","+dmOptOut+","+emailOptOut+","+phoneOptOut+","+smsOptOut+"\n";
-	}
 }

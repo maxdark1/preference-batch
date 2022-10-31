@@ -21,6 +21,7 @@ public class CitiSuppresionOutboundMapper implements RowMapper<CitiSuppresionOut
 		suppresion.setAddrLine2(rs.getString("addr_line_2"));
 		suppresion.setCity(rs.getString("city"));
 		suppresion.setStateCd(rs.getString("state_cd"));
+		suppresion.setPostalCd(rs.getString("postal_cd"));
 		suppresion.setEmailAddr(rs.getString("email_addr"));
 		suppresion.setPhone(rs.getString("phone"));
 		suppresion.setSmsMobilePhone(rs.getString("sms_mobile_phone"));

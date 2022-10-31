@@ -8,11 +8,13 @@ import java.util.GregorianCalendar;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.processor.MasterProcessor;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.InboundRegistration;
 
 @UtilityClass
+@Slf4j
 public class InboundValidator
 {
 
@@ -378,4 +380,35 @@ public class InboundValidator
 			error.append(field).append(" should be present\n");
 		}
 	}
+
+
+	/**
+	 * Return SimpleDateFormat for LayoutC SrcDate
+	 * 
+	 * @param date
+	 * @return Return SimpleDateFormat for LayoutC SrcDate
+	 */
+	public static String dateYearMonthDay(Date date)
+	{
+		return new SimpleDateFormat("yyyy-MM-dd").format(date);
+	}
+
+	public static Date moveDate(String date)
+	{
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		Date asOfDate = null;
+		try
+		{
+			asOfDate = simpleDateFormat.parse(date);
+			return asOfDate;
+		}
+		catch (Exception ex)
+		{
+			log.error(" MoveDate has not a right format. ");
+			return asOfDate;
+		}
+
+	}
 }
+
+

@@ -1,74 +1,48 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.service.OutboundService;
-import org.junit.jupiter.api.DisplayName;
+import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.*;
 
+import java.util.ArrayList;
+import java.util.List;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+
 class PreferenceOutboundWriterTest
 {
 
 	@Mock
-	OutboundService outboundService;
+	OutboundServiceImpl outboundService;
+
 	@InjectMocks
-	PreferenceOutboundWriter writer = new PreferenceOutboundWriter();
+	@Spy
+	PreferenceOutboundWriter preferenceOutboundWriter;
 
-
-
-
-
-	@Test
-	@DisplayName("Should write the data into de DB")
-
-	void testWrite() throws Exception
+	@BeforeEach
+	void setup()
 	{
-		//Given
-
-
-
+		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
-	void getDataSource()
+	void write() throws Exception
 	{
+		List<PreferenceOutboundDto> list = new ArrayList<>();
+		list.add(new PreferenceOutboundDto());
+
+		Mockito.doNothing().when(outboundService).preferenceOutbound(any(PreferenceOutboundDto.class));
+		preferenceOutboundWriter.write(list);
+		Mockito.verify(preferenceOutboundWriter).write(list);
+
 	}
 
 	@Test
 	void getOutboundService()
 	{
-	}
-
-	@Test
-	void setDataSource()
-	{
-	}
-
-	@Test
-	void setOutboundService()
-	{
-	}
-
-	@Test
-	void testEquals()
-	{
-	}
-
-	@Test
-	void canEqual()
-	{
-	}
-
-	@Test
-	void testHashCode()
-	{
-	}
-
-	@Test
-	void testToString()
-	{
+		assertNotNull(preferenceOutboundWriter.getOutboundService());
 	}
 }
