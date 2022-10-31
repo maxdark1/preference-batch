@@ -8,11 +8,13 @@ import java.util.GregorianCalendar;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.processor.MasterProcessor;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.InboundRegistration;
 
 @UtilityClass
+@Slf4j
 public class InboundValidator
 {
 
@@ -402,6 +404,7 @@ public class InboundValidator
 		}
 		catch (Exception ex)
 		{
+			log.error(" MoveDate has not a right format. ");
 			return asOfDate;
 		}
 

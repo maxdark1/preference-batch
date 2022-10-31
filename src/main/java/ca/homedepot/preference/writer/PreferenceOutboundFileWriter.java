@@ -5,6 +5,7 @@ import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
@@ -30,7 +31,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @Data
-public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutboundDto>
+public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutboundDtoProcessor>
 {
 	@Value("${folders.crm.path}")
 	private String repository_source;
@@ -95,7 +96,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
      * @param file
      * @throws IOException
      */
-    private void generateFile(String file) throws IOException {
+    private void generateFile(String file) throws Exception {
         Format formatter = new SimpleDateFormat("yyyyMMdd");
         String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 

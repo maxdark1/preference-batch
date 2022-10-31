@@ -70,7 +70,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 			}
 			catch (IOException e)
 			{
-				//
+				log.info(" File for citi suppresion will be created. ");
 			}
 		}
 		super.setResource(resource);
