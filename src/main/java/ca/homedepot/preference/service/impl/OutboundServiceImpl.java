@@ -1,17 +1,22 @@
 package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.service.OutboundService;
-import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
+import java.io.FileOutputStream;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
-@Data
+@Slf4j
 public class OutboundServiceImpl implements OutboundService
 {
 	@Autowired
@@ -42,6 +47,32 @@ public class OutboundServiceImpl implements OutboundService
 		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_CITI_SUPPRESION);
 	}
 
+	@Override
+	public void createFile(String repository, String folder, String fileNameFormat)
+	{
+		/* Creating File */
+		Format formatter = new SimpleDateFormat("yyyyMMdd");
+		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+
+		/* Inserting Headers */
+		String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
+
+		try
+		{
+			FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
+			byte toFile[] = file.getBytes();
+			writer.write(toFile);
+			writer.close();
+		}
+		catch (Exception ex)
+		{
+			log.error(ex.getMessage());
+		}
+
+	}
+
+
+
 	/**
 	 * This method is used to connect with the database and truncate a passtrougths table
 	 */
@@ -50,4 +81,6 @@ public class OutboundServiceImpl implements OutboundService
 	{
 		jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE);
 	}
+
+
 }

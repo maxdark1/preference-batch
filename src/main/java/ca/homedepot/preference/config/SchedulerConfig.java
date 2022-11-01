@@ -20,6 +20,8 @@ import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
+import ca.homedepot.preference.service.OutboundService;
+import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
@@ -40,6 +42,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -176,6 +179,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String folderProcessed;
 	@Value("${folders.outbound}")
 	String folderOutbound;
+	@Value("${folders.crm.path}")
+	String repositorySource;
+	@Value("${folders.outbound}")
+	String folderSource;
+	@Value("${outbound.files.compliant}")
+	String fileNameFormat;
 
 
 
@@ -294,14 +303,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private PreferenceOutboundWriter preferenceOutboundWriter;
 	@Autowired
-	private PreferenceOutboundReader preferenceOutboundReader;
-	@Autowired
 	private PreferenceOutboundDBReader preferenceOutboundDBReader;
 
 	@Autowired
 	private PreferenceOutboundProcessor preferenceOutboundProcessor;
 	@Autowired
 	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
+	@Autowired
+	private PreferenceOutboundReader preferenceOutboundReader;
 
 
 	@Autowired
@@ -847,8 +856,19 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * 
 	 * @return
 	 */
+
 	public Job crmSendPreferencesToCRM()
 	{
+		OutboundService outboundService = new OutboundServiceImpl();
+		try
+		{
+			outboundService.createFile(repositorySource, folderSource, fileNameFormat);
+		}
+		catch (Exception ex)
+		{
+			log.error(ex.getMessage());
+		}
+
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSendPreferencesToCRMStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readSendPreferencesToCRMStep2()).build().build();
@@ -925,8 +945,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
 				.<PreferenceOutboundDto, PreferenceOutboundDtoProcessor> chunk(chunkOutboundCRM)
-				.reader(preferenceOutboundDBReader.outboundDBReader())
-				.processor(preferenceOutboundProcessor)
+				.reader(preferenceOutboundDBReader.outboundDBReader()).processor(preferenceOutboundProcessor)
 				.writer(preferenceOutboundFileWriter).build();
 	}
 
