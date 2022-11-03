@@ -64,17 +64,17 @@ class JobRepoTest
 	void createFileDTO() throws ParseException
 	{
 		fileDTO = new FileDTO("TEST");
-		fileDTO.setFile_id(BigDecimal.ONE);
-		fileDTO.setFile_source_id(new BigDecimal("12345"));
+		fileDTO.setFileId(BigDecimal.ONE);
+		fileDTO.setSourceType(new BigDecimal("12345"));
 		fileDTO.setJob(new BigDecimal("246810"));
-		fileDTO.setInserted_by("TEST");
-		fileDTO.setStart_time((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
-		fileDTO.setInserted_date((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
+		fileDTO.setInsertedBy("TEST");
+		fileDTO.setStartTime((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
+		fileDTO.setInsertedDate((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
 		fileDTO.setStatus("C");
-		fileDTO.setUpdated_by("TEST");
-		fileDTO.setUpdated_date((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
-		fileDTO.setFile_name("TEST_FILE");
-		fileDTO.setEnd_time((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
+		fileDTO.setUpdatedBy("TEST");
+		fileDTO.setUpdatedDate((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
+		fileDTO.setFileName("TEST_FILE");
+		fileDTO.setEndTime((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
 	}
 
 	void createRegistrationRequestObj()
@@ -179,17 +179,17 @@ class JobRepoTest
 	void testFileDTO() throws ParseException
 	{
 		assertNotNull(fileDTO);
-		assertEquals("TEST_FILE", fileDTO.getFile_name());
+		assertEquals("TEST_FILE", fileDTO.getFileName());
 		assertNotNull(fileDTO.getJob());
-		assertNotNull(fileDTO.getFile_id());
-		assertEquals(new BigDecimal("12345"), fileDTO.getFile_source_id());
+		assertNotNull(fileDTO.getFileId());
+		assertEquals(new BigDecimal("12345"), fileDTO.getSourceType());
 		assertNotNull(fileDTO.getStatus());
-		assertEquals((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"), fileDTO.getStart_time());
-		assertNotNull(fileDTO.getUpdated_date());
-		assertNotNull(fileDTO.getInserted_date());
-		assertNotNull(fileDTO.getEnd_time());
-		assertEquals("TEST", fileDTO.getInserted_by());
-		assertEquals("TEST", fileDTO.getUpdated_by());
+		assertEquals((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"), fileDTO.getStartTime());
+		assertNotNull(fileDTO.getUpdatedDate());
+		assertNotNull(fileDTO.getInsertedDate());
+		assertNotNull(fileDTO.getEndTime());
+		assertEquals("TEST", fileDTO.getInsertedBy());
+		assertEquals("TEST", fileDTO.getUpdatedBy());
 
 	}
 

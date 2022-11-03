@@ -5,11 +5,17 @@ import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +64,12 @@ class PreferenceOutboundFileWriterTest
 		masterList.add(fileStatus);
 
 		MasterProcessor.setMasterList(masterList);
+	}
+
+	@AfterAll
+	static void tearDown() throws IOException {
+		Format formatter = new SimpleDateFormat("yyyyMMdd");
+		FileUtils.forceDelete(new File("LOYALTY_DAILY_YYYYMMDD.txt".replace("YYYYMMDD", formatter.format(new Date()))));
 	}
 
 	@Test

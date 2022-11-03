@@ -5,23 +5,14 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
-import com.google.api.pathtemplate.ValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.ReflectionUtils;
-import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.test.context.SpringBatchTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,15 +98,15 @@ class StepErrorLoggingListenerTest
 	{
 		// given
 		FileDTO file = new FileDTO();
-		file.setFile_id(BigDecimal.ONE);
-		file.setFile_name("somefile.txt");
-		file.setFile_source_id(BigDecimal.valueOf(2l));
+		file.setFileId(BigDecimal.ONE);
+		file.setFileName("somefile.txt");
+		file.setSourceType(BigDecimal.valueOf(2l));
 		file.setJob(BigDecimal.valueOf(3l));
 		file.setStatus("someStatus");
 		Master fileStatus = new Master(BigDecimal.TEN, BigDecimal.ONE, "KEY_VALUE", "hybris", true, null);
 		List<FileDTO> filesToMove = Collections.singletonList(file);
 		when(fileService.getFilesToMove()).thenReturn(filesToMove);
-		when(fileService.updateFileEndTime(file.getFile_id(), new Date(), "BATCH", new Date(), fileStatus)).thenReturn(1);
+		when(fileService.updateFileEndTime(file.getFileId(), new Date(), "BATCH", new Date(), fileStatus)).thenReturn(1);
 
 		// when
 		try (MockedStatic<FileUtil> fileUtil = Mockito.mockStatic(FileUtil.class))
@@ -123,7 +114,7 @@ class StepErrorLoggingListenerTest
 		  // as todo: fix the static mock due technical debt
 
 			stepErrorLoggingListener.moveFile();
-			fileUtil.verify(() -> FileUtil.moveFile(file.getFile_name(), true, "VALID"));
+			fileUtil.verify(() -> FileUtil.moveFile(file.getFileName(), true, "VALID"));
 			Mockito.verify(stepErrorLoggingListener).moveFile();
 		}
 		catch (Exception ex)
@@ -139,15 +130,15 @@ class StepErrorLoggingListenerTest
 	{
 		// given
 		FileDTO file = new FileDTO();
-		file.setFile_id(BigDecimal.ONE);
-		file.setFile_name("somefile.txt");
-		file.setFile_source_id(BigDecimal.valueOf(2l));
+		file.setFileId(BigDecimal.ONE);
+		file.setFileName("somefile.txt");
+		file.setSourceType(BigDecimal.valueOf(2l));
 		file.setJob(BigDecimal.valueOf(3l));
 		file.setStatus("someStatus");
 		Master fileStatus = new Master(BigDecimal.TEN, BigDecimal.ONE, "KEY_VALUE", "hybris", true, null);
 		List<FileDTO> filesToMove = Collections.singletonList(file);
 		when(fileService.getFilesToMove()).thenReturn(filesToMove);
-		when(fileService.updateFileEndTime(file.getFile_id(), new Date(), "BATCH", new Date(), fileStatus)).thenReturn(1);
+		when(fileService.updateFileEndTime(file.getFileId(), new Date(), "BATCH", new Date(), fileStatus)).thenReturn(1);
 
 		// when
 		stepErrorLoggingListener.moveFile();
