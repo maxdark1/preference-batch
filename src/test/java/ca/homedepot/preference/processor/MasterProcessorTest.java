@@ -31,12 +31,6 @@ class MasterProcessorTest
 
 	List<Master> masterInfo;
 
-	@Mock
-	Stream<Master> masterStream;
-
-	@InjectMocks
-	MasterProcessor masterProcessor;
-
 	Master master;
 
 
@@ -72,7 +66,7 @@ class MasterProcessorTest
 
 		Mockito.when(preferenceService.getMasterInfo()).thenReturn(masterList);
 
-		masterProcessor.getMasterInfo();
+		MasterProcessor.getMasterInfo();
 		assertNotNull(MasterProcessor.getMasterList());
 
 	}

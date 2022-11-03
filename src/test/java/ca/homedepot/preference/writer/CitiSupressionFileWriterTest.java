@@ -118,6 +118,7 @@ class CitiSupressionFileWriterTest
 
 		Mockito.doNothing().when(citiSupressionFileWriter).setResource();
 		citiSupressionFileWriter.setResource();
+		Mockito.verify(citiSupressionFileWriter).setResource();
 	}
 
 	@Test

@@ -6,7 +6,6 @@ import java.util.Optional;
 
 
 import lombok.experimental.UtilityClass;
-import org.springframework.stereotype.Component;
 
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.service.PreferenceService;
@@ -14,7 +13,6 @@ import ca.homedepot.preference.service.PreferenceService;
 /**
  * Master Processor obtains information from Master catalog
  */
-@Component
 @UtilityClass
 public class MasterProcessor
 {
@@ -46,8 +44,8 @@ public class MasterProcessor
 	 */
 	public static Master getSourceID(String keyVal, String valueVal)
 	{
-		Optional<Master> optionalMaster = masterList.stream().filter(master -> master.getKeyValue().equals(keyVal) && master.getValueVal().equals(valueVal))
-				.findFirst();
+		Optional<Master> optionalMaster = masterList.stream()
+				.filter(master -> master.getKeyValue().equals(keyVal) && master.getValueVal().equals(valueVal)).findFirst();
 		return optionalMaster.orElse(null);
 	}
 
@@ -59,8 +57,8 @@ public class MasterProcessor
 	 */
 	public static String getValueVal(BigDecimal masterId)
 	{
-		return masterList.stream().filter(master -> master.getMasterId().equals(masterId)).map(Master::getValueVal)
-				.findFirst().orElse(null);
+		return masterList.stream().filter(master -> master.getMasterId().equals(masterId)).map(Master::getValueVal).findFirst()
+				.orElse(null);
 	}
 
 	/**
@@ -74,15 +72,18 @@ public class MasterProcessor
 
 		BigDecimal masterId = new BigDecimal("-400");
 
-		Optional<Master> optional = masterList.stream().filter(master -> master.getOldID() != null && master.getKeyValue().equals("SOURCE_ID")
-				&& master.getOldID().toPlainString().equals(oldId)).findFirst();
-		if(optional.isPresent()) {
+		Optional<Master> optional = masterList.stream().filter(master -> master.getOldID() != null
+				&& master.getKeyValue().equals("SOURCE_ID") && master.getOldID().toPlainString().equals(oldId)).findFirst();
+		if (optional.isPresent())
+		{
 
 			/**
 			 * Gets the MasterID from the Master List
 			 */
 			return optional.get().getMasterId();
-		}else{
+		}
+		else
+		{
 
 			/**
 			 * If it founds any exception return an invalid ID that's a flag for the validation

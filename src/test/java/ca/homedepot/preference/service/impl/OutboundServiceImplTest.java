@@ -85,19 +85,25 @@ class OutboundServiceImplTest
 	}
 
 	@Test
-	void createFileTest() throws IOException {
+	void createFileTest() throws IOException
+	{
 		String repository = "", folder = "OUTBOUND/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
 
-		outboundService.createFile(repository, folder, fileNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
-		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+		outboundService.createFile(repository, folder, fileNameFormat,
+				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat,
+				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 	}
 
 	@Test
-	void createFileTestException() throws IOException {
+	void createFileTestException() throws IOException
+	{
 		String repository = "", folder = "OUTBOUND2/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
 
-		outboundService.createFile(repository, folder, fileNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
-		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+		outboundService.createFile(repository, folder, fileNameFormat,
+				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat,
+				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 	}
 
 }

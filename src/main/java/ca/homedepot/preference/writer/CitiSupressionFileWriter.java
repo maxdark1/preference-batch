@@ -60,7 +60,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 
 	public void setResource()
 	{
-		Format formatter = new SimpleDateFormat("YYYYMMDD");
+		Format formatter = new SimpleDateFormat("yyyyMMDD");
 		this.fileName = this.fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		Resource resource = new FileSystemResource(repositorySource + folderSource + fileName);

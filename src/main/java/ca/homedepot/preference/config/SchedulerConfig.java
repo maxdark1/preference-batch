@@ -27,6 +27,9 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -509,7 +512,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 	@Scheduled(cron = "${cron.job.hybrisIngestion}")
-	public void processRegistrationHybrisInbound() throws Exception
+	public void processRegistrationHybrisInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Registration Inbound Hybris : Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -532,7 +536,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 	@Scheduled(cron = "${cron.job.crmIngestion}")
-	public void processRegistrationCRMInbound() throws Exception
+	public void processRegistrationCRMInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Registration Inbound CRM: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -554,7 +559,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
-	public void processFBSFMCInbound() throws Exception
+	public void processFBSFMCInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Registration Inbound FB-SFMC: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -576,7 +582,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
-	public void processsSFMCOptOutsEmail() throws Exception
+	public void processsSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -593,7 +600,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
-	public void sendPreferencesToCRM() throws Exception
+	public void sendPreferencesToCRM() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -605,7 +613,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
-	public void sendPreferencesToInternal() throws Exception
+	public void sendPreferencesToInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To Internal Destination Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -617,7 +626,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
-	public void sendCitiSuppresionToCitiSuppresion() throws Exception
+	public void sendCitiSuppresionToCitiSuppresion() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -882,7 +892,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+			outboundService.createFile(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
+					PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 		}
 		catch (Exception ex)
 		{
@@ -900,9 +911,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile(internalRepository, internalFolder, internalCANameFormat, PreferenceBatchConstants.INTERNAL_CA_HEADERS);
-			outboundService.createFile(internalRepository, internalFolder, internalGardenNameFormat, PreferenceBatchConstants.INTERNAL_GARDEN_HEADERS);
-			outboundService.createFile(internalRepository, internalFolder, internalMoverNameFormat, PreferenceBatchConstants.INTERNAL_MOVER_HEADERS);
+			outboundService.createFile(internalRepository, internalFolder, internalCANameFormat,
+					PreferenceBatchConstants.INTERNAL_CA_HEADERS);
+			outboundService.createFile(internalRepository, internalFolder, internalGardenNameFormat,
+					PreferenceBatchConstants.INTERNAL_GARDEN_HEADERS);
+			outboundService.createFile(internalRepository, internalFolder, internalMoverNameFormat,
+					PreferenceBatchConstants.INTERNAL_MOVER_HEADERS);
 		}
 		catch (Exception ex)
 		{
@@ -918,19 +932,17 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public Step readSendPreferencesToInternalStep1()
 	{
-		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION+"Step1")
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step1")
 				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundInternal)
-				.reader(preferenceOutboundReader.outboundInternalDBReader())
-				.writer(internalOutboundStep1Writer).build();
+				.reader(preferenceOutboundReader.outboundInternalDBReader()).writer(internalOutboundStep1Writer).build();
 	}
 
 
 	public Step readSendPreferencesToInternalStep2()
 	{
-		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION+"Step2")
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step2")
 				.<InternalOutboundDto, InternalOutboundProcessorDto> chunk(chunkOutboundInternal)
-				.reader(preferenceOutboundDBReader.outboundInternalDbReader())
-				.processor(internalOutboundProcessor)
+				.reader(preferenceOutboundDBReader.outboundInternalDbReader()).processor(internalOutboundProcessor)
 				.writer(internalOutboundFileWriter).build();
 	}
 
