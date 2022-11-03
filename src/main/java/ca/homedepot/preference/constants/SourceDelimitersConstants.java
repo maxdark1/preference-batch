@@ -46,4 +46,6 @@ public final class SourceDelimitersConstants
 	public static final String VALID = "VALID";
 
 	public static final String SINGLE_DELIMITER_TAB = "\t";
+
+	public static final String DELIMITER_COMA = ",";
 }

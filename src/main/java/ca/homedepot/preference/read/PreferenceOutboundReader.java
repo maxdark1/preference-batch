@@ -4,12 +4,15 @@ package ca.homedepot.preference.read;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
+import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
+import ca.homedepot.preference.mapper.InternalOutboundStep1Mapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
 import ca.homedepot.preference.service.OutboundService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,6 +63,20 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
+	public ItemReader<InternalOutboundDto> outboundInternalDBReader()
+	{
+		purgeProgramCompliant();
+		log.info(" Internal Program Outbound : Internal Program Outbound Reader Starter :" + new Date());
+		JdbcCursorItemReader<InternalOutboundDto> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION);
+		reader.setRowMapper(new InternalOutboundStep1Mapper());
+
+		log.info(" Internal Program Outbound : Internal Program Outbound Reader End :" + new Date());
+		return reader;
+	}
+
 	/**
 	 * Method used to clear the passthroughs table in every execution
 	 */
@@ -74,5 +91,11 @@ public class PreferenceOutboundReader
 
 		outboundService.purgeCitiSuppresionTable();
 		log.info("Deleting hdpc_out_citi_suppression records at: {}", new Date());
+	}
+
+	private void purgeProgramCompliant()
+	{
+		outboundService.purgeProgramCompliant();
+		log.info("Deleting hdpc_out_program_compliant records at: {}", new Date());
 	}
 }
