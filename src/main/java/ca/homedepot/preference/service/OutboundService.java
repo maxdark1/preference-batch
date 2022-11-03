@@ -19,11 +19,5 @@ public interface OutboundService
 
 	int purgeCitiSuppresionTable();
 	int purgeProgramCompliant();
-	void createFile(String repository, String folder, String fileNameFormat) throws IOException;
-
-	void createCaFile(String repository, String folder, String fileNameFormat) throws IOException;
-
-	void createGardenClubFile(String repository, String folder, String fileNameFormat) throws IOException;
-
-	void createNewMoverFile(String repository, String folder, String fileNameFormat) throws IOException;
+	void createFile(String repository, String folder, String fileNameFormat, String file) throws IOException;
 }

@@ -59,16 +59,14 @@ public class OutboundServiceImpl implements OutboundService
 	}
 
 	@Override
-	public void createFile(String repository, String folder, String fileNameFormat)
-	{
+	public void createFile(String repository, String folder, String fileNameFormat, String file) throws IOException {
 		/* Creating File */
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		/* Inserting Headers */
-		String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
-		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);;
 
+		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
 		try
 		{
 			byte toFile[] = file.getBytes();
@@ -78,78 +76,13 @@ public class OutboundServiceImpl implements OutboundService
 		{
 			log.error(ex.getMessage());
 		}
-		finally {
+		finally
+		{
 			writer.close();
 		}
+
 	}
 
-	@Override
-	public void createCaFile(String repository, String folder, String fileNameFormat) throws IOException {
-		/* Creating File */
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-
-		/* Inserting Headers */
-		String file = PreferenceBatchConstants.INTERNAL_CA_HEADERS;
-		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);;
-
-		try
-		{
-			byte toFile[] = file.getBytes();
-			writer.write(toFile);
-		}
-		catch (Exception ex)
-		{
-			log.error(ex.getMessage());
-		}
-		finally {
-			writer.close();
-		}
-	}
-
-	@Override
-	public void createGardenClubFile(String repository, String folder, String fileNameFormat) throws IOException {
-		/* Creating File */
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-
-		/* Inserting Headers */
-		String file = PreferenceBatchConstants.INTERNAL_GARDEN_HEADERS;
-		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);;
-
-		try
-		{
-			byte[] toFile = file.getBytes();
-			writer.write(toFile);
-		}
-		catch (Exception ex)
-		{
-			log.error(ex.getMessage());
-		}
-		finally {
-			writer.close();
-		}
-	}
-
-	@Override
-	public void createNewMoverFile(String repository, String folder, String fileNameFormat) throws IOException {
-		/* Creating File */
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-
-		/* Inserting Headers */
-		String file = PreferenceBatchConstants.INTERNAL_MOVER_HEADERS;
-		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);;
-
-		try
-		{
-			byte toFile[] = file.getBytes();
-			writer.write(toFile);
-		}
-		finally {
-			writer.close();
-		}
-	}
 
 
 

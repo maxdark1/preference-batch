@@ -1,6 +1,7 @@
 package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,21 +85,19 @@ class OutboundServiceImplTest
 	}
 
 	@Test
-	void createFileTest()
-	{
+	void createFileTest() throws IOException {
 		String repository = "", folder = "OUTBOUND/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
 
-		outboundService.createFile(repository, folder, fileNameFormat);
-		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat);
+		outboundService.createFile(repository, folder, fileNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 	}
 
 	@Test
-	void createFileTestException()
-	{
+	void createFileTestException() throws IOException {
 		String repository = "", folder = "OUTBOUND2/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
 
-		outboundService.createFile(repository, folder, fileNameFormat);
-		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat);
+		outboundService.createFile(repository, folder, fileNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat, PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 	}
 
 }
