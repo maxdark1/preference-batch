@@ -61,8 +61,8 @@ class MasterProcessorTest
 		masterInfo = new ArrayList<>();
 		masterInfo.add(master);
 		masterInfo.add(master2);
-		masterProcessor.setPreferenceService(preferenceService);
-		masterProcessor.setMasterList(masterInfo);
+		MasterProcessor.setPreferenceService(preferenceService);
+		MasterProcessor.setMasterList(masterInfo);
 
 	}
 
@@ -81,7 +81,7 @@ class MasterProcessorTest
 	@Test
 	void getSourceId()
 	{
-		Master master1 = masterProcessor.getSourceID("SOURCE", "hybris");
+		Master master1 = MasterProcessor.getSourceID("SOURCE", "hybris");
 
 		assertEquals(this.master.getMasterId(), master1.getMasterId());
 	}

@@ -289,11 +289,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Autowired
 	private RegistrationLayoutBWriter layoutBWriter;
-	/**
-	 * Master Processor
-	 */
-	@Autowired
-	private MasterProcessor masterProcessor;
+
 	/**
 	 * The step Listener
 	 *
@@ -330,11 +326,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	public void setUpListener()
 	{
-		jobListener.setPreferenceService(batchTasklet.getBackinStockService());
+		jobListener.setPreferenceService(batchTasklet.getPreferenceService());
 		hybrisWriterListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
 
-		apiWriter.setPreferenceService(batchTasklet.getBackinStockService());
-		layoutBWriter.setPreferenceService(batchTasklet.getBackinStockService());
+		apiWriter.setPreferenceService(batchTasklet.getPreferenceService());
+		layoutBWriter.setPreferenceService(batchTasklet.getPreferenceService());
 
 		exactTargetEmailWriterListener = new RegistrationItemWriterListener();
 		exactTargetEmailWriterListener.setFileService(hybrisWriterListener.getFileService());
@@ -499,7 +495,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@PostConstruct
 	public void getMasterInfo()
 	{
-		masterProcessor.getMasterInfo();
+		MasterProcessor.setPreferenceService(batchTasklet.getPreferenceService());
+		MasterProcessor.getMasterInfo();
 	}
 
 	/**
