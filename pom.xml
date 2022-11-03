@@ -27,8 +27,9 @@
         <jacoco.out.unit.test.file>jacoco.exec</jacoco.out.unit.test.file>
         <jacoco.outputDir>${project.build.directory}/jacoco</jacoco.outputDir>
         <sonar.jacoco.reportPath>${jacoco.outputDir}/${jacoco.out.unit.test.file}</sonar.jacoco.reportPath>
-        <sonar.exclusions>**/constants/*.java
-
+        <sonar.exclusions>**/constants/*.java,
+            **/dto/*.java,
+            **/model/*.java
         </sonar.exclusions>
         <spring.cloud-version>Hoxton.SR8</spring.cloud-version>
     </properties>
