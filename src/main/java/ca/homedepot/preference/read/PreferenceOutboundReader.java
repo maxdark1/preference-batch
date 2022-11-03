@@ -77,6 +77,20 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
+	public JdbcCursorItemReader<InternalOutboundDto> outboundLoyaltyComplaintWeekly()
+	{
+
+		log.info(" Loyalty Complaint Outbound : Loyalty Complaint Outbound Reader Starter :" + new Date());
+		JdbcCursorItemReader<InternalOutboundDto> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION);
+		reader.setRowMapper(new InternalOutboundStep1Mapper());
+
+		log.info(" Loyalty Complaint Outbound : Loyalty Complaint Outbound Reader End :" + new Date());
+		return reader;
+	}
+
 	/**
 	 * Method used to clear the passthroughs table in every execution
 	 */

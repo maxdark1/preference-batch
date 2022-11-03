@@ -2,7 +2,6 @@ package ca.homedepot.preference.listener;
 
 import java.util.Date;
 
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import org.springframework.batch.core.BatchStatus;
@@ -61,7 +60,7 @@ public class JobListener implements JobExecutionListener
 		/**
 		 * Gets Job's information
 		 */
-		ca.homedepot.preference.dto.Job job = new ca.homedepot.preference.dto.Job();
+		Job job = new Job();
 		job.setJob_name(jobExecution.getJobInstance().getJobName());
 
 		Master master = status(jobExecution.getStatus());

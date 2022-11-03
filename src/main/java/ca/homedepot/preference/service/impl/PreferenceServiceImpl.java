@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.Job;
 import ca.homedepot.preference.dto.Master;
@@ -16,16 +15,8 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
 
 /**
  * The type Preference service.

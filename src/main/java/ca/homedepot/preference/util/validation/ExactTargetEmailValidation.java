@@ -102,7 +102,7 @@ public class ExactTargetEmailValidation
 			}
 			catch (ParseException ex)
 			{
-				// Nothing to do in here
+				asOfDate = null;
 			}
 		}
 		/**
