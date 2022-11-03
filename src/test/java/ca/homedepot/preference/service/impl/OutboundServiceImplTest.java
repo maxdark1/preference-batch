@@ -2,13 +2,17 @@ package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,10 +27,22 @@ class OutboundServiceImplTest
 	@Spy
 	OutboundServiceImpl outboundService;
 
+	File directory;
+
 	@BeforeEach
 	void setup()
 	{
 		MockitoAnnotations.initMocks(this);
+		directory = new File("OUTBOUND");
+		directory.mkdirs();
+	}
+
+	@AfterEach
+	void ontesttermination()
+	{
+		directory = new File("OUTBOUND");
+		if (directory.exists())
+			directory.delete();
 	}
 
 	@Test
@@ -65,4 +81,23 @@ class OutboundServiceImplTest
 		outboundService.truncateCompliantTable();
 		Mockito.verify(outboundService).truncateCompliantTable();
 	}
+
+	@Test
+	void createFileTest()
+	{
+		String repository = "", folder = "OUTBOUND/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
+
+		outboundService.createFile(repository, folder, fileNameFormat);
+		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat);
+	}
+
+	@Test
+	void createFileTestException()
+	{
+		String repository = "", folder = "OUTBOUND2/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
+
+		outboundService.createFile(repository, folder, fileNameFormat);
+		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat);
+	}
+
 }

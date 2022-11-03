@@ -91,7 +91,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				{
 					FileUtil.moveFile(file.getFile_name(), true, MasterProcessor.getValueVal(file.getFile_source_id()));
 				}
-				catch (IOException e)
+				catch (Exception e)
 				{
 					status = false;
 					log.error("An exception occurs while trying to move the file " + file.getFile_name());

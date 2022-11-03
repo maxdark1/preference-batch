@@ -57,12 +57,11 @@ public class OutboundServiceImpl implements OutboundService
 		/* Inserting Headers */
 		String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
 
-		try
+		try(FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
 		{
-			FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
-			byte toFile[] = file.getBytes();
+
+			byte[] toFile = file.getBytes();
 			writer.write(toFile);
-			writer.close();
 		}
 		catch (Exception ex)
 		{
