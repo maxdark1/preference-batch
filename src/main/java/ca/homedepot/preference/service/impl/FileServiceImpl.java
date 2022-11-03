@@ -59,9 +59,9 @@ public class FileServiceImpl implements FileService
 	@Transactional
 	public int insert(FileDTO file)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFile_name(), file.getJob(),
-				file.getFile_source_id(), file.getStatus(), file.getStart_time(), file.getInserted_by(), file.getInserted_date(),
-				file.getStatus_id(), file.getEnd_time());
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFileName(), file.getJob(),
+				file.getSourceType(), file.getStatus(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(),
+				file.getStatusId(), file.getEndTime());
 	}
 
 	/**
@@ -158,9 +158,9 @@ public class FileServiceImpl implements FileService
 	{
 		return jdbcTemplate.query(SqlQueriesConstants.SQL_GET_FILES_TO_MOVE, (rs, numRow) -> {
 			FileDTO fileDTO = new FileDTO();
-			fileDTO.setFile_id(rs.getBigDecimal(FILE_ID));
-			fileDTO.setFile_name(rs.getString("file_name"));
-			fileDTO.setFile_source_id(rs.getBigDecimal("source_type"));
+			fileDTO.setFileId(rs.getBigDecimal(FILE_ID));
+			fileDTO.setFileName(rs.getString("file_name"));
+			fileDTO.setSourceType(rs.getBigDecimal("source_type"));
 			return fileDTO;
 		});
 	}

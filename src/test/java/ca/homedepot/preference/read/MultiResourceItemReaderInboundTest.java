@@ -75,6 +75,7 @@ class MultiResourceItemReaderInboundTest
 		MasterProcessor.setMasterList(masterList);
 
 		multiResourceItemReaderInbound.writeFile(fileName, status);
+		Mockito.verify(multiResourceItemReaderInbound).writeFile(fileName, status);
 	}
 
 	@Test

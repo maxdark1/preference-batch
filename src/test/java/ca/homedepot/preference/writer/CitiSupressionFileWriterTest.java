@@ -5,7 +5,9 @@ import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,11 +71,10 @@ class CitiSupressionFileWriterTest
 		files.createNewFile();
 	}
 
-	@AfterEach
-	void onTestFinish()
-	{
-		file = new File("repositorySource");
-		file.delete();
+	@AfterAll
+	static void tearDown() throws IOException {
+		File file = new File("repositorySource");
+		FileUtils.deleteDirectory(file);
 	}
 
 

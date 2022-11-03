@@ -12,10 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.jupiter.api.Assertions;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -52,6 +49,7 @@ public class JobListenerTest
 	 * The Job listener.
 	 */
 	@InjectMocks
+	@Spy
 	JobListener jobListener;
 
 	/**
@@ -113,6 +111,7 @@ public class JobListenerTest
 		jobExecution.setStatus(BatchStatus.COMPLETED);
 
 		jobListener.afterJob(jobExecution);
+		Mockito.verify(jobListener).afterJob(jobExecution);
 	}
 
 }

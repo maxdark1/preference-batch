@@ -5,6 +5,7 @@ import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,19 +33,17 @@ class OutboundServiceImplTest
 	File directory;
 
 	@BeforeEach
-	void setup()
-	{
+	void setup() throws IOException {
 		MockitoAnnotations.initMocks(this);
 		directory = new File("OUTBOUND");
 		directory.mkdirs();
 	}
 
-	@AfterEach
-	void ontesttermination()
-	{
-		directory = new File("OUTBOUND");
-		if (directory.exists())
-			directory.delete();
+	@AfterAll
+	static void ontesttermination() throws IOException {
+		File directory = new File("OUTBOUND");
+
+		FileUtils.deleteDirectory(directory);
 	}
 
 	@Test
@@ -95,15 +94,6 @@ class OutboundServiceImplTest
 				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 	}
 
-	@Test
-	void createFileTestException() throws IOException
-	{
-		String repository = "", folder = "OUTBOUND2/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
 
-		outboundService.createFile(repository, folder, fileNameFormat,
-				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
-		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat,
-				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
-	}
 
 }
