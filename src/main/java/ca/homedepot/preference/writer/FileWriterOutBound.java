@@ -55,10 +55,14 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	public FileWriterOutBound()
 	{
-		setLineAggregator(getLineAgreggator());
 		setHeaderCallback(getHeaderCallBack());
 		setShouldDeleteIfExists(true);
 		setSaveState(false);
+	}
+
+	public void setNames(String[] names) {
+		this.names = names;
+		setLineAggregator(getLineAgreggator());
 	}
 
 	public void setResource()
