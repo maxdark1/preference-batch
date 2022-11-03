@@ -68,9 +68,8 @@ class ExactTargetEmailValidationTest
 		StringBuilder error = new StringBuilder();
 		String validEmailStatus = "Unsubscribed";
 		String invalidEmailStatus = "e.com";
-
+		ExactTargetEmailValidation.validateStatusEmail(invalidEmailStatus, error);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			ExactTargetEmailValidation.validateStatusEmail(invalidEmailStatus, error);
 			InboundValidator.isValidationsErros(error);
 		});
 		StringBuilder notError = new StringBuilder();
@@ -106,9 +105,9 @@ class ExactTargetEmailValidationTest
 				dateFormat4 = "09/10/2022 1 :2", invalidDateFormat = "2-2-2";
 
 		StringBuilder error = new StringBuilder();
+		ExactTargetEmailValidation.validateDateFormat(invalidDateFormat, error);
 
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
-			ExactTargetEmailValidation.validateDateFormat(invalidDateFormat, error);
 			InboundValidator.isValidationsErros(error);
 		});
 

@@ -23,12 +23,12 @@ public class BatchTasklet implements Tasklet
 	/**
 	 * The back inn stock service.
 	 */
-	private final PreferenceService backinStockService;
+	private final PreferenceService preferenceService;
 
 
-	public PreferenceService getBackinStockService()
+	public PreferenceService getPreferenceService()
 	{
-		return backinStockService;
+		return preferenceService;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class BatchTasklet implements Tasklet
 	 */
 	public void purgeStagingTableRecordsWithSuccessedStatus()
 	{
-		int purgeRecords = backinStockService.purgeStagingTableSuccessRecords();
+		int purgeRecords = preferenceService.purgeStagingTableSuccessRecords();
 		log.info(" {} records has been purged.", purgeRecords);
 	}
 

@@ -20,7 +20,7 @@ public class InternalOutboundProcessor implements ItemProcessor<InternalOutbound
 		InternalOutboundProcessorDto internalOutboundProcessorDto = new InternalOutboundProcessorDto();
 
 		internalOutboundProcessorDto.setEmailAddr(internalOutboundDto.getEmailAddr() + split);
-	 	internalOutboundProcessorDto.setCanPtcEffectiveDate(internalOutboundDto.getCanPtcEffectiveDate() + split);
+		internalOutboundProcessorDto.setCanPtcEffectiveDate(internalOutboundDto.getCanPtcEffectiveDate() + split);
 		internalOutboundProcessorDto.setCanPtcSourceId(internalOutboundDto.getCanPtcSourceId() + split);
 		internalOutboundProcessorDto.setEmailStatus(internalOutboundDto.getEmailStatus() + split);
 		internalOutboundProcessorDto.setCanPtcGlag(internalOutboundDto.getCanPtcGlag() + split);
