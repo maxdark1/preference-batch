@@ -7,8 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
+import ca.homedepot.preference.constants.*;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
@@ -23,12 +22,14 @@ import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
-import io.grpc.Internal;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -42,14 +43,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.EmailOptOuts;
@@ -62,7 +60,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static ca.homedepot.preference.util.validation.ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS;
-
+import static ca.homedepot.preference.constants.SchedulerConfigConstants.*;
 
 /**
  * The type Scheduler config.
@@ -186,15 +184,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${outbound.files.compliant}")
 	String dailyCompliantNameFormat;
 	@Value("${outbound.files.internalCa}")
-	String InternalCANameFormat;
+	String internalCANameFormat;
 	@Value("${outbound.files.internalGarden}")
-	String InternalGardenNameFormat;
+	String internalGardenNameFormat;
 	@Value("${outbound.files.internalMover}")
-	String InternalMoverNameFormat;
+	String internalMoverNameFormat;
 	@Value("${folders.internal.path}")
-	String InternalRepository;
+	String internalRepository;
 	@Value("${folders.outbound}")
-	String InternalFolder;
+	String internalFolder;
 
 
 
@@ -294,11 +292,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Autowired
 	private RegistrationLayoutBWriter layoutBWriter;
-	/**
-	 * Master Processor
-	 */
-	@Autowired
-	private MasterProcessor masterProcessor;
+
 	/**
 	 * The step Listener
 	 *
@@ -335,11 +329,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	public void setUpListener()
 	{
-		jobListener.setPreferenceService(batchTasklet.getBackinStockService());
+		jobListener.setPreferenceService(batchTasklet.getPreferenceService());
 		hybrisWriterListener.setJobName(JOB_NAME_REGISTRATION_INBOUND);
 
-		apiWriter.setPreferenceService(batchTasklet.getBackinStockService());
-		layoutBWriter.setPreferenceService(batchTasklet.getBackinStockService());
+		apiWriter.setPreferenceService(batchTasklet.getPreferenceService());
+		layoutBWriter.setPreferenceService(batchTasklet.getPreferenceService());
 
 		exactTargetEmailWriterListener = new RegistrationItemWriterListener();
 		exactTargetEmailWriterListener.setFileService(hybrisWriterListener.getFileService());
@@ -504,7 +498,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@PostConstruct
 	public void getMasterInfo()
 	{
-		masterProcessor.getMasterInfo();
+		MasterProcessor.setPreferenceService(batchTasklet.getPreferenceService());
+		MasterProcessor.getMasterInfo();
 	}
 
 	/**
@@ -517,17 +512,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 	@Scheduled(cron = "${cron.job.hybrisIngestion}")
-	public void processRegistrationHybrisInbound() throws Exception
+	public void processRegistrationHybrisInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
-		log.info(" Registration Inbound : Registration Job started at :" + new Date());
+		log.info(" Registration Inbound Hybris : Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_INBOUND, String.valueOf(System.currentTimeMillis()))
-				.addString("directory", hybrisPath + folderInbound).addString("document", hybrisCrmRegistrationFile)
-				.addString("source", SourceDelimitersConstants.HYBRIS).addString("job_name", JOB_NAME_REGISTRATION_INBOUND)
+				.addString(DIRECTORY, hybrisPath + folderInbound).addString("document", hybrisCrmRegistrationFile)
+				.addString(SOURCE, SourceDelimitersConstants.HYBRIS).addString("job_name", JOB_NAME_REGISTRATION_INBOUND)
 				.toJobParameters();
 
 		JobExecution execution = jobLauncher.run(registrationHybrisInbound(), param);
-		log.info("Registration Inbound finished with status :" + execution.getStatus());
+		log.info("Registration Inbound Hybris finished with status :" + execution.getStatus());
 	}
 
 	/**
@@ -540,16 +536,17 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 	@Scheduled(cron = "${cron.job.crmIngestion}")
-	public void processRegistrationCRMInbound() throws Exception
+	public void processRegistrationCRMInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
-		log.info(" Registration Inbound : Registration Job started at :" + new Date());
+		log.info(" Registration Inbound CRM: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_CRM_INBOUND, String.valueOf(System.currentTimeMillis()))
-				.addString("directory", crmPath + folderInbound).addString("source", SourceDelimitersConstants.CRM)
-				.addString("job_name", JOB_NAME_REGISTRATION_CRM_INBOUND).toJobParameters();
+				.addString(DIRECTORY, crmPath + folderInbound).addString(SOURCE, SourceDelimitersConstants.CRM)
+				.addString(JOB_STR, JOB_NAME_REGISTRATION_CRM_INBOUND).toJobParameters();
 
 		JobExecution execution = jobLauncher.run(registrationCRMInbound(), param);
-		log.info("Registration Inbound finished with status :" + execution.getStatus());
+		log.info("Registration Inbound CRM finished with status :" + execution.getStatus());
 	}
 
 	/**
@@ -562,16 +559,17 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
-	public void processFBSFMCInbound() throws Exception
+	public void processFBSFMCInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
-		log.info(" Registration Inbound : Registration Job started at :" + new Date());
+		log.info(" Registration Inbound FB-SFMC: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_FBSFMC_INBOUND, String.valueOf(System.currentTimeMillis()))
-				.addString("directory", fbSFMCPath + folderInbound).addString("source", SourceDelimitersConstants.FB_SFMC)
-				.addString("job_name", JOB_NAME_REGISTRATION_FBSFMC_INBOUND).toJobParameters();
+				.addString(DIRECTORY, fbSFMCPath + folderInbound).addString(SOURCE, SourceDelimitersConstants.FB_SFMC)
+				.addString(JOB_STR, JOB_NAME_REGISTRATION_FBSFMC_INBOUND).toJobParameters();
 
 		JobExecution execution = jobLauncher.run(registrationFBSFMCGardenClubInbound(), param);
-		log.info("Registration Inbound finished with status :" + execution.getStatus());
+		log.info("Registration Inbound FB-SFMC finished with status :" + execution.getStatus());
 	}
 
 	/**
@@ -584,13 +582,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
-	public void processsSFMCOptOutsEmail() throws Exception
+	public void processsSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
-				.addString("directory", sfmcPath + folderInbound).addString("source", SourceDelimitersConstants.SFMC)
-				.addString("job_name", JOB_NAME_EXTACT_TARGET_EMAIL).toJobParameters();
+				.addString(DIRECTORY, sfmcPath + folderInbound).addString(SOURCE, SourceDelimitersConstants.SFMC)
+				.addString(JOB_STR, JOB_NAME_EXTACT_TARGET_EMAIL).toJobParameters();
 		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(), param);
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
 	}
@@ -601,36 +600,39 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
-	public void sendPreferencesToCRM() throws Exception
+	public void sendPreferencesToCRM() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_SEND_PREFERENCES_TO_CRM, String.valueOf(System.currentTimeMillis()))
-				.addString("directory", crmPath + folderOutbound).addString("source", SourceDelimitersConstants.CRM)
-				.addString("job_name", JOB_NAME_SEND_PREFERENCES_TO_CRM).toJobParameters();
+				.addString(DIRECTORY, crmPath + folderOutbound).addString(SOURCE, SourceDelimitersConstants.CRM)
+				.addString(JOB_STR, JOB_NAME_SEND_PREFERENCES_TO_CRM).toJobParameters();
 		JobExecution execution = jobLauncher.run(crmSendPreferencesToCRM(), param);
 		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
 	}
 
 	@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
-	public void sendPreferencesToInternal() throws Exception
+	public void sendPreferencesToInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To Internal Destination Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_INTERNAL_DESTINATION, String.valueOf(System.currentTimeMillis()))
-				.addString("directory", crmPath + folderOutbound).addString("source", SourceDelimitersConstants.CRM)
-				.addString("job_name", JOB_NAME_INTERNAL_DESTINATION).toJobParameters();
+				.addString(DIRECTORY, crmPath + folderOutbound).addString(SOURCE, SourceDelimitersConstants.CRM)
+				.addString(JOB_STR, JOB_NAME_INTERNAL_DESTINATION).toJobParameters();
 		JobExecution execution = jobLauncher.run(sendPreferencesToInternalDestination(), param);
 		log.info(" Send Preferences To Internal Destination Job finished with status : " + execution.getStatus());
 	}
 
 	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
-	public void sendCitiSuppresionToCitiSuppresion() throws Exception
+	public void sendCitiSuppresionToCitiSuppresion() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_CITI_SUPPRESION, String.valueOf(System.currentTimeMillis()))
-				.addString("job_name", JOB_NAME_CITI_SUPPRESION).toJobParameters();
+				.addString(JOB_STR, JOB_NAME_CITI_SUPPRESION).toJobParameters();
 		JobExecution execution = jobLauncher.run(sendCitiSuppresionToCiti(), param);
 		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
 	}
@@ -833,7 +835,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 		writer.setDataSource(dataSource);
 		writer.setSql(SqlQueriesConstants.SQL_INSERT_FILE_INBOUND_STG_REGISTRATION);
-		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<FileInboundStgTable>());
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
 
 		return writer;
 	}
@@ -845,7 +847,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 		writer.setDataSource(dataSource);
 		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_CITI_SUPPRESION);
-		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<CitiSuppresionOutboundDTO>());
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
 		writer.setItemPreparedStatementSetter(new CitiSuppresionPreparedStatement());
 
 		return writer;
@@ -890,7 +892,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat);
+			outboundService.createFile(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
+					PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 		}
 		catch (Exception ex)
 		{
@@ -908,9 +911,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createCaFile(InternalRepository, InternalFolder, InternalCANameFormat);
-			outboundService.createGardenClubFile(InternalRepository, InternalFolder, InternalGardenNameFormat);
-			outboundService.createNewMoverFile(InternalRepository, InternalFolder, InternalMoverNameFormat);
+			outboundService.createFile(internalRepository, internalFolder, internalCANameFormat,
+					PreferenceBatchConstants.INTERNAL_CA_HEADERS);
+			outboundService.createFile(internalRepository, internalFolder, internalGardenNameFormat,
+					PreferenceBatchConstants.INTERNAL_GARDEN_HEADERS);
+			outboundService.createFile(internalRepository, internalFolder, internalMoverNameFormat,
+					PreferenceBatchConstants.INTERNAL_MOVER_HEADERS);
 		}
 		catch (Exception ex)
 		{
@@ -926,19 +932,17 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public Step readSendPreferencesToInternalStep1()
 	{
-		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION+"Step1")
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step1")
 				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundInternal)
-				.reader(preferenceOutboundReader.outboundInternalDBReader())
-				.writer(internalOutboundStep1Writer).build();
+				.reader(preferenceOutboundReader.outboundInternalDBReader()).writer(internalOutboundStep1Writer).build();
 	}
 
 
 	public Step readSendPreferencesToInternalStep2()
 	{
-		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION+"Step2")
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step2")
 				.<InternalOutboundDto, InternalOutboundProcessorDto> chunk(chunkOutboundInternal)
-				.reader(preferenceOutboundDBReader.outboundInternalDbReader())
-				.processor(internalOutboundProcessor)
+				.reader(preferenceOutboundDBReader.outboundInternalDbReader()).processor(internalOutboundProcessor)
 				.writer(internalOutboundFileWriter).build();
 	}
 

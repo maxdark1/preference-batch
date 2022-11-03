@@ -6,6 +6,8 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
@@ -29,7 +31,8 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Data
+@Getter
+@Setter
 public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionOutboundDTO>
 {
 
@@ -57,7 +60,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 
 	public void setResource()
 	{
-		Format formatter = new SimpleDateFormat("YYYYMMDD");
+		Format formatter = new SimpleDateFormat("yyyyMMDD");
 		this.fileName = this.fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		Resource resource = new FileSystemResource(repositorySource + folderSource + fileName);

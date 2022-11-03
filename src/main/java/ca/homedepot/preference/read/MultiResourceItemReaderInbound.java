@@ -143,9 +143,6 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 				FileUtil.moveFile(resource.getFilename(), status, source);
 				log.error(" An exception has ocurred reading file: " + resource.getFilename() + "\n " + e.getCause().getMessage());
 			}
-			FileUtil.moveFile(resource.getFilename(), !status, source);
-			log.error(" An exception has occurred reading file: " + getCurrentResource().getFilename() + "\n "
-					+ e.getCause().getMessage());
 		}
 		/**
 		 * Validates that a resources is not null and can be writing
