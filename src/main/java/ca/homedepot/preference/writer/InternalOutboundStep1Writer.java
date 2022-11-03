@@ -16,20 +16,22 @@ import java.util.List;
 @Slf4j
 @Component
 @Data
-public class InternalOutboundStep1Writer implements ItemWriter<InternalOutboundDto> {
+public class InternalOutboundStep1Writer implements ItemWriter<InternalOutboundDto>
+{
 
-    @Autowired
-    private OutboundService outboundService;
+	@Autowired
+	private OutboundService outboundService;
 
-     @Override
-    public void write(List<? extends InternalOutboundDto> items) throws Exception {
-         log.info(" Preference Outbound : Preference Outbound Writer Starter :" + new Date());
-         for (InternalOutboundDto internalOutboundDto : items)
-         {
-             outboundService.programCompliant(internalOutboundDto);
-         }
-         log.info(" Preference Outbound : Preference Outbound Writer END :" + new Date());
+	@Override
+	public void write(List<? extends InternalOutboundDto> items) throws Exception
+	{
+		log.info(" Preference Outbound : Preference Outbound Writer Starter :" + new Date());
+		for (InternalOutboundDto internalOutboundDto : items)
+		{
+			outboundService.programCompliant(internalOutboundDto);
+		}
+		log.info(" Preference Outbound : Preference Outbound Writer END :" + new Date());
 
 
-    }
+	}
 }

@@ -926,19 +926,17 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public Step readSendPreferencesToInternalStep1()
 	{
-		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION+"Step1")
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step1")
 				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundInternal)
-				.reader(preferenceOutboundReader.outboundInternalDBReader())
-				.writer(internalOutboundStep1Writer).build();
+				.reader(preferenceOutboundReader.outboundInternalDBReader()).writer(internalOutboundStep1Writer).build();
 	}
 
 
 	public Step readSendPreferencesToInternalStep2()
 	{
-		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION+"Step2")
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step2")
 				.<InternalOutboundDto, InternalOutboundProcessorDto> chunk(chunkOutboundInternal)
-				.reader(preferenceOutboundDBReader.outboundInternalDbReader())
-				.processor(internalOutboundProcessor)
+				.reader(preferenceOutboundDBReader.outboundInternalDbReader()).processor(internalOutboundProcessor)
 				.writer(internalOutboundFileWriter).build();
 	}
 

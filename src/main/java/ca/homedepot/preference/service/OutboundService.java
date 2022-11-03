@@ -15,10 +15,13 @@ public interface OutboundService
 	void preferenceOutbound(PreferenceOutboundDto item);
 
 	int programCompliant(InternalOutboundDto item);
+
 	void truncateCompliantTable();
 
 	int purgeCitiSuppresionTable();
+
 	int purgeProgramCompliant();
+
 	void createFile(String repository, String folder, String fileNameFormat) throws IOException;
 
 	void createCaFile(String repository, String folder, String fileNameFormat) throws IOException;
