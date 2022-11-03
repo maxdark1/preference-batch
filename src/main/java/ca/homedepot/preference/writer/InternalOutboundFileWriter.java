@@ -90,9 +90,9 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 
 		}
 
-		generateCaFile(file);
-		generateMoverFile(file);
-		generateGardenFile(file);
+		generateFile(file, caFileFormat);
+		generateFile(file, moverFileFormat);
+		generateFile(file, gardenFileFormat);
 
 	}
 
@@ -102,41 +102,19 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	 * @param file
 	 * @throws IOException
 	 */
-	private void generateCaFile(String file) throws Exception
+	private void generateFile(String file, String filePath) throws Exception
 	{
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = caFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
+		String fileName = filePath.replace("YYYYMMDD", formatter.format(new Date()));
 
 		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
 		byte toFile[] = file.getBytes();
 		writer.write(toFile);
+		writer.flush();
 		writer.close();
 		setFileRecord(fileName);
 	}
 
-	private void generateMoverFile(String file) throws Exception
-	{
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = moverFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
-
-		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
-		byte toFile[] = file.getBytes();
-		writer.write(toFile);
-		writer.close();
-		setFileRecord(fileName);
-	}
-
-	private void generateGardenFile(String file) throws Exception
-	{
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = gardenFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
-
-		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
-		byte toFile[] = file.getBytes();
-		writer.write(toFile);
-		writer.close();
-		setFileRecord(fileName);
-	}
 
 	/**
 	 * This method registry in file table the generated file
