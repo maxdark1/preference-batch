@@ -33,14 +33,16 @@ class OutboundServiceImplTest
 	File directory;
 
 	@BeforeEach
-	void setup() throws IOException {
+	void setup() throws IOException
+	{
 		MockitoAnnotations.initMocks(this);
 		directory = new File("OUTBOUND");
 		directory.mkdirs();
 	}
 
 	@AfterAll
-	static void ontesttermination() throws IOException {
+	static void ontesttermination() throws IOException
+	{
 		File directory = new File("OUTBOUND");
 
 		FileUtils.deleteDirectory(directory);

@@ -19,7 +19,7 @@ class OutboundSqlQueriesConstantsTest
 	public void getSQL_INSERT_STG_PREFERENCE_OUTBOUND()
 	{
 		String test = OutboundSqlQueriesConstants.SQL_INSERT_STG_PREFERENCE_OUTBOUND;
-		assertEquals( OutboundSqlQueriesConstants.SQL_INSERT_STG_PREFERENCE_OUTBOUND, test);
+		assertEquals(OutboundSqlQueriesConstants.SQL_INSERT_STG_PREFERENCE_OUTBOUND, test);
 	}
 
 	@Test
@@ -33,7 +33,7 @@ class OutboundSqlQueriesConstantsTest
 	public void getSQL_TRUNCATE_COMPLIANT_TABLE()
 	{
 		String test = OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE;
-		assertEquals( OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE, test);
+		assertEquals(OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE, test);
 	}
 
 }
