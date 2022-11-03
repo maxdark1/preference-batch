@@ -5,8 +5,10 @@ package ca.homedepot.preference.read;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
+import ca.homedepot.preference.mapper.SalesforceExtractOutboundMapper;
 import ca.homedepot.preference.service.OutboundService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +62,19 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
+	public JdbcCursorItemReader<SalesforceExtractOutboundDTO> salesforceExtractOutboundDBReader()
+	{
+		purgeSalesforceExtractTable();
+		log.info(" Preference Outbound : Preference Outbound Reader for Salesforce Extract Started at:" + new Date());
+		JdbcCursorItemReader<SalesforceExtractOutboundDTO> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND);
+		reader.setRowMapper(new SalesforceExtractOutboundMapper());
+
+		return reader;
+	}
+
 	/**
 	 * Method used to clear the passthroughs table in every execution
 	 */
@@ -71,8 +86,13 @@ public class PreferenceOutboundReader
 
 	public void purgeCitiSuppresionTable()
 	{
-
 		outboundService.purgeCitiSuppresionTable();
 		log.info("Deleting hdpc_out_citi_suppression records at: {}", new Date());
+	}
+
+	public void purgeSalesforceExtractTable()
+	{
+		outboundService.purgeSalesforceExtractTable();
+		log.info("Deleting hdpc_out_salesforce_extract records at: {}", new Date());
 	}
 }

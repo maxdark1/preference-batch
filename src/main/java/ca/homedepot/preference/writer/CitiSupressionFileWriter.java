@@ -37,7 +37,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	private String repositorySource;
 	@Value("${folders.outbound}")
 	private String folderSource;
-	@Value("${outbound.citi.mastersuppresion}")
+	@Value("${outbound.salesforce.extract}")
 	private String fileNameFormat;
 
 	@Autowired

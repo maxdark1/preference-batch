@@ -42,6 +42,12 @@ public class OutboundServiceImpl implements OutboundService
 		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_CITI_SUPPRESION);
 	}
 
+	@Override
+	public void purgeSalesforceExtractTable()
+	{
+	 	jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_SALESFORCE_EXTRACT);
+	}
+
 	/**
 	 * This method is used to connect with the database and truncate a passtrougths table
 	 */

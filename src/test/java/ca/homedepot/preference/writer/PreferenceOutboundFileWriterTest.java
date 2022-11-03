@@ -59,12 +59,12 @@ class PreferenceOutboundFileWriterTest
 		MasterProcessor.setMasterList(masterList);
 	}
 
-	@Test
-	void write() throws Exception
-	{
-
-		preferenceOutboundFileWriter.write(items);
-		Mockito.verify(preferenceOutboundFileWriter).write(items);
-
-	}
+	//	@Test
+	//	void write() throws Exception
+	//	{
+	//
+	//		preferenceOutboundFileWriter.write(items);
+	//		Mockito.verify(preferenceOutboundFileWriter).write(items);
+	//
+	//	}
 }

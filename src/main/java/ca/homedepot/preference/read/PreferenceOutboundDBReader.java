@@ -3,8 +3,10 @@ package ca.homedepot.preference.read;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapperStep2;
+import ca.homedepot.preference.mapper.SalesforceExtractOutboundMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -50,6 +52,19 @@ public class PreferenceOutboundDBReader
 		reader.setRowMapper(new CitiSuppresionOutboundMapper());
 
 		log.info(" Preference Outbound : Preference Citi Suppresion Outbound Step 2 Reader End :" + new Date());
+		return reader;
+	}
+
+	public JdbcCursorItemReader<SalesforceExtractOutboundDTO> salesforceExtractDBTableReader()
+	{
+		log.info(" Preference Outbound : Preference Salesforce Extract Outbound Step 2 Reader Starter :" + new Date());
+		JdbcCursorItemReader<SalesforceExtractOutboundDTO> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_SALESFORCE_EXTRACT_TABLE);
+		reader.setRowMapper(new SalesforceExtractOutboundMapper());
+
+		log.info(" Preference Outbound : Salesforce Extract Outbound Step 2 Reader End :" + new Date());
 		return reader;
 	}
 }

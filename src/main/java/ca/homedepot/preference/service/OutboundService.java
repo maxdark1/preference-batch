@@ -13,6 +13,7 @@ public interface OutboundService
 
 	void truncateCompliantTable();
 
-
 	int purgeCitiSuppresionTable();
+
+	void purgeSalesforceExtractTable();
 }
