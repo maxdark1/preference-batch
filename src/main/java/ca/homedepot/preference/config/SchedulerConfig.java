@@ -9,14 +9,12 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
-import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
-import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
+import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
-import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
+import ca.homedepot.preference.processor.*;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
@@ -25,7 +23,9 @@ import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
+import io.grpc.Internal;
 import org.springframework.batch.core.*;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -50,15 +50,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
-import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import ca.homedepot.preference.util.validation.InboundValidator;
@@ -92,6 +88,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 
 	private static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
+
+	private static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
 	/**
 	 * The Job builder factory.
 	 */
@@ -135,6 +133,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	Integer chunkOutboundCRM;
 	@Value("${preference.centre.outboundCiti.chunk}")
 	Integer chunkOutboundCiti;
+	@Value("${preference.centre.outboundInternal.chunk}")
+	Integer chunkOutboundInternal;
 	/**
 	 * The folders paths
 	 */
@@ -180,11 +180,23 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${folders.outbound}")
 	String folderOutbound;
 	@Value("${folders.crm.path}")
-	String repositorySource;
+	String dailyCompliantrepositorySource;
 	@Value("${folders.outbound}")
-	String folderSource;
+	String dailyCompliantfolderSource;
 	@Value("${outbound.files.compliant}")
-	String fileNameFormat;
+	String dailyCompliantNameFormat;
+	@Value("${outbound.files.internalCa}")
+	String InternalCANameFormat;
+	@Value("${outbound.files.internalGarden}")
+	String InternalGardenNameFormat;
+	@Value("${outbound.files.internalMover}")
+	String InternalMoverNameFormat;
+	@Value("${folders.internal.path}")
+	String InternalRepository;
+	@Value("${folders.outbound}")
+	String InternalFolder;
+
+
 
 
 
@@ -311,10 +323,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
 	@Autowired
 	private PreferenceOutboundReader preferenceOutboundReader;
-
-
 	@Autowired
 	private CitiSupressionFileWriter citiSupressionFileWriter;
+	@Autowired
+	private InternalOutboundStep1Writer internalOutboundStep1Writer;
+	@Autowired
+	private InternalOutboundProcessor internalOutboundProcessor;
+	@Autowired
+	private InternalOutboundFileWriter internalOutboundFileWriter;
 
 	@Autowired
 	public void setUpListener()
@@ -596,6 +612,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
 	}
 
+	@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
+	public void sendPreferencesToInternal() throws Exception
+	{
+		log.info(" Send Preferences To Internal Destination Job started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_INTERNAL_DESTINATION, String.valueOf(System.currentTimeMillis()))
+				.addString("directory", crmPath + folderOutbound).addString("source", SourceDelimitersConstants.CRM)
+				.addString("job_name", JOB_NAME_INTERNAL_DESTINATION).toJobParameters();
+		JobExecution execution = jobLauncher.run(sendPreferencesToInternalDestination(), param);
+		log.info(" Send Preferences To Internal Destination Job finished with status : " + execution.getStatus());
+	}
+
 	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
 	public void sendCitiSuppresionToCitiSuppresion() throws Exception
 	{
@@ -862,17 +890,58 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile(repositorySource, folderSource, fileNameFormat);
+			outboundService.createFile(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat);
 		}
 		catch (Exception ex)
 		{
-			log.error(ex.getMessage());
+			log.error("Error during the creation of CRM Preferences File: " + ex.getMessage());
 		}
 
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSendPreferencesToCRMStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
 				.to(readSendPreferencesToCRMStep2()).build().build();
 	}
+
+	public Job sendPreferencesToInternalDestination()
+	{
+		//Generate the 3 Files
+		OutboundService outboundService = new OutboundServiceImpl();
+		try
+		{
+			outboundService.createCaFile(InternalRepository, InternalFolder, InternalCANameFormat);
+			outboundService.createGardenClubFile(InternalRepository, InternalFolder, InternalGardenNameFormat);
+			outboundService.createNewMoverFile(InternalRepository, InternalFolder, InternalMoverNameFormat);
+		}
+		catch (Exception ex)
+		{
+			log.error("Error during the creation of Internal Destination Files" + ex.getMessage());
+		}
+
+		//Execute the Job
+		return jobBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readSendPreferencesToInternalStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
+				.to(readSendPreferencesToInternalStep2()).build().build();
+	}
+
+
+	public Step readSendPreferencesToInternalStep1()
+	{
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION+"Step1")
+				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundInternal)
+				.reader(preferenceOutboundReader.outboundInternalDBReader())
+				.writer(internalOutboundStep1Writer).build();
+	}
+
+
+	public Step readSendPreferencesToInternalStep2()
+	{
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION+"Step2")
+				.<InternalOutboundDto, InternalOutboundProcessorDto> chunk(chunkOutboundInternal)
+				.reader(preferenceOutboundDBReader.outboundInternalDbReader())
+				.processor(internalOutboundProcessor)
+				.writer(internalOutboundFileWriter).build();
+	}
+
 
 	/**
 	 * CRM job process
