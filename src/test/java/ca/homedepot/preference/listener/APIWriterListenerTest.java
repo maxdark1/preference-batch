@@ -68,7 +68,8 @@ class APIWriterListenerTest
 	@Test
 	void onWriteError()
 	{
-		apiWriterListener.onWriteError(new Exception(), items);
-		Mockito.verify(apiWriterListener).onWriteError(new Exception(), items);
+		Exception exception = new Exception();
+		apiWriterListener.onWriteError(exception, items);
+		Mockito.verify(apiWriterListener).onWriteError(exception, items);
 	}
 }

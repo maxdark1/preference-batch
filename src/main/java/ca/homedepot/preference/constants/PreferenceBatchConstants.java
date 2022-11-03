@@ -1,8 +1,11 @@
 package ca.homedepot.preference.constants;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * The interface Preference batch constants.
  */
+@UtilityClass
 public class PreferenceBatchConstants
 {
 

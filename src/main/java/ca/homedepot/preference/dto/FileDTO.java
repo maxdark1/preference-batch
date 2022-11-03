@@ -15,11 +15,11 @@ public class FileDTO
 	/**
 	 * The file_id
 	 */
-	private BigDecimal file_id;
+	private BigDecimal fileId;
 	/**
 	 * The file_name
 	 */
-	private String file_name;
+	private String fileName;
 	/**
 	 * The job
 	 */
@@ -27,7 +27,7 @@ public class FileDTO
 	/**
 	 * The file_source_id
 	 */
-	private BigDecimal file_source_id;
+	private BigDecimal sourceType;
 	/**
 	 * The status
 	 */
@@ -36,39 +36,39 @@ public class FileDTO
 	/**
 	 * The status ID
 	 */
-	private BigDecimal status_id;
+	private BigDecimal statusId;
 	/**
 	 * The start_time
 	 */
-	private Date start_time;
+	private Date startTime;
 	/**
 	 * The end_time
 	 */
-	private Date end_time;
+	private Date endTime;
 	/**
 	 * The inserted_by
 	 */
-	private String inserted_by;
+	private String insertedBy;
 	/**
 	 * The inserted_date
 	 */
-	private Date inserted_date;
+	private Date insertedDate;
 	/**
 	 * The updated_by
 	 */
-	private String updated_by;
+	private String updatedBy;
 	/**
 	 * The updated_date
 	 */
-	private Date updated_date;
+	private Date updatedDate;
 
 	/**
 	 * Constructor for FileDTO
 	 * 
-	 * @param file_name
+	 * @param fileName
 	 */
-	public FileDTO(String file_name)
+	public FileDTO(String fileName)
 	{
-		this.file_name = file_name;
+		this.fileName = fileName;
 	}
 }

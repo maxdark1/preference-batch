@@ -61,7 +61,7 @@ public class ModelsTest
 	}
 
 	@Test
-	public void testFileInboundStgTable()
+	void testFileInboundStgTable()
 	{
 		FileInboundStgTable fileInboundStgTable1 = FileInboundStgTable.builder().build();
 
