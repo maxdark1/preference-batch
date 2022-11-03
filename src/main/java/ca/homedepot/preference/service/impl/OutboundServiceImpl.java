@@ -71,8 +71,8 @@ public class OutboundServiceImpl implements OutboundService
 
 		/* Inserting Headers */
 
-		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
-		try
+
+		try(FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
 		{
 			byte toFile[] = file.getBytes();
 			writer.write(toFile);
@@ -81,10 +81,7 @@ public class OutboundServiceImpl implements OutboundService
 		{
 			log.error(ex.getMessage());
 		}
-		finally
-		{
-			writer.close();
-		}
+
 
 	}
 

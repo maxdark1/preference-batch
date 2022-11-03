@@ -26,12 +26,6 @@ class FileUtilTest
 		assertEquals("fileExtTargetEmail", FileUtil.getFileExtTargetEmail());
 	}
 
-	@Test
-	void moveFile() throws Exception
-	{
-		FileUtil.setHybrisPath("TEST_PATH");
-
-	}
 
 	@Test
 	void getPathTest()

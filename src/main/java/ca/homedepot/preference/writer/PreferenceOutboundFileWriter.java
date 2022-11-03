@@ -58,9 +58,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	public void write(List<? extends PreferenceOutboundDtoProcessor> items) throws Exception
 	{
 		sourceId = items.get(0).getSourceId().replace("\t", "");
-		String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
 		String file = "";
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 
 		for (PreferenceOutboundDtoProcessor preference : items)
 		{
