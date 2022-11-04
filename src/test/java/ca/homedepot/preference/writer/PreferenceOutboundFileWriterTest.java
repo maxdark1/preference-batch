@@ -1,20 +1,28 @@
 package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 class PreferenceOutboundFileWriterTest
 {
 
@@ -25,20 +33,20 @@ class PreferenceOutboundFileWriterTest
 	@Spy
 	PreferenceOutboundFileWriter preferenceOutboundFileWriter;
 
-	List<PreferenceOutboundDto> items;
+	List<PreferenceOutboundDtoProcessor> items;
 
 	@BeforeEach
 	void setup()
 	{
 		MockitoAnnotations.initMocks(this);
-		preferenceOutboundFileWriter.setRepository_source("");
-		preferenceOutboundFileWriter.setFolder_source("");
-		preferenceOutboundFileWriter.setFile_name_format("LOYALTY_DAILY_YYYYMMDD.txt");
+		preferenceOutboundFileWriter.file_name_format = "LOYALTY_DAILY_YYYYMMDD.txt";
+		preferenceOutboundFileWriter.folderSorce = "";
+		preferenceOutboundFileWriter.repositorySource = "";
 
-		PreferenceOutboundDto preferenceOutboundDto = new PreferenceOutboundDto();
-		preferenceOutboundDto.setSourceId(BigDecimal.ONE);
-		preferenceOutboundDto.setEffectiveDate(new Date());
-		preferenceOutboundDto.setEarlyOptInDate(new Date());
+		PreferenceOutboundDtoProcessor preferenceOutboundDto = new PreferenceOutboundDtoProcessor();
+		preferenceOutboundDto.setSourceId(BigDecimal.ONE.toString());
+		preferenceOutboundDto.setEffectiveDate(new Date().toString());
+		preferenceOutboundDto.setEarlyOptInDate(new Date().toString());
 
 		items = new ArrayList<>();
 		items.add(preferenceOutboundDto);
@@ -59,12 +67,19 @@ class PreferenceOutboundFileWriterTest
 		MasterProcessor.setMasterList(masterList);
 	}
 
-	//	@Test
-	//	void write() throws Exception
-	//	{
-	//
-	//		preferenceOutboundFileWriter.write(items);
-	//		Mockito.verify(preferenceOutboundFileWriter).write(items);
-	//
-	//	}
+	@AfterAll
+	static void tearDown() throws IOException
+	{
+			Format formatter = new SimpleDateFormat("yyyyMMdd");
+			FileUtils.forceDelete(new File("LOYALTY_DAILY_YYYYMMDD.txt".replace("YYYYMMDD", formatter.format(new Date()))));
+	}
+
+	@Test
+	void write() throws Exception
+	{
+
+		preferenceOutboundFileWriter.write(items);
+		Mockito.verify(preferenceOutboundFileWriter).write(items);
+
+	}
 }

@@ -1,10 +1,14 @@
 package ca.homedepot.preference.writer;
 
+import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-class PreferenceOutboundWriterTest
+class InternalOutboundStep1WriterTest
 {
 
 	@Mock
@@ -20,7 +24,7 @@ class PreferenceOutboundWriterTest
 
 	@InjectMocks
 	@Spy
-	PreferenceOutboundWriter preferenceOutboundWriter;
+	InternalOutboundStep1Writer internalOutboundStep1Writer;
 
 	@BeforeEach
 	void setup()
@@ -31,13 +35,12 @@ class PreferenceOutboundWriterTest
 	@Test
 	void write() throws Exception
 	{
-		List<PreferenceOutboundDto> list = new ArrayList<>();
-		list.add(new PreferenceOutboundDto());
+		List<InternalOutboundDto> list = new ArrayList<>();
+		list.add(new InternalOutboundDto());
 
-		Mockito.doNothing().when(outboundService).preferenceOutbound(any(PreferenceOutboundDto.class));
-		preferenceOutboundWriter.write(list);
-		Mockito.verify(preferenceOutboundWriter).write(list);
-
+		Mockito.when(outboundService.programCompliant(any(InternalOutboundDto.class))).thenReturn(1);
+		internalOutboundStep1Writer.write(list);
+		Mockito.verify(internalOutboundStep1Writer).write(list);
 	}
 
 }

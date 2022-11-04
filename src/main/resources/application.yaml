@@ -44,6 +44,7 @@ cron:
     ingestSFMCOutlookUnsubscribed: 30 * * * * *
     sendPreferencesToCRM: 30 * * * * *
     sendPreferencesToCitiSuppresion: 30 * * * * *
+    sendPreferencesToInternalDestination: 30 * * * * *
 
 server:
   port: 8080
@@ -70,6 +71,9 @@ inbound:
 outbound:
   files:
     compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
+    internalCa: CA_COMPLIANT_FILE_YYYYMMDD.csv
+    internalGarden: GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv
+    internalMover: NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv
   citi:
     mastersuppresion: ACXIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.csv
   salesforce:
@@ -91,6 +95,8 @@ folders:
     path: C:\batchFiles\SFMC
   citi:
     path: C:\batchFiles\CITI
+  internal:
+    path: C:\batchFiles
   salesforce:
     path: C:\batchFiles\Salesforce
 
@@ -108,6 +114,8 @@ preference:
     outboundCRM:
       chunk: 10
     outboundCiti:
+      chunk: 20
+    outboundInternal:
       chunk: 20
     outboundSalesforce:
       chunk: 20

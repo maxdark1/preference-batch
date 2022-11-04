@@ -160,7 +160,7 @@ class RegistrationRowMapperTest
 	{
 
 		String value = "1";
-		String wrongValue = "a";
+		String wrongValue = null;
 		Integer expected = 1;
 
 		Integer current = RegistrationRowMapper.getIntegerValue(value);

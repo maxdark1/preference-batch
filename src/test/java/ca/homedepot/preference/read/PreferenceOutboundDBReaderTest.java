@@ -1,11 +1,16 @@
 package ca.homedepot.preference.read;
 
+import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
+import ca.homedepot.preference.dto.InternalOutboundDto;
+import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 
 import javax.sql.DataSource;
 
@@ -29,18 +34,22 @@ class PreferenceOutboundDBReaderTest
 	@Test
 	void outboundDBReader()
 	{
-		assertNotNull(preferenceOutboundDBReader.outboundDBReader());
+		JdbcCursorItemReader<PreferenceOutboundDto> test = preferenceOutboundDBReader.outboundDBReader();
+		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_STEP2);
+	}
+
+	@Test
+	void outboundInternalDBReader()
+	{
+		JdbcCursorItemReader<InternalOutboundDto> test = preferenceOutboundDBReader.outboundInternalDbReader();
+		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_PROGRAM_COMPLIANT);
 	}
 
 	@Test
 	void citiSuppressionDBTableReader()
 	{
-		assertNotNull(preferenceOutboundDBReader.citiSuppressionDBTableReader());
+		JdbcCursorItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundDBReader.citiSuppressionDBTableReader();
+		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE);
 	}
 
-	@Test
-	void getDataSource()
-	{
-		assertNotNull(preferenceOutboundDBReader.getDataSource());
-	}
 }

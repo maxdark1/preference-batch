@@ -41,7 +41,7 @@ public class SkipFileService
 	 */
 	public BigDecimal getEmailStatus(Throwable t)
 	{
-		String isValid = (isEmailInvalid(t)) ? "Invalid" : "Valid";
+		String isValid = isEmailInvalid(t) ? "Invalid" : "Valid";
 
 		return MasterProcessor.getSourceID("EMAIL_STATUS", isValid + " Email Addresses").getMasterId();
 	}

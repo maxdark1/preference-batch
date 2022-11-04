@@ -1,21 +1,25 @@
 package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.service.OutboundService;
-import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
-@Data
+@Slf4j
 public class OutboundServiceImpl implements OutboundService
 {
-	@Autowired
-	private DataSource dataSource;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
@@ -35,6 +39,18 @@ public class OutboundServiceImpl implements OutboundService
 				item.getCity(), item.getProvince(), item.getHdCaProSrcId());
 	}
 
+	@Override
+	public int programCompliant(InternalOutboundDto item)
+	{
+		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_INSERT_PROGRAM_COMPLIANT, item.getEmailAddr(),
+				item.getCanPtcEffectiveDate(), item.getCanPtcSourceId(), item.getEmailStatus(), item.getCanPtcGlag(),
+				item.getLanguagePreference(), item.getEarlyOptInIDate(), item.getCndCompliantFlag(), item.getHdCaFlag(),
+				item.getHdCaGardenClubFlag(), item.getHdCaNewMoverFlag(), item.getHdCaNewMoverEffDate(), item.getHdCaProFlag(),
+				item.getPhonePtcFlag(), item.getFirstName(), item.getLastName(), item.getPostalCode(), item.getProvince(),
+				item.getCity(), item.getPhoneNumber(), item.getBussinessName(), item.getIndustryCode(), item.getDwellingType(),
+				item.getMoveDate());
+	}
+
 
 	@Override
 	public int purgeCitiSuppresionTable()
@@ -48,6 +64,38 @@ public class OutboundServiceImpl implements OutboundService
 	 	jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_SALESFORCE_EXTRACT);
 	}
 
+	@Override
+	public void createFile(String repository, String folder, String fileNameFormat, String headers) throws IOException
+	{
+		/* Creating File */
+		Format formatter = new SimpleDateFormat("yyyyMMdd");
+		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+
+		/* Inserting Headers */
+		String file = headers;
+		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
+
+
+		try
+		{
+			byte toFile[] = file.getBytes();
+			writer.write(toFile);
+			writer.flush();
+		}
+		catch (Exception ex)
+		{
+			log.error(ex.getMessage());
+		}
+		finally
+		{
+			writer.close();
+		}
+
+	}
+
+
+
+
 	/**
 	 * This method is used to connect with the database and truncate a passtrougths table
 	 */
@@ -56,4 +104,18 @@ public class OutboundServiceImpl implements OutboundService
 	{
 		jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE);
 	}
+
+	@Override
+	public int purgeProgramCompliant()
+	{
+		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_PROGRAM_COMPLIANT);
+	}
+
+	@Override
+	public int purgeLoyaltyComplaintTable()
+	{
+		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE);
+	}
+
+
 }

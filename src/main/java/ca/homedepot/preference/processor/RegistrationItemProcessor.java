@@ -6,14 +6,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.util.validation.InboundValidator;
 
 @Slf4j
 public class RegistrationItemProcessor implements ItemProcessor<InboundRegistration, FileInboundStgTable>
@@ -57,7 +54,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 			/**
 			 * Throws an exception if it finds any Error message on StringBuilder container
 			 */
-			InboundValidator.isValidationsErros(error);
+			isValidationsErros(error);
 		}
 		catch (ValidationException e)
 		{
@@ -109,7 +106,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		validateIsRequired(item, error);
 		if (item != null)
 		{
-			validateMaxLength(item, error);
+			validateLengthNoRequired(item, error);
 			validateMaxLengthReqField(item, error);
 			validateNumberFormat(item, error);
 			validateEmailFormat(item.getEmail_Address(), error);
@@ -127,19 +124,19 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	 */
 	private void validateMaxLengthReqField(InboundRegistration item, StringBuilder error)
 	{
-		item.setLanguage_Preference(InboundValidator.validateMaxLength("language_pref", item.getLanguage_Preference(), 2, error));
-		item.setAsOfDate(InboundValidator.validateMaxLength("as_of_date", item.getAsOfDate(), 19, error));
-		item.setEmail_Permission(InboundValidator.validateMaxLength("email_permission", item.getEmail_Permission(), 2, error));
-		item.setMail_Permission(InboundValidator.validateMaxLength("mail_permission", item.getMail_Permission(), 2, error));
-		item.setEmailPrefHDCA(InboundValidator.validateMaxLength("email_pref_hd_ca", item.getEmailPrefHDCA(), 2, error));
-		item.setGardenClub(InboundValidator.validateMaxLength("email_pref_garden_club", item.getGardenClub(), 2, error));
-		item.setEmailPrefPRO(InboundValidator.validateMaxLength("email_pref_pro", item.getEmailPrefPRO(), 2, error));
-		item.setNewMover(InboundValidator.validateMaxLength("email_pref_new_mover", item.getNewMover(), 2, error));
-		item.setContent_1(InboundValidator.validateMaxLength("content1", item.getContent_1(), 30, error));
-		item.setContent_2(InboundValidator.validateMaxLength("content2", item.getContent_2(), 30, error));
-		item.setContent_3(InboundValidator.validateMaxLength("content3", item.getContent_3(), 30, error));
-		item.setContent_5(InboundValidator.validateMaxLength("content5", item.getContent_5(), 30, error));
-		item.setContent_6(InboundValidator.validateMaxLength("content6", item.getContent_6(), 30, error));
+		item.setLanguage_Preference(validateMaxLength("language_pref", item.getLanguage_Preference(), 2, error));
+		item.setAsOfDate(validateMaxLength("as_of_date", item.getAsOfDate(), 19, error));
+		item.setEmail_Permission(validateMaxLength("email_permission", item.getEmail_Permission(), 2, error));
+		item.setMail_Permission(validateMaxLength("mail_permission", item.getMail_Permission(), 2, error));
+		item.setEmailPrefHDCA(validateMaxLength("email_pref_hd_ca", item.getEmailPrefHDCA(), 2, error));
+		item.setGardenClub(validateMaxLength("email_pref_garden_club", item.getGardenClub(), 2, error));
+		item.setEmailPrefPRO(validateMaxLength("email_pref_pro", item.getEmailPrefPRO(), 2, error));
+		item.setNewMover(validateMaxLength("email_pref_new_mover", item.getNewMover(), 2, error));
+		item.setContent_1(validateMaxLength("content1", item.getContent_1(), 30, error));
+		item.setContent_2(validateMaxLength("content2", item.getContent_2(), 30, error));
+		item.setContent_3(validateMaxLength("content3", item.getContent_3(), 30, error));
+		item.setContent_5(validateMaxLength("content5", item.getContent_5(), 30, error));
+		item.setContent_6(validateMaxLength("content6", item.getContent_6(), 30, error));
 
 	}
 
@@ -151,7 +148,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	 *
 	 * @return
 	 */
-	private void validateMaxLength(InboundRegistration item, StringBuilder error)
+	private void validateLengthNoRequired(InboundRegistration item, StringBuilder error)
 	{
 		item.setEmail_Address(validateMaxLengthNotReq("email_addr", item.getEmail_Address(), 72, error));
 		item.setPhone_Permission(validateMaxLengthNotReq("phone_permission", item.getPhone_Permission(), 2, error));

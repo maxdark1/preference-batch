@@ -81,7 +81,7 @@ public class InboundValidator
 	public static String validateMaxLength(String field, String value, int maxLength, StringBuilder error)
 	{
 
-		if (value != null && (value.length() > maxLength))
+		if (value != null && value.length() > maxLength)
 		{
 			error.append("The length of ").append(field).append("field  must be").append(maxLength).append(" caracters or fewer.\n");
 			return value.substring(0, maxLength);

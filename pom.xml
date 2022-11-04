@@ -27,6 +27,10 @@
         <jacoco.out.unit.test.file>jacoco.exec</jacoco.out.unit.test.file>
         <jacoco.outputDir>${project.build.directory}/jacoco</jacoco.outputDir>
         <sonar.jacoco.reportPath>${jacoco.outputDir}/${jacoco.out.unit.test.file}</sonar.jacoco.reportPath>
+        <sonar.exclusions>**/constants/*.java,
+            **/dto/*.java,
+            **/model/*.java
+        </sonar.exclusions>
         <spring.cloud-version>Hoxton.SR8</spring.cloud-version>
     </properties>
 
@@ -191,6 +195,12 @@
             <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.2.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -234,7 +244,7 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${org.apache.maven.plugins.pmd.version}</version>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
                     <linkXRef>false</linkXRef>
@@ -272,7 +282,7 @@
                 <artifactId>formatter-maven-plugin</artifactId>
                 <version>${net.revelc.code.formatter.version}</version>
                 <configuration>
-                    <configFile>hybrisJavaCodeconventions.xml</configFile>
+                    <configFile>javaCodeConventions.xml</configFile>
                     <compilerSource>11</compilerSource>
                     <compilerCompliance>11</compilerCompliance>
                     <compilerTargetPlatform>11</compilerTargetPlatform>
@@ -345,9 +355,10 @@
                                         <exclude>*.config.*</exclude>
                                         <exclude>*.feign.*</exclude>
                                         <exclude>*.constants.*</exclude>
-                                        <exclude>*.data.*</exclude>
-                                        <exclude>*.exception.*</exclude>
+                                        <exclude>*.dto.*</exclude>
+                                        <exclude>*.mapper.*</exclude>
                                         <exclude>*.model.*</exclude>
+                                        <exclude>*.writer.*</exclude>
                                         <exclude>*.processor.*</exclude>
                                         <exclude>*.util.*</exclude>
                                         <exclude>*.repositories.*</exclude>
@@ -357,7 +368,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.10</minimum>
+                                            <minimum>0.50</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

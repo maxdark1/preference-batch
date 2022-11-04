@@ -12,7 +12,6 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -89,15 +88,15 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				boolean status = true;
 				try
 				{
-					FileUtil.moveFile(file.getFile_name(), true, MasterProcessor.getValueVal(file.getFile_source_id()));
+					FileUtil.moveFile(file.getFileName(), true, MasterProcessor.getValueVal(file.getSourceType()));
 				}
-				catch (IOException e)
+				catch (Exception e)
 				{
 					status = false;
-					log.error("An exception occurs while trying to move the file " + file.getFile_name());
+					log.error("An exception occurs while trying to move the file " + file.getFileName());
 				}
 				Master fileStatus = MasterProcessor.getSourceID("STATUS", status ? "VALID" : "INVALID");
-				fileService.updateFileEndTime(file.getFile_id(), new Date(), "BATCH", new Date(), fileStatus);
+				fileService.updateFileEndTime(file.getFileId(), new Date(), "BATCH", new Date(), fileStatus);
 			});
 
 		}

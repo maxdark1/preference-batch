@@ -1,23 +1,19 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,36 +24,46 @@ import java.util.Date;
 import java.util.List;
 
 @Slf4j
-@Component
-@Data
-public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionOutboundDTO>
+@Getter
+@Setter
+public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 {
 
-	@Value("${folders.citi.path}")
+
 	private String repositorySource;
-	@Value("${folders.outbound}")
+
 	private String folderSource;
-	@Value("${outbound.salesforce.extract}")
+
 	private String fileNameFormat;
 
-	@Autowired
 	private FileService fileService;
 
 	private String jobName;
 
+	private String source;
+
 	private String fileName;
 
-	public CitiSupressionFileWriter()
+	private String header;
+
+	private String[] names;
+
+	public FileWriterOutBound()
 	{
-		setLineAggregator(getLineAgreggator());
 		setHeaderCallback(getHeaderCallBack());
 		setShouldDeleteIfExists(true);
 		setSaveState(false);
 	}
 
+	public void setNames(String[] names)
+	{
+		this.names = names;
+		setLineAggregator(getLineAgreggator());
+	}
+
 	public void setResource()
 	{
-		Format formatter = new SimpleDateFormat("YYYYMMDD");
+		Format formatter = new SimpleDateFormat("yyyyMMDD");
 		this.fileName = this.fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		Resource resource = new FileSystemResource(repositorySource + folderSource + fileName);
@@ -78,7 +84,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 
 
 	@Override
-	public void write(List<? extends CitiSuppresionOutboundDTO> items) throws Exception
+	public void write(List<? extends T> items) throws Exception
 	{
 		saveFileRecord();
 		super.write(items);
@@ -86,18 +92,15 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 
 	public FlatFileHeaderCallback getHeaderCallBack()
 	{
-		return writer -> writer.write(
-				"'FIRST_NAME','MIDDLE_INITIAL','LAST_NAME','ADDR_LINE_1','ADDR_LINE_2','CITY','STATE_CD','POSTAL_CD','EMAIL_ADDR','PHONE','SMS_MOBILE_PHONE','BUSINESS_NAME',DM_OPT_OUT,EMAIL_OPT_OUT,PHONE_OPT_OUT,SMS_OPT_OUT");
+		return writer -> writer.write(header);
 	}
 
-	public DelimitedLineAggregator<CitiSuppresionOutboundDTO> getLineAgreggator()
+	public DelimitedLineAggregator<T> getLineAgreggator()
 	{
-		BeanWrapperFieldExtractor<CitiSuppresionOutboundDTO> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
-		beanWrapperFieldExtractor.setNames(new String[]
-		{ "FirstName", "MiddleInitial", "LastName", "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
-				"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
+		BeanWrapperFieldExtractor<T> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
+		beanWrapperFieldExtractor.setNames(names);
 
-		DelimitedLineAggregator<CitiSuppresionOutboundDTO> delimitedLineAggregator = new DelimitedLineAggregator<>();
+		DelimitedLineAggregator<T> delimitedLineAggregator = new DelimitedLineAggregator<>();
 		delimitedLineAggregator.setDelimiter(",");
 		delimitedLineAggregator.setFieldExtractor(beanWrapperFieldExtractor);
 		return delimitedLineAggregator;
@@ -108,7 +111,7 @@ public class CitiSupressionFileWriter extends FlatFileItemWriter<CitiSuppresionO
 	{
 
 		BigDecimal jobId = fileService.getJobId(jobName);
-		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE", "citi_bank").getMasterId();
+		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE", source).getMasterId();
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");
 
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),

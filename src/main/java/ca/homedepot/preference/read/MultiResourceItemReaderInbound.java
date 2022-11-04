@@ -143,9 +143,6 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 				FileUtil.moveFile(resource.getFilename(), status, source);
 				log.error(" An exception has ocurred reading file: " + resource.getFilename() + "\n " + e.getCause().getMessage());
 			}
-			FileUtil.moveFile(resource.getFilename(), !status, source);
-			log.error(" An exception has occurred reading file: " + getCurrentResource().getFilename() + "\n "
-					+ e.getCause().getMessage());
 		}
 		/**
 		 * Validates that a resources is not null and can be writing
@@ -179,7 +176,6 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		 */
 		if (Boolean.TRUE.equals(status))
 			endTime = null;
-		System.out.println(fileName);
 		FileDTO file = new FileDTO(null, fileName, jobId, masterId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
 				endTime, "BATCH", new Date(), null, null);
 

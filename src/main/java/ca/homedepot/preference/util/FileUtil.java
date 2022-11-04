@@ -218,7 +218,7 @@ public final class FileUtil
 	 */
 	public static void moveFile(String file, boolean status, String value_val) throws IOException
 	{
-		String folder = ((status) ? processed : error);
+		String folder = status ? processed : error;
 		String fileName = FileValidation.getFileName(file);
 		String source = isFBSFMC(fileName) ? "FB_SFMC" : value_val;
 

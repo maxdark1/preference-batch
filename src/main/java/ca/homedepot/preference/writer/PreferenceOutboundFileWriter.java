@@ -1,25 +1,16 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.batch.core.JobExecution;
 
 import java.math.BigDecimal;
 import java.text.Format;
@@ -30,18 +21,16 @@ import java.util.Date;
 
 @Slf4j
 @Component
-@Data
 public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutboundDtoProcessor>
 {
 	@Value("${folders.crm.path}")
-	private String repository_source;
+	protected String repositorySource;
 	@Value("${folders.outbound}")
-	private String folder_source;
+	protected String folderSorce;
 	@Value("${outbound.files.compliant}")
-	private String file_name_format;
+	protected String file_name_format;
 	private FileOutputStream writer;
 
-	private StepExecution stepExecution;
 
 	private String sourceId;
 	@Autowired
@@ -49,7 +38,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	/**
 	 * Method used to generate a plain text file
-	 * 
+	 *
 	 * @param items
 	 *           items to be written
 	 * @throws Exception
@@ -58,9 +47,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	public void write(List<? extends PreferenceOutboundDtoProcessor> items) throws Exception
 	{
 		sourceId = items.get(0).getSourceId().replace("\t", "");
-		String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
-		String file = PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+		String file = "";
 
 		for (PreferenceOutboundDtoProcessor preference : items)
 		{
@@ -97,7 +84,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	/**
 	 * This Method saves in a plain text file the string that receives as parameter
-	 * 
+	 *
 	 * @param file
 	 * @throws IOException
 	 */
@@ -106,7 +93,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 
-		writer = new FileOutputStream(repository_source + folder_source + fileName, false);
+		writer = new FileOutputStream(repositorySource + folderSorce + fileName, true);
 		byte toFile[] = file.getBytes();
 		writer.write(toFile);
 		writer.close();
@@ -115,7 +102,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	/**
 	 * This method registry in file table the generated file
-	 * 
+	 *
 	 * @param fileName
 	 */
 	private void setFileRecord(String fileName)
