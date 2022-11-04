@@ -23,9 +23,9 @@ public class InternalOutboundProcessor implements ItemProcessor<InternalOutbound
 		internalOutboundProcessorDto.setCanPtcEffectiveDate(internalOutboundDto.getCanPtcEffectiveDate() + split);
 		internalOutboundProcessorDto.setCanPtcSourceId(internalOutboundDto.getCanPtcSourceId() + split);
 		internalOutboundProcessorDto.setEmailStatus(internalOutboundDto.getEmailStatus() + split);
-		internalOutboundProcessorDto.setCanPtcGlag(internalOutboundDto.getCanPtcGlag() + split);
+		internalOutboundProcessorDto.setCanPtcFlag(internalOutboundDto.getCanPtcGlag() + split);
 		internalOutboundProcessorDto.setLanguagePreference(internalOutboundDto.getLanguagePreference() + split);
-		internalOutboundProcessorDto.setEarlyOptInIDate(internalOutboundDto.getEarlyOptInIDate() + split);
+		internalOutboundProcessorDto.setEarlyOptInDate(internalOutboundDto.getEarlyOptInIDate() + split);
 		internalOutboundProcessorDto.setCndCompliantFlag(internalOutboundDto.getCndCompliantFlag() + split);
 		internalOutboundProcessorDto.setHdCaFlag(internalOutboundDto.getHdCaFlag() + split);
 		internalOutboundProcessorDto.setHdCaGardenClubFlag(internalOutboundDto.getHdCaGardenClubFlag() + split);

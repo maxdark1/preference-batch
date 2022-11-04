@@ -5,6 +5,7 @@ import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
+import ca.homedepot.preference.mapper.InternalOutboundStep1Mapper;
 import ca.homedepot.preference.mapper.InternalOutboundStep2Mapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapperStep2;
 import lombok.Data;
@@ -63,6 +64,18 @@ public class PreferenceOutboundDBReader
 		reader.setDataSource(dataSource);
 		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE);
 		reader.setRowMapper(new CitiSuppresionOutboundMapper());
+
+		log.info(" Preference Outbound : Preference Citi Suppresion Outbound Step 2 Reader End :" + new Date());
+		return reader;
+	}
+
+	public JdbcCursorItemReader<InternalOutboundDto> loyaltyComplaintDBTableReader(){
+		log.info(" Preference Loyalty Complaint Outbound : Preference Loyalty Complaint Outbound Step 2 Reader Starter :" + new Date());
+		JdbcCursorItemReader<InternalOutboundDto> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE);
+		reader.setRowMapper(new InternalOutboundStep1Mapper());
 
 		log.info(" Preference Outbound : Preference Citi Suppresion Outbound Step 2 Reader End :" + new Date());
 		return reader;

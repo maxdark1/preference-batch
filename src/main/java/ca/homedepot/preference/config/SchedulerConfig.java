@@ -1,5 +1,6 @@
 package ca.homedepot.preference.config;
 
+import java.io.FileWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -853,6 +854,19 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
+	@Bean
+	public JdbcBatchItemWriter<InternalOutboundDto> outboundLayoutComplaintWeekly()
+	{
+		JdbcBatchItemWriter<InternalOutboundDto> writer = new JdbcBatchItemWriter<>();
+
+		writer.setDataSource(dataSource);
+		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_CITI_SUPPRESION);
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
+	//	writer.setItemPreparedStatementSetter(new CitiSuppresionPreparedStatement());
+
+		return writer;
+	}
+
 
 	public FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter()
 	{
@@ -862,6 +876,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		fileWriterOutBound.setFileService(hybrisWriterListener.getFileService());
 		fileWriterOutBound.setFolderSource(folderOutbound);
 		fileWriterOutBound.setRepositorySource(citiPath);
+		fileWriterOutBound.setHeader(CITI_SUPPRESION_HEADER);
 		fileWriterOutBound.setSource(CITI_BANK);
 		fileWriterOutBound.setFileNameFormat(citiFileNameFormat);
 		fileWriterOutBound.setJobName(JOB_NAME_CITI_SUPPRESION);
@@ -870,6 +885,20 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
 		fileWriterOutBound.setResource();
 
+		return fileWriterOutBound;
+	}
+
+	//TODO
+	public FileWriterOutBound<InternalOutboundDto> loyaltyComplaintWriter(){
+		FileWriterOutBound<InternalOutboundDto> fileWriterOutBound = new FileWriterOutBound<>();
+		fileWriterOutBound.setFolderSource(folderOutbound);
+		fileWriterOutBound.setRepositorySource(citiPath);
+		fileWriterOutBound.setHeader(CITI_SUPPRESION_HEADER);
+		fileWriterOutBound.setSource(CITI_BANK);
+		fileWriterOutBound.setFileNameFormat(citiFileNameFormat);
+		fileWriterOutBound.setJobName(JOB_NAME_CITI_SUPPRESION);
+		fileWriterOutBound.setNames(new String[]
+				{ "EmailAddr", "CanPtcEffectiveDate", "CanPtcSourceId", "EmailStatus", "CanPtcGlag", "LanguagePreference", "EarlyOptInIDate", "CndCompliantFlag", "HdCaFlag", "HdCaGardenClubFlag", "HdCaNewMoverFlag", "HdCaNewMoverEffDate", "HdCaProFlag", "PhonePtcFlag", "FirstName", "LastName", "PostalCode", "Province", "City", "PhoneNumber", "BussinessName", "IndustryCode", "MoveDate", "DwellingType"});
 		return fileWriterOutBound;
 	}
 

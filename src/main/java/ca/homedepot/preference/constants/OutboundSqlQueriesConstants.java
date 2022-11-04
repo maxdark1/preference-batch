@@ -248,11 +248,17 @@ public class OutboundSqlQueriesConstants
 	public static final String SQL_SELECT_PROGRAM_COMPLIANT = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_new_mover_flag, hd_ca_new_mover_eff_date, hd_ca_pro_flag, phone_ptc_flag, first_name, last_name, postal_cd, province, city, phone_number, business_name, industry_code, dwelling_type, move_date\n"
 			+ "\tFROM public.hdpc_out_program_compliant;";
 
+	/**
+	 * Loyalty complaint queries
+	 */
 
 	public static final String SQL_INSERT_LOYALTY_COMPLAINT = "INSERT INTO public.hdpc_out_loyalty_compliant(\n"
 			+ "\temail_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province)\n"
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
+	public static final String SQL_SELECT_LOYALTY_COMPLAINT = "INSERT INTO public.hdpc_out_loyalty_compliant(\n" +
+			"\temail_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province)\n" +
+			"\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 	public static final String SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE = "TRUNCATE TABLE public.hdpc_out_loyalty_compliant";
 
 
