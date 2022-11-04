@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 
 public class InternalOutboundStep1Mapper implements RowMapper<InternalOutboundDto>
 {
+	private static final String EFFECTIVE_DATE  = "effective_date";
 	/**
 	 * This mapper is used the receive the data from DB and map into DTO
 	 * 
@@ -24,10 +25,10 @@ public class InternalOutboundStep1Mapper implements RowMapper<InternalOutboundDt
 	public InternalOutboundDto mapRow(ResultSet rs, int rowNum) throws SQLException
 	{
 		InternalOutboundDto internalOutboundDto = new InternalOutboundDto();
-		final String effDate = "effective_date";
+
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		internalOutboundDto.setEmailAddr(rs.getString("email"));
-		internalOutboundDto.setCanPtcEffectiveDate(rs.getDate(effDate));
+		internalOutboundDto.setCanPtcEffectiveDate(rs.getDate(EFFECTIVE_DATE));
 		internalOutboundDto.setCanPtcSourceId(rs.getBigDecimal("source_id"));
 		internalOutboundDto.setEmailStatus(rs.getBigDecimal("email_status"));
 		internalOutboundDto.setCanPtcGlag(rs.getString("email_permission"));
@@ -37,7 +38,7 @@ public class InternalOutboundStep1Mapper implements RowMapper<InternalOutboundDt
 		internalOutboundDto.setHdCaFlag(rs.getString("email_pref_hd_ca"));
 		internalOutboundDto.setHdCaGardenClubFlag(rs.getString("email_pref_garden_club"));
 		internalOutboundDto.setHdCaNewMoverFlag(rs.getString("email_pref_new_mover"));
-		internalOutboundDto.setHdCaNewMoverEffDate(rs.getDate(effDate));
+		internalOutboundDto.setHdCaNewMoverEffDate(rs.getDate(EFFECTIVE_DATE));
 		internalOutboundDto.setHdCaProFlag(rs.getString("email_pref_pro"));
 		internalOutboundDto.setPhonePtcFlag(rs.getString("phone_ptc_flag"));
 		internalOutboundDto.setFirstName(rs.getString("first_name"));

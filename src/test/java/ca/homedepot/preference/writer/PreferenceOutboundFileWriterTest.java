@@ -68,7 +68,7 @@ class PreferenceOutboundFileWriterTest
 	}
 
 	@AfterAll
-	static void tearDown() throws IOException
+	static void tearDown()
 	{
 		try
 		{
