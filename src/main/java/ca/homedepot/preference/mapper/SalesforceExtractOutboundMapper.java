@@ -13,17 +13,17 @@ public class SalesforceExtractOutboundMapper implements RowMapper<SalesforceExtr
         SalesforceExtractOutboundDTO salesforce = new SalesforceExtractOutboundDTO();
 
         salesforce.setEmailAddress(rs.getString("email_address"));
-        salesforce.setAsOfDate(rs.getString("as_of_date"));
+        salesforce.setAsOfDate(rs.getTimestamp("as_of_date").toLocalDateTime());
         salesforce.setSourceId(rs.getString("source_id"));
         salesforce.setEmailStatus(rs.getString("email_status"));
         salesforce.setEmailPtc(rs.getString("email_ptc"));
         salesforce.setLanguagePreference(rs.getString("language_preference"));
         salesforce.setEarliestOptInDate(rs.getTimestamp("earliest_opt_in_date").toLocalDateTime());
-        salesforce.setHdCanadaEmailCompliantFlag(rs.getString("hd_canada_email_compliant_flags"));
+        salesforce.setHdCanadaEmailCompliantFlag(rs.getString("hd_canada_email_compliant_flag"));
         salesforce.setHdCanadaFlag(rs.getString("hd_canada_flag"));
         salesforce.setGardenClubFlag(rs.getString("garden_club_flag"));
         salesforce.setNewMoverFlag(rs.getString("new_mover_flag"));
-        salesforce.setProFlag(rs.getString("Pro_flag"));
+        salesforce.setProFlag(rs.getString("pro_flag"));
         salesforce.setPhonePtcFlag(rs.getString("phone_ptc_flag"));
         salesforce.setFirstName(rs.getString("first_name"));
         salesforce.setLastName(rs.getString("last_name"));

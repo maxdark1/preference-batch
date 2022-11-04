@@ -106,7 +106,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
     public void saveFileRecord()
     {
         BigDecimal jobId = fileService.getJobId(jobName);
-        BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE", "citisup").getMasterId();
+        BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE_ID", "citisup").getMasterId();
         Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");
 
         FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),

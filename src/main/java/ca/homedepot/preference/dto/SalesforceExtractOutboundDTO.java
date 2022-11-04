@@ -13,7 +13,7 @@ public class SalesforceExtractOutboundDTO
 {
 
 	private String emailAddress;
-	private String asOfDate;
+	private LocalDateTime asOfDate;
 	private String sourceId;
 	private String emailStatus;
 	private String emailPtc;

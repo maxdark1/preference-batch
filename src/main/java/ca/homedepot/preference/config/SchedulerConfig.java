@@ -616,8 +616,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		log.info(" Send Email Marketing Preferences To SMFC Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
-				.addString(JOB_NAME_SEND_PREFERENCES_TO_CRM, String.valueOf(System.currentTimeMillis()))
-				.addString("job_name", JOB_NAME_SEND_PREFERENCES_TO_CRM).toJobParameters();
+				.addString(JOB_NAME_SALESFORCE_EXTRACT, String.valueOf(System.currentTimeMillis()))
+				.addString("job_name", JOB_NAME_SALESFORCE_EXTRACT).toJobParameters();
 		JobExecution execution = jobLauncher.run(sendPreferencesToSMFC(), param);
 		log.info(" Send Email Marketing Preferences To SMFC Job finished with status: {} ", execution.getStatus());
 	}

@@ -13,7 +13,7 @@ public class SalesforcePreparedStatement implements ItemPreparedStatementSetter<
     public void setValues(SalesforceExtractOutboundDTO item, PreparedStatement ps) throws SQLException
     {
         ps.setString(1, item.getEmailAddress());
-        ps.setString(2, item.getAsOfDate());
+        ps.setTimestamp(2, Timestamp.valueOf(item.getAsOfDate()));
         ps.setString(3, item.getSourceId());
         ps.setString(4, item.getEmailStatus());
         ps.setString(5, item.getEmailPtc());
