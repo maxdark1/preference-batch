@@ -1,6 +1,5 @@
 package ca.homedepot.preference.config;
 
-import java.time.DateTimeException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,17 +8,15 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
+
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.*;
 import ca.homedepot.preference.mapper.SalesforcePreparedStatement;
-import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
@@ -54,8 +51,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.model.EmailOptOuts;
@@ -1078,8 +1073,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job sendPreferencesToSMFC()
 	{
 		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(salesforceExtractDBReaderStep1()).on(PreferenceBatchConstants.COMPLETED_STATUS)
-				.to(salesforceExtractDBReaderFileWriterStep2()).build().build();
+				.start(salesforceExtractDBReaderStep1()).on(COMPLETED_STATUS).to(salesforceExtractDBReaderFileWriterStep2()).build()
+				.build();
 	}
 
 
@@ -1226,10 +1221,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderStep1")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
-				.reader(preferenceOutboundReader.salesforceExtractOutboundDBReader()).writer(salesforceExtractOutboundDTOJdbcBatchItemWriter()).build();
+				.reader(preferenceOutboundReader.salesforceExtractOutboundDBReader())
+				.writer(salesforceExtractOutboundDTOJdbcBatchItemWriter()).build();
 	}
 
-	public Step salesforceExtractDBReaderFileWriterStep2(){
+	public Step salesforceExtractDBReaderFileWriterStep2()
+	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
 				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(salesforceExtractFileWriter()).build();

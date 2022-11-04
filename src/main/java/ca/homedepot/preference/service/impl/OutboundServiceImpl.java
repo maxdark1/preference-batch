@@ -61,7 +61,7 @@ public class OutboundServiceImpl implements OutboundService
 	@Override
 	public void purgeSalesforceExtractTable()
 	{
-	 	jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_SALESFORCE_EXTRACT);
+		jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_SALESFORCE_EXTRACT);
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
 import ca.homedepot.preference.mapper.InternalOutboundStep2Mapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapperStep2;
 import ca.homedepot.preference.mapper.SalesforceExtractOutboundMapper;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
