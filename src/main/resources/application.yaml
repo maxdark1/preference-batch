@@ -72,6 +72,9 @@ outbound:
     compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
   citi:
     mastersuppresion: ACXIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.csv
+  salesforce:
+    extract: ET_YYYYMMDD.TXT.PGP
+
 
 folders:
   inbound: \INBOUND\
@@ -88,6 +91,8 @@ folders:
     path: C:\batchFiles\SFMC
   citi:
     path: C:\batchFiles\CITI
+  salesforce:
+    path: C:\batchFiles\Salesforce
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -103,4 +108,6 @@ preference:
     outboundCRM:
       chunk: 10
     outboundCiti:
+      chunk: 20
+    outboundSalesforce:
       chunk: 20
