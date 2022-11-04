@@ -10,7 +10,6 @@ import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
 import ca.homedepot.preference.mapper.InternalOutboundStep1Mapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
 import ca.homedepot.preference.service.OutboundService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -64,6 +63,7 @@ public class PreferenceOutboundReader
 
 	/**
 	 * Method for read the data needed from DB
+	 * 
 	 * @return
 	 */
 	public ItemReader<InternalOutboundDto> outboundInternalDBReader()

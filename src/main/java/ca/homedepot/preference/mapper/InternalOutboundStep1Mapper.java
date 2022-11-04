@@ -12,8 +12,11 @@ public class InternalOutboundStep1Mapper implements RowMapper<InternalOutboundDt
 {
 	/**
 	 * This mapper is used the receive the data from DB and map into DTO
-	 * @param rs the ResultSet to map (pre-initialized for the current row)
-	 * @param rowNum the number of the current row
+	 * 
+	 * @param rs
+	 *           the ResultSet to map (pre-initialized for the current row)
+	 * @param rowNum
+	 *           the number of the current row
 	 * @return
 	 * @throws SQLException
 	 */

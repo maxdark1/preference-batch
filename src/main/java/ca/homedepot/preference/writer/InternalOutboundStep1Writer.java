@@ -3,7 +3,6 @@ package ca.homedepot.preference.writer;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 
 import ca.homedepot.preference.service.OutboundService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,9 @@ public class InternalOutboundStep1Writer implements ItemWriter<InternalOutboundD
 
 	/**
 	 * This method is used for temporary save of data into DB
-	 * @param items items to be written
+	 * 
+	 * @param items
+	 *           items to be written
 	 * @throws Exception
 	 */
 	@Override

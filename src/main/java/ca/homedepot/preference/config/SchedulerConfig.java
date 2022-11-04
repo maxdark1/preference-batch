@@ -614,6 +614,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Triggers Internal Destination Process in a determinated period of time
+	 * 
 	 * @throws JobExecutionAlreadyRunningException
 	 * @throws IllegalArgumentException
 	 * @throws JobRestartException
@@ -918,6 +919,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Generate the files needed during the process & call the steps
+	 * 
 	 * @return
 	 */
 	public Job sendPreferencesToInternalDestination()
@@ -943,6 +945,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 1 for get data from DB
+	 * 
 	 * @return
 	 */
 	public Step readSendPreferencesToInternalStep1()
@@ -954,6 +957,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 2 for generate a CSV file
+	 * 
 	 * @return
 	 */
 	public Step readSendPreferencesToInternalStep2()

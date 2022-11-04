@@ -105,5 +105,11 @@ public class OutboundServiceImpl implements OutboundService
 		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_PROGRAM_COMPLIANT);
 	}
 
+	@Override
+	public int purgeLoyaltyComplaintTable()
+	{
+		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE);
+	}
+
 
 }

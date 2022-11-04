@@ -6,9 +6,7 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +31,6 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	protected String file_name_format;
 	private FileOutputStream writer;
 
-	private StepExecution stepExecution;
 
 	private String sourceId;
 	@Autowired
