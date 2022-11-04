@@ -6,9 +6,7 @@ import ca.homedepot.preference.dto.InternalOutboundProcessorDto;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,22 +22,20 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Data
 public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundProcessorDto>
 {
 	@Value("${folders.internal.path}")
-	private String repositorySource;
+	protected String repositorySource;
 	@Value("${folders.outbound}")
-	private String folderSource;
+	protected String folderSource;
 	@Value("${outbound.files.internalCa}")
-	private String caFileFormat;
+	protected String caFileFormat;
 	@Value("${outbound.files.internalMover}")
-	private String moverFileFormat;
+	protected String moverFileFormat;
 	@Value("${outbound.files.internalGarden}")
-	private String gardenFileFormat;
+	protected String gardenFileFormat;
 	private FileOutputStream writer;
 
-	private StepExecution stepExecution;
 
 	private String sourceId;
 	@Autowired
@@ -89,9 +85,9 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 
 		}
 
-		generateCaFile(file);
-		generateMoverFile(file);
-		generateGardenFile(file);
+		generateFile(file, caFileFormat);
+		generateFile(file, moverFileFormat);
+		generateFile(file, gardenFileFormat);
 
 	}
 
@@ -101,41 +97,19 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	 * @param file
 	 * @throws IOException
 	 */
-	private void generateCaFile(String file) throws Exception
+	private void generateFile(String file, String filePath) throws Exception
 	{
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = caFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
+		String fileName = filePath.replace("YYYYMMDD", formatter.format(new Date()));
 
 		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
 		byte toFile[] = file.getBytes();
 		writer.write(toFile);
+		writer.flush();
 		writer.close();
 		setFileRecord(fileName);
 	}
 
-	private void generateMoverFile(String file) throws Exception
-	{
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = moverFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
-
-		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
-		byte toFile[] = file.getBytes();
-		writer.write(toFile);
-		writer.close();
-		setFileRecord(fileName);
-	}
-
-	private void generateGardenFile(String file) throws Exception
-	{
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = gardenFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
-
-		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
-		byte toFile[] = file.getBytes();
-		writer.write(toFile);
-		writer.close();
-		setFileRecord(fileName);
-	}
 
 	/**
 	 * This method registry in file table the generated file

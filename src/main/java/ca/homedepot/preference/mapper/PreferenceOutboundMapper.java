@@ -32,8 +32,7 @@ public class PreferenceOutboundMapper implements RowMapper<PreferenceOutboundDto
 		outboundData.setEmailPermission(
 				rs.getString("email_permission").charAt(0) /* != null ? rs.getString("email_permission").charAt(0) : 'N' */);
 		outboundData.setLanguagePref(rs.getString("language_preference") /* != null ? rs.getString("language_preference") : "" */);
-		outboundData
-				.setEarlyOptInDate(rs.getDate("early_opt_in_date") /* != null ? rs.getDate("early_opt_in_date") : new Date(0) */);
+		outboundData.setEarlyOptInDate(rs.getDate("min") /* != null ? rs.getDate("early_opt_in_date") : new Date(0) */);
 		outboundData.setCndCompliantFlag(
 				rs.getString("cnd_compliant_flag").charAt(0) /* != null ? rs.getString("cnd_compliant_flag").charAt(0) : 'N' */);
 		outboundData.setEmailPrefHdCa(

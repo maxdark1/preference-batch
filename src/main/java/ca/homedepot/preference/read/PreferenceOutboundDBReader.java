@@ -8,7 +8,6 @@ import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
 import ca.homedepot.preference.mapper.InternalOutboundStep1Mapper;
 import ca.homedepot.preference.mapper.InternalOutboundStep2Mapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapperStep2;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@Data
 public class PreferenceOutboundDBReader
 {
 	@Autowired
@@ -43,6 +41,11 @@ public class PreferenceOutboundDBReader
 		return reader;
 	}
 
+	/**
+	 * This method is used for get the data from the temporary table
+	 * 
+	 * @return
+	 */
 	public JdbcCursorItemReader<InternalOutboundDto> outboundInternalDbReader()
 	{
 		log.info(" Preference Outbound : Internal Outbound Step 2 Reader Starter :" + new Date());

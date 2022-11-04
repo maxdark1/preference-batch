@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Format;
@@ -58,25 +59,31 @@ public class OutboundServiceImpl implements OutboundService
 	}
 
 	@Override
-	public void createFile(String repository, String folder, String fileNameFormat, String file) throws IOException
+	public void createFile(String repository, String folder, String fileNameFormat, String headers) throws IOException
 	{
 		/* Creating File */
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		/* Inserting Headers */
+		String file = headers;
+		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
 
 
-		try (FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
+		try
 		{
 			byte toFile[] = file.getBytes();
 			writer.write(toFile);
+			writer.flush();
 		}
 		catch (Exception ex)
 		{
 			log.error(ex.getMessage());
 		}
-
+		finally
+		{
+			writer.close();
+		}
 
 	}
 

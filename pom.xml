@@ -282,7 +282,7 @@
                 <artifactId>formatter-maven-plugin</artifactId>
                 <version>${net.revelc.code.formatter.version}</version>
                 <configuration>
-                    <configFile>hybrisJavaCodeconventions.xml</configFile>
+                    <configFile>javaCodeConventions.xml</configFile>
                     <compilerSource>11</compilerSource>
                     <compilerCompliance>11</compilerCompliance>
                     <compilerTargetPlatform>11</compilerTargetPlatform>
@@ -368,7 +368,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.65</minimum>
+                                            <minimum>0.50</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

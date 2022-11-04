@@ -29,8 +29,11 @@ import java.util.List;
 public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 {
 
+
 	private String repositorySource;
+
 	private String folderSource;
+
 	private String fileNameFormat;
 
 	private FileService fileService;

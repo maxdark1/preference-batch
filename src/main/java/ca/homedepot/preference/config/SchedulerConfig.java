@@ -613,6 +613,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
 	}
 
+	/**
+	 * Triggers Internal Destination Process in a determinated period of time
+	 * 
+	 * @throws JobExecutionAlreadyRunningException
+	 * @throws IllegalArgumentException
+	 * @throws JobRestartException
+	 * @throws JobInstanceAlreadyCompleteException
+	 * @throws JobParametersInvalidException
+	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
 	public void sendPreferencesToInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
@@ -937,6 +946,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2()).build().build();
 	}
 
+	/**
+	 * Generate the files needed during the process & call the steps
+	 * 
+	 * @return
+	 */
 	public Job sendPreferencesToInternalDestination()
 	{
 		//Generate the 3 Files
@@ -958,7 +972,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
-
+	/**
+	 * Step 1 for get data from DB
+	 * 
+	 * @return
+	 */
 	public Step readSendPreferencesToInternalStep1()
 	{
 		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step1")
@@ -966,7 +984,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.reader(preferenceOutboundReader.outboundInternalDBReader()).writer(internalOutboundStep1Writer).build();
 	}
 
-
+	/**
+	 * Step 2 for generate a CSV file
+	 * 
+	 * @return
+	 */
 	public Step readSendPreferencesToInternalStep2()
 	{
 		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step2")
