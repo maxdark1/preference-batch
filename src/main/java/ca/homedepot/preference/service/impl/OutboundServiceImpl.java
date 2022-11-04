@@ -62,14 +62,14 @@ public class OutboundServiceImpl implements OutboundService
 	}
 
 	@Override
-	public void createFile(String repository, String folder, String fileNameFormat, String file) throws IOException
+	public void createFile(String repository, String folder, String fileNameFormat, String headers) throws IOException
 	{
 		/* Creating File */
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		/* Inserting Headers */
-		file = PreferenceBatchConstants.INTERNAL_CA_HEADERS;
+		String file = headers;
 		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
 		;
 
@@ -77,6 +77,7 @@ public class OutboundServiceImpl implements OutboundService
 		{
 			byte toFile[] = file.getBytes();
 			writer.write(toFile);
+			writer.flush();
 		}
 		catch (Exception ex)
 		{

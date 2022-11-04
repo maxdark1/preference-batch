@@ -15,13 +15,17 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Data
 public class InternalOutboundStep1Writer implements ItemWriter<InternalOutboundDto>
 {
 
 	@Autowired
 	private OutboundService outboundService;
 
+	/**
+	 * This method is used for temporary save of data into DB
+	 * @param items items to be written
+	 * @throws Exception
+	 */
 	@Override
 	public void write(List<? extends InternalOutboundDto> items) throws Exception
 	{

@@ -22,7 +22,6 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@Data
 public class PreferenceOutboundReader
 {
 	@Autowired
@@ -63,6 +62,10 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
+	/**
+	 * Method for read the data needed from DB
+	 * @return
+	 */
 	public ItemReader<InternalOutboundDto> outboundInternalDBReader()
 	{
 		purgeProgramCompliant();
@@ -93,7 +96,7 @@ public class PreferenceOutboundReader
 		log.info("Deleting hdpc_out_citi_suppression records at: {}", new Date());
 	}
 
-	private void purgeProgramCompliant()
+	public void purgeProgramCompliant()
 	{
 		outboundService.purgeProgramCompliant();
 		log.info("Deleting hdpc_out_program_compliant records at: {}", new Date());

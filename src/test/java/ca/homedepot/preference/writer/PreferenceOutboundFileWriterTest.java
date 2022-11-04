@@ -5,6 +5,7 @@ import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 class PreferenceOutboundFileWriterTest
 {
 
@@ -38,9 +40,9 @@ class PreferenceOutboundFileWriterTest
 	void setup()
 	{
 		MockitoAnnotations.initMocks(this);
-		preferenceOutboundFileWriter.setRepository_source("");
-		preferenceOutboundFileWriter.setFolder_source("");
-		preferenceOutboundFileWriter.setFile_name_format("LOYALTY_DAILY_YYYYMMDD.txt");
+		preferenceOutboundFileWriter.file_name_format = "LOYALTY_DAILY_YYYYMMDD.txt";
+		preferenceOutboundFileWriter.folderSorce = "";
+		preferenceOutboundFileWriter.repositorySource = "";
 
 		PreferenceOutboundDtoProcessor preferenceOutboundDto = new PreferenceOutboundDtoProcessor();
 		preferenceOutboundDto.setSourceId(BigDecimal.ONE.toString());
@@ -67,9 +69,17 @@ class PreferenceOutboundFileWriterTest
 	}
 
 	@AfterAll
-	static void tearDown() throws IOException {
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		FileUtils.forceDelete(new File("LOYALTY_DAILY_YYYYMMDD.txt".replace("YYYYMMDD", formatter.format(new Date()))));
+	static void tearDown() throws IOException
+	{
+		try
+		{
+			Format formatter = new SimpleDateFormat("yyyyMMdd");
+			FileUtils.forceDelete(new File("LOYALTY_DAILY_YYYYMMDD.txt".replace("YYYYMMDD", formatter.format(new Date()))));
+		}
+		catch (Exception ex)
+		{
+			log.info(ex.getMessage());
+		}
 	}
 
 	@Test

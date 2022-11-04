@@ -32,7 +32,7 @@ class InternalOutboundProcessorDtoTest
 	{
 		internalOutboundProcessorDto.setEmailAddr("test@test.com");
 		int test = internalOutboundProcessorDto.hashCode();
-		assertNotNull(test);
+		assertEquals(test, internalOutboundProcessorDto.hashCode());
 	}
 
 	@Test
@@ -40,7 +40,7 @@ class InternalOutboundProcessorDtoTest
 	{
 		internalOutboundProcessorDto.setEmailAddr("test@test.com");
 		String test = internalOutboundProcessorDto.toString();
-		assertNotNull(test);
+		assertEquals(test, internalOutboundProcessorDto.toString());
 	}
 
 	@Test

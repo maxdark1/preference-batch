@@ -72,7 +72,8 @@ class CitiSupressionFileWriterTest
 	}
 
 	@AfterAll
-	static void tearDown() throws IOException {
+	static void tearDown() throws IOException
+	{
 		File file = new File("repositorySource");
 		FileUtils.deleteDirectory(file);
 	}

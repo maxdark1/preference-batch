@@ -18,7 +18,6 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@Data
 public class PreferenceOutboundDBReader
 {
 	@Autowired
@@ -42,6 +41,10 @@ public class PreferenceOutboundDBReader
 		return reader;
 	}
 
+	/**
+	 * This method is used for get the data from the temporary table
+	 * @return
+	 */
 	public JdbcCursorItemReader<InternalOutboundDto> outboundInternalDbReader()
 	{
 		log.info(" Preference Outbound : Internal Outbound Step 2 Reader Starter :" + new Date());

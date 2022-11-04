@@ -14,7 +14,6 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Data
 public class PreferenceOutboundWriter implements ItemWriter<PreferenceOutboundDto>
 {
 	@Autowired

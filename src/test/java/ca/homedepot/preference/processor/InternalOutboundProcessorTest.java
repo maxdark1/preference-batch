@@ -23,6 +23,7 @@ class InternalOutboundProcessorTest
 	void process() throws Exception
 	{
 		String split = SourceDelimitersConstants.DELIMITER_COMA;
+
 		internalOutboundDto = Mockito.mock(InternalOutboundDto.class);
 		Mockito.when(internalOutboundDto.getEmailAddr()).thenReturn("test@test.com");
 		InternalOutboundProcessor processor = new InternalOutboundProcessor();

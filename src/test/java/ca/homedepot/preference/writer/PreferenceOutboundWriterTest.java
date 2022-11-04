@@ -40,9 +40,4 @@ class PreferenceOutboundWriterTest
 
 	}
 
-	@Test
-	void getOutboundService()
-	{
-		assertNotNull(preferenceOutboundWriter.getOutboundService());
-	}
 }

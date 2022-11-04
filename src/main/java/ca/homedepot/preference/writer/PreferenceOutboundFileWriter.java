@@ -30,15 +30,14 @@ import java.util.Date;
 
 @Slf4j
 @Component
-@Data
 public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutboundDtoProcessor>
 {
 	@Value("${folders.crm.path}")
-	private String repository_source;
+	protected String repositorySource;
 	@Value("${folders.outbound}")
-	private String folder_source;
+	protected String folderSorce;
 	@Value("${outbound.files.compliant}")
-	private String file_name_format;
+	protected String file_name_format;
 	private FileOutputStream writer;
 
 	private StepExecution stepExecution;
@@ -104,7 +103,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 
-		writer = new FileOutputStream(repository_source + folder_source + fileName, true);
+		writer = new FileOutputStream(repositorySource + folderSorce + fileName, true);
 		byte toFile[] = file.getBytes();
 		writer.write(toFile);
 		writer.close();

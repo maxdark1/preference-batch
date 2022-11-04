@@ -33,30 +33,6 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
-	void getDataSource()
-	{
-		dataSource = preferenceOutboundReader.getDataSource();
-		assertNotNull(dataSource);
-	}
-
-	@Test
-	void setDataSource()
-	{
-		preferenceOutboundReader.setDataSource(dataSource);
-		assertNotNull(preferenceOutboundReader.getDataSource());
-	}
-
-
-	@Test
-	void canEqual()
-	{
-		assertTrue(preferenceOutboundReader.canEqual(preferenceOutboundReader));
-	}
-
-
-
-
-	@Test
 	void getOutboundService()
 	{
 		assertNotNull(outboundService);
@@ -82,4 +58,21 @@ class PreferenceOutboundReaderTest
 		preferenceOutboundReader.purgeCitiSuppresionTable();
 		Mockito.verify(preferenceOutboundReader).purgeCitiSuppresionTable();
 	}
+
+	@Test
+	void testOutboundInternalDBReader()
+	{
+		assertNotNull(preferenceOutboundReader.outboundInternalDBReader());
+	}
+
+	@Test
+	void testPurgeProgramCompliant()
+	{
+		Mockito.doNothing().when(preferenceOutboundReader).purgeProgramCompliant();
+
+		preferenceOutboundReader.purgeProgramCompliant();
+		Mockito.verify(preferenceOutboundReader).purgeProgramCompliant();
+	}
+
+
 }

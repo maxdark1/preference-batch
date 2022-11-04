@@ -25,19 +25,18 @@ import java.util.List;
 
 @Slf4j
 @Component
-@Data
 public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundProcessorDto>
 {
 	@Value("${folders.internal.path}")
-	private String repositorySource;
+	protected String repositorySource;
 	@Value("${folders.outbound}")
-	private String folderSource;
+	protected String folderSource;
 	@Value("${outbound.files.internalCa}")
-	private String caFileFormat;
+	protected String caFileFormat;
 	@Value("${outbound.files.internalMover}")
-	private String moverFileFormat;
+	protected String moverFileFormat;
 	@Value("${outbound.files.internalGarden}")
-	private String gardenFileFormat;
+	protected String gardenFileFormat;
 	private FileOutputStream writer;
 
 	private StepExecution stepExecution;

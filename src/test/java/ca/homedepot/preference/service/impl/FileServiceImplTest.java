@@ -62,9 +62,9 @@ class FileServiceImplTest
 
 		int value = 1;
 
-		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFileName(), file.getJob(),
-				file.getSourceType(), file.getStatus(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(),
-				file.getStatusId(), file.getEndTime())).thenReturn(value);
+		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFileName(), file.getJob(), file.getSourceType(),
+				file.getStatus(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(), file.getStatusId(),
+				file.getEndTime())).thenReturn(value);
 		when(fileService.insert(file)).thenReturn(value);
 
 		int result = fileService.insert(file);
