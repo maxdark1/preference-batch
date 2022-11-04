@@ -11,11 +11,8 @@ import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,20 +24,18 @@ import java.util.Date;
 import java.util.List;
 
 @Slf4j
-@Component
 @Getter
 @Setter
 public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 {
 
-	@Value("${folders.citi.path}")
+
 	private String repositorySource;
-	@Value("${folders.outbound}")
+
 	private String folderSource;
-	@Value("${outbound.citi.mastersuppresion}")
+
 	private String fileNameFormat;
 
-	@Autowired
 	private FileService fileService;
 
 	private String jobName;
@@ -60,7 +55,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 		setSaveState(false);
 	}
 
-	public void setNames(String[] names) {
+	public void setNames(String[] names)
+	{
 		this.names = names;
 		setLineAggregator(getLineAgreggator());
 	}

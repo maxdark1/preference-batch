@@ -12,6 +12,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class InternalOutboundProcessor implements ItemProcessor<InternalOutboundDto, InternalOutboundProcessorDto>
 {
+	/**
+	 * This method is used to transform the data coming from the db into the data to write in CSV file
+	 * 
+	 * @param internalOutboundDto
+	 *           to be processed
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public InternalOutboundProcessorDto process(InternalOutboundDto internalOutboundDto) throws Exception
 	{

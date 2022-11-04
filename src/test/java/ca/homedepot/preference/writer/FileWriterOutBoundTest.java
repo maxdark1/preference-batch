@@ -45,7 +45,8 @@ class FileWriterOutBoundTest
 		fileWriterOutBound.setFolderSource("/folder/");
 		fileWriterOutBound.setFileNameFormat("filenameformat_YYYYMMDD");
 		fileWriterOutBound.setSource("citi_bank");
-		fileWriterOutBound.setNames(new String[]{"names"});
+		fileWriterOutBound.setNames(new String[]
+		{ "names" });
 
 		List<Master> masterList = new ArrayList<>();
 		Master sourceId = new Master();

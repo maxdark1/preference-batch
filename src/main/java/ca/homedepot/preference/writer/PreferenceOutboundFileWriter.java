@@ -6,9 +6,7 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,18 +21,16 @@ import java.util.Date;
 
 @Slf4j
 @Component
-@Data
 public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutboundDtoProcessor>
 {
 	@Value("${folders.crm.path}")
-	private String repository_source;
+	protected String repositorySource;
 	@Value("${folders.outbound}")
-	private String folder_source;
+	protected String folderSorce;
 	@Value("${outbound.files.compliant}")
-	private String file_name_format;
+	protected String file_name_format;
 	private FileOutputStream writer;
 
-	private StepExecution stepExecution;
 
 	private String sourceId;
 	@Autowired
@@ -97,7 +93,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 
-		writer = new FileOutputStream(repository_source + folder_source + fileName, true);
+		writer = new FileOutputStream(repositorySource + folderSorce + fileName, true);
 		byte toFile[] = file.getBytes();
 		writer.write(toFile);
 		writer.close();
