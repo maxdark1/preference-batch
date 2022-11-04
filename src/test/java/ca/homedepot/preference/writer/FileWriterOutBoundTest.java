@@ -32,17 +32,20 @@ class FileWriterOutBoundTest
 
 	@InjectMocks
 	@Spy
-	FileWriterOutBound fileWriterOutBound;
+	FileWriterOutBound<CitiSuppresionOutboundDTO> fileWriterOutBound;
 
 	File file = new File("repositorySource/folder");
 
 	@BeforeEach
 	void setUp() throws IOException
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
+		fileWriterOutBound.setFileService(fileService);
 		fileWriterOutBound.setRepositorySource("repositorySource");
 		fileWriterOutBound.setFolderSource("/folder/");
 		fileWriterOutBound.setFileNameFormat("filenameformat_YYYYMMDD");
+		fileWriterOutBound.setSource("citi_bank");
+		fileWriterOutBound.setNames(new String[]{"names"});
 
 		List<Master> masterList = new ArrayList<>();
 		Master sourceId = new Master();
@@ -121,6 +124,7 @@ class FileWriterOutBoundTest
 	@Test
 	void getFileService()
 	{
+		fileWriterOutBound.setFileService(fileService);
 		assertNotNull(fileWriterOutBound.getFileService());
 	}
 
