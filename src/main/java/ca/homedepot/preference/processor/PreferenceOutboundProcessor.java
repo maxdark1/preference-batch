@@ -1,6 +1,5 @@
 package ca.homedepot.preference.processor;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
@@ -8,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 

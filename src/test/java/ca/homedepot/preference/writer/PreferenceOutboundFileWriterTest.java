@@ -1,7 +1,6 @@
 package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;

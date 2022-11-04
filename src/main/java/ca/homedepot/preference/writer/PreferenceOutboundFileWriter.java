@@ -1,25 +1,18 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.batch.core.JobExecution;
 
 import java.math.BigDecimal;
 import java.text.Format;

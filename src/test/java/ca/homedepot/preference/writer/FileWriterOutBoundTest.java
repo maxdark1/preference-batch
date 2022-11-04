@@ -6,17 +6,12 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import java.io.File;
@@ -29,7 +24,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-class CitiSupressionFileWriterTest
+class FileWriterOutBoundTest
 {
 
 	@Mock
@@ -37,17 +32,20 @@ class CitiSupressionFileWriterTest
 
 	@InjectMocks
 	@Spy
-	CitiSupressionFileWriter citiSupressionFileWriter;
+	FileWriterOutBound<CitiSuppresionOutboundDTO> fileWriterOutBound;
 
 	File file = new File("repositorySource/folder");
 
 	@BeforeEach
 	void setUp() throws IOException
 	{
-		MockitoAnnotations.initMocks(this);
-		citiSupressionFileWriter.setRepositorySource("repositorySource");
-		citiSupressionFileWriter.setFolderSource("/folder/");
-		citiSupressionFileWriter.setFileNameFormat("filenameformat_YYYYMMDD");
+		MockitoAnnotations.openMocks(this);
+		fileWriterOutBound.setFileService(fileService);
+		fileWriterOutBound.setRepositorySource("repositorySource");
+		fileWriterOutBound.setFolderSource("/folder/");
+		fileWriterOutBound.setFileNameFormat("filenameformat_YYYYMMDD");
+		fileWriterOutBound.setSource("citi_bank");
+		fileWriterOutBound.setNames(new String[]{"names"});
 
 		List<Master> masterList = new ArrayList<>();
 		Master sourceId = new Master();
@@ -82,16 +80,16 @@ class CitiSupressionFileWriterTest
 	@Test
 	void write() throws Exception
 	{
-		citiSupressionFileWriter.setFileName("fileName_YYYYMMDD");
+		fileWriterOutBound.setFileName("fileName_YYYYMMDD");
 		List<CitiSuppresionOutboundDTO> listCiti = new ArrayList<>();
 		listCiti.add(new CitiSuppresionOutboundDTO("example", "e", "john", "address1", "address2", "toronto", "on", "123456",
 				"email@example.com", "1234567890", "1234056987", "bussinessName", "N", "N", "N", "N"));
 
-		Mockito.doNothing().when(citiSupressionFileWriter).saveFileRecord();
-		Mockito.doNothing().when(citiSupressionFileWriter).write(listCiti);
+		Mockito.doNothing().when(fileWriterOutBound).saveFileRecord();
+		Mockito.doNothing().when(fileWriterOutBound).write(listCiti);
 
-		citiSupressionFileWriter.write(listCiti);
-		Mockito.verify(citiSupressionFileWriter).write(listCiti);
+		fileWriterOutBound.write(listCiti);
+		Mockito.verify(fileWriterOutBound).write(listCiti);
 
 	}
 
@@ -106,66 +104,67 @@ class CitiSupressionFileWriterTest
 		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
 		Mockito.when(fileService.insert(fileDTO)).thenReturn(expectedValue);
 
-		citiSupressionFileWriter.saveFileRecord();
-		Mockito.verify(citiSupressionFileWriter).saveFileRecord();
+		fileWriterOutBound.saveFileRecord();
+		Mockito.verify(fileWriterOutBound).saveFileRecord();
 
 	}
 
 	@Test
 	void setResourcetest()
 	{
-		citiSupressionFileWriter.setRepositorySource("repositorySource");
-		citiSupressionFileWriter.setFolderSource("/folder/");
-		citiSupressionFileWriter.setFileName("filenameformat_YYYYMMDD");
+		fileWriterOutBound.setRepositorySource("repositorySource");
+		fileWriterOutBound.setFolderSource("/folder/");
+		fileWriterOutBound.setFileName("filenameformat_YYYYMMDD");
 
-		Mockito.doNothing().when(citiSupressionFileWriter).setResource();
-		citiSupressionFileWriter.setResource();
-		Mockito.verify(citiSupressionFileWriter).setResource();
+		Mockito.doNothing().when(fileWriterOutBound).setResource();
+		fileWriterOutBound.setResource();
+		Mockito.verify(fileWriterOutBound).setResource();
 	}
 
 	@Test
 	void getFileService()
 	{
-		assertNotNull(citiSupressionFileWriter.getFileService());
+		fileWriterOutBound.setFileService(fileService);
+		assertNotNull(fileWriterOutBound.getFileService());
 	}
 
 	@Test
 	void setResource()
 	{
 
-		citiSupressionFileWriter.setResource();
-		Mockito.verify(citiSupressionFileWriter).setResource();
+		fileWriterOutBound.setResource();
+		Mockito.verify(fileWriterOutBound).setResource();
 	}
 
 	@Test
 	void getRepositorySource()
 	{
-		assertEquals("repositorySource", citiSupressionFileWriter.getRepositorySource());
+		assertEquals("repositorySource", fileWriterOutBound.getRepositorySource());
 	}
 
 	@Test
 	void getFolderSource()
 	{
-		assertEquals("/folder/", citiSupressionFileWriter.getFolderSource());
+		assertEquals("/folder/", fileWriterOutBound.getFolderSource());
 	}
 
 	@Test
 	void getFileNameFormat()
 	{
-		assertEquals("filenameformat_YYYYMMDD", citiSupressionFileWriter.getFileNameFormat());
+		assertEquals("filenameformat_YYYYMMDD", fileWriterOutBound.getFileNameFormat());
 	}
 
 	@Test
 	void getJobName()
 	{
-		citiSupressionFileWriter.setJobName("JOB_NAME");
-		assertEquals("JOB_NAME", citiSupressionFileWriter.getJobName());
+		fileWriterOutBound.setJobName("JOB_NAME");
+		assertEquals("JOB_NAME", fileWriterOutBound.getJobName());
 	}
 
 	@Test
 	void getFileName()
 	{
-		citiSupressionFileWriter.setFileName("fileName");
-		assertEquals("fileName", citiSupressionFileWriter.getFileName());
+		fileWriterOutBound.setFileName("fileName");
+		assertEquals("fileName", fileWriterOutBound.getFileName());
 	}
 }

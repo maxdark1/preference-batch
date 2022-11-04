@@ -111,14 +111,8 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 	{
 		Integer intValue = null;
 
-		try
-		{
-			intValue = Integer.parseInt(value);
-		}
-		catch (Exception e)
-		{
-			//
-		}
+		if (value != null && !value.isEmpty() && !value.isBlank())
+			return Integer.parseInt(value);
 
 		return intValue;
 	}

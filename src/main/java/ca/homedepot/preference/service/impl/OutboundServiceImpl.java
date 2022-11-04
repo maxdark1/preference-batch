@@ -1,7 +1,6 @@
 package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.service.OutboundService;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Format;
@@ -21,8 +20,6 @@ import java.util.Date;
 @Slf4j
 public class OutboundServiceImpl implements OutboundService
 {
-	@Autowired
-	private DataSource dataSource;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
@@ -71,7 +68,7 @@ public class OutboundServiceImpl implements OutboundService
 		/* Inserting Headers */
 		String file = headers;
 		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
-		;
+
 
 		try
 		{

@@ -244,7 +244,7 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${org.apache.maven.plugins.pmd.version}</version>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
                     <linkXRef>false</linkXRef>
@@ -282,7 +282,7 @@
                 <artifactId>formatter-maven-plugin</artifactId>
                 <version>${net.revelc.code.formatter.version}</version>
                 <configuration>
-                    <configFile>hybrisJavaCodeconventions.xml</configFile>
+                    <configFile>javaCodeConventions.xml</configFile>
                     <compilerSource>11</compilerSource>
                     <compilerCompliance>11</compilerCompliance>
                     <compilerTargetPlatform>11</compilerTargetPlatform>
@@ -355,9 +355,10 @@
                                         <exclude>*.config.*</exclude>
                                         <exclude>*.feign.*</exclude>
                                         <exclude>*.constants.*</exclude>
-                                        <exclude>*.data.*</exclude>
-                                        <exclude>*.exception.*</exclude>
+                                        <exclude>*.dto.*</exclude>
+                                        <exclude>*.mapper.*</exclude>
                                         <exclude>*.model.*</exclude>
+                                        <exclude>*.writer.*</exclude>
                                         <exclude>*.processor.*</exclude>
                                         <exclude>*.util.*</exclude>
                                         <exclude>*.repositories.*</exclude>
@@ -367,7 +368,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.80</minimum>
+                                            <minimum>0.50</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
