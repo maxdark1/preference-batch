@@ -155,18 +155,5 @@ class RegistrationRowMapperTest
 
 
 
-	@Test
-	void getIntegerValue()
-	{
 
-		String value = "1";
-		String wrongValue = null;
-		Integer expected = 1;
-
-		Integer current = RegistrationRowMapper.getIntegerValue(value);
-		Integer currentWrong = RegistrationRowMapper.getIntegerValue(wrongValue);
-
-		assertEquals(expected, current);
-		assertNull(currentWrong);
-	}
 }

@@ -61,9 +61,9 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 			line += internal.getCanPtcEffectiveDate();
 			line += internal.getCanPtcSourceId();
 			line += internal.getEmailStatus();
-			line += internal.getCanPtcGlag();
+			line += internal.getCanPtcFlag();
 			line += internal.getLanguagePreference();
-			line += internal.getEarlyOptInIDate();
+			line += internal.getEarlyOptInDate();
 			line += internal.getCndCompliantFlag();
 			line += internal.getHdCaFlag();
 			line += internal.getHdCaGardenClubFlag();

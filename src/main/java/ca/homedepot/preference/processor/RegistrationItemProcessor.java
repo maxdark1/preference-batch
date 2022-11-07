@@ -60,7 +60,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		{
 			log.error(" Validation error: {} ", e.getMessage());
 			/**
-			 * Throws the exception again after is being log This is catch on the LayoutC's skippers
+			 * Throws the exception again after has been logged This is catch on the LayoutC's skippers
 			 */
 			throw e;
 		}
@@ -68,7 +68,8 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		//TODO status,masterProcessor parameter, inserted by read from common place
 		builder.status("NS").fileName(item.getFileName()).src_language_pref(item.getLanguage_Preference().trim().toUpperCase())
 				.updated_date(new Date()).src_date(asOfDate).src_email_address(item.getEmail_Address())
-				.email_status(MasterProcessor.getSourceID("EMAIL_STATUS", "Valid Email Addresses").getMasterId())
+				.email_status(item.getEmail_Address() == null ? null
+						: MasterProcessor.getSourceID("EMAIL_STATUS", "Valid Email Addresses").getMasterId())
 				.email_address_pref(item.getEmail_Permission()).phone_pref(item.getPhone_Permission())
 				.src_phone_number(item.getPhone_Number()).source_id(sourceId).src_phone_extension(item.getPhone_Extension())
 				.src_title_name(item.getTitle()).src_first_name(item.getFirst_Name()).src_last_name(item.getLast_Name())

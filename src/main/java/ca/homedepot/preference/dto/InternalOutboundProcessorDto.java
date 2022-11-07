@@ -15,9 +15,9 @@ public class InternalOutboundProcessorDto
 	private String canPtcEffectiveDate;
 	private String canPtcSourceId;
 	private String emailStatus;
-	private String canPtcGlag;
+	private String canPtcFlag;
 	private String languagePreference;
-	private String earlyOptInIDate;
+	private String earlyOptInDate;
 	private String cndCompliantFlag;
 	private String hdCaFlag;
 	private String hdCaGardenClubFlag;
@@ -35,4 +35,5 @@ public class InternalOutboundProcessorDto
 	private String industryCode;
 	private String moveDate;
 	private String dwellingType;
+	private String customerNbr;
 }

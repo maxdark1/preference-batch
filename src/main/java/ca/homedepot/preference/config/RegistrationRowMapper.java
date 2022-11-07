@@ -13,6 +13,8 @@ import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.Address;
 import ca.homedepot.preference.dto.RegistrationRequest;
 
+import static ca.homedepot.preference.util.validation.FormatUtil.*;
+
 public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 {
 
@@ -40,8 +42,7 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
 
 		Integer emailStatus = getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
-		//TODO when email status can be null
-		registrationRequest.setEmailStatus(emailStatus == null ? 0 : emailStatus);
+		registrationRequest.setEmailStatus(emailStatus);
 		registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
 		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
 
@@ -106,16 +107,6 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 
 
 
-	}
-//TODO move to util class
-	public static Integer getIntegerValue(String value)
-	{
-		Integer intValue = null;
-
-		if (value != null && !value.isEmpty() && !value.isBlank())
-			return Integer.parseInt(value);
-
-		return intValue;
 	}
 
 
