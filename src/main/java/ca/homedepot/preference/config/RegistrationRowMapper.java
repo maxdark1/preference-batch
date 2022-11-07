@@ -40,6 +40,7 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
 
 		Integer emailStatus = getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
+		//TODO when email status can be null
 		registrationRequest.setEmailStatus(emailStatus == null ? 0 : emailStatus);
 		registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
 		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
@@ -106,7 +107,7 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 
 
 	}
-
+//TODO move to util class
 	public static Integer getIntegerValue(String value)
 	{
 		Integer intValue = null;

@@ -962,6 +962,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (Exception ex)
 		{
+			//TODO catch the exception that is thrown and what should happen if there is exception
 			log.error("Error during the creation of CRM Preferences File: " + ex.getMessage());
 		}
 
@@ -986,6 +987,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (Exception ex)
 		{
+			//TODO catch the exception that is thrown and what should happen if there is exception
 			log.error("Error during the creation of Internal Destination Files" + ex.getMessage());
 		}
 
@@ -1258,8 +1260,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return FileUtil.getFilesOnFolder(folder, source);
 	}
-
-
 
 
 }
