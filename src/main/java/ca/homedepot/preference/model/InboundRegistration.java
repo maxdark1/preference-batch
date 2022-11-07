@@ -9,6 +9,8 @@ import org.springframework.core.io.Resource;
  * LayoutC fields Resource aware from which one is coming
  */
 @Data
+
+//TODO fields can be camelCase.
 public class InboundRegistration implements ResourceAware
 {
 	/**

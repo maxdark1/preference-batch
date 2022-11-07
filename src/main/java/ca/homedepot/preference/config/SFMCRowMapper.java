@@ -49,5 +49,4 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 
 	}
 
-
 }

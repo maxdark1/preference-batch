@@ -14,6 +14,7 @@ public class FileInboundStgTable
 	 * Field file_id on persistence
 	 *
 	 */
+	//TODO rename all fields to camelCase
 	BigDecimal file_id;
 
 	/**

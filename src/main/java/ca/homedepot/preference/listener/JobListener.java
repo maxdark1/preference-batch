@@ -134,12 +134,14 @@ public class JobListener implements JobExecutionListener
 		job.setUpdated_date(new Date());
 		job.setStart_time(jobExecution.getStartTime());
 		job.setEnd_time(jobExecution.getEndTime());
+		//TODO read from a contant file to make sure all jobs are using same values
 		job.setUpdated_by("BATCH JobListener");
 
 
 		/**
 		 * Updates the job record with the end_time and status
 		 */
+		//TODO status should be read from master table or create a Enum to make sure all jobs are consistent
 		int updatedRecords = preferenceService.updateJob(job, "IN PROGRESS");
 
 		log.info("  {} Job(s) updated", updatedRecords);

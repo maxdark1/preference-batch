@@ -18,6 +18,7 @@ public class PreferenceOutboundProcessor implements ItemProcessor<PreferenceOutb
 	public PreferenceOutboundDtoProcessor process(PreferenceOutboundDto preferenceOutboundDto) throws Exception
 	{
 		String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
+		//TODO make formatter as class variable, not to initialize again
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 		PreferenceOutboundDtoProcessor preferenceOutboundDtoProcessor = new PreferenceOutboundDtoProcessor();
 

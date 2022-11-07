@@ -606,7 +606,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @throws Exception
 	 */
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
-	public void processsSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+	public void processSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
@@ -1367,8 +1367,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return FileUtil.getFilesOnFolder(folder, source);
 	}
-
-
 
 
 }
