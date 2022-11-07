@@ -25,7 +25,7 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 	@Override
 	public void beforeWrite(List<? extends RegistrationRequest> items)
 	{
-		// nothing to do here for the moment
+		//TODO nothing to do here for the moment
 	}
 
 	@Override
@@ -44,6 +44,6 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 	@Override
 	public void onWriteError(Exception exception, List<? extends RegistrationRequest> items)
 	{
-		// nothing to do here for the moment
+		//TODO nothing to do here for the moment
 	}
 }

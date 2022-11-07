@@ -105,6 +105,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 
 		files.forEach((fileName, fileId) -> {
+			//TODO status to be consistent. Create a Enum or read from master table.
 			fileService.updateInboundStgTableStatus(fileId, "IP", "NS");
 		});
 
@@ -121,6 +122,6 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	@Override
 	public void onWriteError(Exception exception, List<? extends FileInboundStgTable> items)
 	{
-		// There is not work to do in here
+		//TODO There is not work to do in here
 	}
 }

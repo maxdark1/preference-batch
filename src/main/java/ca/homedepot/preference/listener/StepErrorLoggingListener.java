@@ -34,7 +34,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 	@Override
 	public void beforeStep(StepExecution stepExecution)
 	{
-		// Nothing to do in here
+		//TODO Nothing to do in here
 	}
 
 	/**
@@ -90,12 +90,14 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				{
 					FileUtil.moveFile(file.getFileName(), true, MasterProcessor.getValueVal(file.getSourceType()));
 				}
+				//TODO catch specific exception
 				catch (Exception e)
 				{
 					status = false;
 					log.error("An exception occurs while trying to move the file " + file.getFileName());
 				}
 				Master fileStatus = MasterProcessor.getSourceID("STATUS", status ? "VALID" : "INVALID");
+				//TODO insertedby and updated by needs to be consistent. create constants
 				fileService.updateFileEndTime(file.getFileId(), new Date(), "BATCH", new Date(), fileStatus);
 			});
 
