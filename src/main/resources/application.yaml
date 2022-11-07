@@ -45,6 +45,7 @@ cron:
     sendPreferencesToCRM: 30 * * * * *
     sendPreferencesToCitiSuppresion: 30 * * * * *
     sendPreferencesToInternalDestination: 30 * * * * *
+    sendWeeklyLoyaltyComplaintToSource: 30 * * * * *
 
 server:
   port: 8080
@@ -70,6 +71,7 @@ inbound:
 
 outbound:
   files:
+    complaintWeekly: LOYALTY_COMPLIANT_FILE_YYYYMMDD.csv
     compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
     internalCa: CA_COMPLIANT_FILE_YYYYMMDD.csv
     internalGarden: GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv
@@ -111,4 +113,6 @@ preference:
     outboundCiti:
       chunk: 20
     outboundInternal:
+      chunk: 20
+    outboundLoyalty:
       chunk: 20

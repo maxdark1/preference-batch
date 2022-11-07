@@ -35,4 +35,5 @@ public class InternalOutboundProcessorDto
 	private String industryCode;
 	private String moveDate;
 	private String dwellingType;
+	private String customerNbr;
 }

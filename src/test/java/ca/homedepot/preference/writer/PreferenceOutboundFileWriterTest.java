@@ -70,8 +70,8 @@ class PreferenceOutboundFileWriterTest
 	@AfterAll
 	static void tearDown() throws IOException
 	{
-			Format formatter = new SimpleDateFormat("yyyyMMdd");
-			FileUtils.forceDelete(new File("LOYALTY_DAILY_YYYYMMDD.txt".replace("YYYYMMDD", formatter.format(new Date()))));
+		Format formatter = new SimpleDateFormat("yyyyMMdd");
+		FileUtils.forceDelete(new File("LOYALTY_DAILY_YYYYMMDD.txt".replace("YYYYMMDD", formatter.format(new Date()))));
 	}
 
 	@Test

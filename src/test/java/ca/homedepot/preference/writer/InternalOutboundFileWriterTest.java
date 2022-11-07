@@ -54,7 +54,7 @@ class InternalOutboundFileWriterTest
 		InternalOutboundProcessorDto internalOutboundProcessorDto = new InternalOutboundProcessorDto();
 		internalOutboundProcessorDto.setCanPtcSourceId(BigDecimal.ONE.toString());
 		internalOutboundProcessorDto.setCanPtcEffectiveDate(new Date().toString());
-		internalOutboundProcessorDto.setEarlyOptInIDate(new Date().toString());
+		internalOutboundProcessorDto.setEarlyOptInDate(new Date().toString());
 
 		items = new ArrayList<>();
 		items.add(internalOutboundProcessorDto);

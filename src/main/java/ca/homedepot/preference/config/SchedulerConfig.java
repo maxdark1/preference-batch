@@ -1,6 +1,5 @@
 package ca.homedepot.preference.config;
 
-import java.io.FileWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
+import ca.homedepot.preference.mapper.InternalOutboundPreparedStatement;
 import ca.homedepot.preference.processor.*;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
@@ -91,6 +91,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
 
 	private static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
+
+	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSource";
 	/**
 	 * The Job builder factory.
 	 */
@@ -136,6 +138,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	Integer chunkOutboundCiti;
 	@Value("${preference.centre.outboundInternal.chunk}")
 	Integer chunkOutboundInternal;
+
+	@Value("${preference.centre.outboundLoyalty.chunk}")
+	Integer chunkOutboundLoyalty;
 	/**
 	 * The folders paths
 	 */
@@ -186,6 +191,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String dailyCompliantfolderSource;
 	@Value("${outbound.files.compliant}")
 	String dailyCompliantNameFormat;
+
+	@Value("${outbound.files.complaintWeekly}")
+	String weeklyCompliantNameFormat;
 	@Value("${outbound.files.internalCa}")
 	String internalCANameFormat;
 	@Value("${outbound.files.internalGarden}")
@@ -639,12 +647,24 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public void sendCitiSuppresionToCitiSuppresion() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
-		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
+		log.info(" Send Citi Suppresion file to source started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_CITI_SUPPRESION, String.valueOf(System.currentTimeMillis()))
 				.addString(JOB_STR, JOB_NAME_CITI_SUPPRESION).toJobParameters();
 		JobExecution execution = jobLauncher.run(sendCitiSuppresionToCiti(), param);
-		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
+		log.info(" Send Citi Suppresion file to source finished with status : " + execution.getStatus());
+	}
+
+	@Scheduled(cron = "${cron.job.sendWeeklyLoyaltyComplaintToSource}")
+	public void sendLoyaltyComplaintToSourceScheduler() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+	{
+		log.info(" Send Weekly Loyalty Complaint to Source started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_LOYALTY_COMPLAINT, String.valueOf(System.currentTimeMillis()))
+				.addString(JOB_STR, JOB_NAME_LOYALTY_COMPLAINT).toJobParameters();
+		JobExecution execution = jobLauncher.run(sendLoyaltyComplaintToSource(), param);
+		log.info(" Send Weekly Loyalty Complaint to Source finished with status : " + execution.getStatus());
 	}
 
 
@@ -863,52 +883,65 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
-	@Bean
+	/***
+	 * Writer to outbound Loyalty complaint stg table
+	 * 
+	 * @return writer for outbound loyalty complaint stg table
+	 */
 	public JdbcBatchItemWriter<InternalOutboundDto> outboundLayoutComplaintWeekly()
 	{
 		JdbcBatchItemWriter<InternalOutboundDto> writer = new JdbcBatchItemWriter<>();
 
 		writer.setDataSource(dataSource);
-		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_CITI_SUPPRESION);
+		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_LOYALTY_COMPLAINT);
 		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
-	//	writer.setItemPreparedStatementSetter(new CitiSuppresionPreparedStatement());
+		writer.setItemPreparedStatementSetter(new InternalOutboundPreparedStatement());
 
 		return writer;
 	}
 
 
+	@JobScope
+	@StepScope
 	public FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter()
 	{
 
-		FileWriterOutBound<CitiSuppresionOutboundDTO> fileWriterOutBound = new FileWriterOutBound<>();
-
-		fileWriterOutBound.setFileService(hybrisWriterListener.getFileService());
-		fileWriterOutBound.setFolderSource(folderOutbound);
-		fileWriterOutBound.setRepositorySource(citiPath);
-		fileWriterOutBound.setHeader(CITI_SUPPRESION_HEADER);
-		fileWriterOutBound.setSource(CITI_BANK);
-		fileWriterOutBound.setFileNameFormat(citiFileNameFormat);
-		fileWriterOutBound.setJobName(JOB_NAME_CITI_SUPPRESION);
-		fileWriterOutBound.setNames(new String[]
+		FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new FileWriterOutBound<>();
+		citiSupressionFileWriter.setName("citiSupressionFileWriter");
+		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
+		citiSupressionFileWriter.setFolderSource(folderOutbound);
+		citiSupressionFileWriter.setRepositorySource(citiPath);
+		citiSupressionFileWriter.setHeader(CITI_SUPPRESION_HEADER);
+		citiSupressionFileWriter.setSource(CITI_BANK);
+		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
+		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
+		citiSupressionFileWriter.setNames(new String[]
 		{ "FirstName", "MiddleInitial", "LastName", "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
 				"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
-		fileWriterOutBound.setResource();
+		citiSupressionFileWriter.setResource();
 
-		return fileWriterOutBound;
+		return citiSupressionFileWriter;
 	}
 
-	//TODO
-	public FileWriterOutBound<InternalOutboundDto> loyaltyComplaintWriter(){
-		FileWriterOutBound<InternalOutboundDto> fileWriterOutBound = new FileWriterOutBound<>();
-		fileWriterOutBound.setFolderSource(folderOutbound);
-		fileWriterOutBound.setRepositorySource(citiPath);
-		fileWriterOutBound.setHeader(CITI_SUPPRESION_HEADER);
-		fileWriterOutBound.setSource(CITI_BANK);
-		fileWriterOutBound.setFileNameFormat(citiFileNameFormat);
-		fileWriterOutBound.setJobName(JOB_NAME_CITI_SUPPRESION);
-		fileWriterOutBound.setNames(new String[]
-				{ "EmailAddr", "CanPtcEffectiveDate", "CanPtcSourceId", "EmailStatus", "CanPtcGlag", "LanguagePreference", "EarlyOptInIDate", "CndCompliantFlag", "HdCaFlag", "HdCaGardenClubFlag", "HdCaNewMoverFlag", "HdCaNewMoverEffDate", "HdCaProFlag", "PhonePtcFlag", "FirstName", "LastName", "PostalCode", "Province", "City", "PhoneNumber", "BussinessName", "IndustryCode", "MoveDate", "DwellingType"});
-		return fileWriterOutBound;
+	@JobScope
+	@StepScope
+	public FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter()
+	{
+		FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter = new FileWriterOutBound<>();
+		loyaltyComplaintWriter.setName("loyaltyComplaintWriter");
+		loyaltyComplaintWriter.setFileService(hybrisWriterListener.getFileService());
+		loyaltyComplaintWriter.setFolderSource(folderOutbound);
+		loyaltyComplaintWriter.setRepositorySource(citiPath);
+		loyaltyComplaintWriter.setHeader(LOYALTY_COMPLAINT_WEEKLY_HEADERS);
+		loyaltyComplaintWriter.setSource(CITI_BANK);
+		loyaltyComplaintWriter.setFileNameFormat(weeklyCompliantNameFormat);
+		loyaltyComplaintWriter.setJobName(JOB_NAME_LOYALTY_COMPLAINT);
+		loyaltyComplaintWriter.setNames(new String[]
+		{ "EmailAddr", "CanPtcEffectiveDate", "CanPtcSourceId", "EmailStatus", "CanPtcFlag", "FirstName", "LastName",
+				"LanguagePreference", "EarlyOptInDate", "CndCompliantFlag", "HdCaFlag", "HdCaGardenClubFlag", "HdCaProFlag",
+				"PostalCd", "City", "CustomerNbr", "Province" });
+		loyaltyComplaintWriter.setResource();
+		return loyaltyComplaintWriter;
 	}
 
 	/**
@@ -1040,6 +1073,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
+	/**
+	 * Citi Suppresion Job
+	 * 
+	 * @return Jon
+	 */
 	public Job sendCitiSuppresionToCiti()
 	{
 		return jobBuilderFactory.get(JOB_NAME_CITI_SUPPRESION).incrementer(new RunIdIncrementer()).listener(jobListener)
@@ -1047,6 +1085,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
+	/**
+	 * Loyalty Complaint Weekly Job
+	 * 
+	 * @return Job
+	 */
+	@JobScope
+	public Job sendLoyaltyComplaintToSource()
+	{
+		return jobBuilderFactory.get(JOB_NAME_LOYALTY_COMPLAINT).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(loyaltyComplaintDBReaderStep1()).on(COMPLETED_STATUS).to(loyaltyComplaintDBReaderFileWriterStep2()).build()
+				.build();
+	}
 
 	/**
 	 * Step 1 for Send Preferences to CRM Outbound
@@ -1172,6 +1222,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	/**
 	 * Out bound process
 	 */
+	/**
+	 * Outbound process for Citi suprression file Step 1
+	 * 
+	 * @return Step 1 for citi suppresion
+	 */
+	@JobScope
 	public Step citiSuppresionDBReaderStep1()
 	{
 		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
@@ -1179,12 +1235,33 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.reader(preferenceOutboundReader.outboundCitiSuppresionDBReader()).writer(outboundDTOJdbcBatchItemWriter()).build();
 	}
 
-
+	/**
+	 * Outbound process for Citi suprression file Step 2
+	 * 
+	 * @return Step 2 for citi suppresion
+	 */
+	@JobScope
 	public Step citiSuppresionDBReaderFileWriterStep2()
 	{
 		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter()).build();
+	}
+
+	@JobScope
+	public Step loyaltyComplaintDBReaderStep1()
+	{
+		return stepBuilderFactory.get("loyaltyComplaintDBReaderStep1")
+				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundLoyalty)
+				.reader(preferenceOutboundReader.outboundLoyaltyComplaintWeekly()).writer(outboundLayoutComplaintWeekly()).build();
+	}
+
+	@JobScope
+	public Step loyaltyComplaintDBReaderFileWriterStep2()
+	{
+		return stepBuilderFactory.get("loyaltyComplaintDBReaderFileWriterStep2")
+				.<LoyaltyCompliantDTO, LoyaltyCompliantDTO> chunk(chunkOutboundLoyalty)
+				.reader(preferenceOutboundDBReader.loyaltyComplaintDBTableReader()).writer(loyaltyComplaintWriter()).build();
 	}
 
 	/**

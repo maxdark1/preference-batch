@@ -24,6 +24,11 @@ public final class SourceDelimitersConstants
 	 * The constant citi_bank
 	 */
 	public static final String CITI_BANK = "citi_bank";
+
+	/**
+	 * The constants
+	 */
+
 	/**
 	 * The constant SFMC
 	 */
