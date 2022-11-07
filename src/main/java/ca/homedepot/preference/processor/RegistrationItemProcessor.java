@@ -65,6 +65,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 			throw e;
 		}
 		log.info(" Processing inbound item {}: ", item);
+		//TODO status,masterProcessor parameter, inserted by read from common place
 		builder.status("NS").fileName(item.getFileName()).src_language_pref(item.getLanguage_Preference().trim().toUpperCase())
 				.updated_date(new Date()).src_date(asOfDate).src_email_address(item.getEmail_Address())
 				.email_status(MasterProcessor.getSourceID("EMAIL_STATUS", "Valid Email Addresses").getMasterId())
