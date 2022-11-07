@@ -50,13 +50,9 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	public FileWriterOutBound()
 	{
-		setAppendAllowed(true);
-	}
-
-	public void setHeader(String header)
-	{
-		this.header = header;
 		setHeaderCallback(getHeaderCallBack());
+		setShouldDeleteIfExists(true);
+		setSaveState(false);
 	}
 
 	public void setNames(String[] names)
@@ -67,7 +63,7 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	public void setResource()
 	{
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
+		Format formatter = new SimpleDateFormat("yyyyMMDD");
 		this.fileName = this.fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		Resource resource = new FileSystemResource(repositorySource + folderSource + fileName);
@@ -80,7 +76,7 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 			}
 			catch (IOException e)
 			{
-				log.info(" File  will be created. ");
+				log.info(" File for citi suppresion will be created. ");
 			}
 		}
 		super.setResource(resource);

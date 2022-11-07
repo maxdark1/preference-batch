@@ -10,8 +10,7 @@ import java.text.SimpleDateFormat;
 
 public class InternalOutboundStep1Mapper implements RowMapper<InternalOutboundDto>
 {
-	private static final String EFFECTIVE_DATE = "effective_date";
-
+	private static final String EFFECTIVE_DATE  = "effective_date";
 	/**
 	 * This mapper is used the receive the data from DB and map into DTO
 	 * 

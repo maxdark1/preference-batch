@@ -5,7 +5,6 @@ import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,9 +54,10 @@ class MultiResourceItemReaderInboundTest
 
 
 	@AfterEach
-	void tearDown() throws IOException {
+	void ontestFinish()
+	{
 		File file = new File("test");
-		FileUtils.deleteDirectory(file);
+		file.delete();
 	}
 
 	@Test
@@ -90,21 +89,6 @@ class MultiResourceItemReaderInboundTest
 
 		multiResourceItemReaderInbound.read();
 		Mockito.verify(multiResourceItemReaderInbound, Mockito.times(2)).read();
-	}
-
-	@Test
-	void setSource(){
-		String source ="source";
-		multiResourceItemReaderInbound.setSource(source);
-		Mockito.verify(multiResourceItemReaderInbound).setSource(source);
-	}
-	@Test
-	void setResources(){
-		Resource resource = new FileSystemResource("test/archive_20220222.txt");
-		Resource[] resources = new Resource[] {resource};
-		multiResourceItemReaderInbound.setResources(resources);
-
-		Mockito.verify(multiResourceItemReaderInbound).setResources(resources);
 	}
 
 }

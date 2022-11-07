@@ -82,7 +82,7 @@ public class PreferenceOutboundReader
 
 	public JdbcCursorItemReader<InternalOutboundDto> outboundLoyaltyComplaintWeekly()
 	{
-		purgeLoyaltyComplaint();
+
 		log.info(" Loyalty Complaint Outbound : Loyalty Complaint Outbound Reader Starter :" + new Date());
 		JdbcCursorItemReader<InternalOutboundDto> reader = new JdbcCursorItemReader<>();
 
@@ -114,11 +114,5 @@ public class PreferenceOutboundReader
 	{
 		outboundService.purgeProgramCompliant();
 		log.info("Deleting hdpc_out_program_compliant records at: {}", new Date());
-	}
-
-	public void purgeLoyaltyComplaint()
-	{
-		outboundService.purgeLoyaltyComplaintTable();
-		log.info("Deleting hdpc_out_loyalty_compliant records at: {}", new Date());
 	}
 }

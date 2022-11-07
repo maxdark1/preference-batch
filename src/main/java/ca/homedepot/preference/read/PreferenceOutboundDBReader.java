@@ -3,9 +3,11 @@ package ca.homedepot.preference.read;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
-import ca.homedepot.preference.dto.LoyaltyCompliantDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
-import ca.homedepot.preference.mapper.*;
+import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
+import ca.homedepot.preference.mapper.InternalOutboundStep1Mapper;
+import ca.homedepot.preference.mapper.InternalOutboundStep2Mapper;
+import ca.homedepot.preference.mapper.PreferenceOutboundMapperStep2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,17 +72,15 @@ public class PreferenceOutboundDBReader
 		return reader;
 	}
 
-	public JdbcCursorItemReader<LoyaltyCompliantDTO> loyaltyComplaintDBTableReader()
-	{
-		log.info(" Preference Loyalty Complaint Outbound : Preference Loyalty Complaint Outbound Step 2 Reader Starter :"
-				+ new Date());
-		JdbcCursorItemReader<LoyaltyCompliantDTO> reader = new JdbcCursorItemReader<>();
+	public JdbcCursorItemReader<InternalOutboundDto> loyaltyComplaintDBTableReader(){
+		log.info(" Preference Loyalty Complaint Outbound : Preference Loyalty Complaint Outbound Step 2 Reader Starter :" + new Date());
+		JdbcCursorItemReader<InternalOutboundDto> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_LOYALTY_COMPLAINT);
-		reader.setRowMapper(new LoyaltyComplaintWeeklyMapper());
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE);
+		reader.setRowMapper(new InternalOutboundStep1Mapper());
 
-		log.info(" Preference Outbound : Preference Citi Suppression Outbound Step 2 Reader End :" + new Date());
+		log.info(" Preference Outbound : Preference Citi Suppresion Outbound Step 2 Reader End :" + new Date());
 		return reader;
 	}
 }

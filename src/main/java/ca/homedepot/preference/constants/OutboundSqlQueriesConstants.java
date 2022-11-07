@@ -256,8 +256,9 @@ public class OutboundSqlQueriesConstants
 			+ "\temail_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province)\n"
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	public static final String SQL_SELECT_LOYALTY_COMPLAINT = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province\n"
-			+ "\tFROM public.hdpc_out_loyalty_compliant;";
+	public static final String SQL_SELECT_LOYALTY_COMPLAINT = "INSERT INTO public.hdpc_out_loyalty_compliant(\n" +
+			"\temail_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province)\n" +
+			"\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 	public static final String SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE = "TRUNCATE TABLE public.hdpc_out_loyalty_compliant";
 
 
