@@ -32,7 +32,7 @@ class InternalOutboundDtoTest
 	{
 		internalOutboundDto.setEmailAddr("test@test.com");
 		int test = internalOutboundDto.hashCode();
-		assertEquals(test, 910547593);
+		assertEquals(test, -2112266818);
 	}
 
 	@Test

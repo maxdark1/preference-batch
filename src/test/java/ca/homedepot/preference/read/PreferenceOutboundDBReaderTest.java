@@ -3,6 +3,7 @@ package ca.homedepot.preference.read;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
+import ca.homedepot.preference.dto.LoyaltyCompliantDTO;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,13 @@ class PreferenceOutboundDBReaderTest
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundDBReader.citiSuppressionDBTableReader();
 		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE);
+	}
+
+	@Test
+	void loyaltyComplaintDBTableReader()
+	{
+		JdbcCursorItemReader<LoyaltyCompliantDTO> reader = preferenceOutboundDBReader.loyaltyComplaintDBTableReader();
+		assertNotNull(reader);
 	}
 
 }

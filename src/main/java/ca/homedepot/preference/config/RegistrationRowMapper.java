@@ -13,6 +13,8 @@ import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.Address;
 import ca.homedepot.preference.dto.RegistrationRequest;
 
+import static ca.homedepot.preference.util.validation.FormatUtil.*;
+
 public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 {
 
@@ -105,16 +107,6 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 
 
 
-	}
-
-	public static Integer getIntegerValue(String value)
-	{
-		Integer intValue = null;
-
-		if (value != null && !value.isEmpty() && !value.isBlank())
-			return Integer.parseInt(value);
-
-		return intValue;
 	}
 
 

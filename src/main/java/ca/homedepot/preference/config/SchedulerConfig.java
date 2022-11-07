@@ -86,7 +86,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private static final String JOB_NAME_REGISTRATION_FBSFMC_INBOUND = "registrationFBSFMCGardenClubInbound";
 
-	private static final String JOB_NAME_EXTRACT_TARGET_EMAIL = "ingestSFMCOptOuts";
+	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
 
 	private static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 
@@ -183,9 +183,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${folders.salesforce.path}")
 	String salesforcePath;
 
-	@Value("${folders.compliantWeekly.path}")
-	String loyaltyCompliantPath;
-
 	/**
 	 * Folders ERROR, INBOUND AND PROCCESED
 	 */
@@ -216,6 +213,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String internalRepository;
 	@Value("${folders.outbound}")
 	String internalFolder;
+
+
+
+
 
 
 	/**
@@ -366,7 +367,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		crmWriterListener = new RegistrationItemWriterListener();
 		crmWriterListener.setFileService(hybrisWriterListener.getFileService());
 		crmWriterListener.setJobName(JOB_NAME_REGISTRATION_CRM_INBOUND);
-		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTRACT_TARGET_EMAIL);
+		exactTargetEmailWriterListener.setJobName(JOB_NAME_EXTACT_TARGET_EMAIL);
 		fbsfmcWriterListener = new RegistrationItemWriterListener();
 		fbsfmcWriterListener.setFileService(hybrisWriterListener.getFileService());
 		fbsfmcWriterListener.setJobName(JOB_NAME_REGISTRATION_FBSFMC_INBOUND);
@@ -610,9 +611,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
-				.addString(JOB_NAME_EXTRACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
+				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
 				.addString(DIRECTORY, sfmcPath + folderInbound).addString(SOURCE, SFMC)
-				.addString(JOB_STR, JOB_NAME_EXTRACT_TARGET_EMAIL).toJobParameters();
+				.addString(JOB_STR, JOB_NAME_EXTACT_TARGET_EMAIL).toJobParameters();
 		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(), param);
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
 	}
@@ -637,7 +638,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Triggers Internal Destination Process in a determinated period of time
-	 * 
+	 *
 	 * @throws JobExecutionAlreadyRunningException
 	 * @throws IllegalArgumentException
 	 * @throws JobRestartException
@@ -827,7 +828,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_NOT_SFMC + "'" + JOB_NAME_EXTRACT_TARGET_EMAIL + "'"
+		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_NOT_SFMC + "'" + JOB_NAME_EXTACT_TARGET_EMAIL + "'"
 				+ SqlQueriesConstants.SQL_CONDITION_IP);
 		reader.setRowMapper(new RegistrationRowMapper());
 
@@ -846,7 +847,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JdbcCursorItemReader<RegistrationRequest> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_SFMC + "'" + JOB_NAME_EXTRACT_TARGET_EMAIL + "'"
+		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_SFMC + "'" + JOB_NAME_EXTACT_TARGET_EMAIL + "'"
 				+ SqlQueriesConstants.SQL_CONDITION_IP);
 		reader.setRowMapper(new SFMCRowMapper());
 
@@ -955,7 +956,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		loyaltyComplaintWriter.setName("loyaltyComplaintWriter");
 		loyaltyComplaintWriter.setFileService(hybrisWriterListener.getFileService());
 		loyaltyComplaintWriter.setFolderSource(folderOutbound);
-		loyaltyComplaintWriter.setRepositorySource(loyaltyCompliantPath);
+		loyaltyComplaintWriter.setRepositorySource(citiPath);
 		loyaltyComplaintWriter.setHeader(LOYALTY_COMPLAINT_WEEKLY_HEADERS);
 		loyaltyComplaintWriter.setSource(CITI_BANK);
 		loyaltyComplaintWriter.setFileNameFormat(weeklyCompliantNameFormat);
@@ -1023,6 +1024,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (Exception ex)
 		{
+			//TODO catch the exception that is thrown and what should happen if there is exception
 			log.error("Error during the creation of CRM Preferences File: " + ex.getMessage());
 		}
 
@@ -1047,6 +1049,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (Exception ex)
 		{
+			//TODO catch the exception that is thrown and what should happen if there is exception
 			log.error("Error during the creation of Internal Destination Files" + ex.getMessage());
 		}
 
@@ -1119,8 +1122,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	public Job sfmcOptOutsEmailOutlookClient()
 	{
-		return jobBuilderFactory.get(JOB_NAME_EXTRACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSFMCOptOutsStep1(JOB_NAME_EXTRACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2()).build()
+		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2()).build()
 				.build();
 	}
 

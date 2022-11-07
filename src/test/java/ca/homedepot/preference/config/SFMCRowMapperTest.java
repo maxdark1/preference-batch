@@ -51,16 +51,5 @@ class SFMCRowMapperTest
 
 	}
 
-	@Test
-	void getDate()
-	{
-		Date date = new Date();
-		String dateStr = date.toString();
 
-		String currentDateStr = SFMCRowMapper.getDate(date);
-		String wrongCurrentDate = SFMCRowMapper.getDate(null);
-
-		assertEquals(dateStr, currentDateStr);
-		assertNull(wrongCurrentDate);
-	}
 }

@@ -35,7 +35,7 @@ class CitiSuppresionOutboundMapperTest
 	@BeforeEach
 	void setup()
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 
 		citiSuppresionOutboundDTO = new CitiSuppresionOutboundDTO(firstName, middleInitial, lastName, addrLine1, addrLine2, city,
 				stateCd, postalCd, emailAddr, phone, smsPhoneMobile, businessName, dmOptOut, emailOptOut, phoneOptOut, smsOptOut);
