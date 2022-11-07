@@ -12,31 +12,34 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InternalOutboundPreparedStatementTest {
+class InternalOutboundPreparedStatementTest
+{
 
-    @Mock
-    PreparedStatement ps;
+	@Mock
+	PreparedStatement ps;
 
 
-    InternalOutboundDto item;
+	InternalOutboundDto item;
 
-    @InjectMocks
-    @Spy
-    InternalOutboundPreparedStatement internalOutboundPreparedStatement;
+	@InjectMocks
+	@Spy
+	InternalOutboundPreparedStatement internalOutboundPreparedStatement;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        item = new InternalOutboundDto();
-        item.setEarlyOptInIDate(new Date());
-        item.setCanPtcEffectiveDate(new Date());
-        item.setCanPtcSourceId(BigDecimal.ONE);
-        item.setEmailStatus(BigDecimal.ZERO);
-    }
+	@BeforeEach
+	void setUp()
+	{
+		MockitoAnnotations.openMocks(this);
+		item = new InternalOutboundDto();
+		item.setEarlyOptInIDate(new Date());
+		item.setCanPtcEffectiveDate(new Date());
+		item.setCanPtcSourceId(BigDecimal.ONE);
+		item.setEmailStatus(BigDecimal.ZERO);
+	}
 
-    @Test
-    void setValues() throws SQLException {
-        internalOutboundPreparedStatement.setValues(item, ps);
-        Mockito.verify(internalOutboundPreparedStatement).setValues(item, ps);
-    }
+	@Test
+	void setValues() throws SQLException
+	{
+		internalOutboundPreparedStatement.setValues(item, ps);
+		Mockito.verify(internalOutboundPreparedStatement).setValues(item, ps);
+	}
 }

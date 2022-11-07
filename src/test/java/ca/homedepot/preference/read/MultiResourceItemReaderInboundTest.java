@@ -56,7 +56,8 @@ class MultiResourceItemReaderInboundTest
 
 
 	@AfterEach
-	void tearDown() throws IOException {
+	void tearDown() throws IOException
+	{
 		File file = new File("test");
 		FileUtils.deleteDirectory(file);
 	}
@@ -93,15 +94,19 @@ class MultiResourceItemReaderInboundTest
 	}
 
 	@Test
-	void setSource(){
-		String source ="source";
+	void setSource()
+	{
+		String source = "source";
 		multiResourceItemReaderInbound.setSource(source);
 		Mockito.verify(multiResourceItemReaderInbound).setSource(source);
 	}
+
 	@Test
-	void setResources(){
+	void setResources()
+	{
 		Resource resource = new FileSystemResource("test/archive_20220222.txt");
-		Resource[] resources = new Resource[] {resource};
+		Resource[] resources = new Resource[]
+		{ resource };
 		multiResourceItemReaderInbound.setResources(resources);
 
 		Mockito.verify(multiResourceItemReaderInbound).setResources(resources);
