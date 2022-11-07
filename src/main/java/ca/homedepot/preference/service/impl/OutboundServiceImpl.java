@@ -85,7 +85,7 @@ public class OutboundServiceImpl implements OutboundService
 		}
 		catch (Exception ex)
 		{ //TODO is there any specific exception and what should happen in case of exception.
-			log.error("File creation error"+ ex.getMessage());
+			log.error("File creation error" + ex.getMessage());
 		}
 		finally
 		{
