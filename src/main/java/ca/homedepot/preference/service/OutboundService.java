@@ -17,6 +17,8 @@ public interface OutboundService
 
 	int purgeCitiSuppresionTable();
 
+	void purgeSalesforceExtractTable();
+
 	int purgeProgramCompliant();
 
 	int purgeLoyaltyComplaintTable();
