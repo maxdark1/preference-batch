@@ -59,6 +59,12 @@ public class OutboundServiceImpl implements OutboundService
 	}
 
 	@Override
+	public void purgeSalesforceExtractTable()
+	{
+		jdbcTemplate.execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_SALESFORCE_EXTRACT);
+	}
+
+	@Override
 	public void createFile(String repository, String folder, String fileNameFormat, String headers) throws IOException
 	{
 		/* Creating File */

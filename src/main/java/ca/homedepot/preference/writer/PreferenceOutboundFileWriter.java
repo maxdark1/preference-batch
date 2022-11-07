@@ -38,7 +38,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	/**
 	 * Method used to generate a plain text file
-	 * 
+	 *
 	 * @param items
 	 *           items to be written
 	 * @throws Exception
@@ -84,7 +84,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	/**
 	 * This Method saves in a plain text file the string that receives as parameter
-	 * 
+	 *
 	 * @param file
 	 * @throws IOException
 	 */
@@ -102,7 +102,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	/**
 	 * This method registry in file table the generated file
-	 * 
+	 *
 	 * @param fileName
 	 */
 	private void setFileRecord(String fileName)

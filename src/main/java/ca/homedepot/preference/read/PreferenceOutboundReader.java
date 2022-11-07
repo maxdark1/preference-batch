@@ -6,9 +6,11 @@ import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
 import ca.homedepot.preference.mapper.InternalOutboundStep1Mapper;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
+import ca.homedepot.preference.mapper.SalesforceExtractOutboundMapper;
 import ca.homedepot.preference.service.OutboundService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemReader;
@@ -61,9 +63,22 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
+	public JdbcCursorItemReader<SalesforceExtractOutboundDTO> salesforceExtractOutboundDBReader()
+	{
+		purgeSalesforceExtractTable();
+		log.info(" Preference Outbound : Preference Outbound Reader for Salesforce Extract Started at:" + new Date());
+		JdbcCursorItemReader<SalesforceExtractOutboundDTO> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND);
+		reader.setRowMapper(new SalesforceExtractOutboundMapper());
+
+		return reader;
+	}
+
 	/**
 	 * Method for read the data needed from DB
-	 * 
+	 *
 	 * @return
 	 */
 	public ItemReader<InternalOutboundDto> outboundInternalDBReader()
@@ -105,9 +120,14 @@ public class PreferenceOutboundReader
 
 	public void purgeCitiSuppresionTable()
 	{
-
 		outboundService.purgeCitiSuppresionTable();
 		log.info("Deleting hdpc_out_citi_suppression records at: {}", new Date());
+	}
+
+	public void purgeSalesforceExtractTable()
+	{
+		outboundService.purgeSalesforceExtractTable();
+		log.info("Deleting hdpc_out_salesforce_extract records at: {}", new Date());
 	}
 
 	public void purgeProgramCompliant()

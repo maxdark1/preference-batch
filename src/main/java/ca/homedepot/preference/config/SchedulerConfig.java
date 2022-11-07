@@ -8,14 +8,16 @@ import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.constants.SqlQueriesConstants;
+
 import ca.homedepot.preference.dto.*;
+import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.mapper.InternalOutboundPreparedStatement;
 import ca.homedepot.preference.processor.*;
+import ca.homedepot.preference.mapper.SalesforcePreparedStatement;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
@@ -90,6 +92,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
 
+	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
+
 	private static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
 
 	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSource";
@@ -136,6 +140,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	Integer chunkOutboundCRM;
 	@Value("${preference.centre.outboundCiti.chunk}")
 	Integer chunkOutboundCiti;
+	@Value("${preference.centre.outboundSalesforce.chunk}")
+	Integer chunkOutboundSalesforce;
 	@Value("${preference.centre.outboundInternal.chunk}")
 	Integer chunkOutboundInternal;
 
@@ -173,6 +179,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Value("${folders.citi.path}")
 	String citiPath;
+
+	@Value("${folders.salesforce.path}")
+	String salesforcePath;
 
 	/**
 	 * Folders ERROR, INBOUND AND PROCCESED
@@ -227,6 +236,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Value("${outbound.citi.mastersuppresion}")
 	String citiFileNameFormat;
+
+	@Value("${outbound.salesforce.extract}")
+	private String salesforcefileNameFormat;
 
 	/**
 	 * Patterns for validations
@@ -335,6 +347,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private InternalOutboundProcessor internalOutboundProcessor;
 	@Autowired
 	private InternalOutboundFileWriter internalOutboundFileWriter;
+
+	@Autowired
+	private SalesforceExtractFileWriter salesforceExtractFileWriter;
 
 	@Autowired
 	public void setUpListener()
@@ -667,6 +682,16 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Weekly Loyalty Complaint to Source finished with status : " + execution.getStatus());
 	}
 
+	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
+	public void sendEmailMarketingPreferencesToSMFC() throws Exception
+	{
+		log.info(" Send Email Marketing Preferences To SMFC Job started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_SALESFORCE_EXTRACT, String.valueOf(System.currentTimeMillis()))
+				.addString("job_name", JOB_NAME_SALESFORCE_EXTRACT).toJobParameters();
+		JobExecution execution = jobLauncher.run(sendPreferencesToSMFC(), param);
+		log.info(" Send Email Marketing Preferences To SMFC Job finished with status: {} ", execution.getStatus());
+	}
 
 	/**
 	 * Read inbound files
@@ -885,7 +910,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/***
 	 * Writer to outbound Loyalty complaint stg table
-	 * 
+	 *
 	 * @return writer for outbound loyalty complaint stg table
 	 */
 	public JdbcBatchItemWriter<InternalOutboundDto> outboundLayoutComplaintWeekly()
@@ -944,6 +969,33 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return loyaltyComplaintWriter;
 	}
 
+	@Bean
+	public JdbcBatchItemWriter<SalesforceExtractOutboundDTO> salesforceExtractOutboundDTOJdbcBatchItemWriter()
+	{
+		JdbcBatchItemWriter<SalesforceExtractOutboundDTO> writer = new JdbcBatchItemWriter<>();
+
+		writer.setDataSource(dataSource);
+		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_SALESFORCE_EXTRACT);
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<SalesforceExtractOutboundDTO>());
+		writer.setItemPreparedStatementSetter(new SalesforcePreparedStatement());
+
+		return writer;
+	}
+
+	public SalesforceExtractFileWriter salesforceExtractFileWriter()
+	{
+		salesforceExtractFileWriter = new SalesforceExtractFileWriter();
+
+		salesforceExtractFileWriter.setFileService(hybrisWriterListener.getFileService());
+		salesforceExtractFileWriter.setFolderSource(folderOutbound);
+		salesforceExtractFileWriter.setRepositorySource(salesforcePath);
+		salesforceExtractFileWriter.setFileNameFormat(salesforcefileNameFormat);
+		salesforceExtractFileWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
+		salesforceExtractFileWriter.setResource();
+
+		return salesforceExtractFileWriter;
+	}
+
 	/**
 	 * Hybris job process.
 	 *
@@ -981,7 +1033,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Generate the files needed during the process & call the steps
-	 * 
+	 *
 	 * @return
 	 */
 	public Job sendPreferencesToInternalDestination()
@@ -1007,7 +1059,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 1 for get data from DB
-	 * 
+	 *
 	 * @return
 	 */
 	public Step readSendPreferencesToInternalStep1()
@@ -1019,7 +1071,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 2 for generate a CSV file
-	 * 
+	 *
 	 * @return
 	 */
 	public Step readSendPreferencesToInternalStep2()
@@ -1075,7 +1127,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Citi Suppresion Job
-	 * 
+	 *
 	 * @return Jon
 	 */
 	public Job sendCitiSuppresionToCiti()
@@ -1087,7 +1139,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Loyalty Complaint Weekly Job
-	 * 
+	 *
 	 * @return Job
 	 */
 	@JobScope
@@ -1097,6 +1149,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.start(loyaltyComplaintDBReaderStep1()).on(COMPLETED_STATUS).to(loyaltyComplaintDBReaderFileWriterStep2()).build()
 				.build();
 	}
+	public Job sendPreferencesToSMFC()
+	{
+		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(salesforceExtractDBReaderStep1()).on(COMPLETED_STATUS).to(salesforceExtractDBReaderFileWriterStep2()).build()
+				.build();
+	}
+
 
 	/**
 	 * Step 1 for Send Preferences to CRM Outbound
@@ -1224,7 +1283,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	/**
 	 * Outbound process for Citi suprression file Step 1
-	 * 
+	 *
 	 * @return Step 1 for citi suppresion
 	 */
 	@JobScope
@@ -1237,7 +1296,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Outbound process for Citi suprression file Step 2
-	 * 
+	 *
 	 * @return Step 2 for citi suppresion
 	 */
 	@JobScope
@@ -1246,6 +1305,21 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter()).build();
+	}
+
+	public Step salesforceExtractDBReaderStep1()
+	{
+		return stepBuilderFactory.get("salesforceExtractDBReaderStep1")
+				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
+				.reader(preferenceOutboundReader.salesforceExtractOutboundDBReader())
+				.writer(salesforceExtractOutboundDTOJdbcBatchItemWriter()).build();
+	}
+
+	public Step salesforceExtractDBReaderFileWriterStep2()
+	{
+		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
+				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
+				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(salesforceExtractFileWriter()).build();
 	}
 
 	@JobScope
