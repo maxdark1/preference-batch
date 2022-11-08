@@ -7,10 +7,7 @@ import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,6 +22,7 @@ class SkipListenerLayoutCTest
 	@Mock
 	FileServiceImpl fileService;
 	@InjectMocks
+	@Spy
 	SkipListenerLayoutC skipListenerLayoutC;
 
 	@BeforeEach
@@ -44,6 +42,7 @@ class SkipListenerLayoutCTest
 	{
 		Throwable t = Mockito.mock(Throwable.class);
 		skipListenerLayoutC.onSkipInRead(t);
+		Mockito.verify(skipListenerLayoutC).onSkipInRead(t);
 	}
 
 	@Test
@@ -53,6 +52,7 @@ class SkipListenerLayoutCTest
 		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
 
 		skipListenerLayoutC.onSkipInWrite(fileInboundStgTable, t);
+		Mockito.verify(skipListenerLayoutC).onSkipInWrite(fileInboundStgTable, t);
 	}
 
 	@Test
@@ -67,10 +67,11 @@ class SkipListenerLayoutCTest
 		Throwable t = new Exception("message");
 
 		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
-		Mockito.when(fileService.getFile(eq(fileName), eq(jobId))).thenReturn(fileId);
-		Mockito.when(fileService.insertInboundStgError(eq(fileInboundStgTable))).thenReturn(1);
+		Mockito.when(fileService.getFile(fileName, jobId)).thenReturn(fileId);
+		Mockito.when(fileService.insertInboundStgError(fileInboundStgTable)).thenReturn(1);
 
 		skipListenerLayoutC.onSkipInProcess(item, t);
+		Mockito.verify(skipListenerLayoutC).onSkipInProcess(item, t);
 	}
 
 	@Test

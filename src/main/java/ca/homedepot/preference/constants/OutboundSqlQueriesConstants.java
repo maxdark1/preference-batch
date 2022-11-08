@@ -7,8 +7,6 @@ import lombok.experimental.UtilityClass;
 public class OutboundSqlQueriesConstants
 {
 
-
-
 	public static final String SQL_GET_CRM_OUTBOUND = "WITH\n"
 			+ "    cust_with_pref AS -- getting customers that must contain \"pro\" value active as preference flag\n" + "    (\n"
 			+ "        SELECT pref.customer_id\n" + "            FROM  public.hdpc_customer_preference pref \n"
@@ -80,7 +78,7 @@ public class OutboundSqlQueriesConstants
 			+ "                    AND email.status_id <> 0 \n" + "                        then 'Y' \n"
 			+ "                    else 'N' \n" + "                    end\n"
 			+ "                                                , rel_id.old_id\n" + "    )\n" + "    SELECT cust.*\n"
-			+ "      , cust_extn.business_name\n" + "      , cust_extn.industry_code industry_code\n"
+			+ "      , cust_extn.org_name as business_name\n" + "      , cust_extn.industry_code industry_code\n"
 			+ "                  , cust_extn.customer_nbr customer_nbr\n" + "      , addr.city city\n"
 			+ "                  , addr.postal_code src_postal_code\n" + "      , addr.province province\n"
 			+ "        FROM pref_per_cust cust\n" + "                                LEFT JOIN public.hdpc_customer_extn cust_extn\n"
@@ -118,14 +116,14 @@ public class OutboundSqlQueriesConstants
 			+ "\tcust.middle_name as MIDDLE_INITIAL,\n" + "\tcust.last_name as LAST_NAME, \n"
 			+ "\taddr.address_line_1 as addr_line_1,\n" + "\taddr.address_line_2 as addr_line_2, \n" + "\taddr.city as city, \n"
 			+ "\taddr.province as state_cd, \n" + "\taddr.postal_code as postal_cd, \n" + "\temail.email as email_addr, \n"
-			+ "\tphone.phone as phone,\n" + "\tsms_mobile.SMS_Mobile_Phone,\n" + "\tcust_extn.business_name,\n" + "\tCASE\n"
-			+ "\t\tWHEN cust_addr.permission_val is null then 'U'\n" + "\t\tWHEN cust_addr.permission_val = true then 'Y'\n"
-			+ "\t\tWHEN cust_addr.permission_val = false then 'N'\n" + "\tEND as DM_Opt_Out,\n" + "\tCASE\n"
-			+ "\t\tWHEN cust_email.permission_val is null then 'U'\n" + "\t\tWHEN cust_email.permission_val = true then 'Y'\n"
-			+ "\t\tWHEN cust_email.permission_val = false then 'N'\n" + "\tEND as Email_Opt_Out,\n" + "\tCASE\n"
-			+ "\t\tWHEN Phone_Opt_Out is null then 'U'\n" + "\t\tWHEN Phone_Opt_Out = true then 'Y'\n"
-			+ "\t\tWHEN Phone_Opt_Out = false then 'N'\n" + "\tEND as Phone_Opt_Out,\n" + "\tCASE\n"
-			+ "\t\tWHEN sms_opt_out is null then 'U'\n" + "\t\tWHEN sms_opt_out = true then 'Y'\n"
+			+ "\tphone.phone as phone,\n" + "\tsms_mobile.SMS_Mobile_Phone,\n" + "\tcust_extn.org_name as business_name,\n"
+			+ "\tCASE\n" + "\t\tWHEN cust_addr.permission_val is null then 'U'\n"
+			+ "\t\tWHEN cust_addr.permission_val = true then 'Y'\n" + "\t\tWHEN cust_addr.permission_val = false then 'N'\n"
+			+ "\tEND as DM_Opt_Out,\n" + "\tCASE\n" + "\t\tWHEN cust_email.permission_val is null then 'U'\n"
+			+ "\t\tWHEN cust_email.permission_val = true then 'Y'\n" + "\t\tWHEN cust_email.permission_val = false then 'N'\n"
+			+ "\tEND as Email_Opt_Out,\n" + "\tCASE\n" + "\t\tWHEN Phone_Opt_Out is null then 'U'\n"
+			+ "\t\tWHEN Phone_Opt_Out = true then 'Y'\n" + "\t\tWHEN Phone_Opt_Out = false then 'N'\n" + "\tEND as Phone_Opt_Out,\n"
+			+ "\tCASE\n" + "\t\tWHEN sms_opt_out is null then 'U'\n" + "\t\tWHEN sms_opt_out = true then 'Y'\n"
 			+ "\t\tWHEN sms_opt_out = false then 'N'\n" + "\tEND as  sms_opt_out\n" + "FROM hdpc_customer cust\n"
 			+ "LEFT JOIN hdpc_customer_email cust_email\n" + "\tON cust.customer_id = cust_email.customer_id\n"
 			+ "LEFT JOIN hdpc_email email\n" + "\tON cust_email.email_id = email.email_id\n" + "LEFT JOIN (\n"
@@ -197,7 +195,7 @@ public class OutboundSqlQueriesConstants
 			+ "                , cust_phone.call_permission phone_ptc_flag\n" + "                , cust.first_name\n"
 			+ "                , cust.last_name\n" + "                , addr.postal_code\n" + "\t\t\t\t, addr.province\n"
 			+ "                , addr.city            \n" + "                , phone.phone_number\n"
-			+ "                , cust_extn.org_name business_name\n" + "                , cust_extn.business_type business_type\n"
+			+ "                , cust_extn.org_name business_name\n" + "                , cust_extn.business_name business_name\n"
 			+ "                , cust_extn.move_date\n" + "                , cust_extn.dwelling_type\n"
 			+ "    from public.hdpc_email email\n" + "    join earliest_opt_in_date\n"
 			+ "        on email.email_id = earliest_opt_in_date.email_id\n" + "    left join public.hdpc_customer_email cust_email\n"
@@ -230,15 +228,15 @@ public class OutboundSqlQueriesConstants
 			+ "                                                , addr.city            \n"
 			+ "                                                , phone.phone_number\n"
 			+ "                                                , cust_extn.org_name \n"
-			+ "                                                , cust_extn.business_type \n"
+			+ "                                                , cust_extn.business_name \n"
 			+ "                                                , cust_extn.move_date\n"
 			+ "                                                , cust_extn.dwelling_type;\n";
 
-	public static final String SQL_SELECT_SALESFORCE_EXTRACT_TABLE = "SELECT email_address, as_of_date, source_id, email_status, email_ptc, language_preference, earliest_opt_in_date, hd_canada_email_compliant_flag, hd_canada_flag, garden_club_flag, new_mover_flag, pro_flag, phone_ptc_flag, first_name, last_name, postal_code, province, city, phone_number, business_name, business_type, move_date, dwelling_type\n"
+	public static final String SQL_SELECT_SALESFORCE_EXTRACT_TABLE = "SELECT email_address, as_of_date, source_id, email_status, email_ptc, language_preference, earliest_opt_in_date, hd_canada_email_compliant_flag, hd_canada_flag, garden_club_flag, new_mover_flag, pro_flag, phone_ptc_flag, first_name, last_name, postal_code, province, city, phone_number, business_name, business_name, move_date, dwelling_type\n"
 			+ "\tFROM public.hdpc_out_salesforce_extract;";
 
 	public static final String SQL_INSERT_SALESFORCE_EXTRACT = "INSERT INTO public.hdpc_out_salesforce_extract(\n"
-			+ "\temail_address, as_of_date, source_id, email_status, email_ptc, language_preference, earliest_opt_in_date, hd_canada_email_compliant_flag, hd_canada_flag, garden_club_flag, new_mover_flag, pro_flag, phone_ptc_flag, first_name, last_name, postal_code, province, city, phone_number, business_name, business_type, move_date, dwelling_type)\n"
+			+ "\temail_address, as_of_date, source_id, email_status, email_ptc, language_preference, earliest_opt_in_date, hd_canada_email_compliant_flag, hd_canada_flag, garden_club_flag, new_mover_flag, pro_flag, phone_ptc_flag, first_name, last_name, postal_code, province, city, phone_number, business_name, business_name, move_date, dwelling_type)\n"
 			+ "\tVALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );";
 
 	public static final String SQL_TRUNCATE_SALESFORCE_EXTRACT = "TRUNCATE TABLE public.hdpc_out_salesforce_extract";
@@ -316,7 +314,7 @@ public class OutboundSqlQueriesConstants
 			+ "                    AND email.status_id <> 0 \n" + "                        then 'Y' \n"
 			+ "                    else 'N' \n" + "                    end\n"
 			+ "                                                , rel_id.old_id\n" + "    )\n" + "    SELECT cust.*\n"
-			+ "      , cust_extn.business_name\n" + "      , cust_extn.industry_code industry_code\n"
+			+ "      , cust_extn.org_name as business_name\n" + "      , cust_extn.industry_code industry_code\n"
 			+ "                  , cust_extn.customer_nbr customer_nbr\n" + "\t\t\t\t  , cust_extn.move_date move_date\n"
 			+ "\t\t\t\t  , cust_extn.dwelling_type dwelling_type\n" + "      , addr.city city\n"
 			+ "                  , addr.postal_code src_postal_code\n" + "      , addr.province province\n"

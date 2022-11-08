@@ -45,7 +45,7 @@ class PreferenceOutboundMapperTest
 
 		PreferenceOutboundDto preferenceOutboundDto = preferenceOutboundMapper.mapRow(resultSet, row);
 		assertNotNull(preferenceOutboundDto);
-		assertEquals(preferenceOutboundDto.getEmail(), "juan@lara.com");
+		assertEquals("juan@lara.com", preferenceOutboundDto.getEmail());
 
 	}
 }

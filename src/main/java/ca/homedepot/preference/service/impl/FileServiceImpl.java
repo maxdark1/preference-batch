@@ -67,27 +67,27 @@ public class FileServiceImpl implements FileService
 	/**
 	 * Gets job id
 	 *
-	 * @param job_name
+	 * @param jobName
 	 * @return job id
 	 */
-	public BigDecimal getJobId(String job_name)
+	public BigDecimal getJobId(String jobName)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME,
-				(rs, RowNum) -> rs.getBigDecimal("job_id"), job_name);
+				(rs, rowNum) -> rs.getBigDecimal("job_id"), jobName);
 	}
 
 	/**
 	 * Gets last inserted file according to file name and job id
 	 *
-	 * @param file_name
-	 * @param job_id
+	 * @param fileName
+	 * @param jobId
 	 * @return file id
 	 */
 	@Override
-	public BigDecimal getFile(String file_name, BigDecimal job_id)
+	public BigDecimal getFile(String fileName, BigDecimal jobId)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE_INSERT, new Object[]
-		{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal(FILE_ID));
+		{ fileName, jobId }, (rs, rowNum) -> rs.getBigDecimal(FILE_ID));
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class FileServiceImpl implements FileService
 	@Override
 	public BigDecimal getLasFile()
 	{
-		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE, (rs, RowNum) -> rs.getBigDecimal(FILE_ID));
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE, (rs, rowNum) -> rs.getBigDecimal(FILE_ID));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class FileServiceImpl implements FileService
 	public BigDecimal getSourceId(String keyVal, String valueVal)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_MASTER_ID, new Object[]
-		{ keyVal, valueVal }, (rs, RowNum) -> rs.getBigDecimal("master_id"));
+		{ keyVal, valueVal }, (rs, rowNum) -> rs.getBigDecimal("master_id"));
 	}
 
 

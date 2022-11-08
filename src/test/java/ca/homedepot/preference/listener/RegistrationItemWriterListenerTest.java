@@ -74,8 +74,8 @@ class RegistrationItemWriterListenerTest
 		BigDecimal fileId = BigDecimal.valueOf(123L);
 		BigDecimal jobId = BigDecimal.ONE;
 
-		Mockito.when(fileService.getJobId(eq(jobName))).thenReturn(jobId);
-		Mockito.when(fileService.getFile(eq(fileName), eq(BigDecimal.ONE))).thenReturn(fileId);
+		Mockito.when(fileService.getJobId(jobName)).thenReturn(jobId);
+		Mockito.when(fileService.getFile(fileName, BigDecimal.ONE)).thenReturn(fileId);
 
 		BigDecimal currentFileId = registrationItemWriterListener.getFromTableFileID(fileName);
 		assertEquals(fileId, currentFileId);

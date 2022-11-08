@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Slf4j
 class PreferenceOutboundFileWriterTest
 {
@@ -39,7 +37,7 @@ class PreferenceOutboundFileWriterTest
 	void setup()
 	{
 		MockitoAnnotations.initMocks(this);
-		preferenceOutboundFileWriter.file_name_format = "LOYALTY_DAILY_YYYYMMDD.txt";
+		preferenceOutboundFileWriter.fileNameFormat = "LOYALTY_DAILY_YYYYMMDD.txt";
 		preferenceOutboundFileWriter.folderSorce = "";
 		preferenceOutboundFileWriter.repositorySource = "";
 

@@ -79,7 +79,7 @@ public class OutboundServiceImpl implements OutboundService
 
 		try
 		{
-			byte toFile[] = file.getBytes();
+			byte[] toFile = file.getBytes();
 			writer.write(toFile);
 			writer.flush();
 		}

@@ -71,7 +71,7 @@ inbound:
 
 outbound:
   files:
-    complaintWeekly: LOYALTY_COMPLIANT_FILE_YYYYMMDD.csv
+    complaintWeekly: LOYALTY_COMPLIANT_FILE_YYYYMMDD.csv.gz
     compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
     internalCa: CA_COMPLIANT_FILE_YYYYMMDD.csv
     internalGarden: GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv
@@ -101,6 +101,8 @@ folders:
     path: C:\batchFiles
   salesforce:
     path: C:\batchFiles\Salesforce
+  loyaltyCompliant:
+    path: C:\batchFiles
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT

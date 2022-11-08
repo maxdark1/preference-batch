@@ -35,8 +35,8 @@ class InternalOutboundStep2MapperTest
 		Mockito.when(resultSet.getDate("move_date")).thenReturn(new java.sql.Date((Long.valueOf("1667487046196"))));
 
 		InternalOutboundDto internalOutboundDto = internalOutboundStep2Mapper.mapRow(resultSet, row);
-		assertEquals(internalOutboundDto.getEmailAddr(), "test@test.com");
-		assertEquals(internalOutboundDto.getCndCompliantFlag(), "Y");
-		assertEquals(internalOutboundDto.getCanPtcSourceId(), BigDecimal.TEN);
+		assertEquals("test@test.com", internalOutboundDto.getEmailAddr());
+		assertEquals("Y", internalOutboundDto.getCndCompliantFlag());
+		assertEquals(BigDecimal.TEN, internalOutboundDto.getCanPtcSourceId());
 	}
 }

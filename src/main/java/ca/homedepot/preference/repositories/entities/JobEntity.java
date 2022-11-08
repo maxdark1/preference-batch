@@ -52,7 +52,7 @@ public class JobEntity
 	 * The inserted date
 	 */
 	@Column(name = "inserted_date")
-	private Date inserted_date;
+	private Date insertedDate;
 	/**
 	 * The updated by
 	 */

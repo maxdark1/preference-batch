@@ -58,9 +58,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 			files.put(key, fileID);
 		});
 
-		items.forEach(item -> {
-			item.setFile_id(files.get(item.getFileName()));
-		});
+		items.forEach(item -> item.setFile_id(files.get(item.getFileName())));
 	}
 
 	/**
@@ -77,8 +75,8 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 			file.setFileId(item.getFile_id());
 			file.setFileName(item.getFileName());
 			return file;
-		}).distinct().collect(Collectors.toMap(key -> key.getFileName(),
-				value -> (value.getFileId() == null) ? BigDecimal.ZERO : value.getFileId()));
+		}).distinct().collect(
+				Collectors.toMap(FileDTO::getFileName, value -> (value.getFileId() == null) ? BigDecimal.ZERO : value.getFileId()));
 	}
 
 	/**
@@ -104,10 +102,9 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	{
 		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 
-		files.forEach((fileName, fileId) -> {
-			//TODO status to be consistent. Create a Enum or read from master table.
-			fileService.updateInboundStgTableStatus(fileId, "IP", "NS");
-		});
+		files.forEach((fileName, fileId) ->
+		//TODO status to be consistent. Create a Enum or read from master table.
+		fileService.updateInboundStgTableStatus(fileId, "IP", "NS"));
 
 
 	}

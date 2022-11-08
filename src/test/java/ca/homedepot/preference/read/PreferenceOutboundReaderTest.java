@@ -49,14 +49,14 @@ class PreferenceOutboundReaderTest
 	void testOutboundDBReader()
 	{
 		JdbcCursorItemReader<PreferenceOutboundDto> test = preferenceOutboundReader.outboundDBReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND);
+		assertEquals(OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND, test.getSql());
 	}
 
 	@Test
 	void testOutboundCitiSuppresionDBReader()
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundReader.outboundCitiSuppresionDBReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1, test.getSql());
 	}
 
 	@Test
@@ -80,7 +80,7 @@ class PreferenceOutboundReaderTest
 	{
 		JdbcCursorItemReader<InternalOutboundDto> test = (JdbcCursorItemReader<InternalOutboundDto>) preferenceOutboundReader
 				.outboundInternalDBReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION, test.getSql());
 	}
 
 	@Test
@@ -96,7 +96,7 @@ class PreferenceOutboundReaderTest
 	void outboundLoyaltyComplaintWeekly()
 	{
 		JdbcCursorItemReader<InternalOutboundDto> test = preferenceOutboundReader.outboundLoyaltyComplaintWeekly();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION, test.getSql());
 	}
 
 
