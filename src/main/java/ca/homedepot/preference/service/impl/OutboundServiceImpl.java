@@ -23,6 +23,8 @@ public class OutboundServiceImpl implements OutboundService
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	private static final Format formatter = new SimpleDateFormat("yyyyMMdd");
+
 	/**
 	 * This methos is used to make a connection with DB and execute a query to get necessary data
 	 * 
@@ -68,28 +70,22 @@ public class OutboundServiceImpl implements OutboundService
 	public void createFile(String repository, String folder, String fileNameFormat, String headers) throws IOException
 	{
 		/* Creating File */
-		//TODO make formatter class variable
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		/* Inserting Headers */
 		String file = headers;
-		FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false);
 
 
-		try
+
+		try(FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
 		{
 			byte[] toFile = file.getBytes();
 			writer.write(toFile);
 			writer.flush();
 		}
-		catch (Exception ex)
+		catch (IOException ex)
 		{ //TODO is there any specific exception and what should happen in case of exception.
 			log.error("File creation error" + ex.getMessage());
-		}
-		finally
-		{
-			writer.close();
 		}
 
 	}

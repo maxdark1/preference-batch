@@ -88,13 +88,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
 
-	private static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
+	public static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 
 	private static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
 
 	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
 
-	private static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
+	public static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
 
 	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSource";
 	/**

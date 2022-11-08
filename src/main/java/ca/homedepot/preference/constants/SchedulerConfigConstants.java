@@ -18,4 +18,11 @@ public class SchedulerConfigConstants
 	{ "EmailAddr", "CanPtcEffectiveDate", "CanPtcSourceId", "EmailStatus", "CanPtcFlag", "FirstName", "LastName",
 			"LanguagePreference", "EarlyOptInDate", "CndCompliantFlag", "HdCaFlag", "HdCaGardenClubFlag", "HdCaProFlag", "PostalCd",
 			"City", "CustomerNbr", "Province" };
+
+	public static final String[] SALESFORCE_EXTRACT_NAMES = new String[]
+		{ "EmailAddress", "AsOfDate", "SourceId", "EmailStatus", "EmailPtc", "LanguagePreference", "EarliestOptInDate",
+				"HdCanadaEmailCompliantFlag", "HdCanadaFlag", "GardenClubFlag", "NewMoverFlag", "ProFlag", "PhonePtcFlag",
+				"FirstName", "LastName", "PostalCode", "Province", "City", "PhoneNumber", "BusinessName", "BusinessType", "MoveDate",
+				"DwellingType" };
+
 }

@@ -20,6 +20,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_INTERNAL_DESTINATION;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.STATUS_STR;
+
 @Slf4j
 @Component
 public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundProcessorDto>
@@ -52,40 +55,14 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	public void write(List<? extends InternalOutboundProcessorDto> items) throws Exception
 	{
 		sourceId = items.get(0).getCanPtcSourceId().replace(",", "");
-		String file = "";
+		StringBuilder fileBuilder = new StringBuilder();
 
 		for (InternalOutboundProcessorDto internal : items)
 		{
-			//TODO change to string buffer or builder
-			String line = "";
-			line = internal.getEmailAddr();
-			line += internal.getCanPtcEffectiveDate();
-			line += internal.getCanPtcSourceId();
-			line += internal.getEmailStatus();
-			line += internal.getCanPtcFlag();
-			line += internal.getLanguagePreference();
-			line += internal.getEarlyOptInDate();
-			line += internal.getCndCompliantFlag();
-			line += internal.getHdCaFlag();
-			line += internal.getHdCaGardenClubFlag();
-			line += internal.getHdCaNewMoverFlag();
-			line += internal.getHdCaNewMoverEffDate();
-			line += internal.getHdCaProFlag();
-			line += internal.getPhonePtcFlag();
-			line += internal.getFirstName();
-			line += internal.getLastName();
-			line += internal.getPostalCode();
-			line += internal.getProvince();
-			line += internal.getCity();
-			line += internal.getPhoneNumber();
-			line += internal.getBussinessName();
-			line += internal.getIndustryCode();
-			line += internal.getMoveDate();
-			line += internal.getDwellingType();
-			file += line;
+			fileBuilder.append(internal.getEmailAddr()).append(internal.getCanPtcEffectiveDate()).append(internal.getCanPtcSourceId()).append(internal.getEmailStatus()).append(internal.getCanPtcFlag()).append(internal.getLanguagePreference()).append(internal.getEarlyOptInDate()).append(internal.getCndCompliantFlag()).append(internal.getHdCaFlag()).append(internal.getHdCaGardenClubFlag()).append(internal.getHdCaNewMoverFlag()).append(internal.getHdCaNewMoverEffDate()).append(internal.getHdCaProFlag()).append(internal.getPhonePtcFlag()).append(internal.getFirstName()).append(internal.getLastName()).append(internal.getPostalCode()).append(internal.getProvince()).append(internal.getCity()).append(internal.getPhoneNumber()).append(internal.getBussinessName()).append(internal.getIndustryCode()).append(internal.getMoveDate()).append(internal.getDwellingType());
 
 		}
-
+		String file = fileBuilder.toString();
 		generateFile(file, caFileFormat);
 		generateFile(file, moverFileFormat);
 		generateFile(file, gardenFileFormat);
@@ -119,10 +96,8 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	 */
 	private void setFileRecord(String fileName)
 	{
-
-		//TODO read from enum or constants for string literrals
-		BigDecimal jobId = fileService.getJobId("SendPreferencesToInternalDestination");
-		Master fileStatus = MasterProcessor.getSourceID("STATUS", SourceDelimitersConstants.VALID);
+		BigDecimal jobId = fileService.getJobId(JOB_NAME_INTERNAL_DESTINATION);
+		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, SourceDelimitersConstants.VALID);
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
 				fileStatus.getMasterId(), new Date(), new Date(), "BATCH", new Date(), null, null);
 

@@ -23,13 +23,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+
 @Slf4j
 @Getter
 @Setter
 public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 {
-
-
+	private static final Format formatter = new SimpleDateFormat("yyyyMMdd");
 	private String repositorySource;
 
 	private String folderSource;
@@ -67,9 +68,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	public void setResource()
 	{
-		//TODO formatter can be class variable
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		this.fileName = this.fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+
+		this.fileName = this.fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
 
 		Resource resource = new FileSystemResource(repositorySource + folderSource + fileName);
 		if (resource.exists())
@@ -114,13 +114,12 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	public void saveFileRecord()
 	{
-		//TODO string literals
 		BigDecimal jobId = fileService.getJobId(jobName);
-		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE", source).getMasterId();
-		Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");
+		BigDecimal sourceId = MasterProcessor.getSourceID(SOURCE_STR, source).getMasterId();
+		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
-				new Date(), "BATCH", new Date(), null, null);
+				new Date(), INSERTEDBY, new Date(), null, null);
 
 		fileService.insert(file);
 

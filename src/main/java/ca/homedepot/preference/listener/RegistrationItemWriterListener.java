@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+
 @Component
 @RequiredArgsConstructor
 @Getter
@@ -102,11 +104,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	{
 		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 
-		files.forEach((fileName, fileId) ->
-		//TODO status to be consistent. Create a Enum or read from master table.
-		fileService.updateInboundStgTableStatus(fileId, "IP", "NS"));
-
-
+		files.forEach((fileName, fileId) ->	fileService.updateInboundStgTableStatus(fileId, INPROGRESS, NOTSTARTED));
 	}
 
 	/**

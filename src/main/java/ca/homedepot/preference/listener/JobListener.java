@@ -14,7 +14,9 @@ import ca.homedepot.preference.dto.Job;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.JOB_STATUS;
+import static ca.homedepot.preference.dto.enums.JobStatusEnum.*;
 
 
 /**
@@ -89,13 +91,13 @@ public class JobListener implements JobExecutionListener
 		switch (batchStatus)
 		{
 			case STARTING:
-				return MasterProcessor.getSourceID(JOB_STATUS, "STARTED");
+				return MasterProcessor.getSourceID(JOB_STATUS, STARTED.getStatus());
 			case STARTED:
-				return MasterProcessor.getSourceID(JOB_STATUS, "IN PROGRESS");
+				return MasterProcessor.getSourceID(JOB_STATUS, IN_PROGRESS.getStatus());
 			case COMPLETED:
-				return MasterProcessor.getSourceID(JOB_STATUS, "COMPLETED");
+				return MasterProcessor.getSourceID(JOB_STATUS, COMPLETED.getStatus());
 			default:
-				return MasterProcessor.getSourceID(JOB_STATUS, "ERROR");
+				return MasterProcessor.getSourceID(JOB_STATUS, ERROR.getStatus());
 		}
 	}
 
@@ -134,15 +136,13 @@ public class JobListener implements JobExecutionListener
 		job.setUpdatedDate(new Date());
 		job.setStartTime(jobExecution.getStartTime());
 		job.setEndTime(jobExecution.getEndTime());
-		//TODO read from a contant file to make sure all jobs are using same values
-		job.setUpdatedBy("BATCH JobListener");
+		job.setUpdatedBy(INSERTEDBY);
 
 
 		/**
 		 * Updates the job record with the end_time and status
 		 */
-		//TODO status should be read from master table or create a Enum to make sure all jobs are consistent
-		int updatedRecords = preferenceService.updateJob(job, "IN PROGRESS");
+		int updatedRecords = preferenceService.updateJob(job, IN_PROGRESS.getStatus());
 
 		log.info("  {} Job(s) updated", updatedRecords);
 

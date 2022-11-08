@@ -130,6 +130,11 @@ class ModelsTest
 		assertNotNull("content5", fileInboundStgTable.getContent5());
 		assertNotNull("value5", fileInboundStgTable.getValue5());
 		assertNotNull("content6", fileInboundStgTable.getContent6());
+
+	}
+
+	@Test
+	void contentValueAssertions(){
 		assertNotNull("value6", fileInboundStgTable.getValue6());
 		assertNotNull("content7", fileInboundStgTable.getContent7());
 		assertNotNull("value7", fileInboundStgTable.getValue7());
@@ -147,21 +152,27 @@ class ModelsTest
 		assertEquals("value13", fileInboundStgTable.getValue13());
 		assertNotNull("content14", fileInboundStgTable.getContent14());
 		assertNotNull("value14", fileInboundStgTable.getValue14());
-		assertNotNull("content15", fileInboundStgTable.getContent15());
-		assertNotNull("value15", fileInboundStgTable.getValue15());
-		assertNotNull("content16", fileInboundStgTable.getContent16());
-		assertNotNull("value16", fileInboundStgTable.getValue16());
-		assertNotNull("content17", fileInboundStgTable.getContent17());
-		assertNotNull("value17", fileInboundStgTable.getValue17());
-		assertNotNull("content18", fileInboundStgTable.getContent18());
-		assertNotNull("value18", fileInboundStgTable.getValue18());
-		assertNotNull("content19", fileInboundStgTable.getContent19());
-		assertNotNull("value19", fileInboundStgTable.getValue19());
-		assertNotNull("content20", fileInboundStgTable.getContent20());
-		assertNotNull("value20", fileInboundStgTable.getValue20());
-		assertNull(fileInboundStgTable.getInserted_by());
-		assertNull(fileInboundStgTable.getInserted_date());
+
 	}
+
+	 @Test
+	 void testContetValuePair()
+	 {
+		 assertNotNull("content15", fileInboundStgTable.getContent15());
+		 assertNotNull("value15", fileInboundStgTable.getValue15());
+		 assertNotNull("content16", fileInboundStgTable.getContent16());
+		 assertNotNull("value16", fileInboundStgTable.getValue16());
+		 assertNotNull("content17", fileInboundStgTable.getContent17());
+		 assertNotNull("value17", fileInboundStgTable.getValue17());
+		 assertNotNull("content18", fileInboundStgTable.getContent18());
+		 assertNotNull("value18", fileInboundStgTable.getValue18());
+		 assertNotNull("content19", fileInboundStgTable.getContent19());
+		 assertNotNull("value19", fileInboundStgTable.getValue19());
+		 assertNotNull("content20", fileInboundStgTable.getContent20());
+		 assertNotNull("value20", fileInboundStgTable.getValue20());
+		 assertNull(fileInboundStgTable.getInserted_by());
+		 assertNull(fileInboundStgTable.getInserted_date());
+	 }
 
 	@Test
 	void inboundRegistrationSetResourceTest()

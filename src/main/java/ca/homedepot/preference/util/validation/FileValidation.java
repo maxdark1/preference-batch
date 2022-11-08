@@ -12,6 +12,7 @@ import java.util.*;
 @UtilityClass
 public class FileValidation
 {
+	public final String formatDate = "yyyyMMdd";
 	/**
 	 * The extension regex
 	 */
@@ -124,8 +125,6 @@ public class FileValidation
 	 */
 	public static boolean validateFileName(String fileName, String source)
 	{
-		//TODO read from constant file as value is fixed
-		String formatDate = "yyyyMMdd";
 		String baseName = getFileName(fileName);
 		int start = getBaseName(source).length();
 		int end = start + formatDate.length();
