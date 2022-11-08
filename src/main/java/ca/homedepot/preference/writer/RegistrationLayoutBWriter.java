@@ -42,6 +42,7 @@ public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest
 		/**
 		 * Updates the status of each record
 		 */
+		//TODO status from enum
 		response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus(new BigDecimal(resp.getId()),
 				resp.getStatus().substring(0, 1), "IP"));
 		log.info("Service Response: {} ", response);
