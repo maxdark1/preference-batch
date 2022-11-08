@@ -20,104 +20,109 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
-class SalesforceExtractFileWriterTest {
+class SalesforceExtractFileWriterTest
+{
 
-    @Mock
-    FileServiceImpl fileService;
+	@Mock
+	FileServiceImpl fileService;
 
-    @InjectMocks
-    @Spy
-    SalesforceExtractFileWriter salesforceExtractFileWriter;
+	@InjectMocks
+	@Spy
+	SalesforceExtractFileWriter salesforceExtractFileWriter;
 
-    File file = new File("repositorySource/folder");
+	File file = new File("repositorySource/folder");
 
-    @BeforeEach
-    void setUp() throws IOException {
-        MockitoAnnotations.openMocks(this);
+	@BeforeEach
+	void setUp() throws IOException
+	{
+		MockitoAnnotations.openMocks(this);
 
-        salesforceExtractFileWriter.setRepositorySource("repositorySource");
-        salesforceExtractFileWriter.setFolderSource("/folder/");
-        salesforceExtractFileWriter.setFileNameFormat("ET_YYYYMMDD.TXT.PGP");
-        salesforceExtractFileWriter.setJobName("Job_Name");
+		salesforceExtractFileWriter.setRepositorySource("repositorySource");
+		salesforceExtractFileWriter.setFolderSource("/folder/");
+		salesforceExtractFileWriter.setFileNameFormat("ET_YYYYMMDD.TXT.PGP");
+		salesforceExtractFileWriter.setJobName("Job_Name");
 
-        List<Master> masterList = new ArrayList<>();
-        Master sourceId = new Master();
-        sourceId.setMasterId(BigDecimal.ONE);
-        sourceId.setKeyValue("SOURCE_ID");
-        sourceId.setValueVal("citisup");
+		List<Master> masterList = new ArrayList<>();
+		Master sourceId = new Master();
+		sourceId.setMasterId(BigDecimal.ONE);
+		sourceId.setKeyValue("SOURCE_ID");
+		sourceId.setValueVal("citisup");
 
-        Master fileStatus = new Master();
-        fileStatus.setMasterId(BigDecimal.TEN);
-        fileStatus.setKeyValue("STATUS");
-        fileStatus.setValueVal("VALID");
-        masterList.add(sourceId);
-        masterList.add(fileStatus);
+		Master fileStatus = new Master();
+		fileStatus.setMasterId(BigDecimal.TEN);
+		fileStatus.setKeyValue("STATUS");
+		fileStatus.setValueVal("VALID");
+		masterList.add(sourceId);
+		masterList.add(fileStatus);
 
-        MasterProcessor.setMasterList(masterList);
+		MasterProcessor.setMasterList(masterList);
 
-        file.mkdirs();
-        Format formatter = new SimpleDateFormat("YYYYMMDD");
-        String fileName = "ET_YYYYMMDD".replace("YYYYMMDD", formatter.format(new Date()));
-        File files = new File("repositorySource/folder/" + fileName);
-        files.createNewFile();
-    }
+		file.mkdirs();
+		Format formatter = new SimpleDateFormat("YYYYMMDD");
+		String fileName = "ET_YYYYMMDD".replace("YYYYMMDD", formatter.format(new Date()));
+		File files = new File("repositorySource/folder/" + fileName);
+		files.createNewFile();
+	}
 
-    @Test
-    void saveFileRecord()
-    {
-        BigDecimal jobId = BigDecimal.TEN;
-        FileDTO fileDTO = Mockito.mock(FileDTO.class);
-        int expectedValue = 1;
+	@Test
+	void saveFileRecord()
+	{
+		BigDecimal jobId = BigDecimal.TEN;
+		FileDTO fileDTO = Mockito.mock(FileDTO.class);
+		int expectedValue = 1;
 
-        Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
-        Mockito.when(fileService.insert(fileDTO)).thenReturn(expectedValue);
+		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
+		Mockito.when(fileService.insert(fileDTO)).thenReturn(expectedValue);
 
-        salesforceExtractFileWriter.saveFileRecord();
-        Mockito.verify(salesforceExtractFileWriter).saveFileRecord();
-    }
+		salesforceExtractFileWriter.saveFileRecord();
+		Mockito.verify(salesforceExtractFileWriter).saveFileRecord();
+	}
 
-    @Test
-    void setResource()
-    {
-        salesforceExtractFileWriter.setResource();
-        Mockito.verify(salesforceExtractFileWriter).setResource();
-    }
+	@Test
+	void setResource()
+	{
+		salesforceExtractFileWriter.setResource();
+		Mockito.verify(salesforceExtractFileWriter).setResource();
+	}
 
-    @Test
-    void getRepositorySource()
-    {
-        assertEquals("repositorySource", salesforceExtractFileWriter.getRepositorySource());
-    }
+	@Test
+	void getRepositorySource()
+	{
+		assertEquals("repositorySource", salesforceExtractFileWriter.getRepositorySource());
+	}
 
-    @Test
-    void getFolderSource()
-    {
-        assertEquals("/folder/", salesforceExtractFileWriter.getFolderSource());
-    }
+	@Test
+	void getFolderSource()
+	{
+		assertEquals("/folder/", salesforceExtractFileWriter.getFolderSource());
+	}
 
-    @Test
-    void getFileNameFormat() { assertEquals("ET_YYYYMMDD.TXT.PGP", salesforceExtractFileWriter.getFileNameFormat()); }
+	@Test
+	void getFileNameFormat()
+	{
+		assertEquals("ET_YYYYMMDD.TXT.PGP", salesforceExtractFileWriter.getFileNameFormat());
+	}
 
-    @Test
-    void getJobName()
-    {
-        salesforceExtractFileWriter.setJobName("Job_Name");
-        assertEquals("Job_Name", salesforceExtractFileWriter.getJobName());
-    }
+	@Test
+	void getJobName()
+	{
+		salesforceExtractFileWriter.setJobName("Job_Name");
+		assertEquals("Job_Name", salesforceExtractFileWriter.getJobName());
+	}
 
-    @Test
-    void getFileName()
-    {
-        salesforceExtractFileWriter.setFileName("fileName");
-        assertEquals("fileName", salesforceExtractFileWriter.getFileName());
-    }
+	@Test
+	void getFileName()
+	{
+		salesforceExtractFileWriter.setFileName("fileName");
+		assertEquals("fileName", salesforceExtractFileWriter.getFileName());
+	}
 
 
-    @Test
-    void getFileService()
-    {
-        salesforceExtractFileWriter.setFileService(fileService);
-        assertNotNull(salesforceExtractFileWriter.getFileService());
-    }
+	@Test
+	void getFileService()
+	{
+		salesforceExtractFileWriter.setFileService(fileService);
+		assertNotNull(salesforceExtractFileWriter.getFileService());
+	}
 
 }

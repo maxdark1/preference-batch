@@ -99,7 +99,6 @@ class FileWriterOutBoundTest
 	{
 		BigDecimal jobId = BigDecimal.TEN;
 		FileDTO fileDTO = Mockito.mock(FileDTO.class);
-		String fileName = "fileName";
 		int expectedValue = 1;
 
 		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);

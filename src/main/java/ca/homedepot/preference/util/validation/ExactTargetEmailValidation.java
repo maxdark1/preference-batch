@@ -82,7 +82,7 @@ public class ExactTargetEmailValidation
 	public static Date validateDateFormat(String date, StringBuilder error)
 	{
 		Date asOfDate = null;
-//TODO make it class variable as its a constant
+		//TODO make it class variable as its a constant
 		SimpleDateFormat[] simpleDateFormatArray =
 		{ new SimpleDateFormat("MM/dd/yyyy H :mm"), new SimpleDateFormat("MM/dd/yyyy HH:mm"),
 				new SimpleDateFormat("MM/dd/yyyy HH:m"), new SimpleDateFormat("MM/dd/yyyy H :m"), };
@@ -120,7 +120,7 @@ public class ExactTargetEmailValidation
 	 */
 	public static LineCallbackHandler lineCallbackHandler()
 	{
-//TODO  read the split character from the DElimeter class
+		//TODO  read the split character from the DElimeter class
 		return line -> {
 			String[] header = line.split("\\t");
 			if (!Arrays.equals(header, FIELD_NAMES_SFMC_OPTOUTS))

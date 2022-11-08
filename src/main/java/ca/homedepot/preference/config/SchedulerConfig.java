@@ -682,6 +682,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Weekly Loyalty Complaint to Source finished with status : " + execution.getStatus());
 	}
 
+	/**
+	 * Triggers Email Marketing Preferences to SMFC job in a determinated period of time
+	 *
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
 	public void sendEmailMarketingPreferencesToSMFC() throws Exception
 	{
@@ -969,6 +974,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return loyaltyComplaintWriter;
 	}
 
+	/***
+	 * Writer to outbound Salesforce Extract stg table
+	 *
+	 * @return writer for salesforce extract stg table
+	 */
 	@Bean
 	public JdbcBatchItemWriter<SalesforceExtractOutboundDTO> salesforceExtractOutboundDTOJdbcBatchItemWriter()
 	{
@@ -1152,6 +1162,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
+	/**
+	 * Preferences To SMFC Job
+	 *
+	 * @return Job
+	 */
 	public Job sendPreferencesToSMFC()
 	{
 		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
@@ -1310,6 +1325,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter()).build();
 	}
 
+	/**
+	 * Outbound process for Salesforce Extract file Step 1
+	 *
+	 * @return Step 1 for salesforce Extract
+	 */
 	public Step salesforceExtractDBReaderStep1()
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderStep1")
@@ -1318,6 +1338,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.writer(salesforceExtractOutboundDTOJdbcBatchItemWriter()).build();
 	}
 
+
+	/**
+	 * Outbound process for Salesforce Extract file Step 2
+	 *
+	 * @return Step 2 for salesforce Extract
+	 */
 	public Step salesforceExtractDBReaderFileWriterStep2()
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
