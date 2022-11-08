@@ -66,8 +66,8 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 				Files.delete(new File(repositorySource + folderSource + fileName).toPath());
 			}
 			catch (IOException e)
-			{
-				log.info(" File for citi suppresion will be created. ");
+			{//TODO what needs to be done in case of exception
+				log.info(" File for citi supresion will be created. ");
 			}
 		}
 		super.setResource(resource);
@@ -90,6 +90,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 	public DelimitedLineAggregator<SalesforceExtractOutboundDTO> getLineAggregator()
 	{
 		BeanWrapperFieldExtractor<SalesforceExtractOutboundDTO> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
+		//TODO can be a constant array, instead making everytime new
 		beanWrapperFieldExtractor.setNames(new String[]
 		{ "EmailAddress", "AsOfDate", "SourceId", "EmailStatus", "EmailPtc", "LanguagePreference", "EarliestOptInDate",
 				"HdCanadaEmailCompliantFlag", "HdCanadaFlag", "GardenClubFlag", "NewMoverFlag", "ProFlag", "PhonePtcFlag",
@@ -107,7 +108,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 		BigDecimal jobId = fileService.getJobId(jobName);
 		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE_ID", "citisup").getMasterId();
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");
-
+//TODO duplicate string literals
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
 				new Date(), "BATCH", new Date(), null, null);
 

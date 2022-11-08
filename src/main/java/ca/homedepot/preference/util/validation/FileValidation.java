@@ -124,6 +124,7 @@ public class FileValidation
 	 */
 	public static boolean validateFileName(String fileName, String source)
 	{
+		//TODO read from constant file as value is fixed
 		String formatDate = "yyyyMMdd";
 		String baseName = getFileName(fileName);
 		int start = getBaseName(source).length(), end = start + formatDate.length();
@@ -218,11 +219,13 @@ public class FileValidation
 
 	/**
 	 * Ad hoc validation for string date wiht format yyyyMMdd
-	 * 
+	 * 19-09-1222
+	 *
 	 * @param format
 	 * @param strDate
 	 * @return
 	 */
+	//TODO need to understand this method
 	public static boolean deepCheckDateFormat(String format, String strDate)
 	{
 		Map<Integer, Integer> counter = new LinkedHashMap<>();

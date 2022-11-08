@@ -46,11 +46,13 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Override
 	public void write(List<? extends PreferenceOutboundDtoProcessor> items) throws Exception
 	{
+		//TODO read the delimeter from constant file
 		sourceId = items.get(0).getSourceId().replace("\t", "");
 		String file = "";
 
 		for (PreferenceOutboundDtoProcessor preference : items)
 		{
+			//TODO use stringbuilder or buffer
 			String line = "";
 			line = preference.getEmail();
 			line += preference.getEffectiveDate();
@@ -90,6 +92,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	 */
 	private void generateFile(String file) throws Exception
 	{
+		//TODO can be class variable
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
 
@@ -107,6 +110,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	 */
 	private void setFileRecord(String fileName)
 	{
+		//TODO duplicate string literals
 		BigDecimal jobId = fileService.getJobId("sendPreferencesToCRM");
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", SourceDelimitersConstants.VALID);
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
