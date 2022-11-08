@@ -4,6 +4,7 @@ import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,13 @@ class PreferenceOutboundReaderTest
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundReader.outboundCitiSuppresionDBReader();
 		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1, test.getSql());
+	}
+
+	@Test
+	void testSalesforceExtractOutboundDBReader()
+	{
+		JdbcCursorItemReader<SalesforceExtractOutboundDTO> test = preferenceOutboundReader.salesforceExtractOutboundDBReader();
+		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND);
 	}
 
 	@Test
