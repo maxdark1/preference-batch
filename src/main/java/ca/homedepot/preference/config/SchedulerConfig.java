@@ -183,6 +183,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${folders.salesforce.path}")
 	String salesforcePath;
 
+	@Value("${folders.loyaltyCompliant.path}")
+	String loyaltyCompliantPath;
+
 	/**
 	 * Folders ERROR, INBOUND AND PROCCESED
 	 */
@@ -682,6 +685,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Weekly Loyalty Complaint to Source finished with status : " + execution.getStatus());
 	}
 
+	/**
+	 * Triggers Email Marketing Preferences to SMFC job in a determinated period of time
+	 *
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
 	public void sendEmailMarketingPreferencesToSMFC() throws Exception
 	{
@@ -940,9 +948,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setSource(CITI_BANK);
 		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
-		citiSupressionFileWriter.setNames(new String[]
-		{ "FirstName", "MiddleInitial", "LastName", "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
-				"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
+		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
 		citiSupressionFileWriter.setResource();
 
 		return citiSupressionFileWriter;
@@ -956,19 +962,21 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		loyaltyComplaintWriter.setName("loyaltyComplaintWriter");
 		loyaltyComplaintWriter.setFileService(hybrisWriterListener.getFileService());
 		loyaltyComplaintWriter.setFolderSource(folderOutbound);
-		loyaltyComplaintWriter.setRepositorySource(citiPath);
+		loyaltyComplaintWriter.setRepositorySource(loyaltyCompliantPath);
 		loyaltyComplaintWriter.setHeader(LOYALTY_COMPLAINT_WEEKLY_HEADERS);
 		loyaltyComplaintWriter.setSource(CITI_BANK);
 		loyaltyComplaintWriter.setFileNameFormat(weeklyCompliantNameFormat);
 		loyaltyComplaintWriter.setJobName(JOB_NAME_LOYALTY_COMPLAINT);
-		loyaltyComplaintWriter.setNames(new String[]
-		{ "EmailAddr", "CanPtcEffectiveDate", "CanPtcSourceId", "EmailStatus", "CanPtcFlag", "FirstName", "LastName",
-				"LanguagePreference", "EarlyOptInDate", "CndCompliantFlag", "HdCaFlag", "HdCaGardenClubFlag", "HdCaProFlag",
-				"PostalCd", "City", "CustomerNbr", "Province" });
+		loyaltyComplaintWriter.setNames(LOYALTY_COMPLIANT_NAMES);
 		loyaltyComplaintWriter.setResource();
 		return loyaltyComplaintWriter;
 	}
 
+	/***
+	 * Writer to outbound Salesforce Extract stg table
+	 *
+	 * @return writer for salesforce extract stg table
+	 */
 	@Bean
 	public JdbcBatchItemWriter<SalesforceExtractOutboundDTO> salesforceExtractOutboundDTOJdbcBatchItemWriter()
 	{
@@ -976,7 +984,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 		writer.setDataSource(dataSource);
 		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_SALESFORCE_EXTRACT);
-		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<SalesforceExtractOutboundDTO>());
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
 		writer.setItemPreparedStatementSetter(new SalesforcePreparedStatement());
 
 		return writer;
@@ -1152,6 +1160,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
+	/**
+	 * Preferences To SMFC Job
+	 *
+	 * @return Job
+	 */
 	public Job sendPreferencesToSMFC()
 	{
 		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
@@ -1310,6 +1323,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter()).build();
 	}
 
+	/**
+	 * Outbound process for Salesforce Extract file Step 1
+	 *
+	 * @return Step 1 for salesforce Extract
+	 */
 	public Step salesforceExtractDBReaderStep1()
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderStep1")
@@ -1318,6 +1336,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.writer(salesforceExtractOutboundDTOJdbcBatchItemWriter()).build();
 	}
 
+
+	/**
+	 * Outbound process for Salesforce Extract file Step 2
+	 *
+	 * @return Step 2 for salesforce Extract
+	 */
 	public Step salesforceExtractDBReaderFileWriterStep2()
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")

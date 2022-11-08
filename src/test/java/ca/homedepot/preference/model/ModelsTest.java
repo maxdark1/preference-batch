@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-public class ModelsTest
+class ModelsTest
 {
 	EmailOptOuts emailOptOuts;
 
@@ -43,7 +43,7 @@ public class ModelsTest
 	}
 
 	@Test
-	public void testEmailOptOuts()
+	void testEmailOptOuts()
 	{
 
 		assertNotNull(emailOptOuts);
@@ -99,6 +99,12 @@ public class ModelsTest
 		assertNotNull(fileInboundStgTable.getSrc_first_name());
 		assertEquals("Penia", fileInboundStgTable.getSrc_last_name());
 		assertTrue(fileInboundStgTable.getSrc_address1().contains("address"));
+
+	}
+
+	@Test
+	void getterFileInboundStgTable()
+	{
 		assertTrue(fileInboundStgTable.getSrc_address2().contains("address"));
 		assertEquals("city", fileInboundStgTable.getSrc_city());
 		assertEquals("st", fileInboundStgTable.getSrc_state());
@@ -117,8 +123,8 @@ public class ModelsTest
 		assertEquals("value1", fileInboundStgTable.getValue1());
 		assertNull(fileInboundStgTable.getContent2());
 		assertNull(fileInboundStgTable.getValue2());
-		assertEquals("content3", fileInboundStgTable.getContent3());
-		assertEquals("value3", fileInboundStgTable.getValue3());
+		assertNull(fileInboundStgTable.getContent3());
+		assertNull(fileInboundStgTable.getValue3());
 		assertNotNull("content4", fileInboundStgTable.getContent4());
 		assertNotNull("value4", fileInboundStgTable.getValue4());
 		assertNotNull("content5", fileInboundStgTable.getContent5());

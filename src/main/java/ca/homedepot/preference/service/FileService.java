@@ -39,19 +39,19 @@ public interface FileService
 	/**
 	 * Gets job id
 	 * 
-	 * @param job_name
+	 * @param jobName
 	 * @return Job id
 	 */
-	BigDecimal getJobId(String job_name);
+	BigDecimal getJobId(String jobName);
 
 	/**
 	 * Gets file id
 	 * 
 	 * @param fileRegistration
-	 * @param job_id
+	 * @param jobId
 	 * @return file id
 	 */
-	BigDecimal getFile(String fileRegistration, BigDecimal job_id);
+	BigDecimal getFile(String fileRegistration, BigDecimal jobId);
 
 	/**
 	 * Gets last file inserted id

@@ -127,8 +127,10 @@ public class FileValidation
 		//TODO read from constant file as value is fixed
 		String formatDate = "yyyyMMdd";
 		String baseName = getFileName(fileName);
-		int start = getBaseName(source).length(), end = start + formatDate.length();
-		if (end != baseName.length() || !validateExtension(getExtension(fileName, baseName)))
+		int start = getBaseName(source).length();
+		int end = start + formatDate.length();
+		boolean isNotAValidExtension = !validateExtension(getExtension(fileName, baseName));
+		if (end != baseName.length() || isNotAValidExtension)
 		{
 			return false;
 		}
@@ -218,8 +220,7 @@ public class FileValidation
 	}
 
 	/**
-	 * Ad hoc validation for string date wiht format yyyyMMdd
-	 * 19-09-1222
+	 * Ad hoc validation for string date wiht format yyyyMMdd 19-09-1222
 	 *
 	 * @param format
 	 * @param strDate

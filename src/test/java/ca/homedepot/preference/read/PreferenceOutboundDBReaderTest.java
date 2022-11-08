@@ -1,10 +1,7 @@
 package ca.homedepot.preference.read;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
-import ca.homedepot.preference.dto.InternalOutboundDto;
-import ca.homedepot.preference.dto.LoyaltyCompliantDTO;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,27 +33,34 @@ class PreferenceOutboundDBReaderTest
 	void outboundDBReader()
 	{
 		JdbcCursorItemReader<PreferenceOutboundDto> test = preferenceOutboundDBReader.outboundDBReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_STEP2);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_STEP2, test.getSql());
 	}
 
 	@Test
 	void outboundInternalDBReader()
 	{
 		JdbcCursorItemReader<InternalOutboundDto> test = preferenceOutboundDBReader.outboundInternalDbReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_PROGRAM_COMPLIANT);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_PROGRAM_COMPLIANT, test.getSql());
 	}
 
 	@Test
 	void citiSuppressionDBTableReader()
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundDBReader.citiSuppressionDBTableReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE, test.getSql());
 	}
 
 	@Test
 	void loyaltyComplaintDBTableReader()
 	{
 		JdbcCursorItemReader<LoyaltyCompliantDTO> reader = preferenceOutboundDBReader.loyaltyComplaintDBTableReader();
+		assertNotNull(reader);
+	}
+
+	@Test
+	void salesforceExtractDBTableReader()
+	{
+		JdbcCursorItemReader<SalesforceExtractOutboundDTO> reader = preferenceOutboundDBReader.salesforceExtractDBTableReader();
 		assertNotNull(reader);
 	}
 

@@ -53,60 +53,60 @@ class SchedulerConfigTest
 {
 
 	@Mock
-	public JobBuilderFactory jobBuilderFactory;
+	JobBuilderFactory jobBuilderFactory;
 
 	@Mock
-	public JobBuilder jobBuilder;
+	JobBuilder jobBuilder;
 
 	@Mock
-	public JobBuilderHelper jobBuilderHelper;
+	JobBuilderHelper jobBuilderHelper;
 
 	@Mock
-	public SimpleJobBuilder simpleJobBuilder;
+	SimpleJobBuilder simpleJobBuilder;
 
 	@Mock
-	public FlowBuilder.TransitionBuilder transitionBuilder;
+	FlowBuilder.TransitionBuilder transitionBuilder;
 
 	@Mock
-	public FlowJobBuilder flowJobBuilder;
+	FlowJobBuilder flowJobBuilder;
 
 	@Mock
-	public FlowBuilder flowBuilder;
+	FlowBuilder flowBuilder;
 
 	@Mock
-	public FaultTolerantStepBuilder faultTolerantStepBuilder;
+	FaultTolerantStepBuilder faultTolerantStepBuilder;
 
 	@Mock
-	public Job job;
+	Job job;
 
 	@Mock
-	public StepBuilderFactory stepBuilderFactory;
+	StepBuilderFactory stepBuilderFactory;
 	@Mock
-	public StepBuilder stepBuilder;
+	StepBuilder stepBuilder;
 	@Mock
-	public TaskletStep step;
+	TaskletStep step;
 	@Mock
-	public RegistrationItemWriterListener writerListener;
+	RegistrationItemWriterListener writerListener;
 	@Mock
 	RegistrationAPIWriter apiWriter;
 	@Mock
-	public DataSource dataSource;
+	DataSource dataSource;
 	@Mock
-	public BatchTasklet batchTasklet;
+	BatchTasklet batchTasklet;
 	@Mock
-	public JobListener jobListener;
+	JobListener jobListener;
 	@Mock
-	public SkipListenerLayoutC skipListenerLayoutC;
+	SkipListenerLayoutC skipListenerLayoutC;
 	@Mock
-	public SkipListenerLayoutB skipListenerLayoutB;
+	SkipListenerLayoutB skipListenerLayoutB;
 	@Mock
-	public StepErrorLoggingListener stepErrorLoggingListener;
+	StepErrorLoggingListener stepErrorLoggingListener;
 	@Mock
-	public PlatformTransactionManager platformTransactionManager;
+	PlatformTransactionManager platformTransactionManager;
 	@Mock
 	RegistrationLayoutBWriter layoutBWriter;
 	@InjectMocks
-	public SchedulerConfig schedulerConfig;
+	SchedulerConfig schedulerConfig;
 	@Autowired
 	JobLauncherTestUtils jobLauncherTestUtils;
 	@Mock
@@ -130,7 +130,7 @@ class SchedulerConfigTest
 	}
 
 	@BeforeEach
-	public void setUp() throws NoSuchFieldException, IllegalAccessException
+	void setUp() throws NoSuchFieldException, IllegalAccessException
 	{
 
 		jobBuilderFactory = Mockito.mock(JobBuilderFactory.class);
@@ -179,7 +179,7 @@ class SchedulerConfigTest
 	}
 
 	@AfterEach
-	public void tearDown()
+	void tearDown()
 	{
 	}
 
@@ -191,7 +191,7 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void testInboundFileReader() throws Exception
+	void testInboundFileReader() throws Exception
 	{
 		schedulerConfig.hybrisCrmRegistrationFile = "OPTIN_STANDARD_FLEX_YYYYMMDD";
 		assertNotNull(schedulerConfig);
@@ -199,28 +199,28 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void testinboundEmailPreferencesSMFCReader()
+	void testinboundEmailPreferencesSMFCReader()
 	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader());
 	}
 
 	@Test
-	public void testingestOptOutsGmailClientUnsubscribedReader()
+	void testingestOptOutsGmailClientUnsubscribedReader()
 	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.ingestOptOutsGmailClientUnsubscribedReader());
 	}
 
 	@Test
-	public void testlineTokenizer()
+	void testlineTokenizer()
 	{
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.lineTokenizer());
 	}
 
 	@Test
-	public void testInboundEmailPreferencesSMFCReader() throws Exception
+	void testInboundEmailPreferencesSMFCReader() throws Exception
 	{
 		schedulerConfig.hybrisCrmRegistrationFile = "ET.CAN.YYYYMMDD";
 		assertNotNull(schedulerConfig);
@@ -229,7 +229,7 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void inboundFileProcessor()
+	void inboundFileProcessor()
 	{
 
 		assertNotNull(schedulerConfig.layoutCProcessor("hybris"));
@@ -237,7 +237,7 @@ class SchedulerConfigTest
 
 	// TODO NullPointerException
 	@Test
-	public void processRegistrationInbound() throws Exception
+	void processRegistrationInbound() throws Exception
 	{
 		Mockito.when(jobBuilderFactory.get(eq("job_name"))).thenReturn(jobBuilder);
 		Mockito.when(jobBuilder.incrementer(new RunIdIncrementer())).thenReturn(jobBuilder);
@@ -252,7 +252,7 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void inboundRegistrationFileWriter()
+	void inboundRegistrationFileWriter()
 	{
 
 		assertNotNull(schedulerConfig);
@@ -260,7 +260,7 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void readInboundCSVFileStep() throws Exception
+	void readInboundCSVFileStep() throws Exception
 	{
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
@@ -281,7 +281,7 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	public void readInboundCSVFileCRMStep1() throws Exception
+	void readInboundCSVFileCRMStep1() throws Exception
 	{
 		schedulerConfig.setCrmWriterListener(writerListener);
 
@@ -305,7 +305,7 @@ class SchedulerConfigTest
 
 
 	@Test
-	public void readSFMCOptOutsStep1()
+	void readSFMCOptOutsStep1()
 	{
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);

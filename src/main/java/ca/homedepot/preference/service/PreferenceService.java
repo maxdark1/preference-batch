@@ -32,15 +32,15 @@ public interface PreferenceService
 	/**
 	 * Inserts on persistence job information
 	 *
-	 * @param job_name
+	 * @param jobName
 	 * @param status
-	 * @param status_id
-	 * @param start_time
-	 * @param inserted_by
-	 * @param inserted_date
+	 * @param statusId
+	 * @param startTime
+	 * @param insertedBy
+	 * @param insertedDate
 	 * @return inserted records
 	 */
-	int insert(String job_name, String status, BigDecimal status_id, Date start_time, String inserted_by, Date inserted_date);
+	int insert(String jobName, String status, BigDecimal statusId, Date startTime, String insertedBy, Date insertedDate);
 
 	/**
 	 * Gets master's information

@@ -4,6 +4,7 @@ import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,14 +49,21 @@ class PreferenceOutboundReaderTest
 	void testOutboundDBReader()
 	{
 		JdbcCursorItemReader<PreferenceOutboundDto> test = preferenceOutboundReader.outboundDBReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND);
+		assertEquals(OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND, test.getSql());
 	}
 
 	@Test
 	void testOutboundCitiSuppresionDBReader()
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundReader.outboundCitiSuppresionDBReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1, test.getSql());
+	}
+
+	@Test
+	void testSalesforceExtractOutboundDBReader()
+	{
+		JdbcCursorItemReader<SalesforceExtractOutboundDTO> test = preferenceOutboundReader.salesforceExtractOutboundDBReader();
+		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND);
 	}
 
 	@Test
@@ -72,7 +80,7 @@ class PreferenceOutboundReaderTest
 	{
 		JdbcCursorItemReader<InternalOutboundDto> test = (JdbcCursorItemReader<InternalOutboundDto>) preferenceOutboundReader
 				.outboundInternalDBReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION, test.getSql());
 	}
 
 	@Test
@@ -88,7 +96,7 @@ class PreferenceOutboundReaderTest
 	void outboundLoyaltyComplaintWeekly()
 	{
 		JdbcCursorItemReader<InternalOutboundDto> test = preferenceOutboundReader.outboundLoyaltyComplaintWeekly();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION, test.getSql());
 	}
 
 
