@@ -108,7 +108,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 		BigDecimal jobId = fileService.getJobId(jobName);
 		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE_ID", "citisup").getMasterId();
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");
-//TODO duplicate string literals
+		//TODO duplicate string literals
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
 				new Date(), "BATCH", new Date(), null, null);
 

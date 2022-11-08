@@ -38,12 +38,14 @@ class FileUtilTest
 		file4.mkdirs();
 
 	}
+
 	@AfterAll
 	static void tearDown() throws IOException
 	{
 		File file = new File("test");
 		FileUtils.deleteDirectory(file);
 	}
+
 	@Test
 	void getRegistrationFile()
 	{
@@ -170,8 +172,8 @@ class FileUtilTest
 
 		FileUtil.moveFile(file, true, "hybris");
 		FileUtil.moveFile(file2, false, "hybris");
-		assertEquals( "archive_20220211.txt" , file);
-		assertEquals( "archiv_20220212.txt", file2);
+		assertEquals("archive_20220211.txt", file);
+		assertEquals("archiv_20220212.txt", file2);
 
 	}
 }

@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 
-import ca.homedepot.preference.constants.SchedulerConfigConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
