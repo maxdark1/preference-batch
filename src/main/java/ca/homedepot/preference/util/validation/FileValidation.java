@@ -218,8 +218,7 @@ public class FileValidation
 	}
 
 	/**
-	 * Ad hoc validation for string date wiht format yyyyMMdd
-	 * 19-09-1222
+	 * Ad hoc validation for string date wiht format yyyyMMdd 19-09-1222
 	 *
 	 * @param format
 	 * @param strDate
