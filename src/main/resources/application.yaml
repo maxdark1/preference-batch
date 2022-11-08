@@ -101,6 +101,8 @@ folders:
     path: C:\batchFiles
   salesforce:
     path: C:\batchFiles\Salesforce
+  loyaltyCompliant:
+    path: C:\batchFiles
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT

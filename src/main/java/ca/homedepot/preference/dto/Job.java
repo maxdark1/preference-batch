@@ -11,21 +11,21 @@ public class Job
 	/**
 	 * The job_id
 	 */
-	private BigDecimal job_id;
+	private BigDecimal jobId;
 
 
 
 	/**
 	 * The Job Name
 	 */
-	private String job_name;
+	private String jobName;
 
 
 	/**
 	 * The status id
 	 */
 
-	private BigDecimal status_id;
+	private BigDecimal statusId;
 
 	/**
 	 * The status
@@ -35,29 +35,29 @@ public class Job
 	/**
 	 * The start time.
 	 */
-	private Date start_time;
+	private Date startTime;
 
 	/**
 	 * The end time.
 	 */
-	private Date end_time;
+	private Date endTime;
 
 	/**
 	 * The inserted by
 	 */
 
-	private String inserted_by;
+	private String insertedBy;
 
 	/**
 	 * The inserted date
 	 */
-	private Date inserted_date;
+	private Date insertedDate;
 	/**
 	 * The updated by
 	 */
-	private String updated_by;
+	private String updatedBy;
 	/**
 	 * The updated date
 	 */
-	private Date updated_date;
+	private Date updatedDate;
 }

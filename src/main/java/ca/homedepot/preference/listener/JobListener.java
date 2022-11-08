@@ -61,17 +61,17 @@ public class JobListener implements JobExecutionListener
 		 * Gets Job's information
 		 */
 		Job job = new Job();
-		job.setJob_name(jobExecution.getJobInstance().getJobName());
+		job.setJobName(jobExecution.getJobInstance().getJobName());
 
 		Master master = status(jobExecution.getStatus());
 		job.setStatus(master.getValueVal());
-		job.setStatus_id(master.getMasterId());
-		job.setStart_time(jobExecution.getStartTime());
-		job.setInserted_by("BATCH");
-		job.setInserted_date(new Date());
+		job.setStatusId(master.getMasterId());
+		job.setStartTime(jobExecution.getStartTime());
+		job.setInsertedBy("BATCH");
+		job.setInsertedDate(new Date());
 
-		preferenceService.insert(job.getJob_name(), job.getStatus(), job.getStatus_id(), job.getStart_time(), job.getInserted_by(),
-				job.getInserted_date());
+		preferenceService.insert(job.getJobName(), job.getStatus(), job.getStatusId(), job.getStartTime(), job.getInsertedBy(),
+				job.getInsertedDate());
 
 	}
 
@@ -125,17 +125,17 @@ public class JobListener implements JobExecutionListener
 		 * Gets the current value for the job that is ending
 		 */
 		Job job = new Job();
-		job.setJob_name(jobExecution.getJobInstance().getJobName());
+		job.setJobName(jobExecution.getJobInstance().getJobName());
 
 		Master master = status(jobExecution.getStatus());
 		job.setStatus(master.getValueVal());
-		job.setStatus_id(master.getMasterId());
+		job.setStatusId(master.getMasterId());
 
-		job.setUpdated_date(new Date());
-		job.setStart_time(jobExecution.getStartTime());
-		job.setEnd_time(jobExecution.getEndTime());
+		job.setUpdatedDate(new Date());
+		job.setStartTime(jobExecution.getStartTime());
+		job.setEndTime(jobExecution.getEndTime());
 		//TODO read from a contant file to make sure all jobs are using same values
-		job.setUpdated_by("BATCH JobListener");
+		job.setUpdatedBy("BATCH JobListener");
 
 
 		/**

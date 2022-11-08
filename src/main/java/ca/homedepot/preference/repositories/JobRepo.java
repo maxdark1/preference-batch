@@ -37,5 +37,5 @@ public interface JobRepo extends JpaRepository<JobEntity, String>
 
 
 	@Query(value = SqlQueriesConstants.SQL_INSERT_HDPC_JOB, nativeQuery = true)
-	void insert(String job_name, Boolean status, Date start_time, String inserted_by, Date inserted_date);
+	void insert(String jobName, Boolean status, Date startTime, String insertedBy, Date inserted_date);
 }

@@ -32,7 +32,7 @@ public final class SourceDelimitersConstants
 	/**
 	 * The constant SFMC
 	 */
-	public static String SFMC = "SFMC";
+	public static final String SFMC = "SFMC";
 	/**
 	 * The constant FB_SFMC
 	 */

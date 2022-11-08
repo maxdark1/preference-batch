@@ -18,7 +18,7 @@ import ca.homedepot.preference.model.InboundRegistration;
 public class InboundValidator
 {
 
-	public static String VALID_EMAIL_PATTERN;
+	public static String validEmailPattern;
 
 	public static final String[] FIELD_NAMES_REGISTRATION = new String[]
 	{ "Language_Preference", "AsOfDate", "Email_Address", "Email_Permission", "Phone_Permission", "Phone_Number",
@@ -37,7 +37,7 @@ public class InboundValidator
 	 */
 	public static void setValidEmailPattern(String validEmailPattern)
 	{
-		VALID_EMAIL_PATTERN = validEmailPattern;
+		InboundValidator.validEmailPattern = validEmailPattern;
 	}
 
 
@@ -116,7 +116,7 @@ public class InboundValidator
 	 */
 	public static void validateEmailFormat(String email, StringBuilder error)
 	{
-		if (email != null && !email.matches(VALID_EMAIL_PATTERN))
+		if (email != null && !email.matches(validEmailPattern))
 			error.append(" email address does not have a valid format {}: ").append(email).append("\n");
 
 	}

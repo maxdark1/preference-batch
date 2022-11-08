@@ -97,13 +97,13 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	 * @param file
 	 * @throws IOException
 	 */
-	private void generateFile(String file, String filePath) throws Exception
+	private void generateFile(String file, String filePath) throws IOException
 	{
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = filePath.replace("YYYYMMDD", formatter.format(new Date()));
 
 		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
-		byte toFile[] = file.getBytes();
+		byte[] toFile = file.getBytes();
 		writer.write(toFile);
 		writer.flush();
 		writer.close();

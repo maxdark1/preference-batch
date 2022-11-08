@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 
+import ca.homedepot.preference.constants.SchedulerConfigConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
@@ -182,6 +183,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Value("${folders.salesforce.path}")
 	String salesforcePath;
+
+	@Value("${folders.loyaltyCompliant.path}")
+	String loyaltyCompliantPath;
 
 	/**
 	 * Folders ERROR, INBOUND AND PROCCESED
@@ -940,9 +944,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setSource(CITI_BANK);
 		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
-		citiSupressionFileWriter.setNames(new String[]
-		{ "FirstName", "MiddleInitial", "LastName", "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
-				"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" });
+		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
 		citiSupressionFileWriter.setResource();
 
 		return citiSupressionFileWriter;
@@ -956,15 +958,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		loyaltyComplaintWriter.setName("loyaltyComplaintWriter");
 		loyaltyComplaintWriter.setFileService(hybrisWriterListener.getFileService());
 		loyaltyComplaintWriter.setFolderSource(folderOutbound);
-		loyaltyComplaintWriter.setRepositorySource(citiPath);
+		loyaltyComplaintWriter.setRepositorySource(loyaltyCompliantPath);
 		loyaltyComplaintWriter.setHeader(LOYALTY_COMPLAINT_WEEKLY_HEADERS);
 		loyaltyComplaintWriter.setSource(CITI_BANK);
 		loyaltyComplaintWriter.setFileNameFormat(weeklyCompliantNameFormat);
 		loyaltyComplaintWriter.setJobName(JOB_NAME_LOYALTY_COMPLAINT);
-		loyaltyComplaintWriter.setNames(new String[]
-		{ "EmailAddr", "CanPtcEffectiveDate", "CanPtcSourceId", "EmailStatus", "CanPtcFlag", "FirstName", "LastName",
-				"LanguagePreference", "EarlyOptInDate", "CndCompliantFlag", "HdCaFlag", "HdCaGardenClubFlag", "HdCaProFlag",
-				"PostalCd", "City", "CustomerNbr", "Province" });
+		loyaltyComplaintWriter.setNames(LOYALTY_COMPLIANT_NAMES);
 		loyaltyComplaintWriter.setResource();
 		return loyaltyComplaintWriter;
 	}
@@ -976,7 +975,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 		writer.setDataSource(dataSource);
 		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_SALESFORCE_EXTRACT);
-		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<SalesforceExtractOutboundDTO>());
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
 		writer.setItemPreparedStatementSetter(new SalesforcePreparedStatement());
 
 		return writer;

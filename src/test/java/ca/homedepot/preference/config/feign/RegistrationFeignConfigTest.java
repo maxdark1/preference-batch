@@ -27,18 +27,4 @@ class RegistrationFeignConfigTest
 		});
 	}
 
-	@Test
-	void feignContract()
-	{
-	}
-
-	@Test
-	void feignLoggerLevel()
-	{
-	}
-
-	@Test
-	void feignErrorDecoder()
-	{
-	}
 }

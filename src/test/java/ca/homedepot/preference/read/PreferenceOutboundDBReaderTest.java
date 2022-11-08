@@ -36,21 +36,21 @@ class PreferenceOutboundDBReaderTest
 	void outboundDBReader()
 	{
 		JdbcCursorItemReader<PreferenceOutboundDto> test = preferenceOutboundDBReader.outboundDBReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_STEP2);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_STEP2, test.getSql());
 	}
 
 	@Test
 	void outboundInternalDBReader()
 	{
 		JdbcCursorItemReader<InternalOutboundDto> test = preferenceOutboundDBReader.outboundInternalDbReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_PROGRAM_COMPLIANT);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_PROGRAM_COMPLIANT, test.getSql());
 	}
 
 	@Test
 	void citiSuppressionDBTableReader()
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundDBReader.citiSuppressionDBTableReader();
-		assertEquals(test.getSql(), OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE);
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE, test.getSql());
 	}
 
 	@Test

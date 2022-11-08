@@ -28,7 +28,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Value("${folders.outbound}")
 	protected String folderSorce;
 	@Value("${outbound.files.compliant}")
-	protected String file_name_format;
+	protected String fileNameFormat;
 	private FileOutputStream writer;
 
 
@@ -88,10 +88,10 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	 * @param file
 	 * @throws IOException
 	 */
-	private void generateFile(String file) throws Exception
+	private void generateFile(String file) throws IOException
 	{
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = file_name_format.replace("YYYYMMDD", formatter.format(new Date()));
+		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
 		writer = new FileOutputStream(repositorySource + folderSorce + fileName, true);
 		byte toFile[] = file.getBytes();

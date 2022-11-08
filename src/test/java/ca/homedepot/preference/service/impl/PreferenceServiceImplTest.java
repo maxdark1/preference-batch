@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 
 import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
 import ca.homedepot.preference.dto.*;
@@ -162,8 +161,8 @@ class PreferenceServiceImplTest
 		int rowsAffected = 1;
 
 		Mockito
-				.when(jdbcTemplate.update(anyString(), eq(job.getStatus_id()), eq(job.getUpdated_date()), eq(job.getUpdated_by()),
-						eq(job.getStatus()), eq(job.getEnd_time()), eq(job.getStart_time()), eq(job.getJob_name()), eq(status)))
+				.when(jdbcTemplate.update(anyString(), eq(job.getStatusId()), eq(job.getUpdatedDate()), eq(job.getUpdatedBy()),
+						eq(job.getStatus()), eq(job.getEndTime()), eq(job.getStartTime()), eq(job.getJobName()), eq(status)))
 				.thenReturn(rowsAffected);
 
 		int currentRowsAffected = preferenceServiceImpl.updateJob(job, status);

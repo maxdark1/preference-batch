@@ -73,8 +73,8 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 				//TODO no status field
 				.file_id(getFromTableFileID(item.getFileName(), jobName)).src_email_address(item.getEmailAddress())
 				//TODO no hardcoding language preference and default value will be "UNK"
-				.fileName(item.getFileName()).email_status(isEmailInvalid ? getEmailStatus(t) : emailStatus).status("E")
-				.email_address_pref("0").email_pref_hd_ca("0").email_pref_garden_club("-1").email_pref_pro("-1")
+				.fileName(item.getFileName()).email_status(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
+				.status("E").email_address_pref("0").email_pref_hd_ca("0").email_pref_garden_club("-1").email_pref_pro("-1")
 				//TODO read "test_batch" from constant file and rename to "batch".
 				.email_pref_new_mover("-1").inserted_by("tested_batch").inserted_date(new Date()).build();
 

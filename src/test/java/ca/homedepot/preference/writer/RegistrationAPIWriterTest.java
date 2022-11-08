@@ -7,9 +7,7 @@ import java.util.List;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,16 +29,13 @@ class RegistrationAPIWriterTest
 	@Mock
 	FileServiceImpl fileService;
 	@InjectMocks
+	@Spy
 	RegistrationAPIWriter registrationAPIWriter;
 
 	@BeforeEach
 	void setUp()
 	{
-		preferenceService = Mockito.mock(PreferenceServiceImpl.class);
-		fileService = Mockito.mock(FileServiceImpl.class);
-		registrationAPIWriter = new RegistrationAPIWriter();
-		registrationAPIWriter.setPreferenceService(preferenceService);
-		registrationAPIWriter.setFileService(fileService);
+		MockitoAnnotations.openMocks(this);
 	}
 
 	@Test
@@ -53,6 +48,7 @@ class RegistrationAPIWriterTest
 		Mockito.when(fileService.updateInboundStgTableStatus(eq(BigDecimal.ZERO), anyString(), anyString())).thenReturn(1);
 
 		registrationAPIWriter.write(items);
+		Mockito.verify(registrationAPIWriter).write(items);
 	}
 
 
