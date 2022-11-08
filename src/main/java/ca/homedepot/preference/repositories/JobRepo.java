@@ -14,6 +14,7 @@ import ca.homedepot.preference.repositories.entities.JobEntity;
  * The interface Preference Center repository.
  */
 @Repository
+//TODO not in use delete it
 public interface JobRepo extends JpaRepository<JobEntity, String>
 {
 

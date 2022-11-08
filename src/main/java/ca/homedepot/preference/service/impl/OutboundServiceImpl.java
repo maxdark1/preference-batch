@@ -68,6 +68,7 @@ public class OutboundServiceImpl implements OutboundService
 	public void createFile(String repository, String folder, String fileNameFormat, String headers) throws IOException
 	{
 		/* Creating File */
+		//TODO make formatter class variable
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
@@ -83,8 +84,8 @@ public class OutboundServiceImpl implements OutboundService
 			writer.flush();
 		}
 		catch (Exception ex)
-		{
-			log.error(ex.getMessage());
+		{ //TODO is there any specific exception and what should happen in case of exception.
+			log.error("File creation error" + ex.getMessage());
 		}
 		finally
 		{

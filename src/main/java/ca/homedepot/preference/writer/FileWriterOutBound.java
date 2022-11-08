@@ -67,6 +67,7 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	public void setResource()
 	{
+		//TODO formatter can be class variable
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
 		this.fileName = this.fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
@@ -113,7 +114,7 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	public void saveFileRecord()
 	{
-
+//TODO string literals
 		BigDecimal jobId = fileService.getJobId(jobName);
 		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE", source).getMasterId();
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");

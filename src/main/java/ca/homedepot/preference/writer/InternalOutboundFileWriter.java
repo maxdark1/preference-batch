@@ -56,6 +56,7 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 
 		for (InternalOutboundProcessorDto internal : items)
 		{
+			//TODO change to string buffer or builder
 			String line = "";
 			line = internal.getEmailAddr();
 			line += internal.getCanPtcEffectiveDate();
@@ -118,6 +119,8 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	 */
 	private void setFileRecord(String fileName)
 	{
+
+		//TODO read from enum or constants for string literrals
 		BigDecimal jobId = fileService.getJobId("SendPreferencesToInternalDestination");
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", SourceDelimitersConstants.VALID);
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),

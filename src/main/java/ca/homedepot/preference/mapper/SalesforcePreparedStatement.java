@@ -3,6 +3,7 @@ package ca.homedepot.preference.mapper;
 import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -33,7 +34,7 @@ public class SalesforcePreparedStatement implements ItemPreparedStatementSetter<
 		ps.setString(19, item.getPhoneNumber());
 		ps.setString(20, item.getBusinessName());
 		ps.setString(21, item.getBusinessType());
-		ps.setTimestamp(22, Timestamp.valueOf(item.getMoveDate()));
+		ps.setDate(22, Date.valueOf(item.getMoveDate()));
 		ps.setString(23, item.getDwellingType());
 	}
 }

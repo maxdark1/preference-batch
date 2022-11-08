@@ -9,6 +9,7 @@ import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.repositories.entities.FileEntity;
 
 @Repository
+//TODO not in use delete it
 public interface FileRepo extends JpaRepository<FileEntity, Long>
 {
 
