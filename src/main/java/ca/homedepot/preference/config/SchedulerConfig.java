@@ -1,5 +1,6 @@
 package ca.homedepot.preference.config;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +13,10 @@ import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
-import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
+import ca.homedepot.preference.mapper.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
-import ca.homedepot.preference.mapper.FileInboundStgTablePreparedStatement;
-import ca.homedepot.preference.mapper.InternalOutboundPreparedStatement;
 import ca.homedepot.preference.processor.*;
-import ca.homedepot.preference.mapper.SalesforcePreparedStatement;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
@@ -775,8 +773,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public FlatFileItemReader<InboundRegistration> inboundFileReader()
 	{
-		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader").delimited().delimiter("|")
-				.names(InboundValidator.FIELD_NAMES_REGISTRATION).targetType(InboundRegistration.class).linesToSkip(1)
+		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
+				.lineTokenizer(lineTokenizer(SINGLE_PIPE, InboundValidator.FIELD_OBJ_NAMES_INBOUND_REGISTRATION))
+				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(
 						FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, DELIMITER_PIPELINE))
@@ -792,7 +791,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public FlatFileItemReader<EmailOptOuts> inboundEmailPreferencesSMFCReader()
 	{
 		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
-				.lineTokenizer(lineTokenizer()).targetType(EmailOptOuts.class).linesToSkip(1)
+				.lineTokenizer(
+						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
+				.targetType(EmailOptOuts.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(
 						FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS, DELIMITER_TAB))
@@ -808,23 +809,27 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public FlatFileItemReader<EmailOptOuts> ingestOptOutsGmailClientUnsubscribedReader()
 	{
 		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
-				.lineTokenizer(lineTokenizer()).targetType(EmailOptOuts.class).linesToSkip(1)
+				.lineTokenizer(
+						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
+				.targetType(EmailOptOuts.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(ExactTargetEmailValidation.lineCallbackHandler()).build();
 	}
 
 	/**
-	 * Create line tokenizer with TAB separator
+	 * Create line tokenizer with any separator
 	 *
 	 * @return DelimitedLineTokenizer
 	 */
 
-	public DelimitedLineTokenizer lineTokenizer()
+	public DelimitedLineTokenizer lineTokenizer(String separator, String[] names)
 	{
-		DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB);
-		delimitedLineTokenizer.setNames(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS);
+		DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(separator);
+		delimitedLineTokenizer.setNames(names);
 		return delimitedLineTokenizer;
 	}
+
+
 
 	/**
 	 * Gets LayoutC (hyrbis, CRM or FB_SFMC) request from persistence.
@@ -1030,7 +1035,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 			outboundService.createFile(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
 					PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 		}
-		catch (Exception ex)
+		catch (IOException ex)
 		{
 			//TODO catch the exception that is thrown and what should happen if there is exception
 			log.error("Error during the creation of CRM Preferences File: " + ex.getMessage());
@@ -1055,7 +1060,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 			outboundService.createFile(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
 			outboundService.createFile(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
 		}
-		catch (Exception ex)
+		catch (IOException ex)
 		{
 			//TODO catch the exception that is thrown and what should happen if there is exception
 			log.error("Error during the creation of Internal Destination Files" + ex.getMessage());

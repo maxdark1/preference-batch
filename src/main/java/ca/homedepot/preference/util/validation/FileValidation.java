@@ -225,7 +225,6 @@ public class FileValidation
 	 * @param strDate
 	 * @return
 	 */
-	//TODO need to understand this method
 	public static boolean deepCheckDateFormat(String format, String strDate)
 	{
 		Map<Integer, Integer> counter = new LinkedHashMap<>();

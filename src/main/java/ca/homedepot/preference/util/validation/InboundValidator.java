@@ -20,7 +20,7 @@ public class InboundValidator
 
 	public static String validEmailPattern;
 
-	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
 	public static final String[] FIELD_NAMES_REGISTRATION = new String[]
 	{ "Language_Preference", "AsOfDate", "Email_Address", "Email_Permission", "Phone_Permission", "Phone_Number",
@@ -31,6 +31,15 @@ public class InboundValidator
 			"Value_9", "Content_10", "Value_10", "Content_11", "Value_11", "Content_12", "Value_12", "Content_13", "Value_13",
 			"Content_14", "Value_14", "Content_15", "Value_15", "Content_16", "Value_16", "Content_17", "Value_17", "Content_18",
 			"Value_18", "Content_19", "Value_19", "Content_20", "Value_20" };
+
+	public static final String[] FIELD_OBJ_NAMES_INBOUND_REGISTRATION = new String[]
+	{ "languagepreference", "asOfDate", "emailaddress", "emailpermission", "phonepermission", "phonenumber", "phoneextension",
+			"title", "firstname", "lastname", "address1", "address2", "city", "province", "postalcode", "mailpermission",
+			"emailPrefHDCA", "gardenClub", "emailPrefPRO", "newMover", "forfutureuse", "sourceiD", "sMSflag", "faxnumber",
+			"faxextension", "content1", "value1", "content2", "value2", "content3", "value3", "content4", "value4", "content5",
+			"value5", "content6", "value6", "content7", "value7", "content8", "value8", "content9", "value9", "content10", "value10",
+			"content11", "value11", "content12", "value12", "content13", "value13", "content14", "value14", "content15", "value15",
+			"content16", "value16", "content17", "value17", "content18", "value18", "content19", "value19", "content20", "value20" };
 
 	/**
 	 * Sets valid email pattern
@@ -103,8 +112,8 @@ public class InboundValidator
 	 */
 	public static void validateLanguagePref(InboundRegistration item, StringBuilder error)
 	{
-		if (!item.getLanguage_Preference().trim().matches("e|E|f|F|fr|FR|en|EN"))
-			error.append("invalid value for language_pref {}: ").append(item.getLanguage_Preference())
+		if (!item.getLanguagePreference().trim().matches("e|E|f|F|fr|FR|en|EN"))
+			error.append("invalid value for language_pref {}: ").append(item.getLanguagePreference())
 					.append(" not matches with: E, EN, F, FR\n");
 	}
 
@@ -216,16 +225,16 @@ public class InboundValidator
 	public static void validateNumberFormat(InboundRegistration item, StringBuilder error)
 	{
 		Integer value = null;
-		value = validateIsNumber(item.getEmail_Permission(), error);
+		value = validateIsNumber(item.getEmailPermission(), error);
 		validValueNumber(value, "email_permission", error);
 
-		if (item.getPhone_Permission() != null)
+		if (item.getPhonePermission() != null)
 		{
-			value = validateIsNumber(item.getPhone_Permission(), error);
+			value = validateIsNumber(item.getPhonePermission(), error);
 			validValueNumber(value, "phone_permission", error);
 		}
 
-		value = validateIsNumber(item.getMail_Permission(), error);
+		value = validateIsNumber(item.getMailPermission(), error);
 		validValueNumber(value, "mail_permission", error);
 
 		value = validateIsNumber(item.getEmailPrefHDCA(), error);
@@ -240,9 +249,9 @@ public class InboundValidator
 		value = validateIsNumber(item.getNewMover(), error);
 		validValueNumber(value, "email_pref_new_mover", error);
 
-		if (item.getValue_5() != null)
+		if (item.getValue5() != null)
 		{
-			value = validateIsNumber(item.getValue_5(), error);
+			value = validateIsNumber(item.getValue5(), error);
 			if (value != null && value != 1 && value != 2 && value != 5)
 				error.append("invalid value for field {}: value5 =\n" + value);
 		}
@@ -353,25 +362,26 @@ public class InboundValidator
 			error.append(" Item should be present\n");
 			return;
 		}
-		validateRequired(item.getLanguage_Preference(), "language_pref", error);
+		validateRequired(item.getLanguagePreference(), "language_pref", error);
 		validateRequired(item.getAsOfDate(), "as_of_date", error);
-		validateRequired(item.getEmail_Permission(), "email_permission", error);
-		validateRequired(item.getMail_Permission(), "mail_permission", error);
+		validateRequired(item.getEmailPermission(), "email_permission", error);
+		validateRequired(item.getMailPermission(), "mail_permission", error);
 		validateRequired(item.getEmailPrefHDCA(), "email_pref_hd_ca", error);
 		validateRequired(item.getGardenClub(), "email_pref_garden_club", error);
 		validateRequired(item.getEmailPrefPRO(), "email_pref_pro", error);
 		validateRequired(item.getNewMover(), "email_pref_new_mover", error);
-		validateRequired(item.getContent_1(), "content1", error);
-		validateRequired(item.getContent_2(), "content2", error);
-		validateRequired(item.getContent_3(), "content3", error);
-		validateRequired(item.getContent_5(), "content5", error);
-		validateRequired(item.getContent_6(), "content6", error);
+		validateRequired(item.getContent1(), "content1", error);
+		validateRequired(item.getContent2(), "content2", error);
+		validateRequired(item.getContent3(), "content3", error);
+		validateRequired(item.getContent5(), "content5", error);
+		validateRequired(item.getContent6(), "content6", error);
 	}
 
-	/*
+	/**
 	 * Validate required
 	 *
-	 * @param value, field, error
+	 * @param value,
+	 *           field, error
 	 *
 	 * @return Validate if required value is not Null or blank, if there is any error, update error message
 	 */
@@ -383,17 +393,6 @@ public class InboundValidator
 		}
 	}
 
-
-	/**
-	 * Return SimpleDateFormat for LayoutC SrcDate
-	 * 
-	 * @param date
-	 * @return Return SimpleDateFormat for LayoutC SrcDate
-	 */
-	public static String dateYearMonthDay(Date date)
-	{
-		return new SimpleDateFormat("MM-dd-yyyy").format(date);
-	}
 
 	public static Date moveDate(String date)
 	{

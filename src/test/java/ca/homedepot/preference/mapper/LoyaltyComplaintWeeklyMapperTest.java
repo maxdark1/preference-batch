@@ -30,8 +30,8 @@ class LoyaltyComplaintWeeklyMapperTest
 
 	String emailAddr = "test@email.com", canPtcFlag = "T", firstName = "test", lastName = "test", languagePreference = "E",
 			cndCompliantFlag = "T", hdCaFlag = "T", hdCaGardenClubFlag = "T", hdCaProFlag = "T", postalCd = "test", city = "test",
-			customerNbr = "00", province = "test";
-	BigDecimal canPtcSourceId = BigDecimal.ONE, emailStatus = BigDecimal.ONE;
+			customerNbr = "00", province = "test", emailStatus =  "00";
+	BigDecimal canPtcSourceId = BigDecimal.ONE;
 	Timestamp canPtcEffectiveDate = new Timestamp(new Date().getTime()), earlyOptInDate = new Timestamp(new Date().getTime());
 
 	@BeforeEach
@@ -50,7 +50,7 @@ class LoyaltyComplaintWeeklyMapperTest
 		Mockito.when(rs.getString("email_addr")).thenReturn(emailAddr);
 		Mockito.when(rs.getTimestamp("can_ptc_effective_date")).thenReturn(canPtcEffectiveDate);
 		Mockito.when(rs.getBigDecimal("can_ptc_source_id")).thenReturn(canPtcSourceId);
-		Mockito.when(rs.getBigDecimal("email_status")).thenReturn(emailStatus);
+		Mockito.when(rs.getString("email_status")).thenReturn(emailStatus);
 		Mockito.when(rs.getString("can_ptc_flag")).thenReturn(canPtcFlag);
 		Mockito.when(rs.getString("first_name")).thenReturn(firstName);
 		Mockito.when(rs.getString("last_name")).thenReturn(lastName);

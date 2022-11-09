@@ -15,7 +15,7 @@ public class LoyaltyCompliantDTO
 	private String emailAddr;
 	private Timestamp canPtcEffectiveDate;
 	private BigDecimal canPtcSourceId;
-	private BigDecimal emailStatus;
+	private String emailStatus;
 	private String canPtcFlag;
 	private String firstName;
 	private String lastName;

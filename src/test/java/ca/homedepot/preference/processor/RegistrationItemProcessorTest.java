@@ -33,19 +33,19 @@ public class RegistrationItemProcessorTest
 
 		input = new InboundRegistration();
 		input.setAsOfDate("08-26-2022 10:10:10");
-		input.setLanguage_Preference("E");
-		input.setEmail_Permission("1");
-		input.setMail_Permission("1");
+		input.setLanguagePreference("E");
+		input.setEmailPermission("1");
+		input.setMailPermission("1");
 		input.setEmailPrefHDCA("1");
 		input.setGardenClub("1");
 		input.setEmailPrefPRO("1");
 		input.setNewMover("-1");
-		input.setSource_ID("1");
-		input.setContent_1("CUSTOMER_NBR");
-		input.setContent_2("STORE_NBR");
-		input.setContent_3("ORG_NAME");
-		input.setContent_5("CUST_TYPE_CODE");
-		input.setContent_6("CELL_PHONE");
+		input.setSourceID("1");
+		input.setContent1("CUSTOMER_NBR");
+		input.setContent2("STORE_NBR");
+		input.setContent3("ORG_NAME");
+		input.setContent5("CUST_TYPE_CODE");
+		input.setContent6("CELL_PHONE");
 
 		List<Master> masterList = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class RegistrationItemProcessorTest
 	@Test
 	public void validateIsNumberTest() throws Exception
 	{
-		input.setEmail_Permission("a");
+		input.setEmailPermission("a");
 
 		ValidationException validationException = assertThrows(ValidationException.class, () -> {
 			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);

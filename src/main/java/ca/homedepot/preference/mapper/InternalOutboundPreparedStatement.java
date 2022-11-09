@@ -3,9 +3,10 @@ package ca.homedepot.preference.mapper;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 
-import java.sql.Date;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class InternalOutboundPreparedStatement implements ItemPreparedStatementSetter<InternalOutboundDto>
 {
@@ -14,14 +15,17 @@ public class InternalOutboundPreparedStatement implements ItemPreparedStatementS
 	{
 
 		ps.setString(1, item.getEmailAddr());
-		ps.setDate(2, new Date(item.getCanPtcEffectiveDate().getTime()));
+		ps.setTimestamp(2, new Timestamp(item.getCanPtcEffectiveDate().getTime()));
 		ps.setString(3, item.getCanPtcSourceId().toPlainString());
-		ps.setString(4, item.getEmailStatus().toPlainString());
+		String emailStatus = item.getEmailStatus().toPlainString();
+		if(emailStatus.equals("0"))
+			emailStatus = "00";
+		ps.setString(4, emailStatus);
 		ps.setString(5, item.getCanPtcGlag());
 		ps.setString(6, item.getFirstName());
 		ps.setString(7, item.getLastName());
 		ps.setString(8, item.getLanguagePreference());
-		ps.setDate(9, new Date(item.getEarlyOptInIDate().getTime()));
+		ps.setTimestamp(9, new Timestamp(item.getEarlyOptInIDate().getTime()));
 		ps.setString(10, item.getCndCompliantFlag());
 		ps.setString(11, item.getHdCaFlag());
 		ps.setString(12, item.getHdCaGardenClubFlag());

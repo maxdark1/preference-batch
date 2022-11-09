@@ -38,7 +38,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Autowired
 	private FileService fileService;
 
-	private static final Format formatter = new SimpleDateFormat("yyyyMMdd");
+	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
 
 	/**
 	 * Method used to generate a plain text file

@@ -72,6 +72,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 			}
 			catch (IOException e)
 			{//TODO what needs to be done in case of exception
+			 // Batch status fail
 				log.info(" File for citi supresion will be created. ");
 			}
 		}

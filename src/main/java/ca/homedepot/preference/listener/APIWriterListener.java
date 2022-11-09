@@ -2,6 +2,7 @@ package ca.homedepot.preference.listener;
 
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.service.FileService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INPROGRESS;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.SUCCESS;
+
 @Component
+@Slf4j
 public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 {
 
@@ -25,7 +30,7 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 	@Override
 	public void beforeWrite(List<? extends RegistrationRequest> items)
 	{
-		//TODO nothing to do here for the moment
+		log.info(" Items gonna be send to Preference Centre API.");
 	}
 
 	@Override
@@ -33,7 +38,7 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 	{
 		List<BigDecimal> filesId = getMapFileNameFileId(items);
 
-		filesId.forEach(fileId -> fileService.updateInboundStgTableStatus(fileId, "S", "IP"));
+		filesId.forEach(fileId -> fileService.updateInboundStgTableStatus(fileId, SUCCESS, INPROGRESS));
 	}
 
 	public List<BigDecimal> getMapFileNameFileId(List<? extends RegistrationRequest> items)
@@ -44,6 +49,6 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 	@Override
 	public void onWriteError(Exception exception, List<? extends RegistrationRequest> items)
 	{
-		//TODO nothing to do here for the moment
+		log.error("Error occurs while sending to API: {}", exception.getMessage());
 	}
 }

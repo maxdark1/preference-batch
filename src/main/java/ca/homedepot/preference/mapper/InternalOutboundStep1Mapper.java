@@ -29,17 +29,17 @@ public class InternalOutboundStep1Mapper implements RowMapper<InternalOutboundDt
 
 		Format formatter = new SimpleDateFormat("yyyy-MM-dd");
 		internalOutboundDto.setEmailAddr(rs.getString("email"));
-		internalOutboundDto.setCanPtcEffectiveDate(rs.getDate(EFFECTIVE_DATE));
+		internalOutboundDto.setCanPtcEffectiveDate(rs.getTimestamp(EFFECTIVE_DATE));
 		internalOutboundDto.setCanPtcSourceId(rs.getBigDecimal("source_id"));
 		internalOutboundDto.setEmailStatus(rs.getBigDecimal("email_status"));
 		internalOutboundDto.setCanPtcGlag(rs.getString("email_permission"));
 		internalOutboundDto.setLanguagePreference(rs.getString("language_preference"));
-		internalOutboundDto.setEarlyOptInIDate(rs.getDate("min"));
+		internalOutboundDto.setEarlyOptInIDate(rs.getTimestamp("min"));
 		internalOutboundDto.setCndCompliantFlag(rs.getString("cnd_compliant_flag"));
 		internalOutboundDto.setHdCaFlag(rs.getString("email_pref_hd_ca"));
 		internalOutboundDto.setHdCaGardenClubFlag(rs.getString("email_pref_garden_club"));
 		internalOutboundDto.setHdCaNewMoverFlag(rs.getString("email_pref_new_mover"));
-		internalOutboundDto.setHdCaNewMoverEffDate(rs.getDate(EFFECTIVE_DATE));
+		internalOutboundDto.setHdCaNewMoverEffDate(rs.getTimestamp(EFFECTIVE_DATE));
 		internalOutboundDto.setHdCaProFlag(rs.getString("email_pref_pro"));
 		internalOutboundDto.setPhonePtcFlag(rs.getString("phone_ptc_flag"));
 		internalOutboundDto.setFirstName(rs.getString("first_name"));
