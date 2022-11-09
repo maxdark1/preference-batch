@@ -74,7 +74,7 @@ public final class SourceDelimitersConstants
 
 	public static final String ERROR = "E";
 
-	public static final String SUCESS = "S";
+	public static final String SUCCESS = "S";
 
 	/**
 	 * LANGUAGE PREFRENCE
