@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 public class PreferenceOutboundProcessor implements ItemProcessor<PreferenceOutboundDto, PreferenceOutboundDtoProcessor>
 {
 	private static final Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+
 	@Override
 	public PreferenceOutboundDtoProcessor process(PreferenceOutboundDto preferenceOutboundDto) throws Exception
 	{

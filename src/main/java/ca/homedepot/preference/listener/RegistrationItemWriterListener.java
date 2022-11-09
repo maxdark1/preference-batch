@@ -60,7 +60,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 			files.put(key, fileID);
 		});
 
-		items.forEach(item -> item.setFile_id(files.get(item.getFileName())));
+		items.forEach(item -> item.setFileId(files.get(item.getFileName())));
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	{
 		return items.stream().map(item -> {
 			FileDTO file = new FileDTO();
-			file.setFileId(item.getFile_id());
+			file.setFileId(item.getFileId());
 			file.setFileName(item.getFileName());
 			return file;
 		}).distinct().collect(
@@ -104,7 +104,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	{
 		Map<String, BigDecimal> files = getMapFileNameFileId(items);
 
-		files.forEach((fileName, fileId) ->	fileService.updateInboundStgTableStatus(fileId, INPROGRESS, NOTSTARTED));
+		files.forEach((fileName, fileId) -> fileService.updateInboundStgTableStatus(fileId, INPROGRESS, NOTSTARTED));
 	}
 
 	/**

@@ -15,6 +15,7 @@ import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
+import ca.homedepot.preference.mapper.FileInboundStgTablePreparedStatement;
 import ca.homedepot.preference.mapper.InternalOutboundPreparedStatement;
 import ca.homedepot.preference.processor.*;
 import ca.homedepot.preference.mapper.SalesforcePreparedStatement;
@@ -891,7 +892,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return JdbcBatchItemWriter<FileInboundStgTable>
 	 */
-	@Bean
 	public JdbcBatchItemWriter<FileInboundStgTable> inboundRegistrationDBWriter()
 	{
 		JdbcBatchItemWriter<FileInboundStgTable> writer = new JdbcBatchItemWriter<>();
@@ -899,7 +899,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		writer.setDataSource(dataSource);
 		writer.setSql(SqlQueriesConstants.SQL_INSERT_FILE_INBOUND_STG_REGISTRATION);
 		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
-
+		writer.setItemPreparedStatementSetter(new FileInboundStgTablePreparedStatement());
 		return writer;
 	}
 

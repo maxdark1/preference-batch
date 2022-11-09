@@ -1,6 +1,5 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
@@ -56,12 +55,15 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 		for (PreferenceOutboundDtoProcessor preference : items)
 		{
-			fileBuilder.append(preference.getEmail()).append(preference.getEffectiveDate()).append(preference.getSourceId()).append(preference.getEmailStatus())
-					.append(preference.getPhonePtcFlag()).append(preference.getLanguagePref()).append(preference.getEarlyOptInDate())
-					.append(preference.getCndCompliantFlag()).append(preference.getEmailPrefHdCa()).append(preference.getEmailPrefGardenClub())
+			fileBuilder.append(preference.getEmail()).append(preference.getEffectiveDate()).append(preference.getSourceId())
+					.append(preference.getEmailStatus()).append(preference.getPhonePtcFlag()).append(preference.getLanguagePref())
+					.append(preference.getEarlyOptInDate()).append(preference.getCndCompliantFlag())
+					.append(preference.getEmailPrefHdCa()).append(preference.getEmailPrefGardenClub())
 					.append(preference.getEmailPrefPro()).append(preference.getPostalCode()).append(preference.getCustomerNbr())
 					.append(preference.getPhonePtcFlag()).append(preference.getDnclSuppresion()).append(preference.getPhoneNumber())
-					.append(preference.getFirstName()).append(preference.getLastName()).append(preference.getBusinessName()).append(preference.getIndustryCode()).append(preference.getCity()).append(preference.getProvince()).append(preference.getHdCaProSrcId());
+					.append(preference.getFirstName()).append(preference.getLastName()).append(preference.getBusinessName())
+					.append(preference.getIndustryCode()).append(preference.getCity()).append(preference.getProvince())
+					.append(preference.getHdCaProSrcId());
 		}
 
 		generateFile(fileBuilder.toString());
@@ -93,7 +95,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	private void setFileRecord(String fileName)
 	{
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_SEND_PREFERENCES_TO_CRM);
-		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, SourceDelimitersConstants.VALID);
+		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
 				fileStatus.getMasterId(), new Date(), new Date(), INSERTEDBY, new Date(), null, null);
 

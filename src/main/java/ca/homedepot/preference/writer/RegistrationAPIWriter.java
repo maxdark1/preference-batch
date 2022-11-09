@@ -45,7 +45,6 @@ public class RegistrationAPIWriter implements ItemWriter<RegistrationRequest>
 		/**
 		 * Updates status for each record
 		 */
-		//TODO status from enum or DB
 		response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus(new BigDecimal(resp.getId()),
 				resp.getStatus().substring(0, 1), INPROGRESS));
 		log.info("Service Response {} :", response);

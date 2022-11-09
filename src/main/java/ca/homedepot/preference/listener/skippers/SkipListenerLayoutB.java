@@ -75,10 +75,12 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 		 * Creating the File inbound statging table record
 		 */
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
-				.file_id(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).src_email_address(item.getEmailAddress()).src_language_pref(UNKNOWN)
-				.fileName(item.getFileName()).email_status(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
-				.email_address_pref(NUMBER_0.getValue()).email_pref_hd_ca(NUMBER_0.getValue()).email_pref_garden_club(NUMBER_MINUS_1.getValue()).email_pref_pro(NUMBER_MINUS_1.getValue())
-				.email_pref_new_mover(NUMBER_MINUS_1.getValue()).inserted_by(INSERTEDBY).inserted_date(new Date()).build();
+				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).srcEmailAddress(item.getEmailAddress())
+				.srcLanguagePref(UNKNOWN).fileName(item.getFileName())
+				.emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
+				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
+				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
+				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
 
 		/**
 		 * Inserting the failed item to Staging error

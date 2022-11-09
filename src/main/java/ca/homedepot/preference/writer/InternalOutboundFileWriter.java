@@ -59,7 +59,15 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 
 		for (InternalOutboundProcessorDto internal : items)
 		{
-			fileBuilder.append(internal.getEmailAddr()).append(internal.getCanPtcEffectiveDate()).append(internal.getCanPtcSourceId()).append(internal.getEmailStatus()).append(internal.getCanPtcFlag()).append(internal.getLanguagePreference()).append(internal.getEarlyOptInDate()).append(internal.getCndCompliantFlag()).append(internal.getHdCaFlag()).append(internal.getHdCaGardenClubFlag()).append(internal.getHdCaNewMoverFlag()).append(internal.getHdCaNewMoverEffDate()).append(internal.getHdCaProFlag()).append(internal.getPhonePtcFlag()).append(internal.getFirstName()).append(internal.getLastName()).append(internal.getPostalCode()).append(internal.getProvince()).append(internal.getCity()).append(internal.getPhoneNumber()).append(internal.getBussinessName()).append(internal.getIndustryCode()).append(internal.getMoveDate()).append(internal.getDwellingType());
+			fileBuilder.append(internal.getEmailAddr()).append(internal.getCanPtcEffectiveDate())
+					.append(internal.getCanPtcSourceId()).append(internal.getEmailStatus()).append(internal.getCanPtcFlag())
+					.append(internal.getLanguagePreference()).append(internal.getEarlyOptInDate())
+					.append(internal.getCndCompliantFlag()).append(internal.getHdCaFlag()).append(internal.getHdCaGardenClubFlag())
+					.append(internal.getHdCaNewMoverFlag()).append(internal.getHdCaNewMoverEffDate()).append(internal.getHdCaProFlag())
+					.append(internal.getPhonePtcFlag()).append(internal.getFirstName()).append(internal.getLastName())
+					.append(internal.getPostalCode()).append(internal.getProvince()).append(internal.getCity())
+					.append(internal.getPhoneNumber()).append(internal.getBussinessName()).append(internal.getIndustryCode())
+					.append(internal.getMoveDate()).append(internal.getDwellingType());
 
 		}
 		String file = fileBuilder.toString();

@@ -77,7 +77,7 @@ public final class SourceDelimitersConstants
 	public static final String SUCESS = "S";
 
 	/**
-	 *  LANGUAGE PREFRENCE
+	 * LANGUAGE PREFRENCE
 	 */
 	public static final String UNKNOWN = "UNK";
 

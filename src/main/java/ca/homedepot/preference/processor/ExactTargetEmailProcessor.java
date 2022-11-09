@@ -66,10 +66,11 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		/**
 		 * Create the object if every field is valid
 		 */
-		return builder.src_email_address(item.getEmailAddress()).fileName(item.getFileName())
-				.source_id(ExactTargetEmailValidation.getSourceId(item.getReason()))
-				.email_status(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status(NOTSTARTED).src_date(srcDate)
-				.email_address_pref(NUMBER_0.getValue()).email_pref_hd_ca(NUMBER_0.getValue()).email_pref_garden_club(NUMBER_MINUS_1.getValue()).email_pref_pro(NUMBER_MINUS_1.getValue())
-				.email_pref_new_mover(NUMBER_MINUS_1.getValue()).inserted_by(INSERTEDBY).inserted_date(new Date()).build();
+		return builder.srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
+				.sourceId(ExactTargetEmailValidation.getSourceId(item.getReason()))
+				.emailStatus(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status(NOTSTARTED).srcDate(srcDate)
+				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
+				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
+				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
 	}
 }

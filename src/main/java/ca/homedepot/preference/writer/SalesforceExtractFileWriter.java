@@ -85,8 +85,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 
 	public FlatFileHeaderCallback getHeaderCallback()
 	{
-		return writer -> writer.write(
-				SALESFORCE_EXTRACT_HEADERS);
+		return writer -> writer.write(SALESFORCE_EXTRACT_HEADERS);
 	}
 
 	public DelimitedLineAggregator<SalesforceExtractOutboundDTO> getLineAggregator()

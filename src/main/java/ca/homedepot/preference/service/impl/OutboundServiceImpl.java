@@ -77,7 +77,7 @@ public class OutboundServiceImpl implements OutboundService
 
 
 
-		try(FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
+		try (FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
 		{
 			byte[] toFile = file.getBytes();
 			writer.write(toFile);

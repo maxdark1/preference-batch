@@ -18,8 +18,6 @@ import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.InboundRegistration;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 class InboundValidatorTest
 {
 
