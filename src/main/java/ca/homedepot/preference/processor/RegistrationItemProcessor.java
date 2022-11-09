@@ -1,7 +1,6 @@
 package ca.homedepot.preference.processor;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.NOTSTARTED;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 import static ca.homedepot.preference.util.validation.InboundValidator.*;
 
 import java.math.BigDecimal;
@@ -67,11 +66,10 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 			throw e;
 		}
 		log.info(" Processing inbound item {}: ", item);
-		//TODO status,masterProcessor parameter, inserted by read from common place
 		builder.status(NOTSTARTED).fileName(item.getFileName()).srcLanguagePref(item.getLanguage_Preference().trim().toUpperCase())
 				.updatedDate(new Date()).srcDate(asOfDate).srcEmailAddress(item.getEmail_Address())
 				.emailStatus(item.getEmail_Address() == null ? null
-						: MasterProcessor.getSourceID("EMAIL_STATUS", "Valid Email Addresses").getMasterId())
+						: MasterProcessor.getSourceID(EMAIL_STATUS, VALID_EMAIL).getMasterId())
 				.emailAddressPref(item.getEmail_Permission()).phonePref(item.getPhone_Permission())
 				.srcPhoneNumber(item.getPhone_Number()).sourceId(sourceId).srcPhoneExtension(item.getPhone_Extension())
 				.srcTitleName(item.getTitle()).srcFirstName(item.getFirst_Name()).srcLastName(item.getLast_Name())

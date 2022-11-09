@@ -93,5 +93,9 @@ public final class SourceDelimitersConstants
 
 	public static final String YYYYMMDD_FILE = "YYYYMMDD";
 
+	public static final String EMAIL_STATUS = "EMAIL_STATUS";
+
+	public static final String VALID_EMAIL = "Valid Email Addresses";
+
 
 }
