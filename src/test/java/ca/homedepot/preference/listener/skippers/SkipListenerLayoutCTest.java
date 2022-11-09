@@ -63,7 +63,7 @@ class SkipListenerLayoutCTest
 		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
 		InboundRegistration item = new InboundRegistration();
 		item.setFileName(fileName);
-		item.setLanguage_Preference("F");
+		item.setLanguagePreference("F");
 		Throwable t = new Exception("message");
 
 		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);

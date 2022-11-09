@@ -66,12 +66,11 @@ public class ExactTargetEmailValidation
 	 */
 	public static BigDecimal getSourceId(@Nullable String reason)
 	{
-		//TODO ids can not be hardcoded, read from master table
-		if (reason == null)
-			return MasterProcessor.getSourceID("188");
+		if (reason == null) //188
+			return MasterProcessor.getSourceID("SOURCE_ID", "EXACT TARGET OPT OUT -CAN").getMasterId();
 		String reasonUp = reason.toUpperCase();
-		if (reasonUp.contains("AOL"))
-			return MasterProcessor.getSourceID("189");
+		if (reasonUp.contains("AOL")) // 189
+			return MasterProcessor.getSourceID("SOURCE_ID", "EXACT TARGET AOL OPT OUT -CAN").getMasterId();
 		if (reasonUp.contains("SCAMCOP") || reasonUp.contains("SPAM COP REPORT"))
 			return MasterProcessor.getSourceID("SOURCE", "EXACT TARGET OPT OUT OTH-CAN").getMasterId();
 

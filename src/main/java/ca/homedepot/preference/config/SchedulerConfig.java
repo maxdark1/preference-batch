@@ -777,7 +777,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public FlatFileItemReader<InboundRegistration> inboundFileReader()
 	{
 		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
-				.lineTokenizer(lineTokenizer(SINGLE_PIPE, InboundValidator.FIELD_NAMES_REGISTRATION))
+				.lineTokenizer(lineTokenizer(SINGLE_PIPE, InboundValidator.FIELD_OBJ_NAMES_INBOUND_REGISTRATION))
 				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(
