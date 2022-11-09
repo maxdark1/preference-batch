@@ -9,10 +9,12 @@ import java.lang.reflect.Modifier;
 
 import javax.sql.DataSource;
 
+import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
+import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.RegistrationAPIWriter;
 import ca.homedepot.preference.writer.RegistrationLayoutBWriter;
 import org.junit.jupiter.api.AfterEach;
@@ -217,11 +219,12 @@ class SchedulerConfigTest
 	void testlineTokenizer()
 	{
 		assertNotNull(schedulerConfig);
-		assertNotNull(schedulerConfig.lineTokenizer());
+		assertNotNull(schedulerConfig.lineTokenizer(SourceDelimitersConstants.DELIMITER_TAB,
+				InboundValidator.FIELD_OBJ_NAMES_INBOUND_REGISTRATION));
 	}
 
 	@Test
-	void testInboundEmailPreferencesSMFCReader() throws Exception
+	void testInboundEmailPreferencesSMFCReader()
 	{
 		schedulerConfig.hybrisCrmRegistrationFile = "ET.CAN.YYYYMMDD";
 		assertNotNull(schedulerConfig);

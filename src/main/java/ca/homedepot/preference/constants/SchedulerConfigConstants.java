@@ -19,14 +19,13 @@ public class SchedulerConfigConstants
 	{ FIRSTNAME, "MiddleInitial", LASTNAME, "AddrLine1", "AddrLine2", "City", "StateCd", "PostalCd", "EmailAddr", "Phone",
 			"SmsMobilePhone", "BusinessName", "DmOptOut", "EmailOptOut", "PhoneOptOut", "SmsOptOut" };
 	public static final String[] LOYALTY_COMPLIANT_NAMES = new String[]
-	{ "EmailAddr", "CanPtcEffectiveDate", "CanPtcSourceId", "EmailStatus", "CanPtcFlag", FIRSTNAME, LASTNAME,
-			"LanguagePreference", "EarlyOptInDate", "CndCompliantFlag", "HdCaFlag", "HdCaGardenClubFlag", "HdCaProFlag", "PostalCd",
-			"City", "CustomerNbr", "Province" };
+	{ "EmailAddr", "CanPtcEffectiveDate", "CanPtcSourceId", "EmailStatus", "CanPtcFlag", FIRSTNAME, LASTNAME, "LanguagePreference",
+			"EarlyOptInDate", "CndCompliantFlag", "HdCaFlag", "HdCaGardenClubFlag", "HdCaProFlag", "PostalCd", "City", "CustomerNbr",
+			"Province" };
 
 	public static final String[] SALESFORCE_EXTRACT_NAMES = new String[]
 	{ "EmailAddress", "AsOfDate", "SourceId", "EmailStatus", "EmailPtc", "LanguagePreference", "EarliestOptInDate",
 			"HdCanadaEmailCompliantFlag", "HdCanadaFlag", "GardenClubFlag", "NewMoverFlag", "ProFlag", "PhonePtcFlag", FIRSTNAME,
-			LASTNAME, "PostalCode", "Province", "City", "PhoneNumber", "BusinessName", "BusinessType", "MoveDate",
-			"DwellingType" };
+			LASTNAME, "PostalCode", "Province", "City", "PhoneNumber", "BusinessName", "BusinessType", "MoveDate", "DwellingType" };
 
 }

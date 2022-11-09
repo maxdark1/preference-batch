@@ -15,7 +15,7 @@ public class LoyaltyComplaintWeeklyMapper implements RowMapper<LoyaltyCompliantD
 		internalOutboundDto.setEmailAddr(rs.getString("email_addr"));
 		internalOutboundDto.setCanPtcEffectiveDate(rs.getTimestamp("can_ptc_effective_date"));
 		internalOutboundDto.setCanPtcSourceId(rs.getBigDecimal("can_ptc_source_id"));
-		internalOutboundDto.setEmailStatus(rs.getBigDecimal("email_status"));
+		internalOutboundDto.setEmailStatus(rs.getString("email_status"));
 		internalOutboundDto.setCanPtcFlag(rs.getString("can_ptc_flag"));
 		internalOutboundDto.setFirstName(rs.getString("first_name"));
 		internalOutboundDto.setLastName(rs.getString("last_name"));

@@ -794,7 +794,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public FlatFileItemReader<EmailOptOuts> inboundEmailPreferencesSMFCReader()
 	{
 		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
-				.lineTokenizer(lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS)).targetType(EmailOptOuts.class).linesToSkip(1)
+				.lineTokenizer(
+						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
+				.targetType(EmailOptOuts.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(
 						FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS, DELIMITER_TAB))
@@ -810,7 +812,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public FlatFileItemReader<EmailOptOuts> ingestOptOutsGmailClientUnsubscribedReader()
 	{
 		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
-				.lineTokenizer(lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS)).targetType(EmailOptOuts.class).linesToSkip(1)
+				.lineTokenizer(
+						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
+				.targetType(EmailOptOuts.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(ExactTargetEmailValidation.lineCallbackHandler()).build();
 	}
@@ -821,7 +825,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return DelimitedLineTokenizer
 	 */
 
-	public DelimitedLineTokenizer lineTokenizer(String separator,String[] names)
+	public DelimitedLineTokenizer lineTokenizer(String separator, String[] names)
 	{
 		DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(separator);
 		delimitedLineTokenizer.setNames(names);

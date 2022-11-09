@@ -32,14 +32,14 @@ public class InboundValidator
 			"Content_14", "Value_14", "Content_15", "Value_15", "Content_16", "Value_16", "Content_17", "Value_17", "Content_18",
 			"Value_18", "Content_19", "Value_19", "Content_20", "Value_20" };
 
-	public static final String[] FIELD_OBJ_NAMES_INBOUND_REGISTRATION = new String[]{
-			"languagepreference", "asOfDate", "emailaddress", "emailpermission", "phonepermission", "phonenumber", "phoneextension",
-			"title", "firstname", "lastname", "address1", "address2", "city", "province", "postalcode", "mailpermission", "emailPrefHDCA",
-			"gardenClub", "emailPrefPRO", "newMover", "forfutureuse", "sourceiD", "sMSflag", "faxnumber", "faxextension", "content1",
-			"value1", "content2", "value2", "content3", "value3", "content4", "value4", "content5", "value5", "content6", "value6",
-			"content7", "value7", "content8", "value8", "content9", "value9", "content10", "value10", "content11", "value11", "content12",
-			"value12", "content13", "value13", "content14", "value14", "content15", "value15", "content16", "value16", "content17", "value17",
-			"content18", "value18", "content19", "value19", "content20", "value20"};
+	public static final String[] FIELD_OBJ_NAMES_INBOUND_REGISTRATION = new String[]
+	{ "languagepreference", "asOfDate", "emailaddress", "emailpermission", "phonepermission", "phonenumber", "phoneextension",
+			"title", "firstname", "lastname", "address1", "address2", "city", "province", "postalcode", "mailpermission",
+			"emailPrefHDCA", "gardenClub", "emailPrefPRO", "newMover", "forfutureuse", "sourceiD", "sMSflag", "faxnumber",
+			"faxextension", "content1", "value1", "content2", "value2", "content3", "value3", "content4", "value4", "content5",
+			"value5", "content6", "value6", "content7", "value7", "content8", "value8", "content9", "value9", "content10", "value10",
+			"content11", "value11", "content12", "value12", "content13", "value13", "content14", "value14", "content15", "value15",
+			"content16", "value16", "content17", "value17", "content18", "value18", "content19", "value19", "content20", "value20" };
 
 	/**
 	 * Sets valid email pattern
@@ -380,7 +380,8 @@ public class InboundValidator
 	/**
 	 * Validate required
 	 *
-	 * @param value, field, error
+	 * @param value,
+	 *           field, error
 	 *
 	 * @return Validate if required value is not Null or blank, if there is any error, update error message
 	 */

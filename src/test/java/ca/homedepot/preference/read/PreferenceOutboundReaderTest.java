@@ -63,7 +63,7 @@ class PreferenceOutboundReaderTest
 	void testSalesforceExtractOutboundDBReader()
 	{
 		JdbcCursorItemReader<SalesforceExtractOutboundDTO> test = preferenceOutboundReader.salesforceExtractOutboundDBReader();
-		assertEquals( OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND, test.getSql());
+		assertEquals(OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND, test.getSql());
 	}
 
 	@Test

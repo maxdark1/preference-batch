@@ -37,7 +37,8 @@ public class StepErrorLoggingListener implements StepExecutionListener
 	@Override
 	public void beforeStep(StepExecution stepExecution)
 	{
-		log.info(" Job in process: {} , Step in process: {} ", stepExecution.getStepName(), stepExecution.getJobExecution().getJobConfigurationName());
+		log.info(" Job in process: {} , Step in process: {} ", stepExecution.getStepName(),
+				stepExecution.getJobExecution().getJobConfigurationName());
 	}
 
 	/**

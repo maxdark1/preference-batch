@@ -25,9 +25,9 @@ class ExactTargetEmailValidationTest
 		masterList.add(new Master(new BigDecimal("3"), BigDecimal.ONE, "SOURCE", "manual_update", true, null));
 		masterList.add(new Master(new BigDecimal("4"), BigDecimal.ONE, "SOURCE", "citi_bank", true, null));
 		masterList.add(new Master(new BigDecimal("5"), BigDecimal.ONE, "SOURCE", "SFMC", true, null));
-		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE_ID", "EXACT TARGET OPT OUT-CAN", true,
+		masterList.add(new Master(new BigDecimal("21"), BigDecimal.ONE, "SOURCE_ID", "EXACT TARGET OPT OUT -CAN", true,
 				new BigDecimal("188")));
-		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE_ID", "EXACT TARGET OPT OUT AOL-CAN", true,
+		masterList.add(new Master(new BigDecimal("22"), BigDecimal.ONE, "SOURCE_ID", "EXACT TARGET AOL OPT OUT -CAN", true,
 				new BigDecimal("189")));
 		masterList.add(new Master(new BigDecimal("23"), BigDecimal.ONE, "SOURCE", "EXACT TARGET OPT OUT OTH-CAN", true, null));
 		masterList

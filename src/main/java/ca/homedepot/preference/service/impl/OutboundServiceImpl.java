@@ -85,7 +85,7 @@ public class OutboundServiceImpl implements OutboundService
 		}
 		catch (IOException ex)
 		{ //TODO is there any specific exception and what should happen in case of exception.
-			// Make the batch status failed
+		  // Make the batch status failed
 			log.error("File creation error" + ex.getMessage());
 		}
 

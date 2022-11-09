@@ -79,14 +79,12 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 				.content5(item.getContent5()).custTypeCd(item.getContent5()).value5(item.getValue5()).content6(item.getContent6())
 				.value6(item.getValue6()).content7(item.getContent7()).value7(item.getValue7()).content8(item.getValue8())
 				.value8(item.getValue8()).content9(item.getContent9()).value9(item.getValue9()).content10(item.getContent10())
-				.value10(item.getValue10()).content11(item.getContent11()).value11(item.getValue11())
-				.content12(item.getContent12()).value12(item.getValue12()).content13(item.getContent13())
-				.value13(item.getValue13()).content14(item.getContent14()).value14(item.getValue14())
-				.content15(item.getContent15()).value15(item.getValue15()).content16(item.getContent16())
-				.value16(item.getValue16()).content17(item.getContent17()).value17(item.getValue17())
-				.content18(item.getContent18()).value18(item.getValue18()).content19(item.getContent19())
-				.value19(item.getValue19()).content20(item.getContent20()).value20(item.getValue20()).insertedBy(INSERTEDBY)
-				.insertedDate(new Date()).build();
+				.value10(item.getValue10()).content11(item.getContent11()).value11(item.getValue11()).content12(item.getContent12())
+				.value12(item.getValue12()).content13(item.getContent13()).value13(item.getValue13()).content14(item.getContent14())
+				.value14(item.getValue14()).content15(item.getContent15()).value15(item.getValue15()).content16(item.getContent16())
+				.value16(item.getValue16()).content17(item.getContent17()).value17(item.getValue17()).content18(item.getContent18())
+				.value18(item.getValue18()).content19(item.getContent19()).value19(item.getValue19()).content20(item.getContent20())
+				.value20(item.getValue20()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
 
 		/**
 		 * Insertion to staging error on failed item

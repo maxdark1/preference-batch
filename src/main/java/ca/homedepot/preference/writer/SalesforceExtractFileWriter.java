@@ -5,7 +5,6 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +72,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 			}
 			catch (IOException e)
 			{//TODO what needs to be done in case of exception
-				// Batch status fail
+			 // Batch status fail
 				log.info(" File for citi supresion will be created. ");
 			}
 		}
