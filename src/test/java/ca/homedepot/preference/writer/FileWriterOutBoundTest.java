@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.item.file.FlatFileHeaderCallback;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -166,5 +168,29 @@ class FileWriterOutBoundTest
 	{
 		fileWriterOutBound.setFileName("fileName");
 		assertEquals("fileName", fileWriterOutBound.getFileName());
+	}
+
+	@Test
+	void getHeaderCallBack()
+	{
+		fileWriterOutBound.setHeader("header");
+
+		FlatFileHeaderCallback flatFileHeaderCallback = fileWriterOutBound.getHeaderCallBack();
+		assertNotNull(flatFileHeaderCallback);
+		assertEquals("header", fileWriterOutBound.getHeader());
+	}
+
+	@Test
+	void getSource()
+	{
+		assertEquals("citi_bank", fileWriterOutBound.getSource());
+	}
+
+	@Test
+	void getNames()
+	{
+		String[] names = new String[]
+		{ "names" };
+		assertTrue(Arrays.equals(names, fileWriterOutBound.getNames()));
 	}
 }

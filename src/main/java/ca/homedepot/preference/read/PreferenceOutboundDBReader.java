@@ -97,4 +97,9 @@ public class PreferenceOutboundDBReader
 		log.info(" Preference Outbound : Salesforce Extract Outbound Step 2 Reader End :" + new Date());
 		return reader;
 	}
+
+	public void setDataSource(DataSource dataSource)
+	{
+		this.dataSource = dataSource;
+	}
 }

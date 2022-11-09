@@ -25,6 +25,7 @@ import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
+import lombok.Setter;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.*;
@@ -73,6 +74,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 @Configuration
 @EnableBatchProcessing
 @EnableScheduling
+@Setter
 @RequiredArgsConstructor
 public class SchedulerConfig extends DefaultBatchConfigurer
 {
@@ -240,7 +242,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String citiFileNameFormat;
 
 	@Value("${outbound.salesforce.extract}")
-	private String salesforcefileNameFormat;
+	String salesforcefileNameFormat;
 
 	/**
 	 * Patterns for validations
@@ -350,8 +352,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private InternalOutboundFileWriter internalOutboundFileWriter;
 
-	@Autowired
-	private SalesforceExtractFileWriter salesforceExtractFileWriter;
 
 	@Autowired
 	public void setUpListener()
@@ -391,130 +391,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		InboundValidator.setValidEmailPattern(emailRegex);
 	}
 
-	/**
-	 * Set CRM writer listener
-	 *
-	 * @param crmWriterListener
-	 *
-	 */
-	public void setCrmWriterListener(RegistrationItemWriterListener crmWriterListener)
-	{
-		this.crmWriterListener = crmWriterListener;
-	}
-
-	/**
-	 * Set hybris writer listener.
-	 *
-	 * @param hybrisWriterListener
-	 *
-	 */
-	public void setHybrisWriterListener(RegistrationItemWriterListener hybrisWriterListener)
-	{
-		this.hybrisWriterListener = hybrisWriterListener;
-	}
-
-	/**
-	 * Set API writer.
-	 *
-	 * @param apiWriter
-	 *
-	 */
-	public void setApiWriter(RegistrationAPIWriter apiWriter)
-	{
-		this.apiWriter = apiWriter;
-	}
-
-
-	/**
-	 * Set LayoutB writer listener.
-	 *
-	 * @param exactTargetEmailWriterListener
-	 *
-	 */
-	public void setExactTargetEmailWriterListener(RegistrationItemWriterListener exactTargetEmailWriterListener)
-	{
-		this.exactTargetEmailWriterListener = exactTargetEmailWriterListener;
-	}
-
-	/**
-	 * Set LayoutB API writer
-	 *
-	 * @param layoutBWriter
-	 *
-	 */
-	public void setLayoutBWriter(RegistrationLayoutBWriter layoutBWriter)
-	{
-		this.layoutBWriter = layoutBWriter;
-	}
-
-	/**
-	 * Set job Listener
-	 *
-	 * @param jobListener
-	 *
-	 */
-
-	public void setJobListener(JobListener jobListener)
-	{
-		this.jobListener = jobListener;
-	}
-
-	/**
-	 * Set skip Listener for LayoutB
-	 *
-	 * @param skipListenerLayoutB
-	 *
-	 */
-
-	public void setSkipListenerLayoutB(SkipListenerLayoutB skipListenerLayoutB)
-	{
-		this.skipListenerLayoutB = skipListenerLayoutB;
-	}
-
-	/**
-	 * Set skip Listener for LayoutC
-	 *
-	 * @param skipListenerLayoutC
-	 *
-	 */
-
-	public void setSkipListenerLayoutC(SkipListenerLayoutC skipListenerLayoutC)
-	{
-		this.skipListenerLayoutC = skipListenerLayoutC;
-	}
-
-	/**
-	 * Set step Listener
-	 *
-	 * @param stepListener
-	 *
-	 */
-	public void setStepListener(StepErrorLoggingListener stepListener)
-	{
-		this.stepListener = stepListener;
-	}
-
-	/**
-	 * Set batch tasklet
-	 *
-	 * @param batchTasklet
-	 *
-	 */
-	public void setBatchTasklet(BatchTasklet batchTasklet)
-	{
-		this.batchTasklet = batchTasklet;
-	}
-
-	/**
-	 * Set FB SFMC Writer Listener
-	 *
-	 * @param fbsfmcWriterListener
-	 *
-	 */
-	public void setFbsfmcWriterListener(RegistrationItemWriterListener fbsfmcWriterListener)
-	{
-		this.fbsfmcWriterListener = fbsfmcWriterListener;
-	}
 
 	/**
 	 * After scheduled is construct, it will save in static mode the Master's information
@@ -997,7 +873,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public SalesforceExtractFileWriter salesforceExtractFileWriter()
 	{
-		salesforceExtractFileWriter = new SalesforceExtractFileWriter();
+		SalesforceExtractFileWriter salesforceExtractFileWriter = new SalesforceExtractFileWriter();
 
 		salesforceExtractFileWriter.setFileService(hybrisWriterListener.getFileService());
 		salesforceExtractFileWriter.setFolderSource(folderOutbound);
