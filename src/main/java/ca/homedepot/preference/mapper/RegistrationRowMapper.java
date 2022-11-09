@@ -1,4 +1,4 @@
-package ca.homedepot.preference.config;
+package ca.homedepot.preference.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

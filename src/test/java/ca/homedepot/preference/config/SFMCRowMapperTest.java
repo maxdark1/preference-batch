@@ -1,6 +1,7 @@
 package ca.homedepot.preference.config;
 
 import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.mapper.SFMCRowMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

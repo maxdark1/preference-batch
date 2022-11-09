@@ -1,4 +1,4 @@
-package ca.homedepot.preference.config;
+package ca.homedepot.preference.mapper;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.RegistrationRequest;
