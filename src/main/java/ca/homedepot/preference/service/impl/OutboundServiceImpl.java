@@ -23,7 +23,7 @@ public class OutboundServiceImpl implements OutboundService
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	private static final Format formatter = new SimpleDateFormat("yyyyMMdd");
+	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
 
 	/**
 	 * This methos is used to make a connection with DB and execute a query to get necessary data
@@ -85,6 +85,7 @@ public class OutboundServiceImpl implements OutboundService
 		}
 		catch (IOException ex)
 		{ //TODO is there any specific exception and what should happen in case of exception.
+			// Make the batch status failed
 			log.error("File creation error" + ex.getMessage());
 		}
 

@@ -117,6 +117,6 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	@Override
 	public void onWriteError(Exception exception, List<? extends FileInboundStgTable> items)
 	{
-		//TODO There is not work to do in here
+		log.error(" An exception has occured while writing the items into file_inbound_stg_table: {} ", exception.getMessage());
 	}
 }

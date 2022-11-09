@@ -335,6 +335,7 @@ public final class FileUtil
 					catch (IOException e)
 					{
 						//TODO what should happen in case of exception
+						// Make the Job status failed
 						log.error(" Exception occurs moving file {}: {}", fileName, e.getMessage());
 					}
 				}

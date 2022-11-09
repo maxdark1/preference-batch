@@ -44,6 +44,8 @@ public final class SourceDelimitersConstants
 	 * The delimiter PIPE LINE
 	 */
 	public static final String DELIMITER_PIPELINE = "\\|";
+
+	public static final String SINGLE_PIPE = "|";
 	/**
 	 * The delimiter tab
 	 */

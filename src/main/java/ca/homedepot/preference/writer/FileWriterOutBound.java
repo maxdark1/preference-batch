@@ -30,7 +30,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 @Setter
 public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 {
-	private static final Format formatter = new SimpleDateFormat("yyyyMMdd");
+	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
 	private String repositorySource;
 
 	private String folderSource;

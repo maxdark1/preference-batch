@@ -20,7 +20,7 @@ public class InboundValidator
 
 	public static String validEmailPattern;
 
-	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
 	public static final String[] FIELD_NAMES_REGISTRATION = new String[]
 	{ "Language_Preference", "AsOfDate", "Email_Address", "Email_Permission", "Phone_Permission", "Phone_Number",
@@ -368,7 +368,7 @@ public class InboundValidator
 		validateRequired(item.getContent_6(), "content6", error);
 	}
 
-	/*
+	/**
 	 * Validate required
 	 *
 	 * @param value, field, error
@@ -383,17 +383,6 @@ public class InboundValidator
 		}
 	}
 
-
-	/**
-	 * Return SimpleDateFormat for LayoutC SrcDate
-	 * 
-	 * @param date
-	 * @return Return SimpleDateFormat for LayoutC SrcDate
-	 */
-	public static String dateYearMonthDay(Date date)
-	{
-		return new SimpleDateFormat("MM-dd-yyyy").format(date);
-	}
 
 	public static Date moveDate(String date)
 	{
