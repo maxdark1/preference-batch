@@ -1,5 +1,6 @@
 package ca.homedepot.preference.config;
 
+import static ca.homedepot.preference.constants.PreferenceBatchConstants.COMPLETED_STATUS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 
@@ -110,18 +111,23 @@ class SchedulerConfigTest
 	private JobLauncher jobLauncher;
 
 
-	private static void setFinalStaticField(Class<?> clazz, String fieldName, Object value)
+	private void setFinalStaticField(Class<?> clazz, String fieldName, Object value)
 			throws NoSuchFieldException, IllegalAccessException
 	{
 
 		Field field = clazz.getDeclaredField(fieldName);
+		boolean isAccesible = field.canAccess(schedulerConfig);
 		field.setAccessible(true);
 
 		Field modifiers = Field.class.getDeclaredField("modifiers");
+		boolean isModifierAccesible = modifiers.canAccess(schedulerConfig);
 		modifiers.setAccessible(true);
 		modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 
 		field.set(null, value);
+		field.setAccessible(isAccesible);
+		modifiers.setAccessible(isModifierAccesible);
+
 	}
 
 	@BeforeEach
@@ -168,7 +174,7 @@ class SchedulerConfigTest
 		schedulerConfig.setStepListener(stepErrorLoggingListener);
 		schedulerConfig.setBatchTasklet(batchTasklet);
 		schedulerConfig.setApiWriter(apiWriter);
-		setFinalStaticField(SchedulerConfig.class, "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
+		//setFinalStaticField(schedulerConfig.getClass(), "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
 
 
 	}
@@ -236,14 +242,13 @@ class SchedulerConfigTest
 	{
 		Mockito.when(jobBuilderFactory.get("job_name")).thenReturn(jobBuilder);
 		Mockito.when(jobBuilder.incrementer(new RunIdIncrementer())).thenReturn(jobBuilder);
-		Mockito.when(jobBuilderHelper.listener(jobListener)).thenReturn(jobBuilder);
+		Mockito.when(jobBuilder.listener(jobListener)).thenReturn(jobBuilder);
 		Mockito.when(jobBuilder.start(step)).thenReturn(simpleJobBuilder);
-		Mockito.when(simpleJobBuilder.on(PreferenceBatchConstants.COMPLETED_STATUS)).thenReturn(transitionBuilder);
+		Mockito.when(simpleJobBuilder.on(COMPLETED_STATUS)).thenReturn(transitionBuilder);
 		Mockito.when(transitionBuilder.to(step)).thenReturn(flowBuilder);
-		Mockito.when(flowBuilder.build()).thenReturn(flowJobBuilder);
-		Mockito.when(flowJobBuilder.build()).thenReturn(job);
 
-		//assertNotNull(schedulerConfig.registrationInbound());
+
+		//assertNotNull(schedulerConfig.registrationHybrisInbound());
 	}
 
 	@Test
