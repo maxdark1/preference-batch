@@ -3,7 +3,6 @@ package ca.homedepot.preference.listener;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,12 +10,9 @@ import org.mockito.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
 class RegistrationItemWriterListenerTest
@@ -59,7 +55,7 @@ class RegistrationItemWriterListenerTest
 
 		registrationItemWriterListener.beforeWrite(items);
 		Mockito.verify(registrationItemWriterListener).beforeWrite(items);
-		assertEquals(fileId, items.get(0).getFile_id());
+		assertEquals(fileId, items.get(0).getFileId());
 	}
 
 	@Test

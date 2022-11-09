@@ -6,6 +6,8 @@ import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
@@ -26,12 +28,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static ca.homedepot.preference.constants.PreferenceBatchConstants.SALESFORCE_EXTRACT_HEADERS;
+import static ca.homedepot.preference.constants.SchedulerConfigConstants.SALESFORCE_EXTRACT_NAMES;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+
 @Slf4j
 @Component
-@Data
+@Getter
+@Setter
 public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceExtractOutboundDTO>
 {
-
 	@Value("${folders.salesforce.path}")
 	private String repositorySource;
 	@Value("${folders.outbound}")
@@ -82,20 +88,13 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 
 	public FlatFileHeaderCallback getHeaderCallback()
 	{
-		return writer -> writer.write(
-				"EMAIL_ADDRESS   ||   AS_OF_DATE   ||   SOURCE_ID   ||   EMAIL_STATUS   ||   EMAIL_PTC   ||   LANGUAGE_PREFERENCE   ||   EARLIEST_OPT_IN_DATE   ||   HD_CANADA_EMAIL_COMPLIANT_FLAG   ||   HD_CANADA_FLAG   ||   GARDEN_CLUB_FLAG   ||   NEW_MOVER_FLAG   ||   PRO_FLAG   "
-						+ "||   PHONE_PTC_FLAG   ||   FIRST_NAME   ||   LAST_NAME   ||   POSTAL_CODE   ||   PROVINCE   ||   CITY   ||   PHONE_NUMBER   ||   BUSINESS_NAME   ||   BUSINESS_TYPE   ||   MOVE_DATE   ||   DWELLING_TYPE");
+		return writer -> writer.write(SALESFORCE_EXTRACT_HEADERS);
 	}
 
 	public DelimitedLineAggregator<SalesforceExtractOutboundDTO> getLineAggregator()
 	{
 		BeanWrapperFieldExtractor<SalesforceExtractOutboundDTO> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
-		//TODO can be a constant array, instead making everytime new
-		beanWrapperFieldExtractor.setNames(new String[]
-		{ "EmailAddress", "AsOfDate", "SourceId", "EmailStatus", "EmailPtc", "LanguagePreference", "EarliestOptInDate",
-				"HdCanadaEmailCompliantFlag", "HdCanadaFlag", "GardenClubFlag", "NewMoverFlag", "ProFlag", "PhonePtcFlag",
-				"FirstName", "LastName", "PostalCode", "Province", "City", "PhoneNumber", "BusinessName", "BusinessType", "MoveDate",
-				"DwellingType" });
+		beanWrapperFieldExtractor.setNames(SALESFORCE_EXTRACT_NAMES);
 
 		DelimitedLineAggregator<SalesforceExtractOutboundDTO> delimitedLineAggregator = new DelimitedLineAggregator<>();
 		delimitedLineAggregator.setDelimiter("      ");
@@ -106,11 +105,11 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 	public void saveFileRecord()
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-		BigDecimal sourceId = MasterProcessor.getSourceID("SOURCE_ID", "citisup").getMasterId();
-		Master fileStatus = MasterProcessor.getSourceID("STATUS", "VALID");
-		//TODO duplicate string literals
+		BigDecimal sourceId = MasterProcessor.getSourceID(SOURCE_ID_STR, CITI_SUP).getMasterId();
+		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
+
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
-				new Date(), "BATCH", new Date(), null, null);
+				new Date(), INSERTEDBY, new Date(), null, null);
 
 		fileService.insert(file);
 	}

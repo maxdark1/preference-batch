@@ -11,10 +11,16 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.DELIMITER_TAB;
+
 public class ExactTargetEmailValidation
 {
 	public static final String[] FIELD_NAMES_SFMC_OPTOUTS = new String[]
 	{ "Email Address", "Status", "Reason", "Date Unsubscribed" };
+
+	static final SimpleDateFormat[] simpleDateFormatArray =
+	{ new SimpleDateFormat("MM/dd/yyyy H :mm"), new SimpleDateFormat("MM/dd/yyyy HH:mm"), new SimpleDateFormat("MM/dd/yyyy HH:m"),
+			new SimpleDateFormat("MM/dd/yyyy H :m"), };
 
 	private ExactTargetEmailValidation()
 	{
@@ -82,10 +88,7 @@ public class ExactTargetEmailValidation
 	public static Date validateDateFormat(String date, StringBuilder error)
 	{
 		Date asOfDate = null;
-		//TODO make it class variable as its a constant
-		SimpleDateFormat[] simpleDateFormatArray =
-		{ new SimpleDateFormat("MM/dd/yyyy H :mm"), new SimpleDateFormat("MM/dd/yyyy HH:mm"),
-				new SimpleDateFormat("MM/dd/yyyy HH:m"), new SimpleDateFormat("MM/dd/yyyy H :m"), };
+
 
 		for (SimpleDateFormat simpleDateFormat : simpleDateFormatArray)
 		{
@@ -107,7 +110,7 @@ public class ExactTargetEmailValidation
 			}
 		}
 		/**
-		 * If it doesn't returns before the date, means that the date format is not valid
+		 * If it doesn't return before the date, means that the date format is not valid
 		 */
 		error.append("invalid date format ").append(date).append("\n");
 		return asOfDate;
@@ -120,9 +123,8 @@ public class ExactTargetEmailValidation
 	 */
 	public static LineCallbackHandler lineCallbackHandler()
 	{
-		//TODO  read the split character from the DElimeter class
 		return line -> {
-			String[] header = line.split("\\t");
+			String[] header = line.split(DELIMITER_TAB);
 			if (!Arrays.equals(header, FIELD_NAMES_SFMC_OPTOUTS))
 				throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
 		};

@@ -1,12 +1,10 @@
 package ca.homedepot.preference.constants;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class SourceDelimitersConstants
 {
-
-	private SourceDelimitersConstants()
-	{
-
-	}
 
 	/**
 	 * The constant hybris
@@ -24,6 +22,11 @@ public final class SourceDelimitersConstants
 	 * The constant citi_bank
 	 */
 	public static final String CITI_BANK = "citi_bank";
+
+	/**
+	 * .The constant for salesforce extract
+	 */
+	public static final String CITI_SUP = "citisup";
 
 	/**
 	 * The constants
@@ -50,7 +53,49 @@ public final class SourceDelimitersConstants
 
 	public static final String VALID = "VALID";
 
+	public static final String INVALID = "INVALID";
 	public static final String SINGLE_DELIMITER_TAB = "\t";
 
 	public static final String DELIMITER_COMA = ",";
+
+
+	/**
+	 * Inserted_by value for batch
+	 */
+	public static final String INSERTEDBY = "BATCH";
+
+	/**
+	 * Status inbound stg table
+	 */
+
+	public static final String NOTSTARTED = "NS";
+
+	public static final String INPROGRESS = "IP";
+
+	public static final String ERROR = "E";
+
+	public static final String SUCCESS = "S";
+
+	/**
+	 * LANGUAGE PREFRENCE
+	 */
+	public static final String UNKNOWN = "UNK";
+
+
+	/**
+	 *
+	 */
+	public static final String SOURCE_STR = "SOURCE";
+
+	public static final String SOURCE_ID_STR = "SOURCE_ID";
+
+	public static final String STATUS_STR = "STATUS";
+
+	public static final String YYYYMMDD_FILE = "YYYYMMDD";
+
+	public static final String EMAIL_STATUS = "EMAIL_STATUS";
+
+	public static final String VALID_EMAIL = "Valid Email Addresses";
+
+
 }

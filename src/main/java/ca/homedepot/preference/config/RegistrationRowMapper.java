@@ -2,11 +2,9 @@ package ca.homedepot.preference.config;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import ca.homedepot.preference.util.validation.InboundValidator;
 import org.springframework.jdbc.core.RowMapper;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
@@ -35,7 +33,7 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setFileId(rs.getBigDecimal(PreferenceBatchConstants.FILE_ID));
 		registrationRequest.setSequenceNbr(rs.getString(PreferenceBatchConstants.SEQUENCE_NBR));
 		registrationRequest.setSourceId(rs.getLong(PreferenceBatchConstants.SOURCE_ID));
-		registrationRequest.setLanguagePreference(rs.getString(PreferenceBatchConstants.SRC_LANGUAGE_PREF));
+		registrationRequest.setLanguagePreference(rs.getString(PreferenceBatchConstants.SRC_LANGUAGE_PREF).toUpperCase());
 		registrationRequest.setSrcTitleName(rs.getString(PreferenceBatchConstants.SRC_TITLE_NAME));
 		registrationRequest.setSrcFirstName(rs.getString(PreferenceBatchConstants.SRC_FIRST_NAME));
 		registrationRequest.setSrcLastName(rs.getString(PreferenceBatchConstants.SRC_LAST_NAME));
@@ -85,8 +83,8 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT16), rs.getString(PreferenceBatchConstants.VALUE16));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT17), rs.getString(PreferenceBatchConstants.VALUE17));
 
-		Date date = InboundValidator.moveDate(rs.getString(PreferenceBatchConstants.VALUE18));
-		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT18), InboundValidator.dateYearMonthDay(date));
+
+		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT18), rs.getString(PreferenceBatchConstants.VALUE18));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT19), rs.getString(PreferenceBatchConstants.VALUE19));
 		contentValue.put(rs.getString(PreferenceBatchConstants.CONTENT20), rs.getString(PreferenceBatchConstants.VALUE20));
 

@@ -20,6 +20,8 @@ public class InboundValidator
 
 	public static String validEmailPattern;
 
+	private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 	public static final String[] FIELD_NAMES_REGISTRATION = new String[]
 	{ "Language_Preference", "AsOfDate", "Email_Address", "Email_Permission", "Phone_Permission", "Phone_Number",
 			"Phone_Extension", "Title", "First_Name", "Last_Name", "Address_1", "Address_2", "City", "Province", "Postal_Code",
@@ -390,12 +392,12 @@ public class InboundValidator
 	 */
 	public static String dateYearMonthDay(Date date)
 	{
-		return new SimpleDateFormat("yyyy-MM-dd").format(date);
+		return new SimpleDateFormat("MM-dd-yyyy").format(date);
 	}
 
 	public static Date moveDate(String date)
 	{
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
 		Date asOfDate = null;
 		try
 		{

@@ -12,8 +12,11 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
 @Slf4j
 @Component
@@ -90,15 +93,13 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				{
 					FileUtil.moveFile(file.getFileName(), true, MasterProcessor.getValueVal(file.getSourceType()));
 				}
-				//TODO catch specific exception
-				catch (Exception e)
+				catch (IOException e)
 				{
 					status = false;
 					log.error("An exception occurs while trying to move the file " + file.getFileName());
 				}
-				Master fileStatus = MasterProcessor.getSourceID("STATUS", status ? "VALID" : "INVALID");
-				//TODO insertedby and updated by needs to be consistent. create constants
-				fileService.updateFileEndTime(file.getFileId(), new Date(), "BATCH", new Date(), fileStatus);
+				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
+				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);
 			});
 
 		}

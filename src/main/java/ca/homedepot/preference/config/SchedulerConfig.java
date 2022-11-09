@@ -15,6 +15,7 @@ import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.CitiSuppresionPreparedStatement;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
+import ca.homedepot.preference.mapper.FileInboundStgTablePreparedStatement;
 import ca.homedepot.preference.mapper.InternalOutboundPreparedStatement;
 import ca.homedepot.preference.processor.*;
 import ca.homedepot.preference.mapper.SalesforcePreparedStatement;
@@ -88,13 +89,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
 
-	private static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
+	public static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 
 	private static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
 
 	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
 
-	private static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
+	public static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
 
 	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSource";
 	/**
@@ -891,7 +892,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return JdbcBatchItemWriter<FileInboundStgTable>
 	 */
-	@Bean
 	public JdbcBatchItemWriter<FileInboundStgTable> inboundRegistrationDBWriter()
 	{
 		JdbcBatchItemWriter<FileInboundStgTable> writer = new JdbcBatchItemWriter<>();
@@ -899,7 +899,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		writer.setDataSource(dataSource);
 		writer.setSql(SqlQueriesConstants.SQL_INSERT_FILE_INBOUND_STG_REGISTRATION);
 		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
-
+		writer.setItemPreparedStatementSetter(new FileInboundStgTablePreparedStatement());
 		return writer;
 	}
 

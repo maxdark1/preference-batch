@@ -1,8 +1,6 @@
 package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
-import ca.homedepot.preference.dto.InternalOutboundDto;
-import ca.homedepot.preference.dto.InternalOutboundProcessorDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,5 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
@@ -19,6 +18,9 @@ import java.util.List;
 import java.io.*;
 import java.util.Date;
 
+import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_SEND_PREFERENCES_TO_CRM;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+
 @Slf4j
 @Component
 public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutboundDtoProcessor>
@@ -36,6 +38,8 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Autowired
 	private FileService fileService;
 
+	private static final Format formatter = new SimpleDateFormat("yyyyMMdd");
+
 	/**
 	 * Method used to generate a plain text file
 	 *
@@ -46,41 +50,23 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Override
 	public void write(List<? extends PreferenceOutboundDtoProcessor> items) throws Exception
 	{
-		//TODO read the delimeter from constant file
-		sourceId = items.get(0).getSourceId().replace("\t", "");
-		String file = "";
+		sourceId = items.get(0).getSourceId().replace(SINGLE_DELIMITER_TAB, "");
+		StringBuilder fileBuilder = new StringBuilder();
 
 		for (PreferenceOutboundDtoProcessor preference : items)
 		{
-			//TODO use stringbuilder or buffer
-			String line = "";
-			line = preference.getEmail();
-			line += preference.getEffectiveDate();
-			line += preference.getSourceId();
-			line += preference.getEmailStatus();
-			line += preference.getPhonePtcFlag();
-			line += preference.getLanguagePref();
-			line += preference.getEarlyOptInDate();
-			line += preference.getCndCompliantFlag();
-			line += preference.getEmailPrefHdCa();
-			line += preference.getEmailPrefGardenClub();
-			line += preference.getEmailPrefPro();
-			line += preference.getPostalCode();
-			line += preference.getCustomerNbr();
-			line += preference.getPhonePtcFlag();
-			line += preference.getDnclSuppresion();
-			line += preference.getPhoneNumber();
-			line += preference.getFirstName();
-			line += preference.getLastName();
-			line += preference.getBusinessName();
-			line += preference.getIndustryCode();
-			line += preference.getCity();
-			line += preference.getProvince();
-			line += preference.getHdCaProSrcId();
-			file += line;
+			fileBuilder.append(preference.getEmail()).append(preference.getEffectiveDate()).append(preference.getSourceId())
+					.append(preference.getEmailStatus()).append(preference.getPhonePtcFlag()).append(preference.getLanguagePref())
+					.append(preference.getEarlyOptInDate()).append(preference.getCndCompliantFlag())
+					.append(preference.getEmailPrefHdCa()).append(preference.getEmailPrefGardenClub())
+					.append(preference.getEmailPrefPro()).append(preference.getPostalCode()).append(preference.getCustomerNbr())
+					.append(preference.getPhonePtcFlag()).append(preference.getDnclSuppresion()).append(preference.getPhoneNumber())
+					.append(preference.getFirstName()).append(preference.getLastName()).append(preference.getBusinessName())
+					.append(preference.getIndustryCode()).append(preference.getCity()).append(preference.getProvince())
+					.append(preference.getHdCaProSrcId());
 		}
 
-		generateFile(file);
+		generateFile(fileBuilder.toString());
 
 	}
 
@@ -92,12 +78,10 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	 */
 	private void generateFile(String file) throws IOException
 	{
-		//TODO can be class variable
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+		String fileName = fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
 
 		writer = new FileOutputStream(repositorySource + folderSorce + fileName, true);
-		byte toFile[] = file.getBytes();
+		byte[] toFile = file.getBytes();
 		writer.write(toFile);
 		writer.close();
 		setFileRecord(fileName);
@@ -110,11 +94,10 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	 */
 	private void setFileRecord(String fileName)
 	{
-		//TODO duplicate string literals
-		BigDecimal jobId = fileService.getJobId("sendPreferencesToCRM");
-		Master fileStatus = MasterProcessor.getSourceID("STATUS", SourceDelimitersConstants.VALID);
+		BigDecimal jobId = fileService.getJobId(JOB_NAME_SEND_PREFERENCES_TO_CRM);
+		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
-				fileStatus.getMasterId(), new Date(), new Date(), "BATCH", new Date(), null, null);
+				fileStatus.getMasterId(), new Date(), new Date(), INSERTEDBY, new Date(), null, null);
 
 		fileService.insert(file);
 	}

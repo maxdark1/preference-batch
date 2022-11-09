@@ -10,6 +10,10 @@ import org.springframework.batch.item.validator.ValidationException;
 
 import java.util.Date;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.NOTSTARTED;
+import static ca.homedepot.preference.dto.enums.Preference.*;
+
 @Slf4j
 public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, FileInboundStgTable>
 {
@@ -62,11 +66,11 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		/**
 		 * Create the object if every field is valid
 		 */
-		return builder.src_email_address(item.getEmailAddress()).fileName(item.getFileName())
-				.source_id(ExactTargetEmailValidation.getSourceId(item.getReason()))
-				//TODO status and inserted_by needs to be read from a common place
-				.email_status(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status("NS").src_date(srcDate)
-				.email_address_pref("0").email_pref_hd_ca("0").email_pref_garden_club("-1").email_pref_pro("-1")
-				.email_pref_new_mover("-1").inserted_by("BATCH").inserted_date(new Date()).build();
+		return builder.srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
+				.sourceId(ExactTargetEmailValidation.getSourceId(item.getReason()))
+				.emailStatus(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status(NOTSTARTED).srcDate(srcDate)
+				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
+				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
+				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
 	}
 }

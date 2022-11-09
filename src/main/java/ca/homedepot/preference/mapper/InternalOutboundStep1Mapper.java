@@ -52,6 +52,7 @@ public class InternalOutboundStep1Mapper implements RowMapper<InternalOutboundDt
 		internalOutboundDto.setIndustryCode(rs.getString("industry_code"));
 		internalOutboundDto.setMoveDate(formatter.format(rs.getDate("move_date")));
 		internalOutboundDto.setDwellingType(rs.getString("dwelling_type"));
+		internalOutboundDto.setCustomerNbr(rs.getString("customer_nbr"));
 
 		return internalOutboundDto;
 	}

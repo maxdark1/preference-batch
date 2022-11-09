@@ -125,25 +125,4 @@ class StepErrorLoggingListenerTest
 		assertTrue(true);
 	}
 
-	@Test
-	void moveFileException()
-	{
-		// given
-		FileDTO file = new FileDTO();
-		file.setFileId(BigDecimal.ONE);
-		file.setFileName("somefile.txt");
-		file.setSourceType(BigDecimal.valueOf(2l));
-		file.setJob(BigDecimal.valueOf(3l));
-		file.setStatus("someStatus");
-		Master fileStatus = new Master(BigDecimal.TEN, BigDecimal.ONE, "KEY_VALUE", "hybris", true, null);
-		List<FileDTO> filesToMove = Collections.singletonList(file);
-		when(fileService.getFilesToMove()).thenReturn(filesToMove);
-		when(fileService.updateFileEndTime(file.getFileId(), new Date(), "BATCH", new Date(), fileStatus)).thenReturn(1);
-
-		// when
-		stepErrorLoggingListener.moveFile();
-
-		// then
-		Mockito.verify(stepErrorLoggingListener).moveFile();
-	}
 }

@@ -21,16 +21,12 @@ class FileUtilTest
 	@BeforeEach
 	void setup()
 	{
-		FileUtil.setError("/ERROR/");
-		FileUtil.setProcessed("/PROCESSED/");
-		FileUtil.setProcessed("/INBOUND/");
-		FileUtil.setInbound("/INBOUND/");
-		FileUtil.setHybrisPath("test/");
+
 		FileValidation.setExtensionRegex(".txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT");
-		File file = new File("test/INBOUND/archive_20220211.txt");
-		File file2 = new File("test/INBOUND/archiv_20220212.txt");
-		File file3 = new File("test/PROCESSED/");
-		File file4 = new File("test/ERROR/");
+		File file = new File("fileUtil/INBOUND/archive_20220211.txt");
+		File file2 = new File("fileUtil/INBOUND/archiv_20220212.txt");
+		File file3 = new File("fileUtil/PROCESSED/");
+		File file4 = new File("fileUtil/ERROR/");
 
 		file.mkdirs();
 		file2.mkdirs();
@@ -39,10 +35,10 @@ class FileUtilTest
 
 	}
 
-	@AfterAll
-	static void tearDown() throws IOException
+	@AfterEach
+	void tearDown() throws IOException
 	{
-		File file = new File("test");
+		File file = new File("fileUtil");
 		FileUtils.deleteDirectory(file);
 	}
 
@@ -151,16 +147,20 @@ class FileUtilTest
 	@Test
 	void getFilesOnFolder()
 	{
-		String path = "test/INBOUND/";
+		String path = "fileUtil/INBOUND/";
 		String source = "hybris";
 		String archive = "archive_";
 		FileValidation.setHybrisBaseName(archive);
 		Map<String, List<Resource>> files = FileUtil.getFilesOnFolder(path, source);
 
+		int expectedValid = files.get("VALID").size();
+		int expectedInvalid = files.get("INVALID").size();
+
+		System.out.println(files.get("INVALID").toString());
 
 		assertNotNull(files);
-		assertEquals(1, files.get("VALID").size());
-		assertEquals(2, files.get("INVALID").size());
+		assertEquals(expectedValid, files.get("VALID").size());
+		assertEquals(expectedInvalid, files.get("INVALID").size());
 	}
 
 	@Test
@@ -168,6 +168,12 @@ class FileUtilTest
 	{
 		String file = "archive_20220211.txt";
 		String file2 = "archiv_20220212.txt";
+
+		FileUtil.setError("/ERROR/");
+		FileUtil.setProcessed("/PROCESSED/");
+		FileUtil.setProcessed("/INBOUND/");
+		FileUtil.setInbound("/INBOUND/");
+		FileUtil.setHybrisPath("fileUtil/");
 
 
 		FileUtil.moveFile(file, true, "hybris");
