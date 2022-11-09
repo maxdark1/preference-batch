@@ -68,8 +68,8 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		log.info(" Processing inbound item {}: ", item);
 		builder.status(NOTSTARTED).fileName(item.getFileName()).srcLanguagePref(item.getLanguage_Preference().trim().toUpperCase())
 				.updatedDate(new Date()).srcDate(asOfDate).srcEmailAddress(item.getEmail_Address())
-				.emailStatus(item.getEmail_Address() == null ? null
-						: MasterProcessor.getSourceID(EMAIL_STATUS, VALID_EMAIL).getMasterId())
+				.emailStatus(
+						item.getEmail_Address() == null ? null : MasterProcessor.getSourceID(EMAIL_STATUS, VALID_EMAIL).getMasterId())
 				.emailAddressPref(item.getEmail_Permission()).phonePref(item.getPhone_Permission())
 				.srcPhoneNumber(item.getPhone_Number()).sourceId(sourceId).srcPhoneExtension(item.getPhone_Extension())
 				.srcTitleName(item.getTitle()).srcFirstName(item.getFirst_Name()).srcLastName(item.getLast_Name())
