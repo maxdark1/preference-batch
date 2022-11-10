@@ -81,6 +81,24 @@ class MultiResourceItemReaderInboundTest
 	}
 
 	@Test
+	void writeFileFalseStatus()
+	{
+		String fileName = "fileNAme";
+		Boolean status = false;
+		multiResourceItemReaderInbound.setSource("FB_SFMC");
+		multiResourceItemReaderInbound.setFileService(fileService);
+		List<Master> masterList = new ArrayList<>();
+
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "SFMC", true, null));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true, null));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true, null));
+		MasterProcessor.setMasterList(masterList);
+
+		multiResourceItemReaderInbound.writeFile(fileName, status);
+		Mockito.verify(multiResourceItemReaderInbound).writeFile(fileName, status);
+	}
+
+	@Test
 	void read() throws Exception
 	{
 		Object value = new Object();

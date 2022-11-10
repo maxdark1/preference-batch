@@ -30,7 +30,7 @@ class LoyaltyComplaintWeeklyMapperTest
 
 	String emailAddr = "test@email.com", canPtcFlag = "T", firstName = "test", lastName = "test", languagePreference = "E",
 			cndCompliantFlag = "T", hdCaFlag = "T", hdCaGardenClubFlag = "T", hdCaProFlag = "T", postalCd = "test", city = "test",
-			customerNbr = "00", province = "test", emailStatus =  "00";
+			customerNbr = "00", province = "test", emailStatus = "00";
 	BigDecimal canPtcSourceId = BigDecimal.ONE;
 	Timestamp canPtcEffectiveDate = new Timestamp(new Date().getTime()), earlyOptInDate = new Timestamp(new Date().getTime());
 

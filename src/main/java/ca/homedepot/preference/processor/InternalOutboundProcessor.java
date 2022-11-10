@@ -8,10 +8,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
 @Component
 @Slf4j
 public class InternalOutboundProcessor implements ItemProcessor<InternalOutboundDto, InternalOutboundProcessorDto>
 {
+
+	private final Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+
 	/**
 	 * This method is used to transform the data coming from the db into the data to write in CSV file
 	 * 
@@ -28,9 +35,9 @@ public class InternalOutboundProcessor implements ItemProcessor<InternalOutbound
 		InternalOutboundProcessorDto internalOutboundProcessorDto = new InternalOutboundProcessorDto();
 
 		internalOutboundProcessorDto.setEmailAddr(internalOutboundDto.getEmailAddr() + split);
-		internalOutboundProcessorDto.setCanPtcEffectiveDate(internalOutboundDto.getCanPtcEffectiveDate() + split);
+		internalOutboundProcessorDto.setCanPtcEffectiveDate(formatter.format(internalOutboundDto.getCanPtcEffectiveDate()) + split);
 		internalOutboundProcessorDto.setCanPtcSourceId(internalOutboundDto.getCanPtcSourceId() + split);
-		internalOutboundProcessorDto.setEmailStatus(internalOutboundDto.getEmailStatus() + split);
+		internalOutboundProcessorDto.setEmailStatus((internalOutboundDto.getEmailStatus() == BigDecimal.ZERO ? "00" : internalOutboundDto.getEmailStatus() ) + split);
 		internalOutboundProcessorDto.setCanPtcFlag(internalOutboundDto.getCanPtcGlag() + split);
 		internalOutboundProcessorDto.setLanguagePreference(internalOutboundDto.getLanguagePreference() + split);
 		internalOutboundProcessorDto.setEarlyOptInDate(internalOutboundDto.getEarlyOptInIDate() + split);

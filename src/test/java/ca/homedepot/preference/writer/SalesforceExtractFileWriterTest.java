@@ -4,6 +4,9 @@ import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -62,6 +65,12 @@ class SalesforceExtractFileWriterTest
 		String fileName = "ET_YYYYMMDD".replace("YYYYMMDD", formatter.format(new Date()));
 		File files = new File("repositorySource/folder/" + fileName);
 		files.createNewFile();
+	}
+
+	@AfterEach
+	void tearDown() throws IOException
+	{
+		FileUtils.deleteDirectory(new File("repositorySource"));
 	}
 
 	@Test
