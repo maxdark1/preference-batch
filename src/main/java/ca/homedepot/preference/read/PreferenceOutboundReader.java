@@ -141,4 +141,9 @@ public class PreferenceOutboundReader
 		outboundService.purgeLoyaltyComplaintTable();
 		log.info("Deleting hdpc_out_loyalty_compliant records at: {}", new Date());
 	}
+
+	public void setDataSource(DataSource dataSource)
+	{
+		this.dataSource = dataSource;
+	}
 }

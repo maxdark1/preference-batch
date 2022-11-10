@@ -5,10 +5,12 @@ import java.util.Date;
 
 import javax.persistence.*;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "hdpc_file")
 public class FileEntity
 {
