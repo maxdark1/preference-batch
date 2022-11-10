@@ -40,7 +40,7 @@ public class InternalOutboundProcessor implements ItemProcessor<InternalOutbound
 		internalOutboundProcessorDto.setEmailStatus((internalOutboundDto.getEmailStatus() == BigDecimal.ZERO ? "00" : internalOutboundDto.getEmailStatus() ) + split);
 		internalOutboundProcessorDto.setCanPtcFlag(internalOutboundDto.getCanPtcGlag() + split);
 		internalOutboundProcessorDto.setLanguagePreference(internalOutboundDto.getLanguagePreference() + split);
-		internalOutboundProcessorDto.setEarlyOptInDate(internalOutboundDto.getEarlyOptInIDate() + split);
+		internalOutboundProcessorDto.setEarlyOptInDate(formatter.format(internalOutboundDto.getEarlyOptInIDate()) + split);
 		internalOutboundProcessorDto.setCndCompliantFlag(internalOutboundDto.getCndCompliantFlag() + split);
 		internalOutboundProcessorDto.setHdCaFlag(internalOutboundDto.getHdCaFlag() + split);
 		internalOutboundProcessorDto.setHdCaGardenClubFlag(internalOutboundDto.getHdCaGardenClubFlag() + split);
