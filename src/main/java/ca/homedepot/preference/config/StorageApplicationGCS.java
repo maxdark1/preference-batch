@@ -11,6 +11,11 @@ public class StorageApplicationGCS {
    private static Storage storage;
 
    private static CloudStorageUtils cloudStorageUtils;
+
+    /**
+     * Create the storage if it doesn't exist
+     * @return Storage
+     */
    public static Storage storage()
    {
        if(storage == null){
@@ -19,13 +24,28 @@ public class StorageApplicationGCS {
        return storage;
    }
 
+    /**
+     * Gets the bucket anme
+     * @return bucket name
+     */
    public static String getBucketName(){
        return cloudStorageUtils.getBucketName();
    }
+
+    /**
+     * Calls the cloud storage utils to delete an specific file
+     * @param folder
+     * @param filename
+     * @return
+     */
    public static boolean deleteObject(String folder, String filename){
        return cloudStorageUtils.deleteObject(folder, filename);
    }
 
+    /**
+     * Sets the cloud storage utils
+     * @param cloudStorageUtils
+     */
     public static void setCloudStorageUtils(CloudStorageUtils cloudStorageUtils) {
         StorageApplicationGCS.cloudStorageUtils = cloudStorageUtils;
     }
