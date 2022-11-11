@@ -86,9 +86,9 @@ folders:
   inbound: \INBOUND\
   error: \ERROR\
   processed: \PROCESSED\
-  outbound: \OUTBOUND\
+  outbound: OUTBOUND\
   crm:
-    path: C:\batchFiles\CRM
+    path: C:\batchFiles\
   fb-sfmc:
     path: C:\batchFiles\FB-SFMC
   hybris:
@@ -96,13 +96,13 @@ folders:
   sfmc:
     path: C:\batchFiles\SFMC
   citi:
-    path: C:\batchFiles\CITI
+    path:
   internal:
-    path: C:\batchFiles
+    path: C:\batchFiles\
   salesforce:
     path: C:\batchFiles\Salesforce
   loyaltyCompliant:
-    path: C:\batchFiles
+    path: C:\batchFiles\
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -125,3 +125,8 @@ preference:
       chunk: 20
     outboundLoyalty:
       chunk: 20
+
+gcp:
+  project-id: np-cadotcom
+  bucket:
+    name: commsvc-preference-centre-feeds

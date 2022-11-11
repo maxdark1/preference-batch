@@ -22,6 +22,7 @@ import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
@@ -352,6 +353,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private InternalOutboundFileWriter internalOutboundFileWriter;
 
+	@Autowired
+	private CloudStorageUtils cloudStorageUtils;
 
 	@Autowired
 	public void setUpListener()
@@ -401,6 +404,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@PostConstruct
 	public void getMasterInfo()
 	{
+		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		MasterProcessor.setPreferenceService(batchTasklet.getPreferenceService());
 		MasterProcessor.getMasterInfo();
 	}
@@ -820,7 +824,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter()
 	{
 
-		FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new FileWriterOutBound<>();
+		GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new GSFileWriterOutbound<>();
 		citiSupressionFileWriter.setName("citiSupressionFileWriter");
 		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
 		citiSupressionFileWriter.setFolderSource(folderOutbound);
