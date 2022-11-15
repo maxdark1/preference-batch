@@ -34,7 +34,7 @@ public class SalesforcePreparedStatement implements ItemPreparedStatementSetter<
 		ps.setString(19, item.getPhoneNumber());
 		ps.setString(20, item.getBusinessName());
 		ps.setString(21, item.getBusinessType());
-		ps.setDate(22, Date.valueOf(item.getMoveDate()));
+		ps.setDate(22, item.getMoveDate() != null ? Date.valueOf(item.getMoveDate()) : null);
 		ps.setString(23, item.getDwellingType());
 	}
 }

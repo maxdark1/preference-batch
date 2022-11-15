@@ -35,7 +35,7 @@ public class SalesforceExtractOutboundMapper implements RowMapper<SalesforceExtr
 		salesforce.setPhoneNumber(rs.getString("phone_number"));
 		salesforce.setBusinessName(rs.getString("business_name"));
 		salesforce.setBusinessType(rs.getString("business_type"));
-		salesforce.setMoveDate(rs.getDate("move_date").toLocalDate());
+		salesforce.setMoveDate(rs.getDate("move_date") != null ? rs.getDate("move_date").toLocalDate() : null);
 		salesforce.setDwellingType(rs.getString("dwelling_type"));
 
 		return salesforce;
