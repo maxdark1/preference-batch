@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 
 import static ca.homedepot.preference.config.StorageApplicationGCS.storage;
@@ -52,12 +54,18 @@ public class CloudStorageUtils
     /**
      * prefix is folder source (example: hybris, sfmc, crm....)
      * and folder (example: /inbound/)
+     *
      * @param prefix
+     * @return
      */
-   public void listObjectInBucket(String prefix){
+   public List<String> listObjectInBucket(String... path){
+     List<String> listObjetInBucket = new ArrayList<>();
      Page<Blob> blobPage =  storage().list(this.bucketName,
-                            Storage.BlobListOption.prefix(prefix),
+                            Storage.BlobListOption.prefix(generatePath(path)),
                             Storage.BlobListOption.currentDirectory());
+
+     blobPage.getValues().forEach(blob -> listObjetInBucket.add(blob.getName()));
+     return listObjetInBucket;
    }
 
     /**

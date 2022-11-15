@@ -300,11 +300,10 @@ public final class FileUtil
 	public static Map<String, List<Resource>> getFilesOnFolder(String path, String source)
 	{
 		File folder = new File(path);
-		List<Resource> validFilesNames = new ArrayList<>();
-		List<Resource> invalidFileNames = new ArrayList<>();
 		String[] files = folder.list();
 
-
+		List<Resource> validFilesNames = new ArrayList<>();
+		List<Resource> invalidFileNames = new ArrayList<>();
 		if (files != null)
 			for (String fileName : files)
 			{
@@ -348,6 +347,7 @@ public final class FileUtil
 		filesNames.put("INVALID", invalidFileNames);
 		return filesNames;
 	}
+
 
 
 
