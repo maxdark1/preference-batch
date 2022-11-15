@@ -43,8 +43,7 @@ public class PreferenceOutboundMapper implements RowMapper<PreferenceOutboundDto
 				rs.getString("email_pref_pro").charAt(0) /* != null ? rs.getString("email_pref_pro").charAt(0) : 'N' */);
 		outboundData.setPostalCode(rs.getString("src_postal_code") /* != null ? rs.getString("src_postal_code") : "" */);
 		outboundData.setCustomerNbr(rs.getString("customer_nbr") /* != null ? rs.getString("customer_nbr") : "" */);
-		outboundData.setPhonePtcFlag(
-				rs.getString("phone_ptc_flag") != null ? rs.getString("phone_ptc_flag").charAt(0) : 'N' );
+		outboundData.setPhonePtcFlag(rs.getString("phone_ptc_flag") != null ? rs.getString("phone_ptc_flag").charAt(0) : 'N');
 		outboundData.setDnclSuppresion(
 				rs.getString("dncl_suppresion").charAt(0) /* != null ? rs.getString("dncl_suppresion").charAt(0) : 'N' */);
 		outboundData.setPhoneNumber(rs.getString("phone_number") /* != null ? rs.getString("phone_number") : "" */);
