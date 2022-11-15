@@ -1,6 +1,7 @@
 package ca.homedepot.preference.config;
 
 import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.mapper.SFMCRowMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -9,7 +10,6 @@ import org.mockito.Mockito;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,16 +51,5 @@ class SFMCRowMapperTest
 
 	}
 
-	@Test
-	void getDate()
-	{
-		Date date = new Date();
-		String dateStr = date.toString();
 
-		String currentDateStr = SFMCRowMapper.getDate(date);
-		String wrongCurrentDate = SFMCRowMapper.getDate(null);
-
-		assertEquals(dateStr, currentDateStr);
-		assertNull(wrongCurrentDate);
-	}
 }

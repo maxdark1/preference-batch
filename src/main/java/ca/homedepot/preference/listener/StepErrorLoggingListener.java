@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+
 @Slf4j
 @Component
 public class StepErrorLoggingListener implements StepExecutionListener
@@ -35,7 +37,8 @@ public class StepErrorLoggingListener implements StepExecutionListener
 	@Override
 	public void beforeStep(StepExecution stepExecution)
 	{
-		// Nothing to do in here
+		log.info(" Job in process: {} , Step in process: {} ", stepExecution.getStepName(),
+				stepExecution.getJobExecution().getJobConfigurationName());
 	}
 
 	/**
@@ -89,15 +92,15 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				boolean status = true;
 				try
 				{
-					FileUtil.moveFile(file.getFile_name(), true, MasterProcessor.getValueVal(file.getFile_source_id()));
+					FileUtil.moveFile(file.getFileName(), true, MasterProcessor.getValueVal(file.getSourceType()));
 				}
 				catch (IOException e)
 				{
 					status = false;
-					log.error("An exception occurs while trying to move the file " + file.getFile_name());
+					log.error("An exception occurs while trying to move the file " + file.getFileName());
 				}
-				Master fileStatus = MasterProcessor.getSourceID("STATUS", status ? "VALID" : "INVALID");
-				fileService.updateFileEndTime(file.getFile_id(), new Date(), "BATCH", new Date(), fileStatus);
+				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
+				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);
 			});
 
 		}

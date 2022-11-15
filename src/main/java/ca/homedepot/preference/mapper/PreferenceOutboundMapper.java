@@ -32,8 +32,7 @@ public class PreferenceOutboundMapper implements RowMapper<PreferenceOutboundDto
 		outboundData.setEmailPermission(
 				rs.getString("email_permission").charAt(0) /* != null ? rs.getString("email_permission").charAt(0) : 'N' */);
 		outboundData.setLanguagePref(rs.getString("language_preference") /* != null ? rs.getString("language_preference") : "" */);
-		outboundData
-				.setEarlyOptInDate(rs.getDate("early_opt_in_date") /* != null ? rs.getDate("early_opt_in_date") : new Date(0) */);
+		outboundData.setEarlyOptInDate(rs.getDate("min") /* != null ? rs.getDate("early_opt_in_date") : new Date(0) */);
 		outboundData.setCndCompliantFlag(
 				rs.getString("cnd_compliant_flag").charAt(0) /* != null ? rs.getString("cnd_compliant_flag").charAt(0) : 'N' */);
 		outboundData.setEmailPrefHdCa(
@@ -44,8 +43,7 @@ public class PreferenceOutboundMapper implements RowMapper<PreferenceOutboundDto
 				rs.getString("email_pref_pro").charAt(0) /* != null ? rs.getString("email_pref_pro").charAt(0) : 'N' */);
 		outboundData.setPostalCode(rs.getString("src_postal_code") /* != null ? rs.getString("src_postal_code") : "" */);
 		outboundData.setCustomerNbr(rs.getString("customer_nbr") /* != null ? rs.getString("customer_nbr") : "" */);
-		outboundData.setPhonePtcFlag(
-				rs.getString("phone_ptc_flag").charAt(0) /* != null ? rs.getString("phone_ptc_flag").charAt(0) : 'N' */);
+		outboundData.setPhonePtcFlag(rs.getString("phone_ptc_flag") != null ? rs.getString("phone_ptc_flag").charAt(0) : 'N');
 		outboundData.setDnclSuppresion(
 				rs.getString("dncl_suppresion").charAt(0) /* != null ? rs.getString("dncl_suppresion").charAt(0) : 'N' */);
 		outboundData.setPhoneNumber(rs.getString("phone_number") /* != null ? rs.getString("phone_number") : "" */);

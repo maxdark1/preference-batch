@@ -5,10 +5,7 @@ import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -22,6 +19,7 @@ class APIWriterListenerTest
 	FileServiceImpl fileService;
 
 	@InjectMocks
+	@Spy
 	APIWriterListener apiWriterListener;
 
 	List<RegistrationRequest> items;
@@ -47,6 +45,7 @@ class APIWriterListenerTest
 	void beforeWrite()
 	{
 		apiWriterListener.beforeWrite(items);
+		Mockito.verify(apiWriterListener).beforeWrite(items);
 
 	}
 
@@ -54,6 +53,7 @@ class APIWriterListenerTest
 	void afterWrite()
 	{
 		apiWriterListener.afterWrite(items);
+		Mockito.verify(apiWriterListener).afterWrite(items);
 
 	}
 
@@ -68,7 +68,8 @@ class APIWriterListenerTest
 	@Test
 	void onWriteError()
 	{
-		apiWriterListener.onWriteError(new Exception(), items);
-
+		Exception exception = new Exception();
+		apiWriterListener.onWriteError(exception, items);
+		Mockito.verify(apiWriterListener).onWriteError(exception, items);
 	}
 }

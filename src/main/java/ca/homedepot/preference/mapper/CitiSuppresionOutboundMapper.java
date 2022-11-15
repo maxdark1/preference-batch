@@ -12,23 +12,24 @@ public class CitiSuppresionOutboundMapper implements RowMapper<CitiSuppresionOut
 	public CitiSuppresionOutboundDTO mapRow(ResultSet rs, int rowNum) throws SQLException
 	{
 
-		CitiSuppresionOutboundDTO suppresion = new CitiSuppresionOutboundDTO();
+		CitiSuppresionOutboundDTO suppression = new CitiSuppresionOutboundDTO();
 
-		suppresion.setFirstName(rs.getString("first_name"));
-		suppresion.setMiddleInitial(rs.getString("middle_initial"));
-		suppresion.setLastName(rs.getString("last_name"));
-		suppresion.setAddrLine1(rs.getString("addr_line_1"));
-		suppresion.setAddrLine2(rs.getString("addr_line_2"));
-		suppresion.setCity(rs.getString("city"));
-		suppresion.setStateCd(rs.getString("state_cd"));
-		suppresion.setEmailAddr(rs.getString("email_addr"));
-		suppresion.setPhone(rs.getString("phone"));
-		suppresion.setSmsMobilePhone(rs.getString("sms_mobile_phone"));
-		suppresion.setBusinessName(rs.getString("business_name"));
-		suppresion.setDmOptOut(rs.getString("dm_opt_out"));
-		suppresion.setEmailOptOut(rs.getString("email_opt_out"));
-		suppresion.setPhoneOptOut(rs.getString("phone_opt_out"));
-		suppresion.setSmsOptOut(rs.getString("sms_opt_out"));
-		return suppresion;
+		suppression.setFirstName(rs.getString("first_name"));
+		suppression.setMiddleInitial(rs.getString("middle_initial"));
+		suppression.setLastName(rs.getString("last_name"));
+		suppression.setAddrLine1(rs.getString("addr_line_1"));
+		suppression.setAddrLine2(rs.getString("addr_line_2"));
+		suppression.setCity(rs.getString("city"));
+		suppression.setStateCd(rs.getString("state_cd"));
+		suppression.setPostalCd(rs.getString("postal_cd"));
+		suppression.setEmailAddr(rs.getString("email_addr"));
+		suppression.setPhone(rs.getString("phone"));
+		suppression.setSmsMobilePhone(rs.getString("sms_mobile_phone"));
+		suppression.setBusinessName(rs.getString("business_name"));
+		suppression.setDmOptOut(rs.getString("dm_opt_out"));
+		suppression.setEmailOptOut(rs.getString("email_opt_out"));
+		suppression.setPhoneOptOut(rs.getString("phone_opt_out"));
+		suppression.setSmsOptOut(rs.getString("sms_opt_out"));
+		return suppression;
 	}
 }

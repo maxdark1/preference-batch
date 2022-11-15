@@ -1,4 +1,4 @@
-package ca.homedepot.preference.config;
+package ca.homedepot.preference.mapper;
 
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.RegistrationRequest;
@@ -6,9 +6,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
-import static ca.homedepot.preference.config.RegistrationRowMapper.getIntegerValue;
+import static ca.homedepot.preference.util.validation.FormatUtil.*;
 
 public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 {
@@ -33,7 +32,7 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setSrcEmailAddress(rs.getString(PreferenceBatchConstants.SRC_EMAIL_ADDRESS));
 
 		Integer emailStatus = getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
-		registrationRequest.setEmailStatus(emailStatus == null ? 0 : emailStatus);
+		registrationRequest.setEmailStatus(emailStatus);
 		registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
 		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
 
@@ -49,18 +48,4 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 
 	}
 
-	/**
-	 * Gets the String value from date
-	 *
-	 * @param date
-	 *
-	 * @return String
-	 */
-	public static String getDate(Date date)
-	{
-		if (date != null)
-			return date.toString();
-
-		return null;
-	}
 }

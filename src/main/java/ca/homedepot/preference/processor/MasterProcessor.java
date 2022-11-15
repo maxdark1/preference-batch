@@ -2,10 +2,10 @@ package ca.homedepot.preference.processor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.service.PreferenceService;
@@ -13,14 +13,14 @@ import ca.homedepot.preference.service.PreferenceService;
 /**
  * Master Processor obtains information from Master catalog
  */
-@Component
+@UtilityClass
 public class MasterProcessor
 {
 
 	/**
 	 * The preference Service
 	 */
-	private PreferenceService preferenceService;
+	private static PreferenceService preferenceService;
 
 	/**
 	 * The master List
@@ -30,22 +30,23 @@ public class MasterProcessor
 	/**
 	 * Gets Master information from persistence and save's it as static value
 	 */
-	public void getMasterInfo()
+	public static void getMasterInfo()
 	{
-		masterList = preferenceService.getMasterInfo();
+		MasterProcessor.setMasterList(preferenceService.getMasterInfo());
 	}
 
 	/**
 	 * Obtains Master value according to key_val and value_val
 	 * 
-	 * @param key_val
-	 * @param value_val
+	 * @param keyVal
+	 * @param valueVal
 	 * @return the current Master value
 	 */
-	public static Master getSourceID(String key_val, String value_val)
+	public static Master getSourceID(String keyVal, String valueVal)
 	{
-		return masterList.stream().filter(master -> master.getKeyValue().equals(key_val) && master.getValueVal().equals(value_val))
-				.findFirst().get();
+		Optional<Master> optionalMaster = masterList.stream()
+				.filter(master -> master.getKeyValue().equals(keyVal) && master.getValueVal().equals(valueVal)).findFirst();
+		return optionalMaster.orElse(null);
 	}
 
 	/**
@@ -56,8 +57,8 @@ public class MasterProcessor
 	 */
 	public static String getValueVal(BigDecimal masterId)
 	{
-		return masterList.stream().filter(master -> master.getMasterId().equals(masterId)).map(master -> master.getValueVal())
-				.findFirst().get();
+		return masterList.stream().filter(master -> master.getMasterId().equals(masterId)).map(Master::getValueVal).findFirst()
+				.orElse(null);
 	}
 
 	/**
@@ -71,16 +72,19 @@ public class MasterProcessor
 
 		BigDecimal masterId = new BigDecimal("-400");
 
-		try
+		Optional<Master> optional = masterList.stream().filter(master -> master.getOldID() != null
+				&& master.getKeyValue().equals("SOURCE_ID") && master.getOldID().toPlainString().equals(oldId)).findFirst();
+		if (optional.isPresent())
 		{
+
 			/**
 			 * Gets the MasterID from the Master List
 			 */
-			return masterList.stream().filter(master -> master.getOldID() != null && master.getKeyValue().equals("SOURCE_ID")
-					&& master.getOldID().toPlainString().equals(oldId)).findFirst().get().getMasterId();
+			return optional.get().getMasterId();
 		}
-		catch (Exception e)
+		else
 		{
+
 			/**
 			 * If it founds any exception return an invalid ID that's a flag for the validation
 			 */
@@ -108,9 +112,9 @@ public class MasterProcessor
 		MasterProcessor.masterList = masterList;
 	}
 
-	@Autowired
-	public void setPreferenceService(PreferenceService preferenceService)
+
+	public static void setPreferenceService(PreferenceService preferenceService)
 	{
-		this.preferenceService = preferenceService;
+		MasterProcessor.preferenceService = preferenceService;
 	}
 }

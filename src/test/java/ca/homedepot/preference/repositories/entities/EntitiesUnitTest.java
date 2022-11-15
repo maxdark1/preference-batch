@@ -30,7 +30,7 @@ class EntitiesUnitTest
 		jobEntity.setStatus("C");
 		jobEntity.setInsertedBy("TEST");
 		jobEntity.setStartTime(new Date());
-		jobEntity.setInserted_date(new Date());
+		jobEntity.setInsertedDate(new Date());
 		jobEntity.setEndTime(new Date());
 	}
 
@@ -59,7 +59,7 @@ class EntitiesUnitTest
 		assertNull(jobEntity.getUpdatedDate());
 		assertNotNull(jobEntity.getStartTime());
 		assertNotNull(jobEntity.getEndTime());
-		assertNotNull(jobEntity.getInserted_date());
+		assertNotNull(jobEntity.getInsertedDate());
 		assertEquals("TEST", jobEntity.getInsertedBy());
 	}
 

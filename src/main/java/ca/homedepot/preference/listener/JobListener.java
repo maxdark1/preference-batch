@@ -2,7 +2,6 @@ package ca.homedepot.preference.listener;
 
 import java.util.Date;
 
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import org.springframework.batch.core.BatchStatus;
@@ -15,7 +14,9 @@ import ca.homedepot.preference.dto.Job;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.extern.slf4j.Slf4j;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.JOB_STATUS;
+import static ca.homedepot.preference.dto.enums.JobStatusEnum.*;
 
 
 /**
@@ -61,18 +62,18 @@ public class JobListener implements JobExecutionListener
 		/**
 		 * Gets Job's information
 		 */
-		ca.homedepot.preference.dto.Job job = new ca.homedepot.preference.dto.Job();
-		job.setJob_name(jobExecution.getJobInstance().getJobName());
+		Job job = new Job();
+		job.setJobName(jobExecution.getJobInstance().getJobName());
 
 		Master master = status(jobExecution.getStatus());
 		job.setStatus(master.getValueVal());
-		job.setStatus_id(master.getMasterId());
-		job.setStart_time(jobExecution.getStartTime());
-		job.setInserted_by("BATCH");
-		job.setInserted_date(new Date());
+		job.setStatusId(master.getMasterId());
+		job.setStartTime(jobExecution.getStartTime());
+		job.setInsertedBy("BATCH");
+		job.setInsertedDate(new Date());
 
-		preferenceService.insert(job.getJob_name(), job.getStatus(), job.getStatus_id(), job.getStart_time(), job.getInserted_by(),
-				job.getInserted_date());
+		preferenceService.insert(job.getJobName(), job.getStatus(), job.getStatusId(), job.getStartTime(), job.getInsertedBy(),
+				job.getInsertedDate());
 
 	}
 
@@ -90,13 +91,13 @@ public class JobListener implements JobExecutionListener
 		switch (batchStatus)
 		{
 			case STARTING:
-				return MasterProcessor.getSourceID(JOB_STATUS, "STARTED");
+				return MasterProcessor.getSourceID(JOB_STATUS, STARTED.getStatus());
 			case STARTED:
-				return MasterProcessor.getSourceID(JOB_STATUS, "IN PROGRESS");
+				return MasterProcessor.getSourceID(JOB_STATUS, IN_PROGRESS.getStatus());
 			case COMPLETED:
-				return MasterProcessor.getSourceID(JOB_STATUS, "COMPLETED");
+				return MasterProcessor.getSourceID(JOB_STATUS, COMPLETED.getStatus());
 			default:
-				return MasterProcessor.getSourceID(JOB_STATUS, "ERROR");
+				return MasterProcessor.getSourceID(JOB_STATUS, ERROR.getStatus());
 		}
 	}
 
@@ -126,22 +127,22 @@ public class JobListener implements JobExecutionListener
 		 * Gets the current value for the job that is ending
 		 */
 		Job job = new Job();
-		job.setJob_name(jobExecution.getJobInstance().getJobName());
+		job.setJobName(jobExecution.getJobInstance().getJobName());
 
 		Master master = status(jobExecution.getStatus());
 		job.setStatus(master.getValueVal());
-		job.setStatus_id(master.getMasterId());
+		job.setStatusId(master.getMasterId());
 
-		job.setUpdated_date(new Date());
-		job.setStart_time(jobExecution.getStartTime());
-		job.setEnd_time(jobExecution.getEndTime());
-		job.setUpdated_by("BATCH JobListener");
+		job.setUpdatedDate(new Date());
+		job.setStartTime(jobExecution.getStartTime());
+		job.setEndTime(jobExecution.getEndTime());
+		job.setUpdatedBy(INSERTEDBY);
 
 
 		/**
 		 * Updates the job record with the end_time and status
 		 */
-		int updatedRecords = preferenceService.updateJob(job, "IN PROGRESS");
+		int updatedRecords = preferenceService.updateJob(job, IN_PROGRESS.getStatus());
 
 		log.info("  {} Job(s) updated", updatedRecords);
 

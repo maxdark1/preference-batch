@@ -3,7 +3,8 @@ package ca.homedepot.preference.listener.skippers;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,9 +13,13 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.dto.enums.Preference.*;
+
 @Component
 @JobScope
-@Data
+@Setter
+@Getter
 public class SkipListenerLayoutB extends SkipFileService implements SkipListener<EmailOptOuts, FileInboundStgTable>
 {
 
@@ -70,10 +75,11 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 		 * Creating the File inbound statging table record
 		 */
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
-				.file_id(getFromTableFileID(item.getFileName(), jobName)).src_email_address(item.getEmailAddress())
-				.fileName(item.getFileName()).email_status(isEmailInvalid ? getEmailStatus(t) : emailStatus).status("E")
-				.email_address_pref("0").email_pref_hd_ca("0").email_pref_garden_club("-1").email_pref_pro("-1")
-				.email_pref_new_mover("-1").inserted_by("tested_batch").inserted_date(new Date()).build();
+				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).srcEmailAddress(item.getEmailAddress())
+				.fileName(item.getFileName()).emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
+				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
+				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
+				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
 
 		/**
 		 * Inserting the failed item to Staging error

@@ -5,10 +5,12 @@ import java.util.Date;
 
 import javax.persistence.*;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "hdpc_job")
 public class JobEntity
 {
@@ -52,7 +54,7 @@ public class JobEntity
 	 * The inserted date
 	 */
 	@Column(name = "inserted_date")
-	private Date inserted_date;
+	private Date insertedDate;
 	/**
 	 * The updated by
 	 */

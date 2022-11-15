@@ -213,30 +213,35 @@ public final class FileUtil
 	 *
 	 * @param file
 	 * @param status
-	 * @param value_val
+	 * @param valueVal
 	 * @throws IOException
 	 */
-	public static void moveFile(String file, boolean status, String value_val) throws IOException
+	public static void moveFile(String file, boolean status, String valueVal) throws IOException
 	{
-		String folder = ((status) ? processed : error);
+		String folder = status ? processed : error;
 		String fileName = FileValidation.getFileName(file);
-		String source = isFBSFMC(fileName) ? "FB_SFMC" : value_val;
+		String source = isFBSFMC(fileName) ? "FB_SFMC" : valueVal;
 
 		String path = getPath(source);
 		String newFile = renameFile(file);
 		File file1 = new File(path + inbound + file);
-		file1.renameTo(new File(path + inbound + newFile));
 
-
-		Path temp = Files.move(Paths.get(path + inbound + newFile), Paths.get(path + folder + "\\" + newFile));
-
-		if (temp != null)
+		/**
+		 * If the files was renamed then... move file to Processed or Error depending on the process result
+		 */
+		if (file1.renameTo(new File(path + inbound + newFile)))
 		{
-			log.info(" File {} moved successfully to folder: {} ", file, folder);
-		}
-		else
-		{
-			log.info(" Failed to move the file {} ", file);
+
+			Path temp = Files.move(Paths.get(path + inbound + newFile), Paths.get(path + folder + "\\" + newFile));
+
+			if (temp != null)
+			{
+				log.info(" File {} moved successfully to folder: {} ", file, folder);
+			}
+			else
+			{
+				log.info(" Failed to move the file {} ", file);
+			}
 		}
 	}
 
@@ -269,9 +274,9 @@ public final class FileUtil
 	/**
 	 * Gets path
 	 */
-	public static String getPath(String value_val)
+	public static String getPath(String valueVal)
 	{
-		switch (value_val)
+		switch (valueVal)
 		{
 			case "hybris":
 				return hybrisPath;
@@ -295,7 +300,8 @@ public final class FileUtil
 	public static Map<String, List<Resource>> getFilesOnFolder(String path, String source)
 	{
 		File folder = new File(path);
-		List<Resource> validFilesNames = new ArrayList<>(), invalidFileNames = new ArrayList<>();
+		List<Resource> validFilesNames = new ArrayList<>();
+		List<Resource> invalidFileNames = new ArrayList<>();
 		String[] files = folder.list();
 
 
@@ -328,6 +334,8 @@ public final class FileUtil
 					}
 					catch (IOException e)
 					{
+						//TODO what should happen in case of exception
+						// Make the Job status failed
 						log.error(" Exception occurs moving file {}: {}", fileName, e.getMessage());
 					}
 				}

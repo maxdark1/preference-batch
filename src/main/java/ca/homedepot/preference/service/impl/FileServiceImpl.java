@@ -59,35 +59,35 @@ public class FileServiceImpl implements FileService
 	@Transactional
 	public int insert(FileDTO file)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFile_name(), file.getJob(),
-				file.getFile_source_id(), file.getStatus(), file.getStart_time(), file.getInserted_by(), file.getInserted_date(),
-				file.getStatus_id(), file.getEnd_time());
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFileName(), file.getJob(),
+				file.getSourceType(), file.getStatus(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(),
+				file.getStatusId(), file.getEndTime());
 	}
 
 	/**
 	 * Gets job id
 	 *
-	 * @param job_name
+	 * @param jobName
 	 * @return job id
 	 */
-	public BigDecimal getJobId(String job_name)
+	public BigDecimal getJobId(String jobName)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME,
-				(rs, RowNum) -> rs.getBigDecimal("job_id"), job_name);
+				(rs, rowNum) -> rs.getBigDecimal("job_id"), jobName);
 	}
 
 	/**
 	 * Gets last inserted file according to file name and job id
 	 *
-	 * @param file_name
-	 * @param job_id
+	 * @param fileName
+	 * @param jobId
 	 * @return file id
 	 */
 	@Override
-	public BigDecimal getFile(String file_name, BigDecimal job_id)
+	public BigDecimal getFile(String fileName, BigDecimal jobId)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE_INSERT, new Object[]
-		{ file_name, job_id }, (rs, RowNum) -> rs.getBigDecimal(FILE_ID));
+		{ fileName, jobId }, (rs, rowNum) -> rs.getBigDecimal(FILE_ID));
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class FileServiceImpl implements FileService
 	@Override
 	public BigDecimal getLasFile()
 	{
-		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE, (rs, RowNum) -> rs.getBigDecimal(FILE_ID));
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_FILE, (rs, rowNum) -> rs.getBigDecimal(FILE_ID));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class FileServiceImpl implements FileService
 	public BigDecimal getSourceId(String keyVal, String valueVal)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_MASTER_ID, new Object[]
-		{ keyVal, valueVal }, (rs, RowNum) -> rs.getBigDecimal("master_id"));
+		{ keyVal, valueVal }, (rs, rowNum) -> rs.getBigDecimal("master_id"));
 	}
 
 
@@ -158,9 +158,9 @@ public class FileServiceImpl implements FileService
 	{
 		return jdbcTemplate.query(SqlQueriesConstants.SQL_GET_FILES_TO_MOVE, (rs, numRow) -> {
 			FileDTO fileDTO = new FileDTO();
-			fileDTO.setFile_id(rs.getBigDecimal(FILE_ID));
-			fileDTO.setFile_name(rs.getString("file_name"));
-			fileDTO.setFile_source_id(rs.getBigDecimal("source_type"));
+			fileDTO.setFileId(rs.getBigDecimal(FILE_ID));
+			fileDTO.setFileName(rs.getString("file_name"));
+			fileDTO.setSourceType(rs.getBigDecimal("source_type"));
 			return fileDTO;
 		});
 	}
@@ -174,25 +174,24 @@ public class FileServiceImpl implements FileService
 	@Override
 	public int insertInboundStgError(FileInboundStgTable stgTable)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_FILE_INBOUND_STG_ERROR, stgTable.getFile_id(),
-				stgTable.getStatus(), stgTable.getSource_id(), stgTable.getSrc_phone_number(), stgTable.getSrc_first_name(),
-				stgTable.getSrc_last_name(), stgTable.getSrc_address1(), stgTable.getSrc_address2(), stgTable.getSrc_city(),
-				stgTable.getSrc_state(), stgTable.getSrc_postal_code(), stgTable.getSrc_language_pref(),
-				stgTable.getSrc_email_address(), stgTable.getSrc_title_name(), stgTable.getPhone_pref(),
-				stgTable.getEmail_address_pref(), stgTable.getMail_address_pref(), stgTable.getSrc_date(), stgTable.getEmail_status(),
-				stgTable.getSrc_phone_extension(), stgTable.getEmail_pref_hd_ca(), stgTable.getEmail_pref_garden_club(),
-				stgTable.getEmail_pref_pro(), stgTable.getEmail_pref_new_mover(), stgTable.getCell_sms_flag(),
-				stgTable.getBusiness_name(), stgTable.getCustomer_nbr(), stgTable.getOrg_name(), stgTable.getStore_nbr(),
-				stgTable.getCust_type_cd(), stgTable.getContent1(), stgTable.getValue1(), stgTable.getContent2(),
-				stgTable.getValue2(), stgTable.getContent3(), stgTable.getValue3(), stgTable.getContent4(), stgTable.getValue4(),
-				stgTable.getContent5(), stgTable.getValue5(), stgTable.getContent6(), stgTable.getValue6(), stgTable.getContent7(),
-				stgTable.getValue7(), stgTable.getContent8(), stgTable.getValue8(), stgTable.getContent9(), stgTable.getValue9(),
-				stgTable.getContent10(), stgTable.getValue10(), stgTable.getContent11(), stgTable.getValue11(),
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_FILE_INBOUND_STG_ERROR, stgTable.getFileId(),
+				stgTable.getStatus(), stgTable.getSourceId(), stgTable.getSrcPhoneNumber(), stgTable.getSrcFirstName(),
+				stgTable.getSrcLastName(), stgTable.getSrcAddress1(), stgTable.getSrcAddress2(), stgTable.getSrcCity(),
+				stgTable.getSrcState(), stgTable.getSrcPostalCode(), stgTable.getSrcLanguagePref(), stgTable.getSrcEmailAddress(),
+				stgTable.getSrcTitleName(), stgTable.getPhonePref(), stgTable.getEmailAddressPref(), stgTable.getMailAddressPref(),
+				stgTable.getSrcDate(), stgTable.getEmailStatus(), stgTable.getSrcPhoneExtension(), stgTable.getEmailPrefHdCa(),
+				stgTable.getEmailPrefGardenClub(), stgTable.getEmailPrefPro(), stgTable.getEmailPrefNewMover(),
+				stgTable.getCellSmsFlag(), stgTable.getBusinessName(), stgTable.getCustomerNbr(), stgTable.getOrgName(),
+				stgTable.getStoreNbr(), stgTable.getCustTypeCd(), stgTable.getContent1(), stgTable.getValue1(),
+				stgTable.getContent2(), stgTable.getValue2(), stgTable.getContent3(), stgTable.getValue3(), stgTable.getContent4(),
+				stgTable.getValue4(), stgTable.getContent5(), stgTable.getValue5(), stgTable.getContent6(), stgTable.getValue6(),
+				stgTable.getContent7(), stgTable.getValue7(), stgTable.getContent8(), stgTable.getValue8(), stgTable.getContent9(),
+				stgTable.getValue9(), stgTable.getContent10(), stgTable.getValue10(), stgTable.getContent11(), stgTable.getValue11(),
 				stgTable.getContent12(), stgTable.getValue12(), stgTable.getContent13(), stgTable.getValue13(),
 				stgTable.getContent14(), stgTable.getValue14(), stgTable.getContent15(), stgTable.getValue15(),
 				stgTable.getContent16(), stgTable.getValue16(), stgTable.getContent17(), stgTable.getValue17(),
 				stgTable.getContent18(), stgTable.getValue18(), stgTable.getContent19(), stgTable.getValue19(),
-				stgTable.getContent20(), stgTable.getValue20(), stgTable.getInserted_by(), stgTable.getInserted_date());
+				stgTable.getContent20(), stgTable.getValue20(), stgTable.getInsertedBy(), stgTable.getInsertedDate());
 	}
 
 

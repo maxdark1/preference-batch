@@ -49,32 +49,32 @@ class JobRepoTest
 	void createJobDTO()
 	{
 		jobDTO = new Job();
-		jobDTO.setJob_id(new BigDecimal("12345"));
+		jobDTO.setJobId(new BigDecimal("12345"));
 
-		jobDTO.setJob_name("JOB NAME");
+		jobDTO.setJobName("JOB NAME");
 		jobDTO.setStatus("S");
-		jobDTO.setStatus_id(BigDecimal.ONE);
-		jobDTO.setStart_time(new Date());
-		jobDTO.setEnd_time(new Date());
-		jobDTO.setInserted_by("TEST");
-		jobDTO.setInserted_date(new Date());
-		jobDTO.setUpdated_by("TEST");
+		jobDTO.setStatusId(BigDecimal.ONE);
+		jobDTO.setStartTime(new Date());
+		jobDTO.setEndTime(new Date());
+		jobDTO.setInsertedBy("TEST");
+		jobDTO.setInsertedDate(new Date());
+		jobDTO.setUpdatedBy("TEST");
 	}
 
 	void createFileDTO() throws ParseException
 	{
 		fileDTO = new FileDTO("TEST");
-		fileDTO.setFile_id(BigDecimal.ONE);
-		fileDTO.setFile_source_id(new BigDecimal("12345"));
+		fileDTO.setFileId(BigDecimal.ONE);
+		fileDTO.setSourceType(new BigDecimal("12345"));
 		fileDTO.setJob(new BigDecimal("246810"));
-		fileDTO.setInserted_by("TEST");
-		fileDTO.setStart_time((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
-		fileDTO.setInserted_date((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
+		fileDTO.setInsertedBy("TEST");
+		fileDTO.setStartTime((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
+		fileDTO.setInsertedDate((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
 		fileDTO.setStatus("C");
-		fileDTO.setUpdated_by("TEST");
-		fileDTO.setUpdated_date((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
-		fileDTO.setFile_name("TEST_FILE");
-		fileDTO.setEnd_time((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
+		fileDTO.setUpdatedBy("TEST");
+		fileDTO.setUpdatedDate((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
+		fileDTO.setFileName("TEST_FILE");
+		fileDTO.setEndTime((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"));
 	}
 
 	void createRegistrationRequestObj()
@@ -131,12 +131,7 @@ class JobRepoTest
 	@Test
 	void testDTORegistrationRequest()
 	{
-		Address address = new Address();
-		address.setSrcState("Sinaloa");
-		address.setSrcCity("Culiacan");
-		address.setSrcAddress1("address1");
-		address.setSrcAddress2("address2");
-		address.setSrcPostalCode("82000");
+
 		assertNotNull(registrationRequest);
 		registrationRequest.setFileId(new BigDecimal("12345"));
 		assertEquals(new BigDecimal("12345"), registrationRequest.getFileId());
@@ -144,6 +139,18 @@ class JobRepoTest
 		assertEquals("246810", registrationRequest.getSequenceNbr());
 		assertEquals(Long.valueOf(1), registrationRequest.getSourceId());
 		assertEquals("E", registrationRequest.getLanguagePreference());
+
+	}
+
+	@Test
+	void testDTORegistrationRequestGetters()
+	{
+		Address address = new Address();
+		address.setSrcState("Sinaloa");
+		address.setSrcCity("Culiacan");
+		address.setSrcAddress1("address1");
+		address.setSrcAddress2("address2");
+		address.setSrcPostalCode("82000");
 		assertEquals("Sr", registrationRequest.getSrcTitleName());
 		assertEquals("Michael", registrationRequest.getSrcFirstName());
 		assertNotEquals("Escobedo", registrationRequest.getSrcLastName());
@@ -164,7 +171,6 @@ class JobRepoTest
 		assertNotNull(registrationRequest.getEmailPrefPro());
 		assertNotNull(registrationRequest.getContentValue());
 		assertEquals(Integer.valueOf(1), registrationRequest.getEmailPrefHDCa());
-
 	}
 
 	@Test
@@ -179,17 +185,17 @@ class JobRepoTest
 	void testFileDTO() throws ParseException
 	{
 		assertNotNull(fileDTO);
-		assertEquals("TEST_FILE", fileDTO.getFile_name());
+		assertEquals("TEST_FILE", fileDTO.getFileName());
 		assertNotNull(fileDTO.getJob());
-		assertNotNull(fileDTO.getFile_id());
-		assertEquals(new BigDecimal("12345"), fileDTO.getFile_source_id());
+		assertNotNull(fileDTO.getFileId());
+		assertEquals(new BigDecimal("12345"), fileDTO.getSourceType());
 		assertNotNull(fileDTO.getStatus());
-		assertEquals((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"), fileDTO.getStart_time());
-		assertNotNull(fileDTO.getUpdated_date());
-		assertNotNull(fileDTO.getInserted_date());
-		assertNotNull(fileDTO.getEnd_time());
-		assertEquals("TEST", fileDTO.getInserted_by());
-		assertEquals("TEST", fileDTO.getUpdated_by());
+		assertEquals((new SimpleDateFormat("MM-dd-yyyy")).parse("09-15-2022"), fileDTO.getStartTime());
+		assertNotNull(fileDTO.getUpdatedDate());
+		assertNotNull(fileDTO.getInsertedDate());
+		assertNotNull(fileDTO.getEndTime());
+		assertEquals("TEST", fileDTO.getInsertedBy());
+		assertEquals("TEST", fileDTO.getUpdatedBy());
 
 	}
 
@@ -197,16 +203,16 @@ class JobRepoTest
 	void testJobDTO()
 	{
 		assertNotNull(jobDTO);
-		assertEquals(BigDecimal.ONE, jobDTO.getStatus_id());
-		assertEquals(new BigDecimal("12345"), jobDTO.getJob_id());
-		assertNotEquals("NAME", jobDTO.getJob_name());
+		assertEquals(BigDecimal.ONE, jobDTO.getStatusId());
+		assertEquals(new BigDecimal("12345"), jobDTO.getJobId());
+		assertNotEquals("NAME", jobDTO.getJobName());
 		assertEquals("S", jobDTO.getStatus());
-		assertNotNull(jobDTO.getStart_time());
-		assertNotNull(jobDTO.getInserted_date());
-		assertNotNull(jobDTO.getEnd_time());
-		assertNull(jobDTO.getUpdated_date());
-		assertEquals("TEST", jobDTO.getInserted_by());
-		assertEquals("TEST", jobDTO.getUpdated_by());
+		assertNotNull(jobDTO.getStartTime());
+		assertNotNull(jobDTO.getInsertedDate());
+		assertNotNull(jobDTO.getEndTime());
+		assertNull(jobDTO.getUpdatedDate());
+		assertEquals("TEST", jobDTO.getInsertedBy());
+		assertEquals("TEST", jobDTO.getUpdatedBy());
 	}
 
 	@Test

@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password:
+    password: postgres
     driverClassName: org.postgresql.Driver
   batch:
     job:
@@ -44,6 +44,8 @@ cron:
     ingestSFMCOutlookUnsubscribed: 30 * * * * *
     sendPreferencesToCRM: 30 * * * * *
     sendPreferencesToCitiSuppresion: 30 * * * * *
+    sendPreferencesToInternalDestination: 30 * * * * *
+    sendWeeklyLoyaltyComplaintToSource: 30 * * * * *
 
 server:
   port: 8080
@@ -69,9 +71,16 @@ inbound:
 
 outbound:
   files:
+    complaintWeekly: LOYALTY_COMPLIANT_FILE_YYYYMMDD.csv.gz
     compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
+    internalCa: CA_COMPLIANT_FILE_YYYYMMDD.csv
+    internalGarden: GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv
+    internalMover: NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv
   citi:
     mastersuppresion: ACXIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.csv
+  salesforce:
+    extract: ET_YYYYMMDD.TXT.PGP
+
 
 folders:
   inbound: \INBOUND\
@@ -88,6 +97,12 @@ folders:
     path: C:\batchFiles\SFMC
   citi:
     path: C:\batchFiles\CITI
+  internal:
+    path: C:\batchFiles
+  salesforce:
+    path: C:\batchFiles\Salesforce
+  loyaltyCompliant:
+    path: C:\batchFiles
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -103,4 +118,10 @@ preference:
     outboundCRM:
       chunk: 10
     outboundCiti:
+      chunk: 20
+    outboundInternal:
+      chunk: 20
+    outboundSalesforce:
+      chunk: 20
+    outboundLoyalty:
       chunk: 20

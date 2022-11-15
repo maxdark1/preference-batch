@@ -1,6 +1,5 @@
 package ca.homedepot.preference.processor;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
@@ -8,25 +7,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 
 @Component
 @Slf4j
-public class preferenceOutboundProcessor implements ItemProcessor<PreferenceOutboundDto, PreferenceOutboundDtoProcessor>
+public class PreferenceOutboundProcessor implements ItemProcessor<PreferenceOutboundDto, PreferenceOutboundDtoProcessor>
 {
+	private final Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+
 	@Override
 	public PreferenceOutboundDtoProcessor process(PreferenceOutboundDto preferenceOutboundDto) throws Exception
 	{
 		String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+
 		PreferenceOutboundDtoProcessor preferenceOutboundDtoProcessor = new PreferenceOutboundDtoProcessor();
 
 		preferenceOutboundDtoProcessor.setEmail(preferenceOutboundDto.getEmail() + split);
 		preferenceOutboundDtoProcessor.setEffectiveDate(formatter.format(preferenceOutboundDto.getEffectiveDate()) + split);
 		preferenceOutboundDtoProcessor.setSourceId(preferenceOutboundDto.getSourceId().toString() + split);
-		preferenceOutboundDtoProcessor.setEmailStatus((preferenceOutboundDto.getEmailStatus() == BigDecimal.ZERO ? PreferenceBatchConstants.VALID_EMAIL_CODE : preferenceOutboundDto.getEmailStatus().toString()) + split);
+		preferenceOutboundDtoProcessor.setEmailStatus(preferenceOutboundDto.getEmailStatus() + split);
 		preferenceOutboundDtoProcessor.setPhonePtcFlag(preferenceOutboundDto.getPhonePtcFlag().toString() + split);
 		preferenceOutboundDtoProcessor.setLanguagePref(preferenceOutboundDto.getLanguagePref() + split);
 		preferenceOutboundDtoProcessor.setEarlyOptInDate(formatter.format(preferenceOutboundDto.getEarlyOptInDate()) + split);

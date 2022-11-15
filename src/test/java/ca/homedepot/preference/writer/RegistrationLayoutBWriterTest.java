@@ -7,9 +7,7 @@ import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,16 +29,13 @@ class RegistrationLayoutBWriterTest
 	FileServiceImpl fileService;
 
 	@InjectMocks
+	@Spy
 	RegistrationLayoutBWriter layoutBWriter;
 
 	@BeforeEach
 	void setUp()
 	{
-		preferenceService = Mockito.mock(PreferenceServiceImpl.class);
-		fileService = Mockito.mock(FileServiceImpl.class);
-		layoutBWriter = new RegistrationLayoutBWriter();
-		layoutBWriter.setPreferenceService(preferenceService);
-		layoutBWriter.setFileService(fileService);
+		MockitoAnnotations.openMocks(this);
 	}
 
 	@Test
@@ -53,5 +48,6 @@ class RegistrationLayoutBWriterTest
 		Mockito.when(fileService.updateInboundStgTableStatus(eq(BigDecimal.ZERO), anyString(), anyString())).thenReturn(1);
 
 		layoutBWriter.write(items);
+		Mockito.verify(layoutBWriter).write(items);
 	}
 }

@@ -18,8 +18,6 @@ import org.springframework.batch.item.validator.ValidationException;
 
 import ca.homedepot.preference.model.InboundRegistration;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 class InboundValidatorTest
 {
 
@@ -56,19 +54,19 @@ class InboundValidatorTest
 		input = new InboundRegistration();
 		error = new StringBuilder();
 		input.setAsOfDate("08-26-2022 10:10:10");
-		input.setLanguage_Preference("E");
-		input.setEmail_Permission("1");
-		input.setMail_Permission("1");
+		input.setLanguagePreference("E");
+		input.setEmailPermission("1");
+		input.setMailPermission("1");
 		input.setEmailPrefHDCA("1");
 		input.setGardenClub("1");
 		input.setEmailPrefPRO("1");
 		input.setNewMover("-1");
-		input.setSource_ID("12345");
-		input.setContent_1("CUSTOMER_NBR");
-		input.setContent_2("STORE_NBR");
-		input.setContent_3("ORG_NAME");
-		input.setContent_5("CUST_TYPE_CODE");
-		input.setContent_6("CELL_PHONE");
+		input.setSourceID("12345");
+		input.setContent1("CUSTOMER_NBR");
+		input.setContent2("STORE_NBR");
+		input.setContent3("ORG_NAME");
+		input.setContent5("CUST_TYPE_CODE");
+		input.setContent6("CELL_PHONE");
 	}
 
 	@Test
@@ -87,7 +85,7 @@ class InboundValidatorTest
 	@Test
 	void validateLanguagePref()
 	{
-		input.setLanguage_Preference("ENGLISH");
+		input.setLanguagePreference("ENGLISH");
 
 		InboundValidator.validateLanguagePref(input, error);
 
@@ -95,15 +93,15 @@ class InboundValidatorTest
 			InboundValidator.isValidationsErros(error);
 		});
 
-		assertTrue(exception.getMessage().contains(input.getLanguage_Preference()));
+		assertTrue(exception.getMessage().contains(input.getLanguagePreference()));
 	}
 
 	@Test
 	void validateEmailFormat()
 	{
-		input.setEmail_Address("item");
+		input.setEmailAddress("item");
 
-		InboundValidator.validateEmailFormat(input.getEmail_Address(), error);
+		InboundValidator.validateEmailFormat(input.getEmailAddress(), error);
 		ValidationException exception = assertThrows(ValidationException.class, () -> {
 			InboundValidator.isValidationsErros(error);
 		});
@@ -136,18 +134,18 @@ class InboundValidatorTest
 	void validateNumberFormatSourceID()
 	{
 		InboundRegistration item = new InboundRegistration();
-		item.setSource_ID(null);
+		item.setSourceID(null);
 
 		InboundValidator.validateNumberFormat(item, error);
 
-		assertEquals(null, item.getSource_ID());
+		assertEquals(null, item.getSourceID());
 	}
 
 	@Test
 	void validateNumberFormatValue5()
 	{
 		InboundRegistration item = new InboundRegistration();
-		item.setValue_5("a");
+		item.setValue5("a");
 
 		InboundValidator.validateNumberFormat(item, error);
 
@@ -161,7 +159,7 @@ class InboundValidatorTest
 	void validateNumberFormatValue5Numeric()
 	{
 		InboundRegistration item = new InboundRegistration();
-		item.setValue_5("10");
+		item.setValue5("10");
 
 		InboundValidator.validateNumberFormat(item, error);
 
@@ -203,7 +201,7 @@ class InboundValidatorTest
 	void validateNumberFormatPhonePermission()
 	{
 		InboundRegistration item = new InboundRegistration();
-		item.setPhone_Permission("a");
+		item.setPhonePermission("a");
 
 		InboundValidator.validateNumberFormat(item, error);
 
@@ -249,7 +247,7 @@ class InboundValidatorTest
 	@Test
 	void validateIsRequired()
 	{
-		input.setLanguage_Preference(null);
+		input.setLanguagePreference(null);
 
 		InboundValidator.validateIsRequired(input, error);
 		ValidationException exception1 = assertThrows(ValidationException.class, () -> {
@@ -320,5 +318,15 @@ class InboundValidatorTest
 		assertEquals("nurun", nurun);
 		assertEquals("CANADA SAP CRM", sapCRM);
 		assertEquals("Facebook Opt in campaign", faceOptIn);
+	}
+
+	@Test
+	void moveDateTestMakingAnException()
+	{
+		String dateStr = "something";
+
+		Date dateDT = InboundValidator.moveDate(dateStr);
+
+		assertNull(dateDT);
 	}
 }

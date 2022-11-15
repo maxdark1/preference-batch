@@ -14,7 +14,7 @@ public class FileInboundStgTable
 	 * Field file_id on persistence
 	 *
 	 */
-	BigDecimal file_id;
+	BigDecimal fileId;
 
 	/**
 	 * File Name Not a field on persistence Purpose: to search file's id
@@ -31,183 +31,185 @@ public class FileInboundStgTable
 	 * Field src_language_pref on persistence
 	 *
 	 */
-	String src_language_pref;
+	String srcLanguagePref;
 
 	/*
 	 * Field src_email_address on persistence
 	 *
 	 */
-	String src_email_address;
+	String srcEmailAddress;
 
 
 	/*
 	 * Field email_address_pref on persistence
 	 *
 	 */
-	String email_address_pref;
+	String emailAddressPref;
 
 	/*
 	 * Field phone_pref on persistence
 	 *
 	 */
-	String phone_pref;
+	String phonePref;
 
 	/*
 	 * Field src_phone_number on persistence
 	 *
 	 */
-	String src_phone_number;
+	String srcPhoneNumber;
 
 	/*
 	 * Field src_phone_extension on persistence
 	 *
 	 */
-	String src_phone_extension;
+	String srcPhoneExtension;
 
 	/*
 	 * Field src_title_name on persistence
 	 *
 	 */
-	String src_title_name;
+	String srcTitleName;
 
 	/*
 	 * Field src_first_name on persistence
 	 *
 	 */
-	String src_first_name;
+	String srcFirstName;
+
+	String srcMiddleInitial;
 
 	/*
 	 * Field src_last_name on persistence
 	 *
 	 */
-	String src_last_name;
+	String srcLastName;
 
 	/*
 	 * Field src_address1 on persistence
 	 *
 	 */
-	String src_address1;
+	String srcAddress1;
 
 
 	/*
 	 * Field src_address2 on persistence
 	 *
 	 */
-	String src_address2;
+	String srcAddress2;
 
 	/*
 	 * Field src_city on persistence
 	 *
 	 */
-	String src_city;
+	String srcCity;
 
 	/*
 	 * Field src_state on persistence
 	 *
 	 */
-	String src_state;
+	String srcState;
 
 	/*
 	 * Field src_date on persistence
 	 *
 	 */
-	Date src_date;
+	Date srcDate;
 
 	/*
 	 * Field src_postal_code on persistence
 	 *
 	 */
-	String src_postal_code;
+	String srcPostalCode;
 
 	/*
 	 * Field email_status on persistence
 	 *
 	 */
-	BigDecimal email_status;
+	BigDecimal emailStatus;
 
 	/*
 	 * Field mail_address_pref on persistence
 	 *
 	 */
-	String mail_address_pref;
+	String mailAddressPref;
 
 	/*
 	 * Field email_pref_hd_ca on persistence
 	 *
 	 */
-	String email_pref_hd_ca;
+	String emailPrefHdCa;
 
 	/*
 	 * Field email_pref_garden_club on persistence
 	 *
 	 */
-	String email_pref_garden_club;
+	String emailPrefGardenClub;
 
 	/*
 	 * Field email_pref_pro on persistence
 	 *
 	 */
-	String email_pref_pro;
+	String emailPrefPro;
 
 	/*
 	 * Field email_pref_new_mover on persistence
 	 *
 	 */
-	String email_pref_new_mover;
+	String emailPrefNewMover;
 
 	/*
 	 * Field source_id on persistence
 	 *
 	 */
-	BigDecimal source_id;
+	BigDecimal sourceId;
 
 	/*
 	 * Field cell_sms_flag on persistence
 	 *
 	 */
-	String cell_sms_flag;
+	String cellSmsFlag;
 
 	/*
 	 * Field customer_nbr on persistence
 	 *
 	 */
-	String customer_nbr;
+	String customerNbr;
 
 	/*
 	 * Field business_name on persistence
 	 *
 	 */
-	String business_name;
+	String businessName;
 
 	/*
 	 * Field org_name on persistence
 	 *
 	 */
-	String org_name;
+	String orgName;
 
 	/*
 	 * Field store_nbr on persistence
 	 *
 	 */
-	String store_nbr;
+	String storeNbr;
 
 	/*
 	 * Field cust_type_cd on persistence
 	 *
 	 */
-	String cust_type_cd;
+	String custTypeCd;
 
 	/*
 	 * Field cust_type_cd on persistence
 	 *
 	 */
-	String fax_number;
+	String faxNumber;
 
 	/*
 	 * Field fax_extension on persistence
 	 *
 	 */
-	String fax_extension;
+	String faxExtension;
 
 	/**
 	 * The content Value pair
@@ -377,14 +379,14 @@ public class FileInboundStgTable
 	/**
 	 * Field inserted_by on persistence
 	 */
-	private String inserted_by;
+	private String insertedBy;
 
 	/**
 	 * Field inserted_date on persistence
 	 */
-	private Date inserted_date;
+	private Date insertedDate;
 	/**
 	 * Field updated date
 	 */
-	Date updated_date;
+	Date updatedDate;
 }

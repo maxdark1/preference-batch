@@ -7,12 +7,12 @@ import org.springframework.batch.item.validator.ValidationException;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Pattern;
 
 @Slf4j
 @UtilityClass
 public class FileValidation
 {
+	public final String formatDate = "yyyyMMdd";
 	/**
 	 * The extension regex
 	 */
@@ -125,10 +125,11 @@ public class FileValidation
 	 */
 	public static boolean validateFileName(String fileName, String source)
 	{
-		String formatDate = "yyyyMMdd";
 		String baseName = getFileName(fileName);
-		int start = getBaseName(source).length(), end = start + formatDate.length();
-		if (end != baseName.length() || !validateExtension(getExtension(fileName, baseName)))
+		int start = getBaseName(source).length();
+		int end = start + formatDate.length();
+		boolean isNotAValidExtension = !validateExtension(getExtension(fileName, baseName));
+		if (end != baseName.length() || isNotAValidExtension)
 		{
 			return false;
 		}
@@ -218,8 +219,8 @@ public class FileValidation
 	}
 
 	/**
-	 * Ad hoc validation for string date wiht format yyyyMMdd
-	 * 
+	 * Ad hoc validation for string date wiht format yyyyMMdd 19-09-1222
+	 *
 	 * @param format
 	 * @param strDate
 	 * @return
