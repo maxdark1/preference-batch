@@ -44,7 +44,7 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 	@Override
 	public void onSkipInRead(Throwable t)
 	{
-		if (shouldSkip(t))
+		if (!shouldSkip(t))
 		{
 			log.error(" Something went wrong trying to read the file: ", t.getMessage());
 			throw new IOException(t.getMessage());

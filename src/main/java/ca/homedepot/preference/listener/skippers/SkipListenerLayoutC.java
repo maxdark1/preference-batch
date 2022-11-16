@@ -35,10 +35,15 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	 * @param t
 	 *           cause of the failure
 	 */
+	@SneakyThrows
 	@Override
 	public void onSkipInRead(Throwable t)
 	{
-		// Nothing to do in here
+		if (!shouldSkip(t))
+		{
+			log.error(t.getMessage());
+			throw new IOException(t.getMessage());
+		}
 	}
 
 	/**
@@ -66,11 +71,6 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	@Override
 	public void onSkipInProcess(InboundRegistration item, Throwable t)
 	{
-		if (shouldSkip(t))
-		{
-			log.error(t.getMessage());
-			throw new IOException(t.getMessage());
-		}
 
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
 				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).fileName(item.getFileName())

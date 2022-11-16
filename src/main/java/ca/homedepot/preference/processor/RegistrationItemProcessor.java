@@ -59,7 +59,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		}
 		catch (ValidationException e)
 		{
-			log.error(" Validation error on  file {}: {} ", item.getFileName(), e.getMessage());
+			log.error(" Validation error on file {}: {} ", item.getFileName(), e.getMessage());
 			/**
 			 * Throws the exception again after has been logged This is catch on the LayoutC's skippers
 			 */
