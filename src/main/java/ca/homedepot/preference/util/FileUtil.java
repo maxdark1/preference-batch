@@ -297,8 +297,7 @@ public final class FileUtil
 	 * @param source
 	 * @return files in a folder
 	 */
-	public static Map<String, List<Resource>> getFilesOnFolder(String path, String source)
-	{
+	public static Map<String, List<Resource>> getFilesOnFolder(String path, String source) throws IOException {
 		File folder = new File(path);
 		List<Resource> validFilesNames = new ArrayList<>();
 		List<Resource> invalidFileNames = new ArrayList<>();
@@ -337,6 +336,7 @@ public final class FileUtil
 						//TODO what should happen in case of exception
 						// Make the Job status failed
 						log.error(" Exception occurs moving file {}: {}", fileName, e.getMessage());
+						throw e;
 					}
 				}
 			}

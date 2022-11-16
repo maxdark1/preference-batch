@@ -4,11 +4,14 @@ import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Date;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
@@ -16,6 +19,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 @JobScope
 @Setter
 @Getter
+@Slf4j
 public class SkipListenerLayoutC extends SkipFileService implements SkipListener<InboundRegistration, FileInboundStgTable>
 {
 
@@ -58,9 +62,15 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	 * @param t
 	 *           the cause of the failure
 	 */
+	@SneakyThrows
 	@Override
 	public void onSkipInProcess(InboundRegistration item, Throwable t)
 	{
+		if (shouldSkip(t))
+		{
+			log.error(t.getMessage());
+			throw new IOException(t.getMessage());
+		}
 
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
 				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).fileName(item.getFileName())

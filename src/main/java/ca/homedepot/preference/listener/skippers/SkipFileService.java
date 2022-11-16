@@ -2,9 +2,11 @@ package ca.homedepot.preference.listener.skippers;
 
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 /**
@@ -55,5 +57,14 @@ public class SkipFileService
 	public boolean isEmailInvalid(Throwable t)
 	{
 		return t.getMessage().contains("email address");
+	}
+
+	/**
+	 * Returns if the exception can be skipped
+	 * @param t
+	 * @return can be skipped
+	 */
+	public boolean shouldSkip(Throwable t){
+		return !(t instanceof IOException);
 	}
 }

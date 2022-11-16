@@ -416,8 +416,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.hybrisIngestion}")
 	public void processRegistrationHybrisInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
-	{
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, IOException {
 		log.info(" Registration Inbound Hybris : Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_INBOUND, String.valueOf(System.currentTimeMillis()))
@@ -439,8 +438,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.crmIngestion}")
 	public void processRegistrationCRMInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
-	{
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, IOException {
 		log.info(" Registration Inbound CRM: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_CRM_INBOUND, String.valueOf(System.currentTimeMillis()))
@@ -462,8 +460,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
 	public void processFBSFMCInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException
-	{
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException, IOException {
 		log.info(" Registration Inbound FB-SFMC: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_FBSFMC_INBOUND, String.valueOf(System.currentTimeMillis()))
@@ -485,8 +482,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
-	{
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, IOException {
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
@@ -596,8 +592,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public MultiResourceItemReaderInbound<InboundRegistration> multiResourceItemReaderInboundFileReader(
 			@Value("#{jobParameters['directory']}") String directory, @Value("#{jobParameters['source']}") String source,
-			@Value("#{jobParameters['job_name']}") String jobName)
-	{
+			@Value("#{jobParameters['job_name']}") String jobName) throws IOException {
 		MultiResourceItemReaderInbound<InboundRegistration> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(
 				source);
 		multiReaderResourceInbound.setName("multiResourceItemReaderInboundFileReader");
@@ -626,8 +621,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public MultiResourceItemReader<EmailOptOuts> multiResourceItemReaderSFMCUnsubcribed(
 			@Value("#{jobParameters['directory']}") String directory, @Value("#{jobParameters['source']}") String source,
-			@Value("#{jobParameters['job_name']}") String jobName)
-	{
+			@Value("#{jobParameters['job_name']}") String jobName) throws IOException {
 		MultiResourceItemReaderInbound<EmailOptOuts> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
 		multiReaderResourceInbound.setJobName(jobName);
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
@@ -890,8 +884,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationHybrisInbound()
-	{
+	public Job registrationHybrisInbound() throws IOException {
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS).to(readLayoutCInboundBDStep2())
 				.build().build();
@@ -980,8 +973,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Job
 	 *
 	 */
-	public Job registrationCRMInbound()
-	{
+	public Job registrationCRMInbound() throws IOException {
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
@@ -995,8 +987,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	public Job registrationFBSFMCGardenClubInbound()
-	{
+	public Job registrationFBSFMCGardenClubInbound() throws IOException {
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2()).build().build();
@@ -1009,8 +1000,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Job
 	 *
 	 */
-	public Job sfmcOptOutsEmailOutlookClient()
-	{
+	public Job sfmcOptOutsEmailOutlookClient() throws IOException {
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2()).build()
 				.build();
@@ -1086,11 +1076,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *           The job_name that is processing
 	 * @return the step
 	 */
-	public Step readInboundHybrisFileStep1(String jobName)
-	{
+	public Step readInboundHybrisFileStep1(String jobName) throws IOException {
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(hybrisPath + folderInbound, HYBRIS, jobName)) // change source to constants
-				.processor(layoutCProcessor(HYBRIS)).faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.processor(layoutCProcessor(HYBRIS)).faultTolerant().skip(IOException.class).processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(hybrisWriterListener)
 				.writer(inboundRegistrationDBWriter()).listener(stepListener).build();
 	}
@@ -1103,8 +1092,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return the step
 	 */
 
-	public Step readInboundCRMFileStep1(String jobName)
-	{
+	public Step readInboundCRMFileStep1(String jobName) throws IOException {
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(crmPath + folderInbound, CRM, jobName))
 				.processor(layoutCProcessor(CRM)).faultTolerant().processorNonTransactional().skip(ValidationException.class)
@@ -1120,8 +1108,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return the step
 	 */
 
-	public Step readInboundFBSFMCFileStep1(String jobName)
-	{
+	public Step readInboundFBSFMCFileStep1(String jobName) throws IOException {
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath + folderInbound, FB_SFMC, jobName))
 				.processor(layoutCProcessor(FB_SFMC)).faultTolerant().processorNonTransactional().skip(ValidationException.class)
@@ -1136,8 +1123,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *           The job_name that is processing
 	 * @return the step
 	 */
-	public Step readSFMCOptOutsStep1(String jobName)
-	{
+	public Step readSFMCOptOutsStep1(String jobName) throws IOException {
 		return stepBuilderFactory.get("readSFMCOptOutsStep1").<EmailOptOuts, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath + folderInbound, SFMC, jobName)).processor(layoutBProcessor())
 				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
@@ -1268,8 +1254,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Map<String List<Resource>> Map of VALID and INVALID fiels
 	 */
-	public Map<String, List<Resource>> getResources(String folder, String source)
-	{
+	public Map<String, List<Resource>> getResources(String folder, String source) throws IOException {
 		return FileUtil.getFilesOnFolder(folder, source);
 	}
 

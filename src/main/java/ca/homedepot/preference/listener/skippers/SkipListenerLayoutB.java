@@ -5,11 +5,14 @@ import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -20,6 +23,7 @@ import static ca.homedepot.preference.dto.enums.Preference.*;
 @JobScope
 @Setter
 @Getter
+@Slf4j
 public class SkipListenerLayoutB extends SkipFileService implements SkipListener<EmailOptOuts, FileInboundStgTable>
 {
 
@@ -36,10 +40,15 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 	 * @param t
 	 *           cause of the failure
 	 */
+	@SneakyThrows
 	@Override
 	public void onSkipInRead(Throwable t)
 	{
-		//Nothing to do in here
+		if (shouldSkip(t))
+		{
+			log.error(" Something went wrong trying to read the file: ", t.getMessage());
+			throw new IOException(t.getMessage());
+		}
 	}
 
 	/**

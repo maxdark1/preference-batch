@@ -4,6 +4,7 @@ import static ca.homedepot.preference.constants.PreferenceBatchConstants.COMPLET
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -334,8 +335,7 @@ class SchedulerConfigTest
 
 
 	@Test
-	void readSFMCOptOutsStep1()
-	{
+	void readSFMCOptOutsStep1() throws IOException {
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);

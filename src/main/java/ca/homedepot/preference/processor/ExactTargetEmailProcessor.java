@@ -56,7 +56,7 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		}
 		catch (ValidationException e)
 		{
-			log.error(" Validation error: {} ", e.getMessage());
+			log.error(" Validation error on file {}: {} ", item.getFileName(), e.getMessage());
 			/**
 			 * Throws the exception again after is being log This is catch on the Skipper of LayoutB
 			 */
