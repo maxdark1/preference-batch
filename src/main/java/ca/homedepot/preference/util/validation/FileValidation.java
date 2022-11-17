@@ -254,11 +254,11 @@ public class FileValidation
 			{
 				return false;
 			}
-			if(format.substring(index, index+counter.get(key)).equals("MM"))
-				if (token.length() == 2 && !(integerValue >= 1 && integerValue <= 12))
-				{
-					return false;
-				}
+			if (format.substring(index, index + counter.get(key)).equals("MM") && token.length() == 2
+					&& !(integerValue >= 1 && integerValue <= 12))
+			{
+				return false;
+			}
 			if (token.length() == 2 && !(integerValue >= 1 && integerValue <= 31))
 			{
 				return false;
