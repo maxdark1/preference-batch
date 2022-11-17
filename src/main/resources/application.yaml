@@ -83,10 +83,10 @@ outbound:
 
 
 folders:
-  inbound: \INBOUND\
-  error: \ERROR\
-  processed: \PROCESSED\
-  outbound: OUTBOUND\
+  inbound: /inbound/
+  error: /error/
+  processed: /processed/
+  outbound: outbound/
   crm:
     path: C:\batchFiles\
   fb-sfmc:
@@ -118,7 +118,7 @@ preference:
     outboundCRM:
       chunk: 10
     outboundCiti:
-      chunk: 20
+      chunk: 1
     outboundInternal:
       chunk: 20
     outboundSalesforce:
