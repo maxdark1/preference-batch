@@ -35,8 +35,8 @@ class FileValidationTest
 	@Test
 	void validateFileName()
 	{
-		String source = "hybris";
-		String fileNameRightOne = "OPTIN_STANDARD_FLEX_20221202.TXT", fileNameWrongOne = "EXAMPLE.txt";
+		String source = "FB_SFMC";
+		String fileNameRightOne = "OPTIN_STANDARD_FLEX_GCFB_20221022.txt", fileNameWrongOne = "OPTIN_STANDARD_FLEX_GCFB_25102022.TXT";
 
 		boolean fileNameCorrect = FileValidation.validateFileName(fileNameRightOne, source),
 				fileNameWrong = FileValidation.validateFileName(fileNameWrongOne, source);

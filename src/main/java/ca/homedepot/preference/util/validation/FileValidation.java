@@ -8,6 +8,9 @@ import org.springframework.batch.item.validator.ValidationException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.FB_SFMC;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.SFMC;
+
 @Slf4j
 @UtilityClass
 public class FileValidation
@@ -181,9 +184,9 @@ public class FileValidation
 
 		switch (source)
 		{
-			case "FB_SFMC":
+			case FB_SFMC:
 				return fbSFMCBaseName;
-			case "SFMC":
+			case SFMC:
 				return sfmcBaseName;
 			default:
 				return hybrisBaseName;
@@ -240,18 +243,23 @@ public class FileValidation
 			}
 		});
 		int index = 0;
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(new Date());
+		int actualYear = calendar.get(Calendar.YEAR);
 		for (Integer key : counter.keySet())
 		{
 			String token = strDate.substring(index, index + counter.get(key));
-			if (token.length() == 4 && Integer.valueOf(token) < 2000)
+			int integerValue = Integer.valueOf(token);
+			if (token.length() == 4 && !(integerValue >= 2000 && integerValue <= actualYear))
 			{
 				return false;
 			}
-			if (token.length() == 2 && Integer.valueOf(token) < 0 && Integer.valueOf(token) > 12)
-			{
-				return false;
-			}
-			if (token.length() == 2 && Integer.valueOf(token) < 0 && Integer.valueOf(token) > 31)
+			if(format.substring(index, index+counter.get(key)).equals("MM"))
+				if (token.length() == 2 && !(integerValue >= 1 && integerValue <= 12))
+				{
+					return false;
+				}
+			if (token.length() == 2 && !(integerValue >= 1 && integerValue <= 31))
 			{
 				return false;
 			}
