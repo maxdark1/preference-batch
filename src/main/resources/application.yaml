@@ -88,21 +88,21 @@ folders:
   processed: /processed/
   outbound: outbound/
   crm:
-    path: C:\batchFiles\
+    path: crm/
   fb-sfmc:
-    path: C:\batchFiles\FB-SFMC
+    path: fb-sfmc/
   hybris:
-    path: C:\batchFiles\Hybris
+    path: hybris/
   sfmc:
-    path: C:\batchFiles\SFMC
+    path: sfmc/
   citi:
     path:
   internal:
-    path: C:\batchFiles\
+    path:
   salesforce:
-    path: C:\batchFiles\Salesforce
+    path:
   loyaltyCompliant:
-    path: C:\batchFiles\
+    path:
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -130,3 +130,4 @@ gcp:
   project-id: np-cadotcom
   bucket:
     name: commsvc-preference-centre-feeds
+    url: gs://commsvc-preference-centre-feeds

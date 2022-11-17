@@ -127,7 +127,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 	public void saveFileRecord()
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-		BigDecimal sourceId = MasterProcessor.getSourceID(SOURCE_STR, source).getMasterId();
+		String sourceStr = source.equals(CITI_SUP) ? SOURCE_ID_STR : SOURCE_STR;
+		BigDecimal sourceId = MasterProcessor.getSourceID(sourceStr, source).getMasterId();
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),

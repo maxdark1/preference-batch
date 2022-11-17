@@ -24,4 +24,6 @@ public interface OutboundService
 	int purgeLoyaltyComplaintTable();
 
 	void createFile(String repository, String folder, String fileNameFormat, String file) throws IOException;
+
+	void createFileGCS(String repository, String folder, String fileNameFormat, String file) throws IOException;
 }

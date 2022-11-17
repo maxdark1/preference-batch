@@ -6,6 +6,7 @@ import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.constants.StorageConstants;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Bucket;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.core.io.*;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 import java.util.List;
 
 import static ca.homedepot.preference.config.StorageApplicationGCS.*;
@@ -33,19 +35,52 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>{
     private File tempFile;
     private OutputStream os;
 
+    private StringBuilder stringBuilder;
     /**
      * Set the filename and delete if exists in the current bucket
      */
     @Override
     public void setResource() {
+        stringBuilder = new StringBuilder(getHeader()).append("\n");
         setfilename();
         StorageApplicationGCS.deleteObject(getFolderSource(), getFileName());
-        String bucket = StorageApplicationGCS.getBucketName();
-        BlobInfo info = BlobInfo.newBuilder(bucket, CloudStorageUtils.generatePath(getFolderSource(), getFileName())).build();
-        Blob blob =  storage().create(info);
+        tempFile = FileUtil.createTempFile(getFileName());
 
-        super.setResource(new GoogleStorageResource(storage(), CloudStorageUtils.generatePath("gs://commsvc-preference-centre-feeds/",getFolderSource(), getFileName()) ));
+        super.setResource(new FileSystemResource(tempFile));
     }
 
+    @Override
+    public void write(List<? extends T> items) throws Exception {
+        super.write(items);
 
+        String line = super.doWrite(items);
+        if(!stringBuilder.toString().contains(line));
+            stringBuilder.append(line);
+
+    }
+
+    /**
+     * After de writer is close, it generate the file on the
+     * Google Cloud Storage
+     */
+    @Override
+    public void close() {
+        super.close();
+
+        byte[] content = stringBuilder.toString().getBytes();
+        createFileOnGCS(CloudStorageUtils.generatePath(getFolderSource(), getFileName()), content);
+    }
+
+    /**
+     * Method to create file on the Google cloud Storage
+     * @param filename
+     * @param content
+     */
+
+    public static void createFileOnGCS(String filename, byte[] content)
+    {
+        String bucket = StorageApplicationGCS.getBucketName();
+        BlobInfo file = BlobInfo.newBuilder(bucket, filename).build();
+        storage().create(file, content);
+    }
 }

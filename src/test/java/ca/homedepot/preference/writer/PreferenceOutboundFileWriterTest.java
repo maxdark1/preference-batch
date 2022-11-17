@@ -38,7 +38,7 @@ class PreferenceOutboundFileWriterTest
 	{
 		MockitoAnnotations.initMocks(this);
 		preferenceOutboundFileWriter.fileNameFormat = "LOYALTY_DAILY_YYYYMMDD.txt";
-		preferenceOutboundFileWriter.folderSorce = "";
+		preferenceOutboundFileWriter.folderSource = "";
 		preferenceOutboundFileWriter.repositorySource = "";
 
 		PreferenceOutboundDtoProcessor preferenceOutboundDto = new PreferenceOutboundDtoProcessor();

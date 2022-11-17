@@ -6,12 +6,14 @@ import ca.homedepot.preference.dto.InternalOutboundProcessorDto;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -21,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_INTERNAL_DESTINATION;
+import static ca.homedepot.preference.constants.PreferenceBatchConstants.*;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.STATUS_STR;
 
 @Slf4j
@@ -43,6 +46,8 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	private String sourceId;
 	@Autowired
 	private FileService fileService;
+
+	private static Format formatter = new SimpleDateFormat("yyyyMMdd");
 
 	/**
 	 * Method used to generate a plain text file
@@ -71,9 +76,9 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 
 		}
 		String file = fileBuilder.toString();
-		generateFile(file, caFileFormat);
-		generateFile(file, moverFileFormat);
-		generateFile(file, gardenFileFormat);
+		generateFileGCS(file, caFileFormat, INTERNAL_CA_HEADERS);
+		generateFileGCS(file, moverFileFormat, INTERNAL_MOVER_HEADERS);
+		generateFileGCS(file, gardenFileFormat, INTERNAL_GARDEN_HEADERS);
 
 	}
 
@@ -85,9 +90,7 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	 */
 	private void generateFile(String file, String filePath) throws IOException
 	{
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		String fileName = filePath.replace("YYYYMMDD", formatter.format(new Date()));
-
+		String fileName = getFileName(filePath);
 		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
 		byte[] toFile = file.getBytes();
 		writer.write(toFile);
@@ -96,7 +99,21 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 		setFileRecord(fileName);
 	}
 
+	private static String getFileName(String filePath)
+	{
+		return filePath.replace("YYYYMMDD", formatter.format(new Date()));
+	}
 
+	/**
+	 * Generate file for GCP purposes
+	 */
+	private void generateFileGCS(String file, String filepath, String header)
+	{
+		file = header + file;
+		String fileName = getFileName(filepath);
+		byte[] content = file.getBytes();
+		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName), content);
+	}
 	/**
 	 * This method registry in file table the generated file
 	 * 

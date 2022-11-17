@@ -4,12 +4,15 @@ import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.service.OutboundService;
+import ca.homedepot.preference.util.CloudStorageUtils;
+import ca.homedepot.preference.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Format;
@@ -75,8 +78,6 @@ public class OutboundServiceImpl implements OutboundService
 		/* Inserting Headers */
 		String file = headers;
 
-
-
 		try (FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
 		{
 			byte[] toFile = file.getBytes();
@@ -91,7 +92,27 @@ public class OutboundServiceImpl implements OutboundService
 
 	}
 
+	@Override
+	public void createFileGCS(String repository, String folder, String fileNameFormat, String headers) throws IOException {
+		/* Creating File */
+		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
+		/* Inserting Headers */
+		String file = headers;
+
+		File tempFile = FileUtil.createTempFile(CloudStorageUtils.generatePath(folder+fileName));
+		try (FileOutputStream writer = new FileOutputStream(tempFile, false))
+		{
+			byte[] toFile = file.getBytes();
+			writer.write(toFile);
+			writer.flush();
+		}
+		catch (IOException ex)
+		{ //TODO is there any specific exception and what should happen in case of exception.
+			// Make the batch status failed
+			log.error("File creation error" + ex.getMessage());
+		}
+	}
 
 
 	/**

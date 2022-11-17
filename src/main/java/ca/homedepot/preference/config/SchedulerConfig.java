@@ -843,7 +843,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter()
 	{
-		FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter = new FileWriterOutBound<>();
+		GSFileWriterOutbound<LoyaltyCompliantDTO> loyaltyComplaintWriter = new GSFileWriterOutbound<>();
 		loyaltyComplaintWriter.setName("loyaltyComplaintWriter");
 		loyaltyComplaintWriter.setFileService(hybrisWriterListener.getFileService());
 		loyaltyComplaintWriter.setFolderSource(folderOutbound);
@@ -875,15 +875,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
-	public SalesforceExtractFileWriter salesforceExtractFileWriter()
+	public GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter()
 	{
-		SalesforceExtractFileWriter salesforceExtractFileWriter = new SalesforceExtractFileWriter();
-
+		GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter = new GSFileWriterOutbound<>();
+		salesforceExtractFileWriter.setName("salesforceExtractFileWriter");
 		salesforceExtractFileWriter.setFileService(hybrisWriterListener.getFileService());
+		salesforceExtractFileWriter.setHeader(SALESFORCE_EXTRACT_HEADERS);
+		salesforceExtractFileWriter.setSource(CITI_SUP);
 		salesforceExtractFileWriter.setFolderSource(folderOutbound);
 		salesforceExtractFileWriter.setRepositorySource(salesforcePath);
 		salesforceExtractFileWriter.setFileNameFormat(salesforcefileNameFormat);
 		salesforceExtractFileWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
+		salesforceExtractFileWriter.setNames(SALESFORCE_EXTRACT_NAMES);
 		salesforceExtractFileWriter.setResource();
 
 		return salesforceExtractFileWriter;
@@ -912,7 +915,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
+			outboundService.createFileGCS(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
 					PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 		}
 		catch (IOException ex)
@@ -936,9 +939,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile(internalRepository, internalFolder, internalCANameFormat, INTERNAL_CA_HEADERS);
-			outboundService.createFile(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
-			outboundService.createFile(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
+			outboundService.createFileGCS(internalRepository, internalFolder, internalCANameFormat, INTERNAL_CA_HEADERS);
+			outboundService.createFileGCS(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
+			outboundService.createFileGCS(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
 		}
 		catch (IOException ex)
 		{

@@ -5,6 +5,7 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.io.*;
 import java.util.Date;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_SEND_PREFERENCES_TO_CRM;
+import static ca.homedepot.preference.constants.PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
 @Slf4j
@@ -28,7 +30,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Value("${folders.crm.path}")
 	protected String repositorySource;
 	@Value("${folders.outbound}")
-	protected String folderSorce;
+	protected String folderSource;
 	@Value("${outbound.files.compliant}")
 	protected String fileNameFormat;
 	private FileOutputStream writer;
@@ -66,7 +68,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 					.append(preference.getHdCaProSrcId());
 		}
 
-		generateFile(fileBuilder.toString());
+		generateFileGCS(fileBuilder.toString(), PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 
 	}
 
@@ -80,11 +82,23 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	{
 		String fileName = fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
 
-		writer = new FileOutputStream(repositorySource + folderSorce + fileName, true);
+		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
 		byte[] toFile = file.getBytes();
 		writer.write(toFile);
 		writer.close();
 		setFileRecord(fileName);
+	}
+
+
+	/**
+	 * Generate file for GCP purposes
+	 */
+	private void generateFileGCS(String file, String header)
+	{
+		String fileName = fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
+		file = header + file;
+		byte[] content = file.getBytes();
+		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName), content);
 	}
 
 	/**
