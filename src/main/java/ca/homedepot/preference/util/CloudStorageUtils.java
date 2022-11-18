@@ -40,7 +40,8 @@ public class CloudStorageUtils
 
    public void moveObject(String source, String folder, String toFolder, String filename)
    {
-       BlobId firstlocation = BlobId.of(bucketName, generatePath(source, folder, filename));
+       System.out.println(generatePath(source, filename));
+       BlobId firstlocation = BlobId.of(bucketName, generatePath(source, filename));
        BlobId secondLocation = BlobId.of(bucketName, generatePath(source, toFolder, FileUtil.renameFile(filename)));
 
 
@@ -88,7 +89,7 @@ public class CloudStorageUtils
 
     public static String generatePath(String... path) {
         StringBuilder sb = new StringBuilder();
-        Arrays.stream(path).forEach(sb::append);
+		  Arrays.stream(path).forEach(sb::append);
         return sb.toString();
     }
 }

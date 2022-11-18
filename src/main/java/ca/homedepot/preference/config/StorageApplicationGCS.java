@@ -65,19 +65,24 @@ public class StorageApplicationGCS {
 
     /**
      * Gets the files in folder
-     * @param source
-     * @param folder
+     * @param directory
      * @return
      */
-    public static List<GoogleStorageResource> getGCPResource(String source, String folder) {
-        return cloudStorageUtils.listObjectInBucket(FileUtil.getPath(source), folder).stream()
-                .map(path -> new GoogleStorageResource(storage(), buildBlobURL(path))).collect(Collectors.toList());
+    public static List<GoogleStorageResource> getGCPResource(String directory) {
+
+        List<String> resources = cloudStorageUtils.listObjectInBucket(directory);
+        resources.remove(0);
+        return resources.stream()
+                .map(path ->{
+                    System.out.println(path);
+                    return new GoogleStorageResource(storage(), buildBlobURL(path));}).collect(Collectors.toList());
     }
 
     public Map<String, List<Resource>> getsGCPResourceMap(String source, String folder){
         
         Map<String, List<Resource>> resources = new HashMap<>();
-        List<GoogleStorageResource> resourcesGCS = getGCPResource(source, folder);
+        List<GoogleStorageResource> resourcesGCS = getGCPResource(folder);
+
         List<Resource> validResources = new ArrayList<>();
         List<Resource> invalidResources = new ArrayList<>();
         if(resourcesGCS != null){
@@ -113,7 +118,8 @@ public class StorageApplicationGCS {
      * @return The blob url for the files in bucket
      */
     public static String buildBlobURL(String bucketPath) {
-        return CloudStorageUtils.generatePath("gs://",cloudStorageUtils.getBucketName(), StorageConstants.SLASH, bucketPath);
+
+        return "gs://"+cloudStorageUtils.getBucketName()+ StorageConstants.SLASH+ bucketPath;
     }
 
 }

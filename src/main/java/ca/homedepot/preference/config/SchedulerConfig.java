@@ -608,7 +608,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		multiReaderResourceInbound.setJobName(jobName);
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 
-		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(directory, source));
+		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap( source, directory));
 		multiReaderResourceInbound.setDelegate(inboundFileReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
