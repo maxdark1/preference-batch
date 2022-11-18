@@ -220,7 +220,7 @@ public final class FileUtil
 	{
 		String folder = status ? processed : error;
 		String fileName = FileValidation.getFileName(file);
-		String source = isFBSFMC(fileName) ? "FB_SFMC" : valueVal;
+		String source = isFBSFMC(fileName, valueVal) ? "FB_SFMC" : valueVal;
 
 		String path = getPath(source);
 		String newFile = renameFile(file);
@@ -252,9 +252,9 @@ public final class FileUtil
 	 * @return
 	 */
 
-	public static boolean isFBSFMC(String fileName)
+	public static boolean isFBSFMC(String fileName, String source)
 	{
-		return fileName.contains(FileValidation.getFbSFMCBaseName());
+		return fileName.contains(FileValidation.getFbSFMCBaseName()) && fbSfmcPath == source;
 	}
 
 	/**
@@ -348,6 +348,7 @@ public final class FileUtil
 		filesNames.put("INVALID", invalidFileNames);
 		return filesNames;
 	}
+
 
 
 }

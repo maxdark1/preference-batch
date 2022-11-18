@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -44,6 +45,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 * Map of file name and boolean to know if the file has been written before
 	 */
 	private Map<String, Boolean> canResourceBeWriting;
+
+	private List<Resource> invalidFiles;
 
 	/**
 	 * Constructor to assign Source
@@ -87,7 +90,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		/**
 		 * Writes all INVALID files
 		 */
-		resources.get("INVALID").forEach(fileName -> writeFile(fileName.getFilename(), false));
+		this.invalidFiles = resources.get("INVALID");
+		//resources.get("INVALID").forEach(fileName -> writeFile(fileName.getFilename(), false));
 
 	}
 
@@ -151,6 +155,20 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		{
 			writeFile(resource.getFilename(), status);
 			canResourceBeWriting.put(resource.getFilename(), false);
+		}
+
+		if(this.invalidFiles.size() > 0){
+			this.invalidFiles.forEach(fileName -> {
+
+				writeFile(fileName.getFilename(), false);
+				try {
+					FileUtil.moveFile(fileName.getFilename(), false, source);
+				} catch (IOException e) {
+					log.error(" An exception has ocurred moving file: " + fileName.getFilename() + " to ERROR folder");
+				}
+
+			});
+
 		}
 
 
