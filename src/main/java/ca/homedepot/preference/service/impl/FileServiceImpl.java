@@ -75,6 +75,7 @@ public class FileServiceImpl implements FileService
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME,
 				(rs, rowNum) -> rs.getBigDecimal("job_id"), jobName);
 	}
+
 	/**
 	 * Gets last inserted file according to file name and job id
 	 *

@@ -91,8 +91,6 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		 * Writes all INVALID files
 		 */
 		this.invalidFiles = resources.get("INVALID");
-		//resources.get("INVALID").forEach(fileName -> writeFile(fileName.getFilename(), false));
-
 	}
 
 	/**
@@ -157,13 +155,17 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 			canResourceBeWriting.put(resource.getFilename(), false);
 		}
 
-		if(this.invalidFiles.size() > 0){
+		if (this.invalidFiles != null)
+		{
 			this.invalidFiles.forEach(fileName -> {
 
 				writeFile(fileName.getFilename(), false);
-				try {
+				try
+				{
 					FileUtil.moveFile(fileName.getFilename(), false, source);
-				} catch (IOException e) {
+				}
+				catch (IOException e)
+				{
 					log.error(" An exception has ocurred moving file: " + fileName.getFilename() + " to ERROR folder");
 				}
 
