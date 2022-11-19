@@ -266,9 +266,20 @@ public final class FileUtil
 	 */
 	public static String renameFile(String file)
 	{
-		String baseName = FileValidation.getFileName(file);
-		String extension = FileValidation.getExtension(file, baseName);
-		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + extension;
+		String baseName = "";
+		String extension = "";
+		String[] splittedName = file.split("\\.");
+		if(splittedName.length > 0) {
+			for (int i = 0; i < (splittedName.length - 1); i++) {
+				baseName += splittedName[i] + ".";
+			}
+			baseName = baseName.substring(0, baseName.length() -1);
+			extension = splittedName[splittedName.length-1];
+		} else {
+			baseName = file;
+		}
+
+		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + "." +extension;
 	}
 
 	/**
