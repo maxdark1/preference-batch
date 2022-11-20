@@ -5,6 +5,7 @@ import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
@@ -25,92 +26,105 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 @Slf4j
 @Component
 @Setter
-public class InvalidFileListener implements StepExecutionListener {
+@Getter
+public class InvalidFileListener implements StepExecutionListener
+{
 
-    private String Directory;
+	private String Directory;
 
-    private String Source;
+	private String Source;
 
-    private String JobName;
+	private String JobName;
 
-    private String Process;
+	private String Process;
 
-    private Map<String, List<Resource>> Resources;
+	private Map<String, List<Resource>> Resources;
 
-    private List<Resource> invalidFiles;
-    /**
-     * The file service
-     */
-    private FileService fileService;
+	private List<Resource> invalidFiles;
+	/**
+	 * The file service
+	 */
+	private FileService fileService;
 
 
-    @Override
-    public void beforeStep(StepExecution stepExecution) {
-        if(checkExecution(stepExecution.getStepName())) {
-            Resources = getResources(Directory + Source, Process);
-            this.invalidFiles = Resources.get("INVALID");
+	@Override
+	public void beforeStep(StepExecution stepExecution)
+	{
+		if (checkExecution(stepExecution.getStepName()))
+		{
+			Resources = getResources(Directory + Source, Process);
+			this.invalidFiles = Resources.get("INVALID");
 
-            if (this.invalidFiles != null && this.invalidFiles.size() > 0) {
-                this.invalidFiles.forEach(fileName -> {
-                    writeFile(fileName.getFilename(), false);
-                    try {
-                        FileUtil.moveFile(fileName.getFilename(), false, Source);
-                        log.error("Invalid Format Name File Moved to ERROR Folder");
-                    } catch (IOException e) {
-                        log.error(" An exception has ocurred moving file: " + fileName.getFilename() + " to ERROR folder");
-                    }
+			if (this.invalidFiles != null && this.invalidFiles.size() > 0)
+			{
+				this.invalidFiles.forEach(fileName -> {
+					writeFile(fileName.getFilename(), false);
+					try
+					{
+						FileUtil.moveFile(fileName.getFilename(), false, Source);
+						log.error("Invalid Format Name File Moved to ERROR Folder");
+					}
+					catch (IOException e)
+					{
+						log.error(" An exception has ocurred moving file: " + fileName.getFilename() + " to ERROR folder");
+					}
 
-                });
+				});
 
-            } else {
-                log.info("Nothing to do on InvalidFileListener");
-            }
-        }
-    }
+			}
+			else
+			{
+				log.info("Nothing to do on InvalidFileListener");
+			}
+		}
+	}
 
-    @Override
-    public ExitStatus afterStep(StepExecution stepExecution) {
-        return null;
-    }
+	@Override
+	public ExitStatus afterStep(StepExecution stepExecution)
+	{
+		return null;
+	}
 
-    protected Boolean checkExecution(String stepName){
-        switch (stepName){
-            case "readInboundCSVFileStep":
-            case "readSFMCOptOutsStep1":
-            case "readInboundCSVFileCRMStep":
-                return true;
-            default:
-                return false;
-        }
-    }
+	protected Boolean checkExecution(String stepName)
+	{
+		switch (stepName)
+		{
+			case "readInboundCSVFileStep":
+			case "readSFMCOptOutsStep1":
+			case "readInboundCSVFileCRMStep":
+				return true;
+			default:
+				return false;
+		}
+	}
 
-    /**
-     * Write file into file table
-     *
-     * @param fileName
-     * @param status
-     */
-    protected void writeFile(String fileName, Boolean status)
-    {
-        BigDecimal jobId = fileService.getJobId(JobName);
-        Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
-        BigDecimal masterId = MasterProcessor
-                .getSourceID("SOURCE", Source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : Source)
-                .getMasterId();
-        Date endTime = new Date();
-        /**
-         * If status is valid do not need end_time
-         */
-        if (Boolean.TRUE.equals(status))
-            endTime = null;
-        FileDTO file = new FileDTO(null, fileName, jobId, masterId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
-                endTime, "BATCH", new Date(), null, null);
+	/**
+	 * Write file into file table
+	 *
+	 * @param fileName
+	 * @param status
+	 */
+	protected void writeFile(String fileName, Boolean status)
+	{
+		BigDecimal jobId = fileService.getJobId(JobName);
+		Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
+		BigDecimal masterId = MasterProcessor
+				.getSourceID("SOURCE", Source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : Source)
+				.getMasterId();
+		Date endTime = new Date();
+		/**
+		 * If status is valid do not need end_time
+		 */
+		if (Boolean.TRUE.equals(status))
+			endTime = null;
+		FileDTO file = new FileDTO(null, fileName, jobId, masterId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),
+				endTime, "BATCH", new Date(), null, null);
 
-        fileService.insert(file);
-    }
+		fileService.insert(file);
+	}
 
-    protected Map<String, List<Resource>> getResources(String folder, String source)
-    {
-        return FileUtil.getFilesOnFolder(folder, source);
-    }
+	protected Map<String, List<Resource>> getResources(String folder, String source)
+	{
+		return FileUtil.getFilesOnFolder(folder, source);
+	}
 }

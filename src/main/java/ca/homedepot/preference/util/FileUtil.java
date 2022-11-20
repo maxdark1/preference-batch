@@ -254,7 +254,7 @@ public final class FileUtil
 
 	public static boolean isFBSFMC(String fileName, String source)
 	{
-		return fileName.contains(FileValidation.getFbSFMCBaseName()) && fbSfmcPath == source;
+		return fileName.contains(FileValidation.getFbSFMCBaseName()) && fbSfmcPath.equals(source);
 	}
 
 	/**
@@ -269,17 +269,21 @@ public final class FileUtil
 		String baseName = "";
 		String extension = "";
 		String[] splittedName = file.split("\\.");
-		if(splittedName.length > 0) {
-			for (int i = 0; i < (splittedName.length - 1); i++) {
+		if (splittedName.length > 0)
+		{
+			for (int i = 0; i < (splittedName.length - 1); i++)
+			{
 				baseName += splittedName[i] + ".";
 			}
-			baseName = baseName.substring(0, baseName.length() -1);
-			extension = splittedName[splittedName.length-1];
-		} else {
+			baseName = baseName.substring(0, baseName.length() - 1);
+			extension = splittedName[splittedName.length - 1];
+		}
+		else
+		{
 			baseName = file;
 		}
 
-		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + "." +extension;
+		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + "." + extension;
 	}
 
 	/**
