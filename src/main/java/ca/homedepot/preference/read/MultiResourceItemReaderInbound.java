@@ -45,6 +45,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 */
 	private Map<String, Boolean> canResourceBeWriting;
 
+
+
 	/**
 	 * Constructor to assign Source
 	 */
@@ -84,11 +86,6 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		Resource[] resourcesArray = new Resource[resources.get(VALID).size()];
 		resources.get(VALID).toArray(resourcesArray);
 		this.setResources(resourcesArray);
-		/**
-		 * Writes all INVALID files
-		 */
-		resources.get("INVALID").forEach(fileName -> writeFile(fileName.getFilename(), false));
-
 	}
 
 	/**

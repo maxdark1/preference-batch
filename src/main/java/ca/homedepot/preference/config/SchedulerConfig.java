@@ -12,6 +12,7 @@ import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.listener.InvalidFileListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.mapper.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
@@ -351,6 +352,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private InternalOutboundProcessor internalOutboundProcessor;
 	@Autowired
 	private InternalOutboundFileWriter internalOutboundFileWriter;
+	@Autowired
+	InvalidFileListener invalidFileListener;
 
 
 	@Autowired
@@ -895,6 +898,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS).to(readLayoutCInboundBDStep2())
 				.build().build();
+
 	}
 
 	/**
@@ -1088,11 +1092,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	public Step readInboundHybrisFileStep1(String jobName)
 	{
+		invalidFileListener.setDirectory(hybrisPath);
+		invalidFileListener.setSource(folderInbound);
+		invalidFileListener.setProcess(HYBRIS);
+		invalidFileListener.setJobName(jobName);
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(hybrisPath + folderInbound, HYBRIS, jobName)) // change source to constants
 				.processor(layoutCProcessor(HYBRIS)).faultTolerant().processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(hybrisWriterListener)
-				.writer(inboundRegistrationDBWriter()).listener(stepListener).build();
+				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
@@ -1105,11 +1113,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public Step readInboundCRMFileStep1(String jobName)
 	{
+		invalidFileListener.setDirectory(crmPath);
+		invalidFileListener.setSource(folderInbound);
+		invalidFileListener.setProcess(CRM);
+		invalidFileListener.setJobName(jobName);
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(crmPath + folderInbound, CRM, jobName))
 				.processor(layoutCProcessor(CRM)).faultTolerant().processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(crmWriterListener)
-				.writer(inboundRegistrationDBWriter()).listener(stepListener).build();
+				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
@@ -1122,11 +1134,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public Step readInboundFBSFMCFileStep1(String jobName)
 	{
+		invalidFileListener.setDirectory(fbSFMCPath);
+		invalidFileListener.setSource(folderInbound);
+		invalidFileListener.setProcess(FB_SFMC);
+		invalidFileListener.setJobName(jobName);
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath + folderInbound, FB_SFMC, jobName))
 				.processor(layoutCProcessor(FB_SFMC)).faultTolerant().processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(fbsfmcWriterListener)
-				.writer(inboundRegistrationDBWriter()).listener(stepListener).build();
+				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
@@ -1138,11 +1154,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	public Step readSFMCOptOutsStep1(String jobName)
 	{
+		invalidFileListener.setDirectory(sfmcPath);
+		invalidFileListener.setSource(folderInbound);
+		invalidFileListener.setProcess(SFMC);
+		invalidFileListener.setJobName(jobName);
 		return stepBuilderFactory.get("readSFMCOptOutsStep1").<EmailOptOuts, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath + folderInbound, SFMC, jobName)).processor(layoutBProcessor())
 				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
 				.listener(skipListenerLayoutB).listener(exactTargetEmailWriterListener).writer(inboundRegistrationDBWriter())
-				.listener(stepListener).build();
+				.listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
