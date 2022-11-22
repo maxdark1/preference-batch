@@ -31,24 +31,23 @@ public class CloudStorageUtils
     private String bucketName;
 
     /**
-     *  Move object in GCP to other file
-     * @param source
-     * @param folder
-     * @param toFolder
-     * @param filename
+     * Move object in GCP to other file
+     * @param filename the file name fo the file
+     * @param blobTobeMove folder/filename
+     * @param blobWhereToCopy folder where is the object being move / filename
      */
 
-   public void moveObject(String source, String folder, String toFolder, String filename)
+   public void moveObject(String filename, String blobTobeMove, String blobWhereToCopy )
    {
-       System.out.println(generatePath(source, filename));
-       BlobId firstlocation = BlobId.of(bucketName, generatePath(source, filename));
-       BlobId secondLocation = BlobId.of(bucketName, generatePath(source, toFolder, FileUtil.renameFile(filename)));
+       String fileRename = FileUtil.renameFile(filename);
+       BlobId firstLocation = BlobId.of(bucketName, blobTobeMove);
+       BlobId secondLocation = BlobId.of(bucketName, blobWhereToCopy.replace(filename, fileRename));
 
 
        Storage.BlobTargetOption precondition = Storage.BlobTargetOption.doesNotExist();
-       storage().copy(Storage.CopyRequest.newBuilder().setSource(firstlocation).setTarget(secondLocation, precondition).build());
-       storage().get(firstlocation).delete();
-       log.info(" Moved file {} from {} to {} ", filename, folder, toFolder);
+       storage().copy(Storage.CopyRequest.newBuilder().setSource(firstLocation).setTarget(secondLocation, precondition).build());
+       storage().get(firstLocation).delete();
+       log.info(" Moved file {} from {} to {} ", filename, blobTobeMove.replace(filename, ""), blobWhereToCopy.replace(fileRename, ""));
 
    }
 

@@ -90,13 +90,15 @@ public class StorageApplicationGCS {
 
             int i = 0;
             for (String file: files) {
-                file = file.replace(CloudStorageUtils.generatePath(source, folder), "");
+                String blobToCopy = file, blobWhereToCopy = file;
+                file = file.replace(folder, "");
 
                 if(FileValidation.validateFileName(file, source)){
                     validResources.add(resourcesGCS.get(i));
                 }else{
                     invalidResources.add(resourcesGCS.get(i));
-                    cloudStorageUtils.moveObject(FileUtil.getPath(source), folder, FileUtil.getError(), file);
+                    blobWhereToCopy  = blobWhereToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
+                    cloudStorageUtils.moveObject(file,blobToCopy, blobWhereToCopy);
                 }
                 i++;
             }
@@ -120,6 +122,12 @@ public class StorageApplicationGCS {
     public static String buildBlobURL(String bucketPath) {
 
         return "gs://"+cloudStorageUtils.getBucketName()+ StorageConstants.SLASH+ bucketPath;
+    }
+
+    public static void moveObject(String filename, String blobTobeMove, String blobWhereToCopy)
+    {
+
+        cloudStorageUtils.moveObject(filename, blobTobeMove, blobWhereToCopy);
     }
 
 }

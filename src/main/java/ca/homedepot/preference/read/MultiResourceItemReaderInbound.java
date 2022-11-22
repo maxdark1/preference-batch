@@ -165,6 +165,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 */
 	public void writeFile(String fileName, Boolean status)
 	{
+		fileName = fileName.replace(FileUtil.getPath(source)+FileUtil.getInbound(), "");
 		BigDecimal jobId = fileService.getJobId(jobName);
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
 		BigDecimal masterId = MasterProcessor

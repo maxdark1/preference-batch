@@ -1,10 +1,12 @@
 package ca.homedepot.preference.listener;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
+import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -20,8 +22,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
 @Slf4j
 @Component
-public class StepErrorLoggingListener implements StepExecutionListener
-{
+public class StepErrorLoggingListener implements StepExecutionListener {
 
 	/**
 	 * The FileService
@@ -30,37 +31,30 @@ public class StepErrorLoggingListener implements StepExecutionListener
 	FileService fileService;
 
 	/**
-	 *
-	 * @param stepExecution
-	 *           instance of {@link StepExecution}.
+	 * @param stepExecution instance of {@link StepExecution}.
 	 */
 	@Override
-	public void beforeStep(StepExecution stepExecution)
-	{
+	public void beforeStep(StepExecution stepExecution) {
 		log.info(" Job in process: {} , Step in process: {} ", stepExecution.getStepName(),
 				stepExecution.getJobExecution().getJobConfigurationName());
 	}
 
 	/**
-	 *
-	 * @param stepExecution
-	 *           {@link StepExecution} instance.
+	 * @param stepExecution {@link StepExecution} instance.
 	 * @return
 	 */
 	@Override
-	public ExitStatus afterStep(StepExecution stepExecution)
-	{
+	public ExitStatus afterStep(StepExecution stepExecution) {
 		/**
 		 * Gets all exceptions found in StepExecution
 		 */
 		List<Throwable> exceptions = stepExecution.getFailureExceptions();
 
-		if (exceptions.isEmpty())
-		{
+		if (exceptions.isEmpty()) {
 			/**
 			 * If everything is fine, means that we can move the file to PROCESSED
 			 */
-			moveFile();
+			moveFileGCS();
 			return ExitStatus.COMPLETED;
 		}
 
@@ -71,6 +65,32 @@ public class StepErrorLoggingListener implements StepExecutionListener
 		exceptions.forEach(ex -> log.info(" Exception has ocurred:  " + ex.getMessage()));
 
 		return ExitStatus.FAILED;
+	}
+
+	public void moveFileGCS()
+	{
+		/**
+		 * Gets all files that don't haave end time
+		 */
+		List<FileDTO> filesToMove = fileService.getFilesToMove();
+
+		if(filesToMove != null && !filesToMove.isEmpty())
+		{
+			filesToMove.forEach(file -> {
+				boolean status = true;
+				String source = MasterProcessor.getValueVal(file.getSourceType());
+				String basename = FileUtil.getPath(source), blobToCopy = new StringBuilder().append(basename).append(FileUtil.getInbound()).toString();
+				String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getProcessed());
+				String filename = file.getFileName().substring(file.getFileName().lastIndexOf("/")+1);
+
+				System.out.println(file);
+				//StorageApplicationGCS.moveObject(filename, blobToCopy, blobWhereToCopy);
+
+				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
+				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);
+					}
+			);
+		}
 	}
 
 	/**
