@@ -2,6 +2,7 @@ package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
+import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,9 +20,6 @@ import static ca.homedepot.preference.config.StorageApplicationGCS.*;
 public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 {
 
-
-	private StringBuilder lines;
-	private Resource resource;
 
 	private File tempFile;
 	private OutputStream os;
@@ -74,8 +72,8 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 
 	public static void createFileOnGCS(String filename, byte[] content)
 	{
-		String bucket = getBucketName();
-		BlobInfo file = BlobInfo.newBuilder(bucket, filename).build();
+		BlobId blobId = BlobId.of(getBucketName(), filename);
+		BlobInfo file = BlobInfo.newBuilder(blobId).build();
 		storage().create(file, content);
 	}
 }

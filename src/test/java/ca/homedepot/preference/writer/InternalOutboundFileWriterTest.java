@@ -1,11 +1,15 @@
 package ca.homedepot.preference.writer;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.util.CloudStorageUtils;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -22,6 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 
 @Slf4j
@@ -41,10 +48,24 @@ class InternalOutboundFileWriterTest
 
 	List<InternalOutboundProcessorDto> items;
 
+	@Mock
+	BlobInfo.Builder builder;
+
+	CloudStorageUtils cloudStorageUtils;
+
+	@Mock
+	Storage storage;
+
 	@BeforeEach
 	void setup()
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
+
+		cloudStorageUtils = new CloudStorageUtils();
+		cloudStorageUtils.setProjectId("projectId");
+		cloudStorageUtils.setBucketName("bucketName");
+		StorageApplicationGCS.setStorage(storage);
+		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		internalOutboundFileWriter.folderSource = "";
 		internalOutboundFileWriter.repositorySource = "";
 		internalOutboundFileWriter.caFileFormat = "CA_COMPLIANT_FILE_YYYYMMDD.csv";

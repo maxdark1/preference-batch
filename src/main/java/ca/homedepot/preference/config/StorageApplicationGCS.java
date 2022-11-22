@@ -40,8 +40,13 @@ public class StorageApplicationGCS
 		return storage;
 	}
 
+	public static void setStorage(Storage storage)
+	{
+		StorageApplicationGCS.storage = storage;
+	}
+
 	/**
-	 * Gets the bucket anme
+	 * Gets the bucket name
 	 * 
 	 * @return bucket name
 	 */
@@ -84,10 +89,8 @@ public class StorageApplicationGCS
 		List<String> resources = cloudStorageUtils.listObjectInBucket(directory);
 		if (!resources.isEmpty())
 			resources.remove(0);
-		return resources.stream().map(path -> {
-			System.out.println(path);
-			return new GoogleStorageResource(storage(), buildBlobURL(path));
-		}).collect(Collectors.toList());
+		return resources.stream().map(path -> new GoogleStorageResource(storage(), buildBlobURL(path)))
+				.collect(Collectors.toList());
 	}
 
 	public Map<String, List<Resource>> getsGCPResourceMap(String source, String folder)
