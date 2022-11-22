@@ -71,7 +71,8 @@ public class StorageApplicationGCS {
     public static List<GoogleStorageResource> getGCPResource(String directory) {
 
         List<String> resources = cloudStorageUtils.listObjectInBucket(directory);
-        resources.remove(0);
+        if(!resources.isEmpty())
+            resources.remove(0);
         return resources.stream()
                 .map(path ->{
                     System.out.println(path);

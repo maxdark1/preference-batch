@@ -2,6 +2,7 @@ package ca.homedepot.preference.listener.skippers;
 
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.util.constants.StorageConstants;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.Date;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 import static ca.homedepot.preference.dto.enums.Preference.*;
+import static ca.homedepot.preference.util.constants.StorageConstants.SLASH;
 
 @Component
 @JobScope
@@ -74,8 +76,9 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 		/**
 		 * Creating the File inbound statging table record
 		 */
+		String filename = getFileName(item.getFileName());
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
-				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).srcEmailAddress(item.getEmailAddress())
+				.fileId(getFromTableFileID(filename, jobName)).status(ERROR).srcEmailAddress(item.getEmailAddress())
 				.fileName(item.getFileName()).emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
 				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
 				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())

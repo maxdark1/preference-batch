@@ -6,6 +6,7 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
+import ca.homedepot.preference.util.validation.FileValidation;
 import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
@@ -14,6 +15,7 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -77,16 +79,13 @@ public class StepErrorLoggingListener implements StepExecutionListener {
 		if(filesToMove != null && !filesToMove.isEmpty())
 		{
 			filesToMove.forEach(file -> {
-				boolean status = true;
 				String source = MasterProcessor.getValueVal(file.getSourceType());
-				String basename = FileUtil.getPath(source), blobToCopy = new StringBuilder().append(basename).append(FileUtil.getInbound()).toString();
+				source = source.equals("SFMC") && file.getFileName().contains(FileValidation.getFbSFMCBaseName())? "FB_SFMC":source;
+				String basename = FileUtil.getPath(source), blobToCopy = basename + FileUtil.getInbound() + file.getFileName();
 				String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getProcessed());
-				String filename = file.getFileName().substring(file.getFileName().lastIndexOf("/")+1);
+				StorageApplicationGCS.moveObject(file.getFileName(), blobToCopy, blobWhereToCopy);
 
-				System.out.println(file);
-				//StorageApplicationGCS.moveObject(filename, blobToCopy, blobWhereToCopy);
-
-				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
+				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);
 					}
 			);

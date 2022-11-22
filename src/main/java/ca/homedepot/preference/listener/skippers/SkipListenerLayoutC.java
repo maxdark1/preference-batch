@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.util.constants.StorageConstants.SLASH;
 
 @Component
 @JobScope
@@ -61,9 +62,9 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	@Override
 	public void onSkipInProcess(InboundRegistration item, Throwable t)
 	{
-
+		String filename = getFileName(item.getFileName());
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
-				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).fileName(item.getFileName())
+				.fileId(getFromTableFileID(filename, jobName)).status(ERROR).fileName(item.getFileName())
 				.srcLanguagePref(item.getLanguagePreference().trim().toUpperCase()).updatedDate(new Date())
 				.emailStatus(getEmailStatus(t)).srcEmailAddress(item.getEmailAddress()).emailAddressPref(item.getEmailPermission())
 				.phonePref(item.getPhonePermission()).srcPhoneNumber(item.getPhoneNumber())

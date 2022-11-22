@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class SalesforceExtractOutboundMapper implements RowMapper<SalesforceExtractOutboundDTO>
 {
@@ -15,7 +17,9 @@ public class SalesforceExtractOutboundMapper implements RowMapper<SalesforceExtr
 		SalesforceExtractOutboundDTO salesforce = new SalesforceExtractOutboundDTO();
 
 		salesforce.setEmailAddress(rs.getString("email_address"));
-		salesforce.setAsOfDate(rs.getTimestamp("as_of_date").toLocalDateTime());
+		Timestamp asOfDate = rs.getTimestamp("as_of_date");
+		LocalDateTime asOfDateLocalDate = asOfDate == null ? null: asOfDate.toLocalDateTime();
+		salesforce.setAsOfDate(asOfDateLocalDate);
 		salesforce.setSourceId(rs.getString("source_id"));
 		salesforce.setEmailStatus(rs.getString("email_status"));
 		salesforce.setEmailPtc(rs.getString("email_ptc"));
