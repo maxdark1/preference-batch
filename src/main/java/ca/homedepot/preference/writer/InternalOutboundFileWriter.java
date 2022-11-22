@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -40,7 +37,6 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	protected String moverFileFormat;
 	@Value("${outbound.files.internalGarden}")
 	protected String gardenFileFormat;
-	private FileOutputStream writer;
 
 
 	private String sourceId;
@@ -82,23 +78,6 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 
 	}
 
-	/**
-	 * This Method saves in a plain text file the string that receives as parameter
-	 * 
-	 * @param file
-	 * @throws IOException
-	 */
-	private void generateFile(String file, String filePath) throws IOException
-	{
-		String fileName = getFileName(filePath);
-		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
-		byte[] toFile = file.getBytes();
-		writer.write(toFile);
-		writer.flush();
-		writer.close();
-		setFileRecord(fileName);
-	}
-
 	private static String getFileName(String filePath)
 	{
 		return filePath.replace("YYYYMMDD", formatter.format(new Date()));
@@ -111,9 +90,11 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	{
 		file = header + file;
 		String fileName = getFileName(filepath);
+		setFileRecord(fileName);
 		byte[] content = file.getBytes();
 		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName), content);
 	}
+
 	/**
 	 * This method registry in file table the generated file
 	 * 

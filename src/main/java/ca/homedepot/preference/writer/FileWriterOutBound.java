@@ -4,12 +4,9 @@ import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import io.micrometer.core.lang.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
@@ -69,14 +66,14 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 		setLineAggregator(getLineAgreggator());
 	}
 
-	public void setfilename()
+	public void setFilename()
 	{
 		this.fileName = this.fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
 	}
 
 	public void setResource()
 	{
-		setfilename();
+		setFilename();
 
 		Resource resource = new FileSystemResource(repositorySource + folderSource + fileName);
 		if (resource.exists())
@@ -92,12 +89,6 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 			}
 		}
 		super.setResource(resource);
-	}
-
-	@Override
-	public void open(ExecutionContext executionContext) throws ItemStreamException {
-
-		super.open(executionContext);
 	}
 
 	@Override

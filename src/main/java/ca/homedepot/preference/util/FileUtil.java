@@ -365,13 +365,16 @@ public final class FileUtil
 
 
 
-	public static File createTempFile(String filename){
+	public static File createTempFile(String filename)
+	{
 		File file = null;
 		try
 		{
 			String suffix = getSuffix(filename);
 			file = File.createTempFile(getPrefix(suffix, filename), suffix);
-		}catch(IOException ex){
+		}
+		catch (IOException ex)
+		{
 			log.error(ex.getMessage());
 		}
 		return file;
@@ -381,14 +384,18 @@ public final class FileUtil
 	{
 		return file.substring(getLastPointIndex(file));
 	}
+
 	public static String getPrefix(String suffix, String file)
 	{
 		return file.replace(suffix, "");
 	}
-	public static int getLastPointIndex(String file){
+
+	public static int getLastPointIndex(String file)
+	{
 		int point = file.indexOf(".");
 		String[] fileArray = file.split("\\.");
-		if(fileArray[1].matches("\\d+")){
+		if (fileArray[1].matches("\\d+"))
+		{
 			return file.length() - fileArray[0].length();
 		}
 		return point;

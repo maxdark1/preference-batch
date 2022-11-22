@@ -611,7 +611,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		multiReaderResourceInbound.setJobName(jobName);
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 
-		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap( source, directory));
+		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(source, directory));
 		multiReaderResourceInbound.setDelegate(inboundFileReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
@@ -640,7 +640,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 		multiReaderResourceInbound.setName("multiResourceItemReaderSFMCUnsubcribed");
 
-		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap( source, directory));
+		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(source, directory));
 		multiReaderResourceInbound.setDelegate(inboundEmailPreferencesSMFCReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;

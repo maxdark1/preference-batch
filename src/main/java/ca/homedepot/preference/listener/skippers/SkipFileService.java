@@ -61,7 +61,7 @@ public class SkipFileService
 
 	public String getFileName(String filename)
 	{
-		int index = filename.lastIndexOf(SLASH)+1;
-		return  filename.substring(index);
+		int index = filename.lastIndexOf(SLASH) + 1;
+		return filename.substring(index);
 	}
 }

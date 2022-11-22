@@ -18,7 +18,7 @@ public class SalesforceExtractOutboundMapper implements RowMapper<SalesforceExtr
 
 		salesforce.setEmailAddress(rs.getString("email_address"));
 		Timestamp asOfDate = rs.getTimestamp("as_of_date");
-		LocalDateTime asOfDateLocalDate = asOfDate == null ? null: asOfDate.toLocalDateTime();
+		LocalDateTime asOfDateLocalDate = asOfDate == null ? null : asOfDate.toLocalDateTime();
 		salesforce.setAsOfDate(asOfDateLocalDate);
 		salesforce.setSourceId(rs.getString("source_id"));
 		salesforce.setEmailStatus(rs.getString("email_status"));

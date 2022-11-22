@@ -1,6 +1,7 @@
 package ca.homedepot.preference.util.constants;
 
-public class StorageConstants {
+public class StorageConstants
+{
 
-    public static final String SLASH = "/";
+	public static final String SLASH = "/";
 }

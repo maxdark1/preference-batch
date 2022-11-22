@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.io.*;
 import java.util.Date;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_SEND_PREFERENCES_TO_CRM;
@@ -33,8 +32,6 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	protected String folderSource;
 	@Value("${outbound.files.compliant}")
 	protected String fileNameFormat;
-	private FileOutputStream writer;
-
 
 	private String sourceId;
 	@Autowired
@@ -72,23 +69,6 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	}
 
-	/**
-	 * This Method saves in a plain text file the string that receives as parameter
-	 *
-	 * @param file
-	 * @throws IOException
-	 */
-	private void generateFile(String file) throws IOException
-	{
-		String fileName = fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
-
-		writer = new FileOutputStream(repositorySource + folderSource + fileName, true);
-		byte[] toFile = file.getBytes();
-		writer.write(toFile);
-		writer.close();
-		setFileRecord(fileName);
-	}
-
 
 	/**
 	 * Generate file for GCP purposes
@@ -96,6 +76,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	private void generateFileGCS(String file, String header)
 	{
 		String fileName = fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
+		setFileRecord(fileName);
 		file = header + file;
 		byte[] content = file.getBytes();
 		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName), content);
