@@ -114,16 +114,9 @@ public final class SqlQueriesConstants
 			+ "\tWHERE start_time = ? AND job_name = ? AND status_id = ?;";
 
 	/**
-	 * To update hdpc_file record when it ends to read the file
-	 */
-	public static final String SQL_UPDATE_STAUTS_FILE = "UPDATE hdpc_file \n"
-			+ "\tSET  status=?, status_id = ?,updated_date=?, endTime = ?, updated_by = ? \n"
-			+ "\tWHERE file_name = ? AND status = ? AND job_id = ?;";
-
-	/**
 	 * To update hppd_file record when it ends to read the file
 	 */
-	public static final String SQL_UPDATE_ENDTIME_FILE = "UPDATE hdpc_file SET end_time = ?, updated_date = ?, updated_by = ?, status = ?, status_id = ? "
+	public static final String SQL_UPDATE_ENDTIME_FILE = "UPDATE hdpc_file SET end_time = ?, updated_date = ?, updated_by = ?,  status_id = ? "
 			+ " WHERE file_id = ?";
 
 	/**
