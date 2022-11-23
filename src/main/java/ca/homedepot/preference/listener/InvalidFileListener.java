@@ -63,11 +63,11 @@ public class InvalidFileListener implements StepExecutionListener
 					try
 					{
 						FileUtil.moveFile(fileName.getFilename(), false, Source);
-						log.error("Invalid Format Name File Moved to ERROR Folder");
+						log.error("PREFERENCE BATCH ERROR - Invalid Format Name File Moved to ERROR Folder");
 					}
 					catch (IOException e)
 					{
-						log.error(" An exception has ocurred moving file: " + fileName.getFilename() + " to ERROR folder");
+						log.error(String.format("PREFERENCE BATCH ERROR - An exception has ocurred moving file: %s to ERROR folder",fileName.getFilename()));
 					}
 
 				});
