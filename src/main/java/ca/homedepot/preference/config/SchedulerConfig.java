@@ -23,6 +23,7 @@ import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
@@ -355,6 +356,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	InvalidFileListener invalidFileListener;
 
+	@Autowired
+	private CloudStorageUtils cloudStorageUtils;
 
 	@Autowired
 	public void setUpListener()
@@ -404,6 +407,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@PostConstruct
 	public void getMasterInfo()
 	{
+		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		MasterProcessor.setPreferenceService(batchTasklet.getPreferenceService());
 		MasterProcessor.getMasterInfo();
 	}
@@ -607,7 +611,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		multiReaderResourceInbound.setJobName(jobName);
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 
-		multiReaderResourceInbound.setResources(getResources(directory, source));
+		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(source, directory));
 		multiReaderResourceInbound.setDelegate(inboundFileReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
@@ -636,7 +640,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 		multiReaderResourceInbound.setName("multiResourceItemReaderSFMCUnsubcribed");
 
-		multiReaderResourceInbound.setResources(getResources(directory, source));
+		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(source, directory));
 		multiReaderResourceInbound.setDelegate(inboundEmailPreferencesSMFCReader());
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
@@ -823,7 +827,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter()
 	{
 
-		FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new FileWriterOutBound<>();
+		GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new GSFileWriterOutbound<>();
 		citiSupressionFileWriter.setName("citiSupressionFileWriter");
 		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
 		citiSupressionFileWriter.setFolderSource(folderOutbound);
@@ -842,7 +846,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter()
 	{
-		FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter = new FileWriterOutBound<>();
+		GSFileWriterOutbound<LoyaltyCompliantDTO> loyaltyComplaintWriter = new GSFileWriterOutbound<>();
 		loyaltyComplaintWriter.setName("loyaltyComplaintWriter");
 		loyaltyComplaintWriter.setFileService(hybrisWriterListener.getFileService());
 		loyaltyComplaintWriter.setFolderSource(folderOutbound);
@@ -874,15 +878,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
-	public SalesforceExtractFileWriter salesforceExtractFileWriter()
+	public GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter()
 	{
-		SalesforceExtractFileWriter salesforceExtractFileWriter = new SalesforceExtractFileWriter();
-
+		GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter = new GSFileWriterOutbound<>();
+		salesforceExtractFileWriter.setName("salesforceExtractFileWriter");
 		salesforceExtractFileWriter.setFileService(hybrisWriterListener.getFileService());
+		salesforceExtractFileWriter.setHeader(SALESFORCE_EXTRACT_HEADERS);
+		salesforceExtractFileWriter.setSource(CITI_SUP);
 		salesforceExtractFileWriter.setFolderSource(folderOutbound);
 		salesforceExtractFileWriter.setRepositorySource(salesforcePath);
 		salesforceExtractFileWriter.setFileNameFormat(salesforcefileNameFormat);
 		salesforceExtractFileWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
+		salesforceExtractFileWriter.setNames(SALESFORCE_EXTRACT_NAMES);
 		salesforceExtractFileWriter.setResource();
 
 		return salesforceExtractFileWriter;
@@ -912,7 +919,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
+			outboundService.createFileGCS(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
 					PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 		}
 		catch (IOException ex)
@@ -936,9 +943,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile(internalRepository, internalFolder, internalCANameFormat, INTERNAL_CA_HEADERS);
-			outboundService.createFile(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
-			outboundService.createFile(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
+			outboundService.createFileGCS(internalRepository, internalFolder, internalCANameFormat, INTERNAL_CA_HEADERS);
+			outboundService.createFileGCS(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
+			outboundService.createFileGCS(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
 		}
 		catch (IOException ex)
 		{

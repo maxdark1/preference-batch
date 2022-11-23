@@ -30,7 +30,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 public class InvalidFileListener implements StepExecutionListener
 {
 
-	private String Directory;
+	private String directory;
 
 	private String Source;
 
@@ -52,7 +52,7 @@ public class InvalidFileListener implements StepExecutionListener
 	{
 		if (checkExecution(stepExecution.getStepName()))
 		{
-			Resources = getResources(Directory + Source, Process);
+			Resources = getResources(directory + Source, Process);
 			this.invalidFiles = Resources.get("INVALID");
 
 			if (this.invalidFiles != null && this.invalidFiles.size() > 0)

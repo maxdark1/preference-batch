@@ -19,8 +19,11 @@ import ca.homedepot.preference.processor.InternalOutboundProcessor;
 import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.*;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Storage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -139,6 +142,11 @@ class SchedulerConfigTest
 	private SimpleStepBuilder simpleStepBuilder;
 	@Mock
 	private JobLauncher jobLauncher;
+	@Mock
+	Storage storage;
+
+	@Mock
+	CloudStorageUtils cloudStorageUtils;
 
 
 	private void setFinalStaticField(Class<?> clazz, String fieldName, Object value)
@@ -165,6 +173,8 @@ class SchedulerConfigTest
 	{
 		MockitoAnnotations.openMocks(this);
 
+		StorageApplicationGCS.setStorage(storage);
+		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		preferenceOutboundReader.setDataSource(dataSource);
 		preferenceOutboundDBReader.setDataSource(dataSource);
 
@@ -496,7 +506,7 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(SalesforceExtractFileWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(GSFileWriterOutbound.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.salesforceExtractDBReaderFileWriterStep2());
@@ -523,6 +533,8 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.setChunkOutboundCiti(100);
+		Boolean delete = true;
+		Mockito.when(storage.delete(any(BlobId.class))).thenReturn(delete);
 		Mockito.when(preferenceOutboundDBReader.citiSuppressionDBTableReader()).thenReturn(jdbcCursorItemReader);
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);

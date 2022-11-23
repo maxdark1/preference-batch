@@ -66,10 +66,14 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 		setLineAggregator(getLineAgreggator());
 	}
 
+	public void setFilename()
+	{
+		this.fileName = this.fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
+	}
+
 	public void setResource()
 	{
-
-		this.fileName = this.fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
+		setFilename();
 
 		Resource resource = new FileSystemResource(repositorySource + folderSource + fileName);
 		if (resource.exists())
@@ -86,7 +90,6 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 		}
 		super.setResource(resource);
 	}
-
 
 	@Override
 	public void write(List<? extends T> items) throws Exception
@@ -115,7 +118,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 	public void saveFileRecord()
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
-		BigDecimal sourceId = MasterProcessor.getSourceID(SOURCE_STR, source).getMasterId();
+		String sourceStr = source.equals(CITI_SUP) ? SOURCE_ID_STR : SOURCE_STR;
+		BigDecimal sourceId = MasterProcessor.getSourceID(sourceStr, source).getMasterId();
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceId, fileStatus.getValueVal(), fileStatus.getMasterId(), new Date(),

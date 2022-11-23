@@ -90,6 +90,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	public BigDecimal getFromTableFileID(String fileName)
 	{
 		BigDecimal jobId = fileService.getJobId(jobName);
+		fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
 		return fileService.getFile(fileName, jobId);
 	}
 

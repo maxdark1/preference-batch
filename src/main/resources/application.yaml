@@ -83,26 +83,26 @@ outbound:
 
 
 folders:
-  inbound: \INBOUND\
-  error: \ERROR\
-  processed: \PROCESSED\
-  outbound: \OUTBOUND\
+  inbound: inbound/
+  error: error/
+  processed: processed/
+  outbound: outbound/
   crm:
-    path: C:\batchFiles\CRM
+    path: crm/
   fb-sfmc:
-    path: C:\batchFiles\FB-SFMC
+    path: fb-sfmc/
   hybris:
-    path: C:\batchFiles\Hybris
+    path: hybris/
   sfmc:
-    path: C:\batchFiles\SFMC
+    path: sfmc/
   citi:
-    path: C:\batchFiles\CITI
+    path:
   internal:
-    path: C:\batchFiles
+    path:
   salesforce:
-    path: C:\batchFiles\Salesforce
+    path:
   loyaltyCompliant:
-    path: C:\batchFiles
+    path:
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -118,10 +118,16 @@ preference:
     outboundCRM:
       chunk: 10
     outboundCiti:
-      chunk: 20
+      chunk: 1
     outboundInternal:
       chunk: 20
     outboundSalesforce:
       chunk: 20
     outboundLoyalty:
       chunk: 20
+
+gcp:
+  project-id: np-cadotcom
+  bucket:
+    name: commsvc-preference-centre-feeds
+    url: gs://commsvc-preference-centre-feeds

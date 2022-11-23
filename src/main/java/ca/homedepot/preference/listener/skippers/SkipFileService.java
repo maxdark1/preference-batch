@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+import static ca.homedepot.preference.util.constants.StorageConstants.SLASH;
+
 /**
  * Used as a parent class to make the skippers inherit the Service
  */
@@ -55,5 +57,11 @@ public class SkipFileService
 	public boolean isEmailInvalid(Throwable t)
 	{
 		return t.getMessage().contains("email address");
+	}
+
+	public String getFileName(String filename)
+	{
+		int index = filename.lastIndexOf(SLASH) + 1;
+		return filename.substring(index);
 	}
 }
