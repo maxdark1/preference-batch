@@ -93,6 +93,8 @@ class InternalOutboundFileWriterTest
 		masterList.add(sourceId);
 		masterList.add(fileStatus);
 
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+
 		MasterProcessor.setMasterList(masterList);
 
 		OutboundService outboundService = new OutboundServiceImpl();

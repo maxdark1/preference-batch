@@ -31,7 +31,7 @@ public final class SqlQueriesConstants
 	/**
 	 * SELECT to get the last job according to job_name and status IN PROGRESS from hdpc_jop
 	 */
-	public static final String SQL_SELECT_LAST_JOB_W_NAME = "SELECT * FROM hdpc_job WHERE job_name = ? AND status = 'IN PROGRESS' ORDER BY job_id DESC LIMIT 1";
+	public static final String SQL_SELECT_LAST_JOB_W_NAME = "SELECT job_id, job_name, status_id, start_time, end_time, inserted_by, inserted_date, updated_by, updated_date FROM hdpc_job WHERE job_name = ? AND status_id = ? ORDER BY job_id DESC LIMIT 1";
 
 
 	/**
@@ -67,13 +67,13 @@ public final class SqlQueriesConstants
 	/**
 	 * Insert to hdpc_job table
 	 */
-	public static final String SQL_INSERT_HDPC_JOB = "INSERT INTO hdpc_job( job_name, status, status_id, start_time, inserted_by, inserted_date) "
-			+ "VALUES ( ?, ?, ?, ?, ?, ?) ";
+	public static final String SQL_INSERT_HDPC_JOB = "INSERT INTO hdpc_job( job_name, status_id, start_time, inserted_by, inserted_date) "
+			+ "VALUES ( ?, ?, ?, ?, ?) ";
 	/**
 	 * Insert to hdpc_file table
 	 */
 	public static final String SQL_INSERT_HDPC_FILE = "INSERT INTO hdpc_file (file_name, job_id, source_type, "
-			+ "status,start_time, inserted_by, inserted_date, status_id, end_time) " + "VALUES (? , ? , ?, ?, ? , ?, ?, ?, ?); ";
+			+ "start_time, inserted_by, inserted_date, status_id, end_time) " + "VALUES (? , ? , ?, ?, ? , ?, ?, ?); ";
 	/**
 	 * Insert to hdpc_file_inbound_stg_error table
 	 */
@@ -109,9 +109,9 @@ public final class SqlQueriesConstants
 	/**
 	 * Update of hdpc_job, to change it status when job ends
 	 */
-	public static final String SQL_UPDATE_STAUTS_JOB = "UPDATE hdpc_job\n"
-			+ "\tSET  status_id=?, updated_date=?, updated_by=?,status = ?, end_time = ?\n"
-			+ "\tWHERE start_time = ? AND job_name = ? AND status = ?;";
+	public static final String SQL_UPDATE_STATUS_JOB = "UPDATE hdpc_job\n"
+			+ "\tSET  status_id=?, updated_date=?, updated_by=?, end_time = ?\n"
+			+ "\tWHERE start_time = ? AND job_name = ? AND status_id = ?;";
 
 	/**
 	 * To update hdpc_file record when it ends to read the file
@@ -135,6 +135,6 @@ public final class SqlQueriesConstants
 	 * DELETE
 	 ********************************/
 
-	public static final String SQL_PURGE_SUCCESS_STG_TABLE = "DELETE FROM hdpc_file_inbound_stg WHERE status = 'S';";
+	public static final String SQL_PURGE_SUCCESS_STG_TABLE = "DELETE FROM hdpc_file_inbound_stg WHERE status = ?;";
 
 }

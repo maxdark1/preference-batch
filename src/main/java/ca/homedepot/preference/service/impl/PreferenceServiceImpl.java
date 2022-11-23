@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.SUCCESS;
+
 /**
  * The type Preference service.
  */
@@ -95,7 +97,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	 * Inserts on persistence job information
 	 *
 	 * @param jobName
-	 * @param status
 	 * @param statusId
 	 * @param startTime
 	 * @param insertedBy
@@ -103,10 +104,9 @@ public class PreferenceServiceImpl implements PreferenceService
 	 * @return inserted records
 	 */
 	@Override
-	public int insert(String jobName, String status, BigDecimal statusId, Date startTime, String insertedBy, Date insertedDate)
+	public int insert(String jobName, BigDecimal statusId, Date startTime, String insertedBy, Date insertedDate)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_JOB, jobName, status, statusId, startTime, insertedBy,
-				insertedDate);
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_JOB, jobName, statusId, startTime, insertedBy, insertedDate);
 	}
 
 	/**
@@ -130,21 +130,21 @@ public class PreferenceServiceImpl implements PreferenceService
 	 * @return updated records
 	 */
 	@Override
-	public int updateJob(Job job, String status)
+	public int updateJob(Job job, BigDecimal status)
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STAUTS_JOB, job.getStatusId(), job.getUpdatedDate(),
-				job.getUpdatedBy(), job.getStatus(), job.getEndTime(), job.getStartTime(), job.getJobName(), status);
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STATUS_JOB, job.getStatusId(), job.getUpdatedDate(),
+				job.getUpdatedBy(), job.getEndTime(), job.getStartTime(), job.getJobName(), status);
 	}
 
 	/**
-	 * Purge
+	 * Purge the staging table with all the success records
 	 *
 	 * @return
 	 */
 	@Override
 	public int purgeStagingTableSuccessRecords()
 	{
-		return jdbcTemplate.update(SqlQueriesConstants.SQL_PURGE_SUCCESS_STG_TABLE);
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_PURGE_SUCCESS_STG_TABLE, SUCCESS);
 	}
 
 

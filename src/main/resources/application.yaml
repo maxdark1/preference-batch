@@ -77,7 +77,7 @@ outbound:
     internalGarden: GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv
     internalMover: NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv
   citi:
-    mastersuppresion: ACXIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.csv
+    mastersuppresion: THDIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.txt.pgp
   salesforce:
     extract: ET_YYYYMMDD.TXT.PGP
 
