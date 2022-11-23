@@ -33,14 +33,13 @@ public interface PreferenceService
 	 * Inserts on persistence job information
 	 *
 	 * @param jobName
-	 * @param status
 	 * @param statusId
 	 * @param startTime
 	 * @param insertedBy
 	 * @param insertedDate
 	 * @return inserted records
 	 */
-	int insert(String jobName, String status, BigDecimal statusId, Date startTime, String insertedBy, Date insertedDate);
+	int insert(String jobName, BigDecimal statusId, Date startTime, String insertedBy, Date insertedDate);
 
 	/**
 	 * Gets master's information
@@ -56,7 +55,7 @@ public interface PreferenceService
 	 * @param status
 	 * @return updated records
 	 */
-	int updateJob(Job job, String status);
+	int updateJob(Job job, BigDecimal status);
 
 	/**
 	 * Purge records with Sucess status

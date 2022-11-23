@@ -4,10 +4,12 @@ import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.InternalOutboundProcessorDto;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +45,7 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	@Autowired
 	private FileService fileService;
 
-	private static Format formatter = new SimpleDateFormat("yyyyMMdd");
+	private Format formatter = new SimpleDateFormat("yyyyMMdd");
 
 	/**
 	 * Method used to generate a plain text file
@@ -78,7 +80,7 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 
 	}
 
-	private static String getFileName(String filePath)
+	private String getFileName(String filePath)
 	{
 		return filePath.replace("YYYYMMDD", formatter.format(new Date()));
 	}
@@ -102,7 +104,8 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	 */
 	private void setFileRecord(String fileName)
 	{
-		BigDecimal jobId = fileService.getJobId(JOB_NAME_INTERNAL_DESTINATION);
+		BigDecimal jobId = fileService.getJobId(JOB_NAME_INTERNAL_DESTINATION,
+				JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, SourceDelimitersConstants.VALID);
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
 				fileStatus.getMasterId(), new Date(), new Date(), "BATCH", new Date(), null, null);

@@ -1,7 +1,9 @@
 package ca.homedepot.preference.listener.skippers;
 
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +33,7 @@ public class SkipFileService
 	 */
 	public BigDecimal getFromTableFileID(String fileName, String jobName)
 	{
-		BigDecimal jobId = fileService.getJobId(jobName);
+		BigDecimal jobId = fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId());
 		return fileService.getFile(fileName, jobId);
 	}
 

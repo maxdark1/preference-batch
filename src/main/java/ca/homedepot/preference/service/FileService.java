@@ -40,9 +40,12 @@ public interface FileService
 	 * Gets job id
 	 * 
 	 * @param jobName
+	 *           job name of the job that we are looking for
+	 * @param statusId
+	 *           status from the job we are looking for
 	 * @return Job id
 	 */
-	BigDecimal getJobId(String jobName);
+	BigDecimal getJobId(String jobName, BigDecimal statusId);
 
 	/**
 	 * Gets file id

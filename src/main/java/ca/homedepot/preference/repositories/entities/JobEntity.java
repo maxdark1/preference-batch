@@ -28,11 +28,6 @@ public class JobEntity
 	@Column(name = "job_name")
 	private String jobName;
 
-	/**
-	 * The status
-	 */
-	@Column(name = "status")
-	private String status;
 
 	/**
 	 * The start time

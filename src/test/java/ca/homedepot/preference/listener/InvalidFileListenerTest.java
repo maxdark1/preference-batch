@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.core.io.FileSystemResource;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 class InvalidFileListenerTest
@@ -84,15 +87,19 @@ class InvalidFileListenerTest
 	void WriteFile()
 	{
 		FileService fileMock = Mockito.mock(FileService.class);
-		MockitoAnnotations.initMocks(this);
-		when(fileMock.getJobId(null)).thenReturn(BigDecimal.valueOf(10));
+		MockitoAnnotations.openMocks(this);
 		invalidFileListener.setFileService(fileMock);
+		String jobName = "jobName";
+		invalidFileListener.setJobName("jobName");
+		when(fileMock.getJobId(anyString(), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(10));
 
 		List<Master> masterList = new ArrayList<>();
 
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "hybris", true, null));
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true, null));
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true, null));
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+
 		MasterProcessor.setMasterList(masterList);
 		invalidFileListener.setSource("hybris");
 		invalidFileListener.writeFile("File", false);

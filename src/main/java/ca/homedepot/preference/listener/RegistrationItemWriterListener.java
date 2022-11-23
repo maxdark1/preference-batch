@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import ca.homedepot.preference.dto.FileDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -89,7 +90,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	 */
 	public BigDecimal getFromTableFileID(String fileName)
 	{
-		BigDecimal jobId = fileService.getJobId(jobName);
+		BigDecimal jobId = fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId());
 		fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
 		return fileService.getFile(fileName, jobId);
 	}
@@ -111,7 +112,7 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	/**
 	 *
 	 * @param exception
-	 *           thrown from {@link ItemWriter}
+	 *           thrown from {{Item Writer}
 	 * @param items
 	 *           attempted to be written.
 	 */
