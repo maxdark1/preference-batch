@@ -21,6 +21,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	 */
 	private String source;
 
+	private int count = 1;
 	/**
 	 * Constructor with resource
 	 *
@@ -59,13 +60,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		}
 		catch (ValidationException e)
 		{
-			log.error(" Validation error on file {}: {} ", item.getFileName(), e.getMessage());
+			log.error(" There's fields with validation error on file {}: {} ", item.getFileName(), e.getMessage());
 			/**
 			 * Throws the exception again after has been logged This is catch on the LayoutC's skippers
 			 */
 			throw e;
 		}
-		log.info(" Processing inbound item {}: ", item);
+		log.info(" Processing inbound item from record {} in file {}: ", count++ ,item.getFileName());
 		builder.status(NOTSTARTED).fileName(item.getFileName()).srcLanguagePref(item.getLanguagePreference().trim().toUpperCase())
 				.updatedDate(new Date()).srcDate(asOfDate).srcEmailAddress(item.getEmailAddress())
 				.emailStatus(

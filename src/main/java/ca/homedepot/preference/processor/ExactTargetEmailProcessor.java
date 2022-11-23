@@ -18,6 +18,7 @@ import static ca.homedepot.preference.dto.enums.Preference.*;
 public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, FileInboundStgTable>
 {
 
+	private int count = 1;
 	/**
 	 * Process the item from LayoutB (SFMC)
 	 * 
@@ -31,7 +32,7 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 
-		log.info(" Item in process: {}", item.toString());
+		log.info(" Processing inbound item from record {} in file {}: ", count++ ,item.getFileName());
 
 		/**
 		 * This saves all Validation's error messages If there are any
@@ -56,7 +57,7 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		}
 		catch (ValidationException e)
 		{
-			log.error(" Validation error on file {}: {} ", item.getFileName(), e.getMessage());
+			log.error(" There's fields with validation error on file {}: {} ", item.getFileName(), e.getMessage());
 			/**
 			 * Throws the exception again after is being log This is catch on the Skipper of LayoutB
 			 */
