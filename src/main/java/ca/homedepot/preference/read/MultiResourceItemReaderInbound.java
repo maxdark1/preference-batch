@@ -140,7 +140,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 			if (resource != null)
 			{
 				FileUtil.moveFile(resource.getFilename(), status, source);
-				log.error(String.format("PREFERENCE BATCH ERROR - An exception has ocurred reading file: %s \n %s",resource.getFilename()),e.getCause().getMessage());
+				log.error("PREFERENCE BATCH ERROR - An exception has ocurred reading file: {} \n {}",resource.getFilename(),e.getCause().getMessage());
 			}
 		}
 		/**
