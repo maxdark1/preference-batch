@@ -137,7 +137,7 @@ public class OutboundSqlQueriesConstants
 			+ "\t\t\tON master_tb.master_id = hdpc_phone.phone_type\n" + "\t\tWHERE  custphone.active\n" + "\t\t) as sms_mobile \n"
 			+ "\tON sms_mobile.customer_id = cust.customer_id\n" + "LEFT JOIN hdpc_customer_extn cust_extn\n"
 			+ "\tON cust.customer_id = cust_extn.customer_id\n" + "LEFT JOIN hdpc_customer_address cust_addr\n"
-			+ "\tcust_addr.active = true AND ON cust.customer_id = cust_addr.customer_id\n" + "LEFT JOIN hdpc_address addr\n"
+			+ "\tON cust_addr.active = true AND cust.customer_id = cust_addr.customer_id\n" + "LEFT JOIN hdpc_address addr\n"
 			+ "\tON cust_addr.address_id = addr.address_id\n" + "GROUP BY first_name\n" + "\t\t, MIDDLE_INITIAL\n"
 			+ "\t\t, last_name\n" + "\t\t, addr_line_1\n" + "\t\t, addr_line_2\n" + "\t\t, city\n" + "\t\t, state_cd\n"
 			+ "\t\t, postal_cd\n" + "\t\t, email_addr\n" + "\t\t, phone\n" + "\t\t, sms_mobile_phone\n" + "\t\t, business_name\n"
