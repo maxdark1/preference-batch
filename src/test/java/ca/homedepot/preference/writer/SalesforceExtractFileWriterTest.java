@@ -2,6 +2,7 @@ package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.apache.commons.io.FileUtils;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.core.BatchStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 
 class SalesforceExtractFileWriterTest
 {
@@ -58,6 +60,11 @@ class SalesforceExtractFileWriterTest
 		masterList.add(sourceId);
 		masterList.add(fileStatus);
 
+		masterList.add(new Master(new BigDecimal("15"), new BigDecimal("5"), "JOB_STATUS", "STARTED", true, null));
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+		masterList.add(new Master(new BigDecimal("17"), new BigDecimal("5"), "JOB_STATUS", "COMPLETED", true, null));
+		masterList.add(new Master(new BigDecimal("18"), new BigDecimal("5"), "JOB_STATUS", "ERROR", true, null));
+
 		MasterProcessor.setMasterList(masterList);
 
 		file.mkdirs();
@@ -80,7 +87,7 @@ class SalesforceExtractFileWriterTest
 		FileDTO fileDTO = Mockito.mock(FileDTO.class);
 		int expectedValue = 1;
 
-		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
+		Mockito.when(fileService.getJobId(anyString(), any(BigDecimal.class))).thenReturn(jobId);
 		Mockito.when(fileService.insert(fileDTO)).thenReturn(expectedValue);
 
 		salesforceExtractFileWriter.saveFileRecord();

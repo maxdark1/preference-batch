@@ -72,7 +72,7 @@ public class JobListener implements JobExecutionListener
 		job.setInsertedBy("BATCH");
 		job.setInsertedDate(new Date());
 
-		preferenceService.insert(job.getJobName(), job.getStatus(), job.getStatusId(), job.getStartTime(), job.getInsertedBy(),
+		preferenceService.insert(job.getJobName(), job.getStatusId(), job.getStartTime(), job.getInsertedBy(),
 				job.getInsertedDate());
 
 	}
@@ -85,7 +85,7 @@ public class JobListener implements JobExecutionListener
 	 * @return Master
 	 *
 	 */
-	public Master status(BatchStatus batchStatus)
+	public static Master status(BatchStatus batchStatus)
 	{
 
 		switch (batchStatus)
@@ -130,6 +130,7 @@ public class JobListener implements JobExecutionListener
 		job.setJobName(jobExecution.getJobInstance().getJobName());
 
 		Master master = status(jobExecution.getStatus());
+		Master status = status(BatchStatus.STARTED);
 		job.setStatus(master.getValueVal());
 		job.setStatusId(master.getMasterId());
 
@@ -142,7 +143,7 @@ public class JobListener implements JobExecutionListener
 		/**
 		 * Updates the job record with the end_time and status
 		 */
-		int updatedRecords = preferenceService.updateJob(job, IN_PROGRESS.getStatus());
+		int updatedRecords = preferenceService.updateJob(job, status.getMasterId());
 
 		log.info("  {} Job(s) updated", updatedRecords);
 

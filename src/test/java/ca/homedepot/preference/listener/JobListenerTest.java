@@ -67,7 +67,7 @@ public class JobListenerTest
 	@Before
 	public void setUp()
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 		masterList = new ArrayList<>();
 		masterList.add(new Master(new BigDecimal("15"), new BigDecimal("5"), "JOB_STATUS", "STARTED", true, null));
 		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));

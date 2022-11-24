@@ -71,16 +71,15 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	@Override
 	public void onSkipInProcess(InboundRegistration item, Throwable t)
 	{
-
-		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
-				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).fileName(item.getFileName())
-				.srcLanguagePref(item.getLanguagePreference().trim().toUpperCase()).updatedDate(new Date())
-				.emailStatus(getEmailStatus(t)).srcEmailAddress(item.getEmailAddress()).emailAddressPref(item.getEmailPermission())
-				.phonePref(item.getPhonePermission()).srcPhoneNumber(item.getPhoneNumber())
-				.srcPhoneExtension(item.getPhoneExtension()).srcTitleName(item.getTitle()).srcFirstName(item.getFirstName())
-				.srcLastName(item.getLastName()).srcAddress1(item.getAddress1()).srcAddress2(item.getAddress2())
-				.srcCity(item.getCity()).srcState(item.getProvince()).srcPostalCode(item.getPostalCode())
-				.mailAddressPref(item.getMailPermission()).emailPrefHdCa(item.getEmailPrefHDCA())
+		String filename = getFileName(item.getFileName());
+		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().fileId(getFromTableFileID(filename, jobName))
+				.status(ERROR).fileName(item.getFileName()).srcLanguagePref(item.getLanguagePreference().trim().toUpperCase())
+				.updatedDate(new Date()).emailStatus(getEmailStatus(t)).srcEmailAddress(item.getEmailAddress())
+				.emailAddressPref(item.getEmailPermission()).phonePref(item.getPhonePermission())
+				.srcPhoneNumber(item.getPhoneNumber()).srcPhoneExtension(item.getPhoneExtension()).srcTitleName(item.getTitle())
+				.srcFirstName(item.getFirstName()).srcLastName(item.getLastName()).srcAddress1(item.getAddress1())
+				.srcAddress2(item.getAddress2()).srcCity(item.getCity()).srcState(item.getProvince())
+				.srcPostalCode(item.getPostalCode()).mailAddressPref(item.getMailPermission()).emailPrefHdCa(item.getEmailPrefHDCA())
 				.emailPrefGardenClub(item.getGardenClub()).emailPrefPro(item.getEmailPrefPRO()).emailPrefNewMover(item.getNewMover())
 				.cellSmsFlag(item.getSmsFlag()).customerNbr(item.getContent1()).faxNumber(item.getFaxNumber())
 				.faxExtension(item.getFaxExtension()).content1(item.getContent1()).value1(item.getValue1())

@@ -3,10 +3,12 @@ package ca.homedepot.preference.read;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -44,6 +46,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 * Map of file name and boolean to know if the file has been written before
 	 */
 	private Map<String, Boolean> canResourceBeWriting;
+
+
 
 	/**
 	 * Constructor to assign Source
@@ -84,11 +88,6 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		Resource[] resourcesArray = new Resource[resources.get(VALID).size()];
 		resources.get(VALID).toArray(resourcesArray);
 		this.setResources(resourcesArray);
-		/**
-		 * Writes all INVALID files
-		 */
-		resources.get("INVALID").forEach(fileName -> writeFile(fileName.getFilename(), false));
-
 	}
 
 	/**
@@ -141,7 +140,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 			if (resource != null)
 			{
 				FileUtil.moveFile(resource.getFilename(), status, source);
-				log.error(" An exception has occurred reading file: " + resource.getFilename() + "\n " + e.getCause().getMessage());
+				log.error(String.format("PREFERENCE BATCH ERROR - An exception has ocurred reading file: %s \n %s",resource.getFilename()),e.getCause().getMessage());
 			}
 		}
 		/**
@@ -165,7 +164,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 */
 	public void writeFile(String fileName, Boolean status)
 	{
-		BigDecimal jobId = fileService.getJobId(jobName);
+		fileName = fileName.replace(FileUtil.getPath(source) + FileUtil.getInbound(), "");
+		BigDecimal jobId = fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
 		BigDecimal masterId = MasterProcessor
 				.getSourceID("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)

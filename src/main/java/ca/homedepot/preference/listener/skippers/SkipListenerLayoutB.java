@@ -83,9 +83,10 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 		/**
 		 * Creating the File inbound statging table record
 		 */
-		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
-				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).srcEmailAddress(item.getEmailAddress())
-				.fileName(item.getFileName()).emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
+		String filename = getFileName(item.getFileName());
+		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().fileId(getFromTableFileID(filename, jobName))
+				.status(ERROR).srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
+				.emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
 				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
 				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
 				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();

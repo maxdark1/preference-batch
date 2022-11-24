@@ -13,13 +13,16 @@ import java.util.List;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.processor.MasterProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -63,8 +66,8 @@ class FileServiceImplTest
 		int value = 1;
 
 		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFileName(), file.getJob(), file.getSourceType(),
-				file.getStatus(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(), file.getStatusId(),
-				file.getEndTime())).thenReturn(value);
+				file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(), file.getStatusId(), file.getEndTime()))
+						.thenReturn(value);
 		when(fileService.insert(file)).thenReturn(value);
 
 		int result = fileService.insert(file);
@@ -79,10 +82,14 @@ class FileServiceImplTest
 		BigDecimal jobId = new BigDecimal("1234567890");
 		String job_name = "registrationInbound";
 
-		when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class))).thenReturn(jobId);
-		when(fileService.getJobId(job_name)).thenReturn(jobId);
+		MasterProcessor.setMasterList(
+				List.of(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null)));
 
-		BigDecimal resultJobId = fileService.getJobId(job_name);
+		when(jdbcTemplate.queryForObject(anyString(), any(RowMapper.class))).thenReturn(jobId);
+		when(fileService.getJobId(job_name, JobListener.status(BatchStatus.STARTED).getMasterId())).thenReturn(jobId);
+
+		BigDecimal resultJobId = fileService.getJobId(job_name, JobListener.status(BatchStatus.STARTED).getMasterId());
+		;
 		assertEquals(jobId, resultJobId);
 	}
 

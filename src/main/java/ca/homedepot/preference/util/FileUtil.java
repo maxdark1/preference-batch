@@ -220,7 +220,7 @@ public final class FileUtil
 	{
 		String folder = status ? processed : error;
 		String fileName = FileValidation.getFileName(file);
-		String source = isFBSFMC(fileName) ? "FB_SFMC" : valueVal;
+		String source = isFBSFMC(fileName, valueVal) ? "FB_SFMC" : valueVal;
 
 		String path = getPath(source);
 		String newFile = renameFile(file);
@@ -252,9 +252,9 @@ public final class FileUtil
 	 * @return
 	 */
 
-	public static boolean isFBSFMC(String fileName)
+	public static boolean isFBSFMC(String fileName, String source)
 	{
-		return fileName.contains(FileValidation.getFbSFMCBaseName());
+		return fileName.contains(FileValidation.getFbSFMCBaseName()) && fbSfmcPath.equals(source);
 	}
 
 	/**
@@ -266,9 +266,24 @@ public final class FileUtil
 	 */
 	public static String renameFile(String file)
 	{
-		String baseName = FileValidation.getFileName(file);
-		String extension = FileValidation.getExtension(file, baseName);
-		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + extension;
+		String baseName = "";
+		String extension = "";
+		String[] splittedName = file.split("\\.");
+		if (splittedName.length > 0)
+		{
+			for (int i = 0; i < (splittedName.length - 1); i++)
+			{
+				baseName += splittedName[i] + ".";
+			}
+			baseName = baseName.substring(0, baseName.length() - 1);
+			extension = splittedName[splittedName.length - 1];
+		}
+		else
+		{
+			baseName = file;
+		}
+
+		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + "." + extension;
 	}
 
 	/**
@@ -300,11 +315,10 @@ public final class FileUtil
 	public static Map<String, List<Resource>> getFilesOnFolder(String path, String source)
 	{
 		File folder = new File(path);
-		List<Resource> validFilesNames = new ArrayList<>();
-		List<Resource> invalidFileNames = new ArrayList<>();
 		String[] files = folder.list();
 
-
+		List<Resource> validFilesNames = new ArrayList<>();
+		List<Resource> invalidFileNames = new ArrayList<>();
 		if (files != null)
 			for (String fileName : files)
 			{
@@ -324,7 +338,7 @@ public final class FileUtil
 					 * Saves all the files that are not valid and cannot be processed
 					 */
 					invalidFileNames.add(new FileSystemResource(fileName));
-					log.error(" File name invalid: " + fileName);
+					log.error(String.format("PREFERENCE BATCH ERROR -  File name invalid: %s",fileName));
 					try
 					{
 						/**
@@ -336,8 +350,7 @@ public final class FileUtil
 					{
 						//TODO what should happen in case of exception
 						// Make the Job status failed
-						log.error(" Exception occurs moving file {}: {}", fileName, e.getMessage());
-
+						log.error("PREFERENCE BATCH ERROR -  Exception occurs moving file {}: {}", fileName, e.getMessage());
 					}
 				}
 			}
@@ -350,5 +363,42 @@ public final class FileUtil
 		return filesNames;
 	}
 
+
+
+	public static File createTempFile(String filename)
+	{
+		File file = null;
+		try
+		{
+			String suffix = getSuffix(filename);
+			file = File.createTempFile(getPrefix(suffix, filename), suffix);
+		}
+		catch (IOException ex)
+		{
+			log.error(ex.getMessage());
+		}
+		return file;
+	}
+
+	public static String getSuffix(String file)
+	{
+		return file.substring(getLastPointIndex(file));
+	}
+
+	public static String getPrefix(String suffix, String file)
+	{
+		return file.replace(suffix, "");
+	}
+
+	public static int getLastPointIndex(String file)
+	{
+		int point = file.indexOf(".");
+		String[] fileArray = file.split("\\.");
+		if (fileArray[1].matches("\\d+"))
+		{
+			return file.length() - fileArray[0].length();
+		}
+		return point;
+	}
 
 }
