@@ -67,7 +67,7 @@ public class InvalidFileListener implements StepExecutionListener
 					}
 					catch (IOException e)
 					{
-						log.error(String.format("PREFERENCE BATCH ERROR - An exception has ocurred moving file: %s to ERROR folder",fileName.getFilename()));
+						log.error("PREFERENCE BATCH ERROR - An exception has occurred moving file: {} to ERROR folder",fileName.getFilename());
 					}
 
 				});

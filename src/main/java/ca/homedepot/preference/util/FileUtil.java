@@ -338,7 +338,7 @@ public final class FileUtil
 					 * Saves all the files that are not valid and cannot be processed
 					 */
 					invalidFileNames.add(new FileSystemResource(fileName));
-					log.error(String.format("PREFERENCE BATCH ERROR -  File name invalid: %s",fileName));
+					log.error("PREFERENCE BATCH ERROR -  File name invalid: {}",fileName);
 					try
 					{
 						/**
