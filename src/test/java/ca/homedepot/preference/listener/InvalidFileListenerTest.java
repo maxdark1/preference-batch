@@ -1,12 +1,16 @@
 package ca.homedepot.preference.listener;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import ca.homedepot.preference.util.CloudStorageUtils;
+import com.google.api.gax.paging.Page;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Storage;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.core.io.FileSystemResource;
@@ -26,9 +30,26 @@ import static org.mockito.Mockito.when;
 class InvalidFileListenerTest
 {
 
+	@Mock
+	Storage storage;
+	@Mock
+	CloudStorageUtils cloudStorageUtils;
+
+	@Mock
+	Page<Blob> blobPage;
 	@InjectMocks
+	@Spy
 	private InvalidFileListener invalidFileListener;
 
+
+
+	@BeforeEach
+	void setup()
+	{
+		MockitoAnnotations.openMocks(this);
+		StorageApplicationGCS.setStorage(storage);
+		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
+	}
 
 	@Test
 	void beforeStepNotFiles()
@@ -43,6 +64,7 @@ class InvalidFileListenerTest
 	{
 		List<Resource> files = new ArrayList<>();
 		Resource tmpFile = new FileSystemResource("test.txt");
+		List<String> paths = new ArrayList<>(List.of("test.txt"));
 		files.add(tmpFile);
 		Map<String, List<Resource>> map = new HashMap<>();
 		map.put("INVALID", files);
@@ -50,9 +72,20 @@ class InvalidFileListenerTest
 		invalidFileListener = new InvalidFileListener();
 		invalidFileListener.setDirectory("Directory");
 		invalidFileListener.setProcess("Project");
-		InvalidFileListener spy = Mockito.spy(invalidFileListener);
-		Mockito.doReturn(map).when(spy).getResources("Directory", "Project");
-		invalidFileListener.beforeStep(stepExecution);
+		try (MockedStatic<StorageApplicationGCS> storageApplicationGCSMockedStatic = Mockito
+				.mockStatic(StorageApplicationGCS.class))
+		{
+			Mockito.when(
+							storage.list("BucketName", Storage.BlobListOption.prefix("path/"), Storage.BlobListOption.currentDirectory()))
+					.thenReturn(blobPage);
+			Mockito.when(cloudStorageUtils.listObjectInBucket("Directory")).thenReturn(paths);
+			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("Directory", "Project"))
+					.thenReturn(map);
+			InvalidFileListener spy = Mockito.spy(invalidFileListener);
+			Mockito.doReturn(map).when(spy).getResources("Directory", "Project");
+			invalidFileListener.beforeStep(stepExecution);
+		}
+
 	}
 
 	@Test
@@ -78,8 +111,29 @@ class InvalidFileListenerTest
 	@Test
 	void getResources()
 	{
-		invalidFileListener = new InvalidFileListener();
-		invalidFileListener.getResources("Directory", "Project");
+		Map<String, List<Resource>> expected = new HashMap<>();
+
+		expected.put("VALID", new ArrayList<Resource>());
+		expected.put("INVALID", new ArrayList<Resource>());
+		List<String> paths = new ArrayList<>();
+
+		try (MockedStatic<StorageApplicationGCS> storageApplicationGCSMockedStatic = Mockito
+				.mockStatic(StorageApplicationGCS.class))
+		{
+			Mockito.when(
+					storage.list("BucketName", Storage.BlobListOption.prefix("path/"), Storage.BlobListOption.currentDirectory()))
+					.thenReturn(blobPage);
+			Mockito.when(cloudStorageUtils.listObjectInBucket("Directory")).thenReturn(paths);
+			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("Directory", "Project"))
+					.thenReturn(expected);
+		}
+
+
+
+		//Mockito.when(invalidFileListener.getResources("Directory", "Project")).thenReturn(expected);
+
+		Map<String, List<Resource>> map = invalidFileListener.getResources("Directory", "Project");
+		assertEquals(expected, map);
 	}
 
 	@Test
@@ -102,6 +156,7 @@ class InvalidFileListenerTest
 		MasterProcessor.setMasterList(masterList);
 		invalidFileListener.setSource("hybris");
 		invalidFileListener.writeFile("File", false);
+		invalidFileListener.writeFile("File", true);
 		assertEquals(invalidFileListener.getSource(), "hybris");
 	}
 

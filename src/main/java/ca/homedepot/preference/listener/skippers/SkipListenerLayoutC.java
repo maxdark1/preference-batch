@@ -42,7 +42,7 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 		if (!shouldSkip(t))
 		{
 			log.error(" PREFERENCE BATCH ERROR - Something went wrong trying to read the file: {}", t.getMessage());
-			throw new IOException(" PREFERENCE BATCH ERROR - Something went wrong trying to read the file :"+ t.getMessage());
+			throw new IOException(" PREFERENCE BATCH ERROR - Something went wrong trying to read the file :" + t.getMessage());
 		}
 	}
 

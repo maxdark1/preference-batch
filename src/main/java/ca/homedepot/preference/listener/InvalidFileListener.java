@@ -58,7 +58,7 @@ public class InvalidFileListener implements StepExecutionListener
 			resources = getResources(directory + source, process);
 			this.invalidFiles = resources.get("INVALID");
 
-			if (this.invalidFiles != null && this.invalidFiles.size() > 0)
+			if (this.invalidFiles != null && !this.invalidFiles.isEmpty())
 			{
 				this.invalidFiles.forEach(file -> {
 					String blobToCopy = file.getFilename(),
@@ -133,6 +133,6 @@ public class InvalidFileListener implements StepExecutionListener
 
 	protected Map<String, List<Resource>> getResources(String folder, String source)
 	{
-		return FileUtil.getFilesOnFolder(folder, source);
+		return StorageApplicationGCS.getsGCPResourceMap(folder, source);
 	}
 }
