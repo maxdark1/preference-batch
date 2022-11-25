@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password:
+    password: postgres
     driverClassName: org.postgresql.Driver
   batch:
     job:
@@ -38,14 +38,14 @@ spring:
 #      enabled: false
 cron:
   job:
-    hybrisIngestion: * 1 * * * *
-    crmIngestion: * 2 * * * *
-    fbsfmcIngestion: * 3 * * * *
-    ingestSFMCOutlookUnsubscribed: * 4 * * * *
-    sendPreferencesToCRM: * 5 * * * *
-    sendPreferencesToCitiSuppresion: * 6 * * * *
-    sendPreferencesToInternalDestination: * 7 * * * *
-    sendWeeklyLoyaltyComplaintToSource: * 8 * * * *
+    hybrisIngestion: 0 */2 * * * *
+    crmIngestion: 0 */3 * * * *
+    fbsfmcIngestion: 0 */4 * * * *
+    ingestSFMCOutlookUnsubscribed: 0 */5 * * * *
+    sendPreferencesToCRM: 0 */6 * * * *
+    sendPreferencesToCitiSuppresion: 0 */10 * * * *
+    sendPreferencesToInternalDestination: 0 */10 * * * *
+    sendWeeklyLoyaltyComplaintToSource: 0 */10 * * * *
 
 server:
   port: 8080
