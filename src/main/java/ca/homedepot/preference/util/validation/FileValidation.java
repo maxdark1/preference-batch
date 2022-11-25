@@ -249,7 +249,7 @@ public class FileValidation
 		for (Integer key : counter.keySet())
 		{
 			String token = strDate.substring(index, index + counter.get(key));
-			int integerValue = Integer.valueOf(token);
+			int integerValue = Integer.parseInt(token);
 			if (token.length() == 4 && !(integerValue >= 2000 && integerValue <= actualYear))
 			{
 				return false;

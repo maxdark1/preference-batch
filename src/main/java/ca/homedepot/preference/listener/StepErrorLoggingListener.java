@@ -87,7 +87,8 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				String source = MasterProcessor.getValueVal(file.getSourceType());
 				source = source.equals("SFMC") && file.getFileName().contains(FileValidation.getFbSFMCBaseName()) ? "FB_SFMC"
 						: source;
-				String basename = FileUtil.getPath(source), blobToCopy = basename + FileUtil.getInbound() + file.getFileName();
+				String basename = FileUtil.getPath(source);
+				String blobToCopy = basename + FileUtil.getInbound() + file.getFileName();
 				String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getProcessed());
 				try
 				{
