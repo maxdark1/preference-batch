@@ -147,11 +147,16 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 			if (resource != null && resource.getFilename() != null)
 			{
 				String filename = resource.getFilename();
-				filename = filename.substring(filename.lastIndexOf(StorageConstants.SLASH) + 1);
-				StorageApplicationGCS.moveObject(filename, resource.getFilename(),
-						resource.getFilename().replace(FileUtil.getInbound(), FileUtil.getError()));
-				log.error("PREFERENCE BATCH ERROR - An exception has occurred reading file: {} \n {}", resource.getFilename(),
-						e.getCause().getMessage());
+
+				if(filename != null)
+				{
+					String blobToCopy = filename;
+					String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
+					filename = filename.substring(filename.lastIndexOf(StorageConstants.SLASH) + 1);
+					StorageApplicationGCS.moveObject(filename, blobToCopy, blobWhereToCopy);
+					log.error("PREFERENCE BATCH ERROR - An exception has occurred reading file: {} \n {}", resource.getFilename(),
+							e.getCause().getMessage());
+				}
 			}
 		}
 

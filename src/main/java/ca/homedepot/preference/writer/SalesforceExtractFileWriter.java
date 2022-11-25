@@ -74,7 +74,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 			}
 			catch (IOException e)
 			{
-				log.info(" File for citi supresion will be created. ");
+				log.error(" File {} will be created ", fileName);
 			}
 		}
 		super.setResource(resource);

@@ -87,7 +87,7 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 			}
 			catch (IOException e)
 			{
-				log.info(" File  will be created. ");
+				log.error(" File {} will be created ", fileName);
 			}
 		}
 		super.setResource(resource);

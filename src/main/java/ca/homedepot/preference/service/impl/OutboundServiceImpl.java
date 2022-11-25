@@ -86,7 +86,7 @@ public class OutboundServiceImpl implements OutboundService
 		}
 		catch (IOException ex)
 		{
-			log.error("File creation error" + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - File {} creation error : {}", fileName, ex.getMessage());
 			throw ex;
 		}
 
@@ -110,7 +110,7 @@ public class OutboundServiceImpl implements OutboundService
 		}
 		catch (IOException ex)
 		{
-			log.error("File creation error" + ex.getMessage());
+			log.error("PREFERENCE BATCH ERROR - File {} creation error : {}", fileName, ex.getMessage());
 			throw ex;
 		}
 	}
