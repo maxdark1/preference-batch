@@ -1,11 +1,16 @@
 package ca.homedepot.preference.config;
 
 import static ca.homedepot.preference.constants.PreferenceBatchConstants.COMPLETED_STATUS;
+import static ca.homedepot.preference.constants.PreferenceBatchConstants.FLEX_INTERNAL_HEADERS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.text.FieldPosition;
+import java.text.Format;
 
 import javax.sql.DataSource;
 
@@ -19,15 +24,14 @@ import ca.homedepot.preference.processor.InternalOutboundProcessor;
 import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
+import ca.homedepot.preference.service.OutboundService;
+import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -52,6 +56,9 @@ import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
 
 class SchedulerConfigTest
 {
@@ -130,6 +137,7 @@ class SchedulerConfigTest
 	InternalOutboundProcessor internalOutboundProcessor;
 	@Mock
 	InternalOutboundFileWriter internalOutboundFileWriter;
+	@Spy
 	@InjectMocks
 	SchedulerConfig schedulerConfig;
 	@Autowired
@@ -292,19 +300,19 @@ class SchedulerConfigTest
 	void readInboundCSVFileStep() throws Exception
 	{
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.skipLimit(Integer.MAX_VALUE)).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.skipLimit(Integer.MAX_VALUE)).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readInboundHybrisFileStep1("JOB_NAME"));
 	}
@@ -315,19 +323,19 @@ class SchedulerConfigTest
 		schedulerConfig.setCrmWriterListener(writerListener);
 
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.skipLimit(Integer.MAX_VALUE)).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.skipLimit(Integer.MAX_VALUE)).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readInboundCRMFileStep1("JOB_NAME"));
 	}
@@ -337,19 +345,19 @@ class SchedulerConfigTest
 	void readSFMCOptOutsStep1()
 	{
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.processor(any(ExactTargetEmailProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.skipLimit(Integer.MAX_VALUE)).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutB.class))).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.processor(any(ExactTargetEmailProcessor.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.skipLimit(Integer.MAX_VALUE)).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutB.class))).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));
 	}
@@ -360,19 +368,19 @@ class SchedulerConfigTest
 		schedulerConfig.setFbsfmcWriterListener(writerListener);
 
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.skipLimit(Integer.MAX_VALUE)).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
-		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.processor(any(RegistrationItemProcessor.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.faultTolerant()).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.processorNonTransactional()).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.skip(ValidationException.class)).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.skipLimit(Integer.MAX_VALUE)).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.listener(any(SkipListenerLayoutC.class))).thenReturn(faultTolerantStepBuilder);
+		when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readInboundFBSFMCFileStep1("JOB_NAME"));
 	}
@@ -384,11 +392,11 @@ class SchedulerConfigTest
 		schedulerConfig.setApiWriter(apiWriter);
 		schedulerConfig.setChunkLayoutC(10);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(10)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(10)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readLayoutCInboundBDStep2());
 	}
@@ -398,11 +406,11 @@ class SchedulerConfigTest
 	{
 		schedulerConfig.setChunkLayoutB(20);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(20)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(RegistrationLayoutBWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(20)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(RegistrationLayoutBWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readDBSFMCOptOutsStep2());
 	}
@@ -412,13 +420,13 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<InternalOutboundDto> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 
-		Mockito.when(preferenceOutboundReader.outboundLoyaltyComplaintWeekly()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundReader.outboundLoyaltyComplaintWeekly()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.loyaltyComplaintDBReaderStep1());
 	}
@@ -428,13 +436,13 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<LoyaltyCompliantDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.weeklyCompliantNameFormat = "archive_YYYYMMDD.txt";
-		Mockito.when(preferenceOutboundDBReader.loyaltyComplaintDBTableReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundDBReader.loyaltyComplaintDBTableReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.loyaltyComplaintDBReaderFileWriterStep2());
 	}
@@ -445,13 +453,13 @@ class SchedulerConfigTest
 		JdbcCursorItemReader<SalesforceExtractOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.salesforcefileNameFormat = "archive_YYYYMMDD.txt";
 		schedulerConfig.setChunkOutboundSalesforce(100);
-		Mockito.when(preferenceOutboundReader.salesforceExtractOutboundDBReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundReader.salesforceExtractOutboundDBReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.salesforceExtractDBReaderStep1());
 	}
@@ -462,13 +470,13 @@ class SchedulerConfigTest
 		JdbcCursorItemReader<SalesforceExtractOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.salesforcefileNameFormat = "archive_YYYYMMDD.txt";
 		schedulerConfig.setChunkOutboundSalesforce(100);
-		Mockito.when(preferenceOutboundDBReader.salesforceExtractDBTableReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundDBReader.salesforceExtractDBTableReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(SalesforceExtractFileWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(SalesforceExtractFileWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.salesforceExtractDBReaderFileWriterStep2());
 	}
@@ -478,13 +486,13 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.setChunkOutboundCiti(100);
-		Mockito.when(preferenceOutboundReader.outboundCitiSuppresionDBReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundReader.outboundCitiSuppresionDBReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.citiSuppresionDBReaderStep1());
 	}
@@ -494,13 +502,13 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.setChunkOutboundCiti(100);
-		Mockito.when(preferenceOutboundDBReader.citiSuppressionDBTableReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundDBReader.citiSuppressionDBTableReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.citiSuppresionDBReaderFileWriterStep2());
 	}
@@ -511,13 +519,13 @@ class SchedulerConfigTest
 		JdbcCursorItemReader<PreferenceOutboundDto> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.setChunkOutboundCRM(100);
 
-		Mockito.when(preferenceOutboundReader.outboundDBReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundReader.outboundDBReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(PreferenceOutboundWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(PreferenceOutboundWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readSendPreferencesToCRMStep1());
 	}
@@ -527,14 +535,14 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<PreferenceOutboundDto> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.setChunkOutboundCRM(100);
-		Mockito.when(preferenceOutboundDBReader.outboundDBReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundDBReader.outboundDBReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.processor(any(PreferenceOutboundProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(PreferenceOutboundFileWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.processor(any(PreferenceOutboundProcessor.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(PreferenceOutboundFileWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readSendPreferencesToCRMStep2());
 	}
@@ -557,13 +565,13 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<InternalOutboundDto> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 
-		Mockito.when(preferenceOutboundReader.outboundInternalDBReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundReader.outboundInternalDBReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(InternalOutboundStep1Writer.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(InternalOutboundStep1Writer.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readSendPreferencesToInternalStep1());
 	}
@@ -572,16 +580,45 @@ class SchedulerConfigTest
 	void readSendPreferencesToInternalStep2()
 	{
 		JdbcCursorItemReader<InternalOutboundDto> jdbcCursorItemReader = new JdbcCursorItemReader<>();
-		Mockito.when(preferenceOutboundDBReader.outboundInternalDbReader()).thenReturn(jdbcCursorItemReader);
+		when(preferenceOutboundDBReader.outboundInternalDbReader()).thenReturn(jdbcCursorItemReader);
 
-		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
-		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.processor(any(InternalOutboundProcessor.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(InternalOutboundFileWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.processor(any(InternalOutboundProcessor.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.writer(any(InternalOutboundFileWriter.class))).thenReturn(simpleStepBuilder);
+		when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readSendPreferencesToInternalStep2());
 	}
 
+	@Test
+	void testSendPreferencesToFlexInternalDestination() throws IOException {
+
+		OutboundService outboundService = mock(OutboundServiceImpl.class);
+
+		doNothing().when(outboundService).createFlexAttributesFile(anyString(), anyString(), anyString(),
+					anyString());
+		JobBuilder mockJobBuilder = mock(JobBuilder.class);
+		SimpleJobBuilder mockSJobBuilder = mock(SimpleJobBuilder.class);
+		FlowBuilder.TransitionBuilder transitionBuilder1 = mock(FlowBuilder.TransitionBuilder.class);
+		FlowBuilder flowBuilder1 = mock(FlowBuilder.class);
+		when(jobBuilderFactory.get(anyString())).thenReturn(mockJobBuilder);
+		when(mockJobBuilder.incrementer(any(JobParametersIncrementer.class))).thenReturn(mockJobBuilder);
+		when(mockJobBuilder.listener(any(JobListener.class))).thenReturn(mockJobBuilder);
+		when(mockJobBuilder.start(any(Step.class))).thenReturn(mockSJobBuilder);
+		when(mockSJobBuilder.on(anyString())).thenReturn(transitionBuilder1);
+		when(transitionBuilder1.to(any(Step.class))).thenReturn(flowBuilder);
+		when(flowBuilder1.build()).thenReturn(flowJobBuilder);
+		when(flowJobBuilder.build()).thenReturn(job);
+
+		Format formatter = mock(Format.class);
+		when(formatter.format(any(), any(), any(FieldPosition.class))).thenReturn(new StringBuffer("20221125 101210"));
+
+		try {
+			assertNotNull(schedulerConfig.sendPreferencesToFlexInternalDestination());
+		} catch(Exception ex) {
+			ex.getMessage();
+		}
+	}
 }
