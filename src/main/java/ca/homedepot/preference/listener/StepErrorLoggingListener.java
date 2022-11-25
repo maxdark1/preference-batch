@@ -120,7 +120,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				catch (IOException e)
 				{
 					status = false;
-					log.error("An exception occurs while trying to move the file " + file.getFileName());
+					log.error("PREFERENCE BATCH ERROR - An exception occurs while trying to move the file {}",file.getFileName());
 				}
 				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
 				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);

@@ -338,7 +338,7 @@ public final class FileUtil
 					 * Saves all the files that are not valid and cannot be processed
 					 */
 					invalidFileNames.add(new FileSystemResource(fileName));
-					log.error(" File name invalid: " + fileName);
+					log.error("PREFERENCE BATCH ERROR -  File name invalid: {}",fileName);
 					try
 					{
 						/**
@@ -350,7 +350,7 @@ public final class FileUtil
 					{
 						//TODO what should happen in case of exception
 						// Make the Job status failed
-						log.error(" Exception occurs moving file {}: {}", fileName, e.getMessage());
+						log.error("PREFERENCE BATCH ERROR -  Exception occurs moving file {}: {}", fileName, e.getMessage());
 					}
 				}
 			}
