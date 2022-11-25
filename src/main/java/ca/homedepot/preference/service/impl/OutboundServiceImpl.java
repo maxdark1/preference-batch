@@ -1,6 +1,7 @@
 package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.dto.InternalFlexOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.service.OutboundService;
@@ -8,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -91,7 +91,43 @@ public class OutboundServiceImpl implements OutboundService
 
 	}
 
+	public void createFlexAttributesFile(String repository, String folder, String fileNameFormat, String headers)
+			throws IOException
+	{
+		/* Creating File */
+		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 
+		/* Inserting Headers */
+		String file = headers;
+
+
+
+		try (FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
+		{
+			byte[] toFile = file.getBytes();
+			writer.write(toFile);
+			writer.flush();
+		}
+		catch (IOException ex)
+		{ //TODO is there any specific exception and what should happen in case of exception.
+		  // Make the batch status failed
+			log.error("File creation error" + ex.getMessage());
+		}
+
+	}
+
+	/**
+	 * @param item
+	 */
+	@Override
+	public void internalFlexAttributes(InternalFlexOutboundDTO item)
+	{
+		jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_INSERT_FLEX_ATTRIBUTE, item.getFileId(), item.getSequenceNbr(),
+				item.getEmailAddr(), item.getHdHhId(), item.getHdIndId(), item.getCustomerNbr(), item.getStoreNbr(),
+				item.getOrgName(), item.getCompanyCd(), item.getCustTypeCd(), item.getSourceId(), item.getEffectiveDate(),
+				item.getLastUpdateDate(), item.getIndustryCode(), item.getCompanyName(), item.getContactFirstName(),
+				item.getContactLastName(), item.getContactRole());
+	}
 
 
 	/**

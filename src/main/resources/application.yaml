@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: postgres
+    password: L3os$
     driverClassName: org.postgresql.Driver
   batch:
     job:
@@ -46,6 +46,7 @@ cron:
     sendPreferencesToCitiSuppresion: 30 * * * * *
     sendPreferencesToInternalDestination: 30 * * * * *
     sendWeeklyLoyaltyComplaintToSource: 30 * * * * *
+    sendPreferencesToFlexInternalDestination: 30 * * * * *
 
 server:
   port: 8080
@@ -76,6 +77,7 @@ outbound:
     internalCa: CA_COMPLIANT_FILE_YYYYMMDD.csv
     internalGarden: GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv
     internalMover: NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv
+    flexAttributes: FLXEMCDADYYYYMMDDTHHMISS.CEACI.ZZAX
   citi:
     mastersuppresion: ACXIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.csv
   salesforce:
@@ -103,6 +105,8 @@ folders:
     path: C:\batchFiles\Salesforce
   loyaltyCompliant:
     path: C:\batchFiles
+  flexAttributes:
+    path: C:\batchFiles
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -124,4 +128,6 @@ preference:
     outboundSalesforce:
       chunk: 20
     outboundLoyalty:
+      chunk: 20
+    outboundFlexAttributes:
       chunk: 20

@@ -381,4 +381,7 @@ public class PreferenceBatchConstants
 
 	public static final String SALESFORCE_EXTRACT_HEADERS = "EMAIL_ADDRESS   ||   AS_OF_DATE   ||   SOURCE_ID   ||   EMAIL_STATUS   ||   EMAIL_PTC   ||   LANGUAGE_PREFERENCE   ||   EARLIEST_OPT_IN_DATE   ||   HD_CANADA_EMAIL_COMPLIANT_FLAG   ||   HD_CANADA_FLAG   ||   GARDEN_CLUB_FLAG   ||   NEW_MOVER_FLAG   ||   PRO_FLAG   "
 			+ "||   PHONE_PTC_FLAG   ||   FIRST_NAME   ||   LAST_NAME   ||   POSTAL_CODE   ||   PROVINCE   ||   CITY   ||   PHONE_NUMBER   ||   BUSINESS_NAME   ||   BUSINESS_TYPE   ||   MOVE_DATE   ||   DWELLING_TYPE";
+
+
+	public static final String FLEX_INTERNAL_HEADERS = "FILE_ID||'|'||SEQUENCE_NBR||'|'||EMAIL_ADDR||'|'||'HOUSEHOLD_ID'||'|'||'INDIVIDUAL_ID'||'|'||CUSTOMER_NBR||'|'||STORE_NBR||'|'||ORG_NAME||'|'||COMPANY_CD||'|'||CUST_TYPE_CD||'|'||SOURCE_ID||'|'||TO_CHAR(EFFECTIVE_DATE, 'YYYY-MM-DD hh24:mi:ss') || '|' ||to_char(LAST_UPDATE_DATE, 'YYYY-MM-DD hh24:mi:ss') || '|' ||INDUSTRY_CODE || '|' ||COMPANY_NAME || '|' ||CONTACT_FIRST_NAME || '|' ||CONTACT_LAST_NAME || '|' ||CONTACT_ROLE";
 }

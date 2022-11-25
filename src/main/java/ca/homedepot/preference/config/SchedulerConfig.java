@@ -1,33 +1,34 @@
 package ca.homedepot.preference.config;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-
-import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.*;
+import ca.homedepot.preference.listener.JobListener;
+import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
-import ca.homedepot.preference.mapper.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
+import ca.homedepot.preference.mapper.*;
+import ca.homedepot.preference.model.EmailOptOuts;
+import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.processor.*;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.FileUtil;
+import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import ca.homedepot.preference.util.validation.FileValidation;
+import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.*;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.batch.core.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -52,16 +53,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import ca.homedepot.preference.listener.JobListener;
-import ca.homedepot.preference.listener.RegistrationItemWriterListener;
-import ca.homedepot.preference.model.EmailOptOuts;
-import ca.homedepot.preference.model.FileInboundStgTable;
-import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.tasklet.BatchTasklet;
-import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
-import ca.homedepot.preference.util.validation.InboundValidator;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static ca.homedepot.preference.constants.PreferenceBatchConstants.*;
 import static ca.homedepot.preference.constants.SchedulerConfigConstants.*;
@@ -96,6 +93,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
 
 	public static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
+
+	public static final String JOB_NAME_FLEX_INTERNAL_DESTINATION = "SendPreferencesToInternalFlexDestination";
 
 	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSource";
 	/**
@@ -145,9 +144,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	Integer chunkOutboundSalesforce;
 	@Value("${preference.centre.outboundInternal.chunk}")
 	Integer chunkOutboundInternal;
-
 	@Value("${preference.centre.outboundLoyalty.chunk}")
 	Integer chunkOutboundLoyalty;
+
+	@Value("${preference.centre.outboundFlexAttributes.chunk}")
+	Integer chunkOutboundFlexAttributes;
+
 	/**
 	 * The folders paths
 	 */
@@ -187,6 +189,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${folders.loyaltyCompliant.path}")
 	String loyaltyCompliantPath;
 
+	@Value("${folders.flexAttributes.path}")
+	String flexAttibutesPath;
+
 	/**
 	 * Folders ERROR, INBOUND AND PROCCESED
 	 */
@@ -213,11 +218,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String internalGardenNameFormat;
 	@Value("${outbound.files.internalMover}")
 	String internalMoverNameFormat;
+	@Value("${outbound.files.flexAttributes}")
+	String flexAttributesNameFormat;
 	@Value("${folders.internal.path}")
 	String internalRepository;
+	@Value("${folders.flexAttributes.path}")
+	String flexAttributesRepository;
+
 	@Value("${folders.outbound}")
 	String internalFolder;
 
+	@Value("${folders.outbound}")
+	String flexAttributesFolder;
 
 
 
@@ -351,6 +363,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private InternalOutboundProcessor internalOutboundProcessor;
 	@Autowired
 	private InternalOutboundFileWriter internalOutboundFileWriter;
+
+	@Autowired
+	private InternalFlexOutboundStep1Writer internalFlexOutboundStep1Writer;
+	@Autowired
+	private InternalFlexOutboundProcessor internalFlexOutboundProcessor;
+	@Autowired
+	private InternalFlexOutboundFileWriter internalFlexOutboundFileWriter;
 
 
 	@Autowired
@@ -534,6 +553,19 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_STR, JOB_NAME_INTERNAL_DESTINATION).toJobParameters();
 		JobExecution execution = jobLauncher.run(sendPreferencesToInternalDestination(), param);
 		log.info(" Send Preferences To Internal Destination Job finished with status : " + execution.getStatus());
+	}
+
+	@Scheduled(cron = "${cron.job.sendPreferencesToFlexInternalDestination}")
+	public void sendPreferencesToFlexInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+	{
+		log.info(" Send Preferences To Flex Internal Destination Job started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_FLEX_INTERNAL_DESTINATION, String.valueOf(System.currentTimeMillis()))
+				.addString(DIRECTORY, flexAttibutesPath + folderOutbound).addString(SOURCE, FLEX_ATTRIBUTE)
+				.addString(JOB_STR, JOB_NAME_FLEX_INTERNAL_DESTINATION).toJobParameters();
+		JobExecution execution = jobLauncher.run(sendPreferencesToFlexInternalDestination(), param);
+		log.info(" Send Preferences To Flex Internal Destination Job finished with status : " + execution.getStatus());
 	}
 
 	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
@@ -935,6 +967,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 			outboundService.createFile(internalRepository, internalFolder, internalCANameFormat, INTERNAL_CA_HEADERS);
 			outboundService.createFile(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
 			outboundService.createFile(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
+
 		}
 		catch (IOException ex)
 		{
@@ -947,6 +980,43 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.start(readSendPreferencesToInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToInternalStep2()).build()
 				.build();
 	}
+
+	public Job sendPreferencesToFlexInternalDestination()
+	{
+		OutboundService outboundService = new OutboundServiceImpl();
+		try
+		{
+			outboundService.createFlexAttributesFile(flexAttributesRepository, flexAttributesFolder, flexAttributesNameFormat,
+					FLEX_INTERNAL_HEADERS);
+		}
+		catch (IOException ex)
+		{
+			//TODO catch the exception that is thrown and what should happen if there is exception
+			log.error("Error during the creation of Flex Internal Destination Files" + ex.getMessage());
+		}
+
+		//Execute the Job
+		return jobBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readSendPreferencesToFlexInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToFlexInternalStep2())
+				.build().build();
+	}
+
+	public Step readSendPreferencesToFlexInternalStep1()
+	{
+		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step1")
+				.<InternalFlexOutboundDTO, InternalFlexOutboundDTO> chunk(chunkOutboundFlexAttributes)
+				.reader(preferenceOutboundReader.outboundInternalFlexDBReader()).writer(internalFlexOutboundStep1Writer).build();
+	}
+
+	public Step readSendPreferencesToFlexInternalStep2()
+	{
+		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step2")
+				.<InternalFlexOutboundDTO, InternalFlexOutboundProcessorDTO> chunk(chunkOutboundFlexAttributes)
+				.reader(preferenceOutboundDBReader.outboundInternalFlexDbReader()).processor(internalFlexOutboundProcessor)
+				.writer(internalFlexOutboundFileWriter).build();
+	}
+
+
 
 	/**
 	 * Step 1 for get data from DB

@@ -340,9 +340,33 @@ public class OutboundSqlQueriesConstants
 			+ "\temail_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province)\n"
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	public static final String SQL_SELECT_LOYALTY_COMPLAINT = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province\n"
+	public static final String SQL_SELECT_LOYALTY_COMPLAINT = "SELECT emaFlFLEXil_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province\n"
 			+ "\tFROM public.hdpc_out_loyalty_compliant;";
 	public static final String SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE = "TRUNCATE TABLE public.hdpc_out_loyalty_compliant";
+
+	public static final String SQL_INSERT_FLEX_ATTRIBUTE = "INSERT INTO hdpc_out_flex_attributes(\n"
+			+ "\tfile_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, industry_code, company_name, contact_first_name, contact_last_name, contact_role)\n"
+			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+	public static final String SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION = "select MAX(hfc.file_id) file_id\n"
+			+ "     , hfc.sequence_nbr\n" + "     , he.email email_addr\n" + "     , ha.address_id hd_hh_id\n"
+			+ "     , c.customer_id hd_ind_id\n" + "     , cx.customer_nbr\n" + "     , cx.store_nbr\n" + "     , cx.org_name\n"
+			+ "     , cx.industry_code company_cd\n" + "     , cx.cust_type cust_type_cd\n" + "     , c.source_type source_id\n"
+			+ "     , ce.updated_date last_updated_date\n" + "     , cx.industry_code\n" + "     , cx.org_name\n"
+			+ "     , c.first_name contact_first_name\n" + "     , c.last_name contact_last_name\n"
+			+ "     , max(ce.effective_date) effective_date\n" + "from hdpc_customer c\n" + "         join hdpc_customer_email ce\n"
+			+ "              on c.customer_id = ce.customer_id\n" + "                  AND ce.active\n"
+			+ "         left join hdpc_email he\n" + "                   on ce.email_id = he.email_id\n"
+			+ "         left join hdpc_customer_address ca\n" + "                   on c.customer_id = ca.customer_id\n"
+			+ "         left join hdpc_address ha\n" + "                   on ha.address_id = c.def_address_id\n"
+			+ "         left join hdpc_customer_extn cx\n" + "                   on c.customer_id = cx.customer_id\n"
+			+ "         left join hdpc_file_customer hfc\n" + "                   on c.customer_id = hfc.customer_id\n"
+			+ "group by hfc.sequence_nbr\n" + "       , he.email\n" + "       , ha.address_id\n" + "       , c.customer_id\n"
+			+ "       , cx.customer_nbr\n" + "       , cx.store_nbr\n" + "       , cx.org_name\n" + "       , cx.industry_code\n"
+			+ "       , cx.cust_type\n" + "       , c.source_type\n" + "       , ce.updated_date\n" + "       , cx.industry_code\n"
+			+ "       , cx.org_name\n" + "       , c.first_name\n" + "       , c.last_name\n" + ";";
+
+	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "";
 
 
 }
