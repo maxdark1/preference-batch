@@ -28,11 +28,6 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.SUCCES
 public class PreferenceServiceImpl implements PreferenceService
 {
 
-	/**
-	 * The base url
-	 */
-	@Value("${service.preference.baseurl}")
-	public String baseUrl;
 
 	/**
 	 * The JDBC template
@@ -72,8 +67,8 @@ public class PreferenceServiceImpl implements PreferenceService
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
 	{
 
-		log.info(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
-
+		log.debug(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
+		log.info(" {} item(s) has been sent through Request Registration.", items.size());
 		return preferenceRegistrationClient.registration(items);
 	}
 
@@ -87,8 +82,8 @@ public class PreferenceServiceImpl implements PreferenceService
 	public RegistrationResponse preferencesSFMCEmailOptOutsLayoutB(List<? extends RegistrationRequest> items)
 	{
 
-		log.info(" {} item(s) has been sent through Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
-
+		log.debug(" {} item(s) has been sent through Request Registration LayoutB {} ", items.size(), new Gson().toJson(items));
+		log.info(" {}  item(s) has been sent through Request Registration Layout B.", items.size());
 		return preferenceRegistrationClient.registrationLayoutB(items);
 	}
 

@@ -28,6 +28,7 @@ import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.*;
@@ -423,7 +424,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.hybrisIngestion}")
 	public void processRegistrationHybrisInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException{
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+	{
 		log.info(" Registration Inbound Hybris : Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_INBOUND, String.valueOf(System.currentTimeMillis()))
@@ -445,7 +447,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.crmIngestion}")
 	public void processRegistrationCRMInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException{
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+	{
 		log.info(" Registration Inbound CRM: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_CRM_INBOUND, String.valueOf(System.currentTimeMillis()))
@@ -467,7 +470,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
 	public void processFBSFMCInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException{
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException
+	{
 		log.info(" Registration Inbound FB-SFMC: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_REGISTRATION_FBSFMC_INBOUND, String.valueOf(System.currentTimeMillis()))
@@ -489,7 +493,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException{
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
@@ -599,7 +604,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public MultiResourceItemReaderInbound<InboundRegistration> multiResourceItemReaderInboundFileReader(
 			@Value("#{jobParameters['directory']}") String directory, @Value("#{jobParameters['source']}") String source,
-			@Value("#{jobParameters['job_name']}") String jobName)  {
+			@Value("#{jobParameters['job_name']}") String jobName)
+	{
 		MultiResourceItemReaderInbound<InboundRegistration> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(
 				source);
 		multiReaderResourceInbound.setName("multiResourceItemReaderInboundFileReader");
@@ -628,7 +634,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public MultiResourceItemReader<EmailOptOuts> multiResourceItemReaderSFMCUnsubcribed(
 			@Value("#{jobParameters['directory']}") String directory, @Value("#{jobParameters['source']}") String source,
-			@Value("#{jobParameters['job_name']}") String jobName)  {
+			@Value("#{jobParameters['job_name']}") String jobName)
+	{
 		MultiResourceItemReaderInbound<EmailOptOuts> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
 		multiReaderResourceInbound.setJobName(jobName);
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
@@ -908,6 +915,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return
 	 */
 
+	@SneakyThrows
 	public Job crmSendPreferencesToCRM()
 	{
 		OutboundService outboundService = new OutboundServiceImpl();
@@ -918,8 +926,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			//TODO catch the exception that is thrown and what should happen if there is exception
-			log.error("Error during the creation of CRM Preferences File: " + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File: " + ex.getMessage());
+			throw ex;
 		}
 
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
@@ -931,6 +939,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return
 	 */
+	@SneakyThrows
 	public Job sendPreferencesToInternalDestination()
 	{
 		//Generate the 3 Files
@@ -943,8 +952,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			//TODO catch the exception that is thrown and what should happen if there is exception
-			log.error("Error during the creation of Internal Destination Files" + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files" + ex.getMessage());
+			throw ex;
 		}
 
 		//Execute the Job

@@ -85,9 +85,9 @@ public class OutboundServiceImpl implements OutboundService
 			writer.flush();
 		}
 		catch (IOException ex)
-		{ //TODO is there any specific exception and what should happen in case of exception.
-		  // Make the batch status failed
+		{
 			log.error("File creation error" + ex.getMessage());
+			throw ex;
 		}
 
 	}
@@ -101,7 +101,7 @@ public class OutboundServiceImpl implements OutboundService
 		/* Inserting Headers */
 		String file = headers;
 
-		File tempFile = FileUtil.createTempFile(CloudStorageUtils.generatePath(folder + fileName));
+		File tempFile = FileUtil.createTempFile(CloudStorageUtils.generatePath(folder, fileName));
 		try (FileOutputStream writer = new FileOutputStream(tempFile, false))
 		{
 			byte[] toFile = file.getBytes();
@@ -109,9 +109,9 @@ public class OutboundServiceImpl implements OutboundService
 			writer.flush();
 		}
 		catch (IOException ex)
-		{ //TODO is there any specific exception and what should happen in case of exception.
-		  // Make the batch status failed
+		{
 			log.error("File creation error" + ex.getMessage());
+			throw ex;
 		}
 	}
 

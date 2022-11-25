@@ -1,10 +1,14 @@
 package ca.homedepot.preference.listener;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import ca.homedepot.preference.util.constants.StorageConstants;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +37,13 @@ public class InvalidFileListener implements StepExecutionListener
 
 	private String directory;
 
-	private String Source;
+	private String source;
 
-	private String JobName;
+	private String jobName;
 
-	private String Process;
+	private String process;
 
-	private Map<String, List<Resource>> Resources;
+	private Map<String, List<Resource>> resources;
 
 	private List<Resource> invalidFiles;
 	/**
@@ -53,21 +57,24 @@ public class InvalidFileListener implements StepExecutionListener
 	{
 		if (checkExecution(stepExecution.getStepName()))
 		{
-			Resources = getResources(directory + Source, Process);
-			this.invalidFiles = Resources.get("INVALID");
+			resources = getResources(directory + source, process);
+			this.invalidFiles = resources.get("INVALID");
 
 			if (this.invalidFiles != null && this.invalidFiles.size() > 0)
 			{
-				this.invalidFiles.forEach(fileName -> {
-					writeFile(fileName.getFilename(), false);
+				this.invalidFiles.forEach(file -> {
+					String blobToCopy = file.getFilename(), filename = blobToCopy.substring(blobToCopy.lastIndexOf(StorageConstants.SLASH));
+					String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
+					writeFile(filename, false);
 					try
 					{
-						FileUtil.moveFile(fileName.getFilename(), false, Source);
-						log.error("PREFERENCE BATCH ERROR - Invalid Format Name File Moved to ERROR Folder");
+						StorageApplicationGCS.moveObject(filename, blobToCopy, blobWhereToCopy);
+						log.error("PREFERENCE BATCH ERROR - Invalid Format Name File {} for source {} Moved to ERROR Folder", file.getFilename(), source);
 					}
-					catch (IOException e)
+					catch (StorageException e)
 					{
-						log.error("PREFERENCE BATCH ERROR - An exception has occurred moving file: {} to ERROR folder",fileName.getFilename());
+						log.error("PREFERENCE BATCH ERROR - An exception has occurred moving file: {} to ERROR folder",
+								file.getFilename());
 					}
 
 				});
@@ -107,10 +114,10 @@ public class InvalidFileListener implements StepExecutionListener
 	 */
 	protected void writeFile(String fileName, Boolean status)
 	{
-		BigDecimal jobId = fileService.getJobId(JobName, JobListener.status(BatchStatus.STARTED).getMasterId());
+		BigDecimal jobId = fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
 		BigDecimal masterId = MasterProcessor
-				.getSourceID("SOURCE", Source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : Source)
+				.getSourceID("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)
 				.getMasterId();
 		Date endTime = new Date();
 		/**

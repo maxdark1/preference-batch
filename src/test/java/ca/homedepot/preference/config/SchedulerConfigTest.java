@@ -357,7 +357,8 @@ class SchedulerConfigTest
 
 
 	@Test
-	void readSFMCOptOutsStep1() throws IOException {
+	void readSFMCOptOutsStep1() throws IOException
+	{
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);

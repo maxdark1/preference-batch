@@ -4,7 +4,6 @@ import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import org.springframework.batch.core.BatchStatus;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -71,10 +70,12 @@ public class SkipFileService
 
 	/**
 	 * Returns if the exception can be skipped
+	 * 
 	 * @param t
 	 * @return can be skipped
 	 */
-	public boolean shouldSkip(Throwable t){
+	public boolean shouldSkip(Throwable t)
+	{
 		return !(t instanceof IOException);
 	}
 }

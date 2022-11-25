@@ -4,6 +4,7 @@ import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class CloudStorageUtils
 	 *           folder where is the object being move / filename
 	 */
 
-	public void moveObject(String filename, String blobTobeMove, String blobWhereToCopy)
+	public void moveObject(String filename, String blobTobeMove, String blobWhereToCopy) throws StorageException
 	{
 		String fileRename = FileUtil.renameFile(filename);
 		BlobId firstLocation = BlobId.of(bucketName, blobTobeMove);
