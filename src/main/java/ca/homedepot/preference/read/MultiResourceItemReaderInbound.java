@@ -111,7 +111,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	{
 
 		super.setResources(resources);
-		if(resources.length == 0)
+		if (resources.length == 0)
 		{
 			log.error(" PREFERENCE BATCH ERROR - No resources to read {} folder is empty.", source.toLowerCase());
 		}

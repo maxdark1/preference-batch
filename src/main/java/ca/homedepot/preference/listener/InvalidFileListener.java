@@ -7,7 +7,6 @@ import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.constants.StorageConstants;
-import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +19,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import ca.homedepot.preference.util.FileUtil;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -63,13 +61,15 @@ public class InvalidFileListener implements StepExecutionListener
 			if (this.invalidFiles != null && this.invalidFiles.size() > 0)
 			{
 				this.invalidFiles.forEach(file -> {
-					String blobToCopy = file.getFilename(), filename = blobToCopy.substring(blobToCopy.lastIndexOf(StorageConstants.SLASH));
+					String blobToCopy = file.getFilename(),
+							filename = blobToCopy.substring(blobToCopy.lastIndexOf(StorageConstants.SLASH));
 					String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
 					writeFile(filename, false);
 					try
 					{
 						StorageApplicationGCS.moveObject(filename, blobToCopy, blobWhereToCopy);
-						log.error("PREFERENCE BATCH ERROR - Invalid Format Name File {} for source {} Moved to ERROR Folder", file.getFilename(), source);
+						log.error("PREFERENCE BATCH ERROR - Invalid Format Name File {} for source {} Moved to ERROR Folder",
+								file.getFilename(), source);
 					}
 					catch (StorageException e)
 					{

@@ -59,7 +59,7 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	{
 		super.close();
 
-		if(!stringBuilder.toString().equalsIgnoreCase(getHeader()+"\n"))
+		if (!stringBuilder.toString().equalsIgnoreCase(getHeader() + "\n"))
 		{
 			byte[] content = stringBuilder.toString().getBytes();
 			createFileOnGCS(CloudStorageUtils.generatePath(getFolderSource(), getFileName()), content);

@@ -92,9 +92,11 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				try
 				{
 					StorageApplicationGCS.moveObject(file.getFileName(), blobToCopy, blobWhereToCopy);
-				}catch (StorageException e)
+				}
+				catch (StorageException e)
 				{
-					log.error(" PREFERENCE BATCH ERROR - Error has occurred trying to move file {} : {}",file.getFileName(), e.getMessage());
+					log.error(" PREFERENCE BATCH ERROR - Error has occurred trying to move file {} : {}", file.getFileName(),
+							e.getMessage());
 				}
 
 				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);

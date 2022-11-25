@@ -36,6 +36,7 @@ class ExactTargetEmailProcessorTest
 		emailOptOuts.setReason("SOME REASON");
 		emailOptOuts.setStatus("unsubscribed");
 		emailOptOuts.setDateUnsubscribed("09/19/2022 8 :11");
+		emailOptOuts.setFileName("fileName_20220122.txt");
 
 		InboundValidator
 				.setValidEmailPattern("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
@@ -74,7 +75,7 @@ class ExactTargetEmailProcessorTest
 				() -> exactTargetEmailProcessor.process(emailOptOuts));
 
 
-		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
+		assertTrue(validationException.getMessage().contains("The item processed has the above validation's errors:"));
 		assertNotNull(fileInboundStgTable);
 	}
 }

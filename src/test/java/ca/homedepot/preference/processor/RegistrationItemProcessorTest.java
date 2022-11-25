@@ -47,7 +47,7 @@ public class RegistrationItemProcessorTest
 		input.setContent5("CUST_TYPE_CODE");
 		input.setValue5("01");
 		input.setContent6("CELL_PHONE");
-
+		input.setFileName("fileExmaple_2021122.txt");
 		List<Master> masterList = new ArrayList<>();
 
 		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true, null));
@@ -86,11 +86,11 @@ public class RegistrationItemProcessorTest
 		input.setAsOfDate(null);
 
 		ValidationException validationException = assertThrows(ValidationException.class, () -> {
-			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
+			registrationItemProcessor.process(input);
 		});
 
 		assertNotNull(validationException);
-		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
+		assertTrue(validationException.getMessage().contains("The item processed has the above validation's errors:"));
 	}
 
 	@Test
@@ -99,11 +99,11 @@ public class RegistrationItemProcessorTest
 		input.setEmailPermission("a");
 
 		ValidationException validationException = assertThrows(ValidationException.class, () -> {
-			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
+			registrationItemProcessor.process(input);
 		});
 
 		assertNotNull(validationException);
-		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
+		assertTrue(validationException.getMessage().contains("The item processed has the above validation's errors:"));
 
 	}
 
