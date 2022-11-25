@@ -145,7 +145,7 @@ class FileUtilTest
 	}
 
 	@Test
-	void getFilesOnFolder()
+	void getFilesOnFolder() throws IOException
 	{
 		String path = "fileUtil/INBOUND/";
 		String source = "hybris";

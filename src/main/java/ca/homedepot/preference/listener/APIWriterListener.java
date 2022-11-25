@@ -49,6 +49,6 @@ public class APIWriterListener implements ItemWriteListener<RegistrationRequest>
 	@Override
 	public void onWriteError(Exception exception, List<? extends RegistrationRequest> items)
 	{
-		log.error("Error occurs while sending to API: {}", exception.getMessage());
+		log.error(" PREFERENCE BATCH ERROR - An error occurs while sending to API: {}", exception.getMessage());
 	}
 }

@@ -51,7 +51,6 @@ class ExactTargetEmailValidationTest
 		assertNotNull(lineCallbackHandler);
 	}
 
-	// TODO this might change in the future, these are ACXIOM values
 	@Test
 	void getExactTargetStatus()
 	{

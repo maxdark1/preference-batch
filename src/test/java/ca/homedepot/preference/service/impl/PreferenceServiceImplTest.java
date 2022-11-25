@@ -67,8 +67,7 @@ class PreferenceServiceImplTest
 	@BeforeEach
 	public void setUp()
 	{
-		MockitoAnnotations.initMocks(this);
-		preferenceServiceImpl.baseUrl = "test/";
+		MockitoAnnotations.openMocks(this);
 	}
 
 

@@ -6,6 +6,7 @@ import static ca.homedepot.preference.util.validation.InboundValidator.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import ca.homedepot.preference.util.constants.StorageConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.validator.ValidationException;
@@ -20,6 +21,8 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	 * Source value Where item comes from
 	 */
 	private String source;
+
+	private int count = 0;
 
 	/**
 	 * Constructor with resource
@@ -42,6 +45,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	@Override
 	public FileInboundStgTable process(InboundRegistration item) throws Exception
 	{
+		count++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 		Date asOfDate = null;
 		BigDecimal sourceId = null;
@@ -59,13 +63,15 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		}
 		catch (ValidationException e)
 		{
-			log.error(" Validation error: {} ", e.getMessage());
+			log.error(
+					" PREFERENCE BATCH VALIDATION ERROR - The record # {} has the above fields with validation error on file {}: {} ",
+					count, item.getFileName().substring(item.getFileName().lastIndexOf(StorageConstants.SLASH) + 1), e.getMessage());
 			/**
 			 * Throws the exception again after has been logged This is catch on the LayoutC's skippers
 			 */
 			throw e;
 		}
-		log.info(" Processing inbound item {}: ", item);
+
 		builder.status(NOTSTARTED).fileName(item.getFileName()).srcLanguagePref(item.getLanguagePreference().trim().toUpperCase())
 				.updatedDate(new Date()).srcDate(asOfDate).srcEmailAddress(item.getEmailAddress())
 				.emailStatus(

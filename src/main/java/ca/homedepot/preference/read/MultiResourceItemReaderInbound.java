@@ -1,5 +1,6 @@
 package ca.homedepot.preference.read;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
@@ -7,6 +8,7 @@ import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
+import ca.homedepot.preference.util.constants.StorageConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.file.MultiResourceItemReader;
@@ -107,7 +109,12 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	@Override
 	public void setResources(Resource[] resources)
 	{
+
 		super.setResources(resources);
+		if (resources.length == 0)
+		{
+			log.error(" PREFERENCE BATCH ERROR - No resources to read {} folder is empty.", source.toLowerCase());
+		}
 		canResourceBeWriting = new HashMap<>();
 		/**
 		 * Initialize Map with values
@@ -136,14 +143,19 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		catch (Exception e)
 		{
 			resource = getCurrentResource();
-			status = !status;
-			if (resource != null)
+			status = false;
+			if (resource != null && resource.getFilename() != null)
 			{
-				FileUtil.moveFile(resource.getFilename(), status, source);
-				log.error("PREFERENCE BATCH ERROR - An exception has ocurred reading file: {} \n {}",resource.getFilename(),e.getCause().getMessage());
+				String filename = resource.getFilename();
+				filename = filename.substring(filename.lastIndexOf(StorageConstants.SLASH) + 1);
+				StorageApplicationGCS.moveObject(filename, resource.getFilename(),
+						resource.getFilename().replace(FileUtil.getInbound(), FileUtil.getError()));
+				log.error("PREFERENCE BATCH ERROR - An exception has occurred reading file: {} \n {}", resource.getFilename(),
+						e.getCause().getMessage());
 			}
 		}
-		/**
+
+		/*
 		 * Validates that a resources is not null and can be writing
 		 */
 		if (resource != null && canResourceBeWriting.get(resource.getFilename()))

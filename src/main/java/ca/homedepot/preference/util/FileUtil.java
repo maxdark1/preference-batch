@@ -1,6 +1,7 @@
 package ca.homedepot.preference.util;
 
 import ca.homedepot.preference.util.validation.FileValidation;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -312,6 +313,7 @@ public final class FileUtil
 	 * @param source
 	 * @return files in a folder
 	 */
+	@SneakyThrows
 	public static Map<String, List<Resource>> getFilesOnFolder(String path, String source)
 	{
 		File folder = new File(path);
@@ -338,7 +340,7 @@ public final class FileUtil
 					 * Saves all the files that are not valid and cannot be processed
 					 */
 					invalidFileNames.add(new FileSystemResource(fileName));
-					log.error("PREFERENCE BATCH ERROR -  File name invalid: {}",fileName);
+					log.error("PREFERENCE BATCH ERROR -  File name invalid: {}", fileName);
 					try
 					{
 						/**
@@ -348,10 +350,10 @@ public final class FileUtil
 					}
 					catch (IOException e)
 					{
-						//TODO what should happen in case of exception
-						// Make the Job status failed
 						log.error("PREFERENCE BATCH ERROR -  Exception occurs moving file {}: {}", fileName, e.getMessage());
+						throw e;
 					}
+
 				}
 			}
 		/**

@@ -1,9 +1,9 @@
 package ca.homedepot.preference.config;
 
 import ca.homedepot.preference.util.CloudStorageUtils;
-import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.constants.StorageConstants;
 import ca.homedepot.preference.util.validation.FileValidation;
+import com.google.cloud.storage.StorageException;
 import lombok.experimental.UtilityClass;
 import org.springframework.cloud.gcp.storage.GoogleStorageResource;
 import com.google.cloud.storage.Storage;
@@ -108,7 +108,6 @@ public class StorageApplicationGCS
 			int i = 0;
 			for (String file : files)
 			{
-				String blobToCopy = file, blobWhereToCopy = file;
 				file = file.replace(folder, "");
 
 				if (FileValidation.validateFileName(file, source))
@@ -118,8 +117,6 @@ public class StorageApplicationGCS
 				else
 				{
 					invalidResources.add(resourcesGCS.get(i));
-					blobWhereToCopy = blobWhereToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
-					cloudStorageUtils.moveObject(file, blobToCopy, blobWhereToCopy);
 				}
 				i++;
 			}
@@ -147,7 +144,7 @@ public class StorageApplicationGCS
 		return "gs://" + cloudStorageUtils.getBucketName() + StorageConstants.SLASH + bucketPath;
 	}
 
-	public static void moveObject(String filename, String blobTobeMove, String blobWhereToCopy)
+	public static void moveObject(String filename, String blobTobeMove, String blobWhereToCopy) throws StorageException
 	{
 
 		cloudStorageUtils.moveObject(filename, blobTobeMove, blobWhereToCopy);

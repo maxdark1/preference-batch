@@ -7,6 +7,7 @@ import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
+import com.google.cloud.storage.StorageException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -88,7 +89,15 @@ public class StepErrorLoggingListener implements StepExecutionListener
 						: source;
 				String basename = FileUtil.getPath(source), blobToCopy = basename + FileUtil.getInbound() + file.getFileName();
 				String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getProcessed());
-				StorageApplicationGCS.moveObject(file.getFileName(), blobToCopy, blobWhereToCopy);
+				try
+				{
+					StorageApplicationGCS.moveObject(file.getFileName(), blobToCopy, blobWhereToCopy);
+				}
+				catch (StorageException e)
+				{
+					log.error(" PREFERENCE BATCH ERROR - Error has occurred trying to move file {} : {}", file.getFileName(),
+							e.getMessage());
+				}
 
 				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);
@@ -120,7 +129,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				catch (IOException e)
 				{
 					status = false;
-					log.error("PREFERENCE BATCH ERROR - An exception occurs while trying to move the file {}",file.getFileName());
+					log.error("PREFERENCE BATCH ERROR - An exception occurs while trying to move the file {}", file.getFileName());
 				}
 				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
 				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);

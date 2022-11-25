@@ -28,6 +28,7 @@ import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.writer.*;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.*;
@@ -914,6 +915,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return
 	 */
 
+	@SneakyThrows
 	public Job crmSendPreferencesToCRM()
 	{
 		OutboundService outboundService = new OutboundServiceImpl();
@@ -924,8 +926,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			//TODO catch the exception that is thrown and what should happen if there is exception
-			log.error("Error during the creation of CRM Preferences File: " + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File: " + ex.getMessage());
+			throw ex;
 		}
 
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
@@ -937,6 +939,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return
 	 */
+	@SneakyThrows
 	public Job sendPreferencesToInternalDestination()
 	{
 		//Generate the 3 Files
@@ -949,8 +952,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			//TODO catch the exception that is thrown and what should happen if there is exception
-			log.error("Error during the creation of Internal Destination Files" + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files" + ex.getMessage());
+			throw ex;
 		}
 
 		//Execute the Job
