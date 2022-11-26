@@ -2,8 +2,10 @@ package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
+import ca.homedepot.preference.dto.InternalFlexOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
+import com.github.javafaker.Faker;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
@@ -17,9 +19,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
 
+import static java.lang.Math.abs;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
 class OutboundServiceImplTest
 {
@@ -63,7 +72,7 @@ class OutboundServiceImplTest
 				item.getPhoneNumber(), item.getFirstName(), item.getLastName(), item.getBusinessName(), item.getIndustryCode(),
 				item.getCity(), item.getProvince(), item.getHdCaProSrcId())).thenReturn(records);
 		outboundService.preferenceOutbound(item);
-		Mockito.verify(outboundService).preferenceOutbound(item);
+		verify(outboundService).preferenceOutbound(item);
 
 	}
 
@@ -80,7 +89,7 @@ class OutboundServiceImplTest
 				item.getCity(), item.getPhoneNumber(), item.getBussinessName(), item.getIndustryCode(), item.getDwellingType(),
 				item.getMoveDate())).thenReturn(records);
 		outboundService.programCompliant(item);
-		Mockito.verify(outboundService).programCompliant(item);
+		verify(outboundService).programCompliant(item);
 	}
 
 	@Test
@@ -100,7 +109,7 @@ class OutboundServiceImplTest
 
 		Mockito.doNothing().when(jdbcTemplate).execute(OutboundSqlQueriesConstants.SQL_TRUNCATE_COMPLIANT_TABLE);
 		outboundService.truncateCompliantTable();
-		Mockito.verify(outboundService).truncateCompliantTable();
+		verify(outboundService).truncateCompliantTable();
 	}
 
 	@Test
@@ -110,7 +119,7 @@ class OutboundServiceImplTest
 
 		Mockito.when(jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_PROGRAM_COMPLIANT)).thenReturn(recordsDeleted);
 		outboundService.purgeProgramCompliant();
-		Mockito.verify(outboundService).purgeProgramCompliant();
+		verify(outboundService).purgeProgramCompliant();
 	}
 
 	@Test
@@ -120,8 +129,47 @@ class OutboundServiceImplTest
 
 		outboundService.createFile(repository, folder, fileNameFormat,
 				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
-		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat,
+		verify(outboundService).createFile(repository, folder, fileNameFormat,
 				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
 	}
 
+	@Test
+	void testIinternalFlexAttributes()
+	{
+		Faker faker = new Faker();
+		InternalFlexOutboundDTO instance = InternalFlexOutboundDTO.builder()
+				.fileId(BigDecimal.valueOf(abs(faker.number().randomNumber()))).sequenceNbr(faker.number().digits(8))
+				.emailAddr(faker.internet().emailAddress()).hdHhId(BigDecimal.valueOf(faker.number().randomNumber()))
+				.hdIndId(BigDecimal.valueOf(faker.number().randomNumber())).customerNbr(faker.number().digits(7))
+				.storeNbr(faker.number().digits(4)).orgName(faker.company().name()).companyCd(faker.number().digits(3))
+				.custTypeCd(faker.number().digits(3)).sourceId(faker.number().randomNumber())
+				.effectiveDate(Calendar.getInstance().getTime()).lastUpdateDate(Calendar.getInstance().getTime())
+				.industryCode(faker.number().digits(4)).companyName(faker.company().name()).contactFirstName(faker.name().firstName())
+				.contactLastName(faker.name().lastName()).contactRole(faker.company().profession()).build();
+		outboundService.internalFlexAttributes(instance);
+		verify(outboundService).internalFlexAttributes(instance);
+	}
+
+	@Test
+	void testCreateFlexAttributesFile(){
+//		/* Creating File */
+//		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+//
+//		/* Inserting Headers */
+//		String file = headers;
+//
+//
+//
+//		try (FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
+//		{
+//			byte[] toFile = file.getBytes();
+//			writer.write(toFile);
+//			writer.flush();
+//		}
+//		catch (IOException ex)
+//		{ //TODO is there any specific exception and what should happen in case of exception.
+//			// Make the batch status failed
+//			log.error("File creation error" + ex.getMessage());
+//		}
+	}
 }

@@ -593,12 +593,12 @@ class SchedulerConfigTest
 	}
 
 	@Test
-	void testSendPreferencesToFlexInternalDestination() throws IOException {
+	void testSendPreferencesToFlexInternalDestination() throws IOException
+	{
 
 		OutboundService outboundService = mock(OutboundServiceImpl.class);
 
-		doNothing().when(outboundService).createFlexAttributesFile(anyString(), anyString(), anyString(),
-					anyString());
+		doNothing().when(outboundService).createFlexAttributesFile(anyString(), anyString(), anyString(), anyString());
 		JobBuilder mockJobBuilder = mock(JobBuilder.class);
 		SimpleJobBuilder mockSJobBuilder = mock(SimpleJobBuilder.class);
 		FlowBuilder.TransitionBuilder transitionBuilder1 = mock(FlowBuilder.TransitionBuilder.class);
@@ -615,9 +615,12 @@ class SchedulerConfigTest
 		Format formatter = mock(Format.class);
 		when(formatter.format(any(), any(), any(FieldPosition.class))).thenReturn(new StringBuffer("20221125 101210"));
 
-		try {
+		try
+		{
 			assertNotNull(schedulerConfig.sendPreferencesToFlexInternalDestination());
-		} catch(Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			ex.getMessage();
 		}
 	}
