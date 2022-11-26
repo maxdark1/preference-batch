@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import ca.homedepot.preference.util.FileUtil;
@@ -48,6 +49,7 @@ public class InvalidFileListener implements StepExecutionListener
 	/**
 	 * The file service
 	 */
+	@Autowired
 	private FileService fileService;
 
 
