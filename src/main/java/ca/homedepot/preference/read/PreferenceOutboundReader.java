@@ -91,7 +91,7 @@ public class PreferenceOutboundReader
 
 	public ItemReader<InternalFlexOutboundDTO> outboundInternalFlexDBReader()
 	{
-		purgeProgramCompliant();
+		purgeFlexAttributes();
 		log.info(" Internal Flex Outbound : Internal Flex Attributes Outbound Reader Starter :" + new Date());
 		JdbcCursorItemReader<InternalFlexOutboundDTO> reader = new JdbcCursorItemReader<>();
 
@@ -149,6 +149,13 @@ public class PreferenceOutboundReader
 		outboundService.purgeLoyaltyComplaintTable();
 		log.info("Deleting hdpc_out_loyalty_compliant records at: {}", new Date());
 	}
+
+	public void purgeFlexAttributes()
+	{
+		outboundService.purgeFlexAttributesTable();
+		log.info("Deleting hdpc_out_program_compliant records at: {}", new Date());
+	}
+
 
 	public void setDataSource(DataSource dataSource)
 	{
