@@ -51,6 +51,15 @@ class InvalidFileListenerTest
 		StorageApplicationGCS.setStorage(storage);
 		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		cloudStorageUtils.setBucketName("BucketName");
+
+		List<Master> masterList = new ArrayList<>();
+
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "hybris", true, null));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true, null));
+		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true, null));
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+
+		MasterProcessor.setMasterList(masterList);
 	}
 
 	@Test
@@ -97,19 +106,19 @@ class InvalidFileListenerTest
 		StepExecution stepExecution = new StepExecution("readInboundCSVFileStep", new JobExecution(10L));
 		invalidFileListener = new InvalidFileListener();
 		spy.setDirectory("Directory");
-		spy.setProcess("Project");
+		spy.setProcess("hybris");
 		try (MockedStatic<StorageApplicationGCS> storageApplicationGCSMockedStatic = Mockito
 				.mockStatic(StorageApplicationGCS.class))
 		{
 			Mockito.when(
 					storage.list("BucketName", Storage.BlobListOption.prefix("path/"), Storage.BlobListOption.currentDirectory()))
 					.thenReturn(blobPage);
-			Mockito.when(cloudStorageUtils.listObjectInBucket("Directory")).thenReturn(paths);
-			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getGCPResource("Directory"))
+			Mockito.when(cloudStorageUtils.listObjectInBucket("hybris")).thenReturn(paths);
+			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getGCPResource("hybris"))
 					.thenReturn(resourcesGoogle);
-			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("Directory", "Project"))
+			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("hybris", "Directory"))
 					.thenReturn(map);
-			Mockito.when(spy.getResources("Directory", "Project")).thenReturn(map);
+			Mockito.when(spy.getResources("hybris", "Directory")).thenReturn(map);
 			spy.beforeStep(stepExecution);
 			Mockito.verify(spy).beforeStep(stepExecution);
 		}
@@ -152,15 +161,15 @@ class InvalidFileListenerTest
 					storage.list("BucketName", Storage.BlobListOption.prefix("path/"), Storage.BlobListOption.currentDirectory()))
 					.thenReturn(blobPage);
 			Mockito.when(cloudStorageUtils.listObjectInBucket("Directory")).thenReturn(paths);
-			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("Directory", "Project"))
+			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("Directory", "hybris"))
 					.thenReturn(expected);
 		}
 
 
 
-		//Mockito.when(invalidFileListener.getResources("Directory", "Project")).thenReturn(expected);
+		//Mockito.when(invalidFileListener.getResources("Directory", "hybris")).thenReturn(expected);
 
-		Map<String, List<Resource>> map = invalidFileListener.getResources("Directory", "Project");
+		Map<String, List<Resource>> map = invalidFileListener.getResources("Directory", "hybris");
 		assertEquals(expected, map);
 	}
 
@@ -172,16 +181,10 @@ class InvalidFileListenerTest
 		invalidFileListener.setFileService(fileMock);
 		String jobName = "jobName";
 		invalidFileListener.setJobName("jobName");
+		invalidFileListener.setProcess("hybris");
 		when(fileMock.getJobId(anyString(), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(10));
 
-		List<Master> masterList = new ArrayList<>();
 
-		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "hybris", true, null));
-		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true, null));
-		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true, null));
-		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
-
-		MasterProcessor.setMasterList(masterList);
 		invalidFileListener.setSource("hybris");
 		invalidFileListener.writeFile("File", false);
 		invalidFileListener.writeFile("File", true);

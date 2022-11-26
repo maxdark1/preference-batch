@@ -1165,6 +1165,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readSFMCOptOutsStep1(String jobName)
 	{
 		invalidFileListener.setDirectory(sfmcPath);
+		invalidFileListener.setFileService(hybrisWriterListener.getFileService());
 		invalidFileListener.setSource(folderInbound);
 		invalidFileListener.setProcess(SFMC);
 		invalidFileListener.setJobName(jobName);

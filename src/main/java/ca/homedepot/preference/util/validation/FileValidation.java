@@ -129,10 +129,11 @@ public class FileValidation
 	public static boolean validateFileName(String fileName, String source)
 	{
 		String baseName = getFileName(fileName);
+		boolean isfileNameWrong = baseName.contains(getBaseName(source));
 		int start = getBaseName(source).length();
 		int end = start + formatDate.length();
 		boolean isNotAValidExtension = !validateExtension(getExtension(fileName, baseName));
-		if (end != baseName.length() || isNotAValidExtension)
+		if (end != baseName.length() || isNotAValidExtension || !isfileNameWrong)
 		{
 			return false;
 		}
