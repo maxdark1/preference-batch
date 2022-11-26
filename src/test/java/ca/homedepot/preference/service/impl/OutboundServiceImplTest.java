@@ -153,25 +153,18 @@ class OutboundServiceImplTest
 	@Test
 	void testCreateFlexAttributesFile()
 	{
-		//		/* Creating File */
-		//		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-		//
-		//		/* Inserting Headers */
-		//		String file = headers;
-		//
-		//
-		//
-		//		try (FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
-		//		{
-		//			byte[] toFile = file.getBytes();
-		//			writer.write(toFile);
-		//			writer.flush();
-		//		}
-		//		catch (IOException ex)
-		//		{ //TODO is there any specific exception and what should happen in case of exception.
-		//			// Make the batch status failed
-		//			log.error("File creation error" + ex.getMessage());
-		//		}
+
+		try
+		{
+			outboundService.createFlexAttributesFile("/batchFiles/", "/OUTBOUND/", "FLXEMCDADYYYYMMDDTHHMISS.CEACI.ZZAX",
+					PreferenceBatchConstants.FLEX_INTERNAL_HEADERS);
+
+		}
+		catch (Exception ex)
+		{
+
+			ex.getMessage();
+		}
 
 	}
 }

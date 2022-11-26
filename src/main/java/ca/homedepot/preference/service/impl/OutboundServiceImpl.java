@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @Service
@@ -91,25 +92,22 @@ public class OutboundServiceImpl implements OutboundService
 
 	}
 
-	public void createFlexAttributesFile(String repository, String folder, String fileNameFormat, String headers)
+	public void createFlexAttributesFile(String repository, String folder, String fileNameFormat, final String headers)
 			throws IOException
 	{
-		/* Creating File */
-		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-
-		/* Inserting Headers */
-		String file = headers;
-
-
+		// Creat file and insert the headers
+		Format formatter = new SimpleDateFormat("yyyyMMdd HHmmss");
+		String stamp = formatter.format(Calendar.getInstance().getTime());
+		String fileName = fileNameFormat.replace("YYYYMMDDTHHMISS", stamp.replace(" ", "T"));
 
 		try (FileOutputStream writer = new FileOutputStream(repository + folder + fileName, false))
 		{
-			byte[] toFile = file.getBytes();
-			writer.write(toFile);
+			byte[] buffer = headers.getBytes();
+			writer.write(buffer);
 			writer.flush();
 		}
 		catch (IOException ex)
-		{ //TODO is there any specific exception and what should happen in case of exception.
+		{ // TODO is there any specific exception and what should happen in case of exception.
 		  // Make the batch status failed
 			log.error("File creation error" + ex.getMessage());
 		}

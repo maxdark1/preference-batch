@@ -30,6 +30,7 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 {
 	public static final String PIPE = "|";
 	public static final String COMMA = ",";
+	public static final String CR = "\n";
 	@Value("${folders.flexAttributes.path}")
 	protected String repositorySource;
 	@Value("${folders.outbound}")
@@ -49,22 +50,22 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 	public void write(List<? extends InternalFlexOutboundProcessorDTO> items) throws Exception
 	{
 		sourceId = items.get(0).getSourceId().replace(COMMA, "");
-		StringBuilder fileBuilder = new StringBuilder();
+		StringBuilder recordBuilder = new StringBuilder();
 
 		for (InternalFlexOutboundProcessorDTO item : items)
 		{
-			fileBuilder.append(item.getFileId()).append(PIPE).append(item.getSequenceNbr()).append(PIPE).append(item.getEmailAddr())
-					.append(PIPE).append(item.getHdHhId()).append(PIPE).append(item.getHdIndId()).append(PIPE)
-					.append(item.getCustomerNbr()).append(PIPE).append(item.getStoreNbr()).append(PIPE).append(item.getOrgName())
-					.append(PIPE).append(item.getCompanyCd()).append(PIPE).append(item.getCustTypeCd()).append(PIPE)
-					.append(item.getSourceId()).append(PIPE).append(item.getEffectiveDate()).append(PIPE)
+			recordBuilder.append(item.getFileId()).append(PIPE).append(item.getSequenceNbr()).append(PIPE)
+					.append(item.getEmailAddr()).append(PIPE).append(item.getHdHhId()).append(PIPE).append(item.getHdIndId())
+					.append(PIPE).append(item.getCustomerNbr()).append(PIPE).append(item.getStoreNbr()).append(PIPE)
+					.append(item.getOrgName()).append(PIPE).append(item.getCompanyCd()).append(PIPE).append(item.getCustTypeCd())
+					.append(PIPE).append(item.getSourceId()).append(PIPE).append(item.getEffectiveDate()).append(PIPE)
 					.append(item.getLastUpdateDate()).append(PIPE).append(item.getIndustryCode()).append(PIPE)
 					.append(item.getCompanyName()).append(PIPE).append(item.getContactFirstName()).append(PIPE)
-					.append(item.getContactLastName()).append(PIPE).append(item.getContactRole()).append(COMMA);
+					.append(item.getContactLastName()).append(PIPE).append(item.getContactRole()).append(COMMA).append(CR);
 
 		}
-		String file = fileBuilder.toString();
-		generateFile(file, flexAttributesFileFormat);
+		String lineRow = recordBuilder.toString();
+		generateFile(lineRow, flexAttributesFileFormat);
 
 
 	}

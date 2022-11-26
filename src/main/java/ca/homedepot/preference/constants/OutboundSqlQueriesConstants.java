@@ -354,8 +354,7 @@ public class OutboundSqlQueriesConstants
 			+ "     , c.customer_id hd_ind_id, cx.customer_nbr, cx.store_nbr, cx.org_name\n"
 			+ "     , cx.industry_code company_cd, cx.cust_type cust_type_cd, c.source_type source_id\n"
 			+ "     , ce.updated_date last_update_date, cx.industry_code, cx.org_name company_name\n"
-			+ "     , c.first_name contact_first_name, c.last_name contact_last_name\n"
-			+ "     , '' contact_role\n"
+			+ "     , c.first_name contact_first_name, c.last_name contact_last_name\n" + "     , '' contact_role\n"
 			+ "     , max(ce.effective_date) effective_date from hdpc_customer c  join hdpc_customer_email ce\n"
 			+ "              on c.customer_id = ce.customer_id AND ce.active\n"
 			+ "         left join hdpc_email he on ce.email_id = he.email_id\n"
@@ -370,7 +369,7 @@ public class OutboundSqlQueriesConstants
 
 	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "SELECT file_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, "
 			+ "customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, "
-			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role"
+			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role "
 			+ "FROM public.hdpc_out_flex_attributes;";
 
 
