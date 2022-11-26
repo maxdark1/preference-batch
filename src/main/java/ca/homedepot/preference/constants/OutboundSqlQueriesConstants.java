@@ -354,7 +354,7 @@ public class OutboundSqlQueriesConstants
 			+ "     , c.customer_id hd_ind_id, cx.customer_nbr, cx.store_nbr, cx.org_name\n"
 			+ "     , cx.industry_code company_cd, cx.cust_type cust_type_cd, c.source_type source_id\n"
 			+ "     , ce.updated_date last_update_date, cx.industry_code, cx.org_name company_name\n"
-			+ "     , c.first_name contact_first_name, c.last_name contact_last_name\n" + "     , '' contact_role\n"
+			+ "     , c.first_name contact_first_name, c.last_name contact_last_name, '' contact_role\n"
 			+ "     , max(ce.effective_date) effective_date from hdpc_customer c  join hdpc_customer_email ce\n"
 			+ "              on c.customer_id = ce.customer_id AND ce.active\n"
 			+ "         left join hdpc_email he on ce.email_id = he.email_id\n"
