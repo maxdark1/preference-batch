@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -25,7 +26,7 @@ public class InternalFlexOutboundDTO
 	private String companyCd;
 	private String custTypeCd;
 	private Long sourceId;
-	private Date effectiveDate;
+	private LocalDateTime effectiveDate;
 	private Date lastUpdateDate;
 	private String industryCode;
 	private String companyName;

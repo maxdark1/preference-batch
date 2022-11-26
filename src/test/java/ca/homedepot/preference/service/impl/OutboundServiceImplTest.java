@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -142,9 +143,9 @@ class OutboundServiceImplTest
 				.emailAddr(faker.internet().emailAddress()).hdHhId(BigDecimal.valueOf(faker.number().randomNumber()))
 				.hdIndId(BigDecimal.valueOf(faker.number().randomNumber())).customerNbr(faker.number().digits(7))
 				.storeNbr(faker.number().digits(4)).orgName(faker.company().name()).companyCd(faker.number().digits(3))
-				.custTypeCd(faker.number().digits(3)).sourceId(faker.number().randomNumber())
-				.effectiveDate(Calendar.getInstance().getTime()).lastUpdateDate(Calendar.getInstance().getTime())
-				.industryCode(faker.number().digits(4)).companyName(faker.company().name()).contactFirstName(faker.name().firstName())
+				.custTypeCd(faker.number().digits(3)).sourceId(faker.number().randomNumber()).effectiveDate(LocalDateTime.now())
+				.lastUpdateDate(Calendar.getInstance().getTime()).industryCode(faker.number().digits(4))
+				.companyName(faker.company().name()).contactFirstName(faker.name().firstName())
 				.contactLastName(faker.name().lastName()).contactRole(faker.company().profession()).build();
 		outboundService.internalFlexAttributes(instance);
 		verify(outboundService).internalFlexAttributes(instance);
