@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.cloud.gcp.storage.GoogleStorageResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -21,7 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static ca.homedepot.preference.config.StorageApplicationGCS.buildBlobURL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -41,14 +44,35 @@ class InvalidFileListenerTest
 	@Spy
 	private InvalidFileListener invalidFileListener;
 
-
-
 	@BeforeEach
 	void setup()
 	{
 		MockitoAnnotations.openMocks(this);
 		StorageApplicationGCS.setStorage(storage);
 		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
+		cloudStorageUtils.setBucketName("BucketName");
+	}
+
+	@Test
+	void testGetters()
+	{
+		invalidFileListener = new InvalidFileListener();
+		invalidFileListener.setProcess("process");
+		invalidFileListener.setDirectory("directory");
+		invalidFileListener.setSource("source");
+		invalidFileListener.setJobName("jobName");
+		invalidFileListener.setInvalidFiles(null);
+		invalidFileListener.setResources(null);
+
+		assertNull(invalidFileListener.getResources());
+		assertNull(invalidFileListener.getInvalidFiles());
+		assertNull(invalidFileListener.getFileService());
+
+		assertEquals("process", invalidFileListener.getProcess());
+		assertEquals("directory", invalidFileListener.getDirectory());
+		assertEquals("source", invalidFileListener.getSource());
+		assertEquals("jobName", invalidFileListener.getJobName());
+
 	}
 
 	@Test
@@ -62,28 +86,32 @@ class InvalidFileListenerTest
 	@Test
 	void beforeStepWithFiles()
 	{
-		List<Resource> files = new ArrayList<>();
-		Resource tmpFile = new FileSystemResource("test.txt");
+		InvalidFileListener spy = Mockito.spy(invalidFileListener);
 		List<String> paths = new ArrayList<>(List.of("test.txt"));
-		files.add(tmpFile);
+
+		List<Resource> resourcesGoogle = paths.stream().map(path -> new GoogleStorageResource(storage, buildBlobURL(path)))
+				.collect(Collectors.toList());
+
 		Map<String, List<Resource>> map = new HashMap<>();
-		map.put("INVALID", files);
+		map.put("INVALID", resourcesGoogle);
 		StepExecution stepExecution = new StepExecution("readInboundCSVFileStep", new JobExecution(10L));
 		invalidFileListener = new InvalidFileListener();
-		invalidFileListener.setDirectory("Directory");
-		invalidFileListener.setProcess("Project");
+		spy.setDirectory("Directory");
+		spy.setProcess("Project");
 		try (MockedStatic<StorageApplicationGCS> storageApplicationGCSMockedStatic = Mockito
 				.mockStatic(StorageApplicationGCS.class))
 		{
 			Mockito.when(
-							storage.list("BucketName", Storage.BlobListOption.prefix("path/"), Storage.BlobListOption.currentDirectory()))
+					storage.list("BucketName", Storage.BlobListOption.prefix("path/"), Storage.BlobListOption.currentDirectory()))
 					.thenReturn(blobPage);
 			Mockito.when(cloudStorageUtils.listObjectInBucket("Directory")).thenReturn(paths);
+			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getGCPResource("Directory"))
+					.thenReturn(resourcesGoogle);
 			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("Directory", "Project"))
 					.thenReturn(map);
-			InvalidFileListener spy = Mockito.spy(invalidFileListener);
-			Mockito.doReturn(map).when(spy).getResources("Directory", "Project");
-			invalidFileListener.beforeStep(stepExecution);
+			Mockito.when(spy.getResources("Directory", "Project")).thenReturn(map);
+			spy.beforeStep(stepExecution);
+			Mockito.verify(spy).beforeStep(stepExecution);
 		}
 
 	}
