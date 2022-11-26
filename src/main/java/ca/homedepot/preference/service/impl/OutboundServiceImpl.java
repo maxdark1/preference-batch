@@ -151,5 +151,10 @@ public class OutboundServiceImpl implements OutboundService
 		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE);
 	}
 
+	@Override
+	public int purgeFlexAttributesTable()
+	{
+		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_FLEX_ATTRIBUTE);
+	}
 
 }

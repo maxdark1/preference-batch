@@ -28,5 +28,7 @@ public interface OutboundService
 
 	void createFlexAttributesFile(String repository, String folder, String fileNameFormat, String headers) throws IOException;
 
+	int purgeFlexAttributesTable();
+
 	void internalFlexAttributes(InternalFlexOutboundDTO internalFlexOutboundDTO);
 }
