@@ -30,7 +30,7 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 {
 	public static final String PIPE = "|";
 	public static final String COMMA = ",";
-	@Value("${folders.flexAttibutes.path}")
+	@Value("${folders.flexAttributes.path}")
 	protected String repositorySource;
 	@Value("${folders.outbound}")
 	protected String folderSource;

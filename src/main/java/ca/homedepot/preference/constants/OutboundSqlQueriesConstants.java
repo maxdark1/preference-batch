@@ -349,10 +349,10 @@ public class OutboundSqlQueriesConstants
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	public static final String SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION = "select MAX(hfc.file_id) file_id\n"
-			+ "     , hfc.sequence_nbr\n" + "     , he.email email_addr\n" + "     , ha.address_id hd_hh_id\n"
-			+ "     , c.customer_id hd_ind_id\n" + "     , cx.customer_nbr\n" + "     , cx.store_nbr\n" + "     , cx.org_name\n"
-			+ "     , cx.industry_code company_cd\n" + "     , cx.cust_type cust_type_cd\n" + "     , c.source_type source_id\n"
-			+ "     , ce.updated_date last_updated_date\n" + "     , cx.industry_code\n" + "     , cx.org_name\n"
+			+ "     , hfc.sequence_nbr, he.email email_addr, ha.address_id hd_hh_id\n"
+			+ "     , c.customer_id hd_ind_id, cx.customer_nbr, cx.store_nbr, cx.org_name\n"
+			+ "     , cx.industry_code company_cd, cx.cust_type cust_type_cd\n" + "     , c.source_type source_id\n"
+			+ "     , ce.updated_date last_update_date\n" + "     , cx.industry_code\n" + "     , cx.org_name\n"
 			+ "     , c.first_name contact_first_name\n" + "     , c.last_name contact_last_name\n"
 			+ "     , max(ce.effective_date) effective_date\n" + "from hdpc_customer c\n" + "         join hdpc_customer_email ce\n"
 			+ "              on c.customer_id = ce.customer_id\n" + "                  AND ce.active\n"
@@ -366,7 +366,10 @@ public class OutboundSqlQueriesConstants
 			+ "       , cx.cust_type\n" + "       , c.source_type\n" + "       , ce.updated_date\n" + "       , cx.industry_code\n"
 			+ "       , cx.org_name\n" + "       , c.first_name\n" + "       , c.last_name\n" + ";";
 
-	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "";
+	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "SELECT file_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, " +
+			"customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, " +
+			"industry_code, company_name, contact_first_name, contact_last_name, contact_role" +
+			"FROM public.hdpc_out_flex_attributes;";
 
 
 }
