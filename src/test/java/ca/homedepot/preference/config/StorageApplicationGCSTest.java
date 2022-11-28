@@ -4,9 +4,11 @@ import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
@@ -40,6 +42,13 @@ class StorageApplicationGCSTest
 	@Test
 	void storage()
 	{
+		StorageApplicationGCS.setStorage(null);
+		try (MockedStatic<StorageOptions> storageOptions = Mockito.mockStatic(StorageOptions.class))
+		{
+			StorageOptions storageOptionsMock = Mockito.mock(StorageOptions.class);
+			storageOptions.when(StorageOptions::getDefaultInstance).thenReturn(storageOptionsMock);
+
+		}
 		assertNotNull(StorageApplicationGCS.storage());
 	}
 

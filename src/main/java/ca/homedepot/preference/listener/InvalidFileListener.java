@@ -11,10 +11,10 @@ import com.google.cloud.storage.StorageException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import ca.homedepot.preference.util.FileUtil;
@@ -24,7 +24,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.JOB_STATUS;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
+import static ca.homedepot.preference.dto.enums.JobStatusEnum.IN_PROGRESS;
 
 @Slf4j
 @Component
@@ -47,6 +49,7 @@ public class InvalidFileListener implements StepExecutionListener
 	/**
 	 * The file service
 	 */
+	@Autowired
 	private FileService fileService;
 
 
@@ -55,26 +58,26 @@ public class InvalidFileListener implements StepExecutionListener
 	{
 		if (checkExecution(stepExecution.getStepName()))
 		{
-			resources = getResources(directory + source, process);
+			resources = getResources(process, directory + source);
 			this.invalidFiles = resources.get("INVALID");
 
-			if (this.invalidFiles != null && this.invalidFiles.size() > 0)
+			if (this.invalidFiles != null && !this.invalidFiles.isEmpty())
 			{
 				this.invalidFiles.forEach(file -> {
 					String blobToCopy = file.getFilename(),
-							filename = blobToCopy.substring(blobToCopy.lastIndexOf(StorageConstants.SLASH));
+							filename = blobToCopy.substring(blobToCopy.lastIndexOf(StorageConstants.SLASH) + 1);
 					String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
 					writeFile(filename, false);
 					try
 					{
 						StorageApplicationGCS.moveObject(filename, blobToCopy, blobWhereToCopy);
-						log.error("PREFERENCE BATCH ERROR - Invalid Format Name File {} for source {} Moved to ERROR Folder",
-								file.getFilename(), source);
+						log.error("PREFERENCE BATCH ERROR - Invalid Format Name File {} for source {} Moved to ERROR Folder", filename,
+								process);
 					}
 					catch (StorageException e)
 					{
-						log.error("PREFERENCE BATCH ERROR - An exception has occurred moving file: {} to ERROR folder",
-								file.getFilename());
+						log.error("PREFERENCE BATCH ERROR - An exception has occurred moving file: {} to ERROR folder on source {}",
+								filename, process);
 					}
 
 				});
@@ -114,11 +117,12 @@ public class InvalidFileListener implements StepExecutionListener
 	 */
 	protected void writeFile(String fileName, Boolean status)
 	{
-		BigDecimal jobId = fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId());
+		BigDecimal inprogress = MasterProcessor.getSourceID(JOB_STATUS, IN_PROGRESS.getStatus()).getMasterId();
+		BigDecimal jobId = fileService.getJobId(jobName, inprogress);
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
-		BigDecimal masterId = MasterProcessor
-				.getSourceID("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)
-				.getMasterId();
+		String sourceDefinitive = this.process.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC
+				: this.process;
+		BigDecimal masterId = MasterProcessor.getSourceID("SOURCE", sourceDefinitive).getMasterId();
 		Date endTime = new Date();
 		/**
 		 * If status is valid do not need end_time
@@ -131,8 +135,8 @@ public class InvalidFileListener implements StepExecutionListener
 		fileService.insert(file);
 	}
 
-	protected Map<String, List<Resource>> getResources(String folder, String source)
+	protected Map<String, List<Resource>> getResources(String source, String folder)
 	{
-		return FileUtil.getFilesOnFolder(folder, source);
+		return StorageApplicationGCS.getsGCPResourceMap(source, folder);
 	}
 }

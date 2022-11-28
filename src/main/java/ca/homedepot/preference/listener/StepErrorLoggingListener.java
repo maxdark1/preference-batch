@@ -8,6 +8,7 @@ import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import com.google.cloud.storage.StorageException;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -74,6 +75,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 		return ExitStatus.FAILED;
 	}
 
+	@SneakyThrows
 	public void moveFileGCS()
 	{
 		/**
@@ -84,6 +86,8 @@ public class StepErrorLoggingListener implements StepExecutionListener
 		if (filesToMove != null && !filesToMove.isEmpty())
 		{
 			filesToMove.forEach(file -> {
+				StorageException storageException = null;
+				boolean status = true;
 				String source = MasterProcessor.getValueVal(file.getSourceType());
 				source = source.equals("SFMC") && file.getFileName().contains(FileValidation.getFbSFMCBaseName()) ? "FB_SFMC"
 						: source;
@@ -96,12 +100,16 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				}
 				catch (StorageException e)
 				{
+					status = false;
 					log.error(" PREFERENCE BATCH ERROR - Error has occurred trying to move file {} : {}", file.getFileName(),
 							e.getMessage());
+					storageException = e;
 				}
 
-				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
+				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
 				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);
+				if (storageException != null)
+					throw storageException;
 			});
 		}
 	}

@@ -148,7 +148,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 			{
 				String filename = resource.getFilename();
 
-				if(filename != null)
+				if (filename != null)
 				{
 					String blobToCopy = filename;
 					String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
