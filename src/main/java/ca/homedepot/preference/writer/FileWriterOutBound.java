@@ -47,7 +47,7 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	private String fileName;
 
-	private String header;
+	private String header = "";
 
 	private String[] names;
 
