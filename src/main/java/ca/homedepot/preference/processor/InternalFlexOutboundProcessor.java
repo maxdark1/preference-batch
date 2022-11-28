@@ -30,14 +30,16 @@ public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlex
 		Format formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
 		DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime itemEffectiveDate = item.getEffectiveDate();
-		String effectiveDate = null!= itemEffectiveDate ? itemEffectiveDate.format(formatter2) : "";
+		String effectiveDate = null != itemEffectiveDate ? itemEffectiveDate.format(formatter2) : "";
+
+		String lastUpdateDate = formatter1.format(item.getLastUpdateDate());
 
 		return InternalFlexOutboundProcessorDTO.builder().fileId(item.getFileId().toString()).sequenceNbr(item.getSequenceNbr())
 				.emailAddr(item.getEmailAddr()).hdHhId(item.getHdHhId().toString()).hdIndId(item.getHdIndId().toString())
 				.customerNbr(item.getCustomerNbr()).storeNbr(item.getStoreNbr()).orgName(item.getOrgName())
 				.companyCd(item.getCompanyCd()).custTypeCd(item.getCustTypeCd()).sourceId(item.getSourceId().toString())
-				.effectiveDate(effectiveDate).lastUpdateDate(formatter1.format(item.getLastUpdateDate()))
-				.industryCode(item.getIndustryCode()).companyName(item.getCompanyName()).contactFirstName(item.getContactFirstName())
+				.effectiveDate(effectiveDate).lastUpdateDate(lastUpdateDate).industryCode(item.getIndustryCode())
+				.companyName(item.getCompanyName()).contactFirstName(item.getContactFirstName())
 				.contactLastName(item.getContactLastName()).contactRole(item.getContactRole()).build();
 	}
 }
