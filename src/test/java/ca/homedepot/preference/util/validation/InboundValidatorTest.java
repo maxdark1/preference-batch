@@ -181,7 +181,7 @@ class InboundValidatorTest
 			InboundValidator.isValidationsErros(error);
 		});
 
-		assertTrue(exception.getMessage().contains("validations erros"));
+		assertTrue(exception.getMessage().contains("The item processed has the above validation's errors:"));
 	}
 
 	@Test

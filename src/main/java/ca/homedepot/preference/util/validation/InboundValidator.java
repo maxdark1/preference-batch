@@ -63,7 +63,7 @@ public class InboundValidator
 	public static void isValidationsErros(StringBuilder errors)
 	{
 		if (errors.length() > 0)
-			throw new ValidationException(" The item processed has the above validations erros: \n" + errors);
+			throw new ValidationException(" The item processed has the above validation's errors: \n" + errors);
 	}
 
 	/**

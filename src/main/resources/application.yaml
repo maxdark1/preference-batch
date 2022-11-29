@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: postgres
+    password:
     driverClassName: org.postgresql.Driver
   batch:
     job:
@@ -38,21 +38,17 @@ spring:
 #      enabled: false
 cron:
   job:
-    hybrisIngestion: 30 * * * * *
-    crmIngestion: 30 * * * * *
-    fbsfmcIngestion: 30 * * * * *
-    ingestSFMCOutlookUnsubscribed: 30 * * * * *
-    sendPreferencesToCRM: 30 * * * * *
-    sendPreferencesToCitiSuppresion: 30 * * * * *
-    sendPreferencesToInternalDestination: 30 * * * * *
-    sendWeeklyLoyaltyComplaintToSource: 30 * * * * *
+    hybrisIngestion: 0 45 9 * * ?
+    crmIngestion: 0 30 22 * * ?
+    fbsfmcIngestion: 0 0 3 * * ?
+    ingestSFMCOutlookUnsubscribed: 0 20 2 ? * FRI
+    sendPreferencesToCRM: 0 0 18 * * ?
+    sendPreferencesToCitiSuppresion: 0 40 17 ? * SUN
+    sendPreferencesToInternalDestination: 0 0 10 ? * MON
+    sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
 
 server:
   port: 8080
-
-service:
-  preference:
-    baseurl: http://localhost:8081/hdpc/v1/
 
 feign:
   retry:
@@ -77,32 +73,32 @@ outbound:
     internalGarden: GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv
     internalMover: NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv
   citi:
-    mastersuppresion: ACXIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.csv
+    mastersuppresion: THDIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.txt.pgp
   salesforce:
     extract: ET_YYYYMMDD.TXT.PGP
 
 
 folders:
-  inbound: \INBOUND\
-  error: \ERROR\
-  processed: \PROCESSED\
-  outbound: \OUTBOUND\
+  inbound: inbound/
+  error: error/
+  processed: processed/
+  outbound: outbound/
   crm:
-    path: C:\batchFiles\CRM
+    path: crm/
   fb-sfmc:
-    path: C:\batchFiles\FB-SFMC
+    path: fb-sfmc/
   hybris:
-    path: C:\batchFiles\Hybris
+    path: hybris/
   sfmc:
-    path: C:\batchFiles\SFMC
+    path: sfmc/
   citi:
-    path: C:\batchFiles\CITI
+    path:
   internal:
-    path: C:\batchFiles
+    path:
   salesforce:
-    path: C:\batchFiles\Salesforce
+    path:
   loyaltyCompliant:
-    path: C:\batchFiles
+    path:
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -118,10 +114,16 @@ preference:
     outboundCRM:
       chunk: 10
     outboundCiti:
-      chunk: 20
+      chunk: 1
     outboundInternal:
       chunk: 20
     outboundSalesforce:
       chunk: 20
     outboundLoyalty:
       chunk: 20
+
+gcp:
+  project-id: np-cadotcom
+  bucket:
+    name: commsvc-preference-centre-feeds
+    url: gs://commsvc-preference-centre-feeds

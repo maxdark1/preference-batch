@@ -7,13 +7,14 @@ import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.core.BatchStatus;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 
 class RegistrationItemWriterListenerTest
 {
@@ -33,7 +34,21 @@ class RegistrationItemWriterListenerTest
 	void setup()
 	{
 
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
+
+		List<Master> masterList = new ArrayList<>();
+
+
+		Master fileStatus = new Master(BigDecimal.ZERO, BigDecimal.ZERO, "STATUS", "VALID", true, null);
+
+
+		masterList.add(new Master(new BigDecimal("15"), new BigDecimal("5"), "JOB_STATUS", "STARTED", true, null));
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+		masterList.add(new Master(new BigDecimal("17"), new BigDecimal("5"), "JOB_STATUS", "COMPLETED", true, null));
+		masterList.add(new Master(new BigDecimal("18"), new BigDecimal("5"), "JOB_STATUS", "ERROR", true, null));
+		masterList.add(fileStatus);
+		MasterProcessor.setMasterList(masterList);
+
 		registrationItemWriterListener.setFileService(fileService);
 		registrationItemWriterListener.setJobName("JOB_NAME");
 		registrationItemWriterListener.setFileID(BigDecimal.ONE);
@@ -62,15 +77,11 @@ class RegistrationItemWriterListenerTest
 	void getFromTableFileID()
 	{
 		String fileName = "TEST_FILE";
-		String jobName = "JOB_NAME";
-		Master fileStatus = new Master(BigDecimal.ZERO, BigDecimal.ZERO, "STATUS", "VALID", true, null);
-
-		MasterProcessor.setMasterList(List.of(fileStatus));
 
 		BigDecimal fileId = BigDecimal.valueOf(123L);
 		BigDecimal jobId = BigDecimal.ONE;
 
-		Mockito.when(fileService.getJobId(jobName)).thenReturn(jobId);
+		Mockito.when(fileService.getJobId(anyString(), any(BigDecimal.class))).thenReturn(jobId);
 		Mockito.when(fileService.getFile(fileName, BigDecimal.ONE)).thenReturn(fileId);
 
 		BigDecimal currentFileId = registrationItemWriterListener.getFromTableFileID(fileName);

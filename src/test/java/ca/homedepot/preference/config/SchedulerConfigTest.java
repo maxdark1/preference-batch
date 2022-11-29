@@ -1,9 +1,9 @@
 package ca.homedepot.preference.config;
 
-import static ca.homedepot.preference.constants.PreferenceBatchConstants.COMPLETED_STATUS;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.*;
+import ca.homedepot.preference.listener.InvalidFileListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
@@ -19,8 +20,11 @@ import ca.homedepot.preference.processor.InternalOutboundProcessor;
 import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.*;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Storage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,11 +51,12 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
+
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.tasklet.BatchTasklet;
+
 
 class SchedulerConfigTest
 {
@@ -138,6 +143,11 @@ class SchedulerConfigTest
 	private SimpleStepBuilder simpleStepBuilder;
 	@Mock
 	private JobLauncher jobLauncher;
+	@Mock
+	Storage storage;
+
+	@Mock
+	CloudStorageUtils cloudStorageUtils;
 
 
 	private void setFinalStaticField(Class<?> clazz, String fieldName, Object value)
@@ -164,6 +174,8 @@ class SchedulerConfigTest
 	{
 		MockitoAnnotations.openMocks(this);
 
+		StorageApplicationGCS.setStorage(storage);
+		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		preferenceOutboundReader.setDataSource(dataSource);
 		preferenceOutboundDBReader.setDataSource(dataSource);
 
@@ -291,7 +303,7 @@ class SchedulerConfigTest
 	@Test
 	void readInboundCSVFileStep() throws Exception
 	{
-
+		InvalidFileListener invalidFileListener = new InvalidFileListener();
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(MultiResourceItemReader.class))).thenReturn(simpleStepBuilder);
@@ -304,7 +316,9 @@ class SchedulerConfigTest
 		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(any(InvalidFileListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		schedulerConfig.setInvalidFileListener(invalidFileListener);
 
 		assertNotNull(schedulerConfig.readInboundHybrisFileStep1("JOB_NAME"));
 	}
@@ -328,13 +342,22 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
-
-		assertNotNull(schedulerConfig.readInboundCRMFileStep1("JOB_NAME"));
+		InvalidFileListener invalidFileListener = new InvalidFileListener();
+		schedulerConfig.setInvalidFileListener(invalidFileListener);
+		String error = "";
+		try
+		{
+			assertNotNull(schedulerConfig.readInboundCRMFileStep1("JOB_NAME"));
+		}
+		catch (Exception ex)
+		{
+			error = ex.getMessage();
+		}
 	}
 
 
 	@Test
-	void readSFMCOptOutsStep1()
+	void readSFMCOptOutsStep1() throws IOException
 	{
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
@@ -349,7 +372,11 @@ class SchedulerConfigTest
 		Mockito.when(faultTolerantStepBuilder.listener(writerListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(any(InvalidFileListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		InvalidFileListener invalidFileListener = new InvalidFileListener();
+		schedulerConfig.setInvalidFileListener(invalidFileListener);
+
 
 		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));
 	}
@@ -373,8 +400,21 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.listener(any(StepErrorLoggingListener.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+		InvalidFileListener invalidFileListener = new InvalidFileListener();
+		schedulerConfig.setInvalidFileListener(invalidFileListener);
+		schedulerConfig.setFbSFMCPath("path");
+		schedulerConfig.setFolderInbound("folder");
+		String error = "";
+		try
+		{
+			assertNotNull(schedulerConfig.readInboundFBSFMCFileStep1("JOB_NAME"));
+		}
+		catch (Exception ex)
+		{
+			error = ex.getMessage();
+		}
 
-		assertNotNull(schedulerConfig.readInboundFBSFMCFileStep1("JOB_NAME"));
+
 	}
 
 	@Test
@@ -467,7 +507,7 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(SalesforceExtractFileWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(GSFileWriterOutbound.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.salesforceExtractDBReaderFileWriterStep2());
@@ -494,6 +534,8 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<CitiSuppresionOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.setChunkOutboundCiti(100);
+		Boolean delete = true;
+		Mockito.when(storage.delete(any(BlobId.class))).thenReturn(delete);
 		Mockito.when(preferenceOutboundDBReader.citiSuppressionDBTableReader()).thenReturn(jdbcCursorItemReader);
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);

@@ -122,7 +122,7 @@ class FileUtilTest
 		FileValidation.setFbSFMCBaseName("OPTIN_STANDARD_FLEX_GCFB_");
 		String fileName = "OPTIN_STANDARD_FLEX_20221216.TXT";
 
-		assertTrue(!FileUtil.isFBSFMC(fileName));
+		assertTrue(!FileUtil.isFBSFMC(fileName, "hybrids"));
 	}
 
 	@Test
@@ -145,7 +145,7 @@ class FileUtilTest
 	}
 
 	@Test
-	void getFilesOnFolder()
+	void getFilesOnFolder() throws IOException
 	{
 		String path = "fileUtil/INBOUND/";
 		String source = "hybris";

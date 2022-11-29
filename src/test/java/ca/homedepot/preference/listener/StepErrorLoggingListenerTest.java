@@ -110,8 +110,7 @@ class StepErrorLoggingListenerTest
 
 		// when
 		try (MockedStatic<FileUtil> fileUtil = Mockito.mockStatic(FileUtil.class))
-		{ // bypass due urgent delivery of bug fix<
-		  // as todo: fix the static mock due technical debt
+		{
 
 			stepErrorLoggingListener.moveFile();
 			fileUtil.verify(() -> FileUtil.moveFile(file.getFileName(), true, "VALID"));

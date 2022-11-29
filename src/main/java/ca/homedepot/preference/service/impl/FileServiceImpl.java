@@ -60,20 +60,23 @@ public class FileServiceImpl implements FileService
 	public int insert(FileDTO file)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE, file.getFileName(), file.getJob(),
-				file.getSourceType(), file.getStatus(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(),
-				file.getStatusId(), file.getEndTime());
+				file.getSourceType(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(), file.getStatusId(),
+				file.getEndTime());
 	}
 
 	/**
 	 * Gets job id
 	 *
 	 * @param jobName
-	 * @return job id
+	 *           job name that we are looking for
+	 * @param statusId
+	 *           status Id from the job to get (In progress)
+	 * @return job Id
 	 */
-	public BigDecimal getJobId(String jobName)
+	public BigDecimal getJobId(String jobName, BigDecimal statusId)
 	{
 		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_SELECT_LAST_JOB_W_NAME,
-				(rs, rowNum) -> rs.getBigDecimal("job_id"), jobName);
+				(rs, rowNum) -> rs.getBigDecimal("job_id"), jobName, statusId);
 	}
 
 	/**
@@ -138,14 +141,14 @@ public class FileServiceImpl implements FileService
 	 * @param updatedDate
 	 * @param updatedBy
 	 * @param endTime
-	 * @param status
+	 * @param statusOP
 	 * @return records updated
 	 */
 	@Override
 	public int updateFileEndTime(BigDecimal fileId, Date updatedDate, String updatedBy, Date endTime, Master status)
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_ENDTIME_FILE, endTime, updatedDate, updatedBy,
-				status.getValueVal(), status.getMasterId(), fileId);
+				status.getMasterId(), fileId);
 	}
 
 	/**

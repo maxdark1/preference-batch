@@ -45,8 +45,9 @@ public class RegistrationItemProcessorTest
 		input.setContent2("STORE_NBR");
 		input.setContent3("ORG_NAME");
 		input.setContent5("CUST_TYPE_CODE");
+		input.setValue5("01");
 		input.setContent6("CELL_PHONE");
-
+		input.setFileName("fileExmaple_2021122.txt");
 		List<Master> masterList = new ArrayList<>();
 
 		masterList.add(new Master(new BigDecimal("1"), BigDecimal.ONE, "SOURCE", "CRM", true, null));
@@ -69,6 +70,9 @@ public class RegistrationItemProcessorTest
 				.add(new Master(new BigDecimal("99"), BigDecimal.TEN, "SOURCE_ID", "CANADA SAP CRM", true, new BigDecimal("100")));
 		masterList.add(new Master(new BigDecimal("128"), BigDecimal.TEN, "SOURCE_ID", "Facebook Opt in campaign", true,
 				new BigDecimal("188")));
+		masterList.add(new Master(new BigDecimal("113"), BigDecimal.TEN, "CUST_TYPE_CD", "Facebook Opt in campaign", true,
+				new BigDecimal("01")));
+
 
 		MasterProcessor.setMasterList(masterList);
 	}
@@ -82,11 +86,11 @@ public class RegistrationItemProcessorTest
 		input.setAsOfDate(null);
 
 		ValidationException validationException = assertThrows(ValidationException.class, () -> {
-			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
+			registrationItemProcessor.process(input);
 		});
 
 		assertNotNull(validationException);
-		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
+		assertTrue(validationException.getMessage().contains("The item processed has the above validation's errors:"));
 	}
 
 	@Test
@@ -95,11 +99,11 @@ public class RegistrationItemProcessorTest
 		input.setEmailPermission("a");
 
 		ValidationException validationException = assertThrows(ValidationException.class, () -> {
-			FileInboundStgTable fileInboundStgTable = registrationItemProcessor.process(input);
+			registrationItemProcessor.process(input);
 		});
 
 		assertNotNull(validationException);
-		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
+		assertTrue(validationException.getMessage().contains("The item processed has the above validation's errors:"));
 
 	}
 

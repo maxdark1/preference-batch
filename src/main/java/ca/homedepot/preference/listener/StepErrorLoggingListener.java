@@ -1,10 +1,14 @@
 package ca.homedepot.preference.listener;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
+import ca.homedepot.preference.util.validation.FileValidation;
+import com.google.cloud.storage.StorageException;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -30,7 +34,6 @@ public class StepErrorLoggingListener implements StepExecutionListener
 	FileService fileService;
 
 	/**
-	 *
 	 * @param stepExecution
 	 *           instance of {@link StepExecution}.
 	 */
@@ -42,7 +45,6 @@ public class StepErrorLoggingListener implements StepExecutionListener
 	}
 
 	/**
-	 *
 	 * @param stepExecution
 	 *           {@link StepExecution} instance.
 	 * @return
@@ -60,7 +62,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 			/**
 			 * If everything is fine, means that we can move the file to PROCESSED
 			 */
-			moveFile();
+			moveFileGCS();
 			return ExitStatus.COMPLETED;
 		}
 
@@ -71,6 +73,45 @@ public class StepErrorLoggingListener implements StepExecutionListener
 		exceptions.forEach(ex -> log.info(" Exception has ocurred:  " + ex.getMessage()));
 
 		return ExitStatus.FAILED;
+	}
+
+	@SneakyThrows
+	public void moveFileGCS()
+	{
+		/**
+		 * Gets all files that don't haave end time
+		 */
+		List<FileDTO> filesToMove = fileService.getFilesToMove();
+
+		if (filesToMove != null && !filesToMove.isEmpty())
+		{
+			filesToMove.forEach(file -> {
+				StorageException storageException = null;
+				boolean status = true;
+				String source = MasterProcessor.getValueVal(file.getSourceType());
+				source = source.equals("SFMC") && file.getFileName().contains(FileValidation.getFbSFMCBaseName()) ? "FB_SFMC"
+						: source;
+				String basename = FileUtil.getPath(source);
+				String blobToCopy = basename + FileUtil.getInbound() + file.getFileName();
+				String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getProcessed());
+				try
+				{
+					StorageApplicationGCS.moveObject(file.getFileName(), blobToCopy, blobWhereToCopy);
+				}
+				catch (StorageException e)
+				{
+					status = false;
+					log.error(" PREFERENCE BATCH ERROR - Error has occurred trying to move file {} : {}", file.getFileName(),
+							e.getMessage());
+					storageException = e;
+				}
+
+				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
+				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);
+				if (storageException != null)
+					throw storageException;
+			});
+		}
 	}
 
 	/**
@@ -97,7 +138,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				catch (IOException e)
 				{
 					status = false;
-					log.error("An exception occurs while trying to move the file " + file.getFileName());
+					log.error("PREFERENCE BATCH ERROR - An exception occurs while trying to move the file {}", file.getFileName());
 				}
 				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
 				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);

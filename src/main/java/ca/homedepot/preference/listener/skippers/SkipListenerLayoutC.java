@@ -4,11 +4,14 @@ import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Date;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
@@ -16,6 +19,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 @JobScope
 @Setter
 @Getter
+@Slf4j
 public class SkipListenerLayoutC extends SkipFileService implements SkipListener<InboundRegistration, FileInboundStgTable>
 {
 
@@ -31,10 +35,15 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	 * @param t
 	 *           cause of the failure
 	 */
+	@SneakyThrows
 	@Override
 	public void onSkipInRead(Throwable t)
 	{
-		// Nothing to do in here
+		if (!shouldSkip(t))
+		{
+			log.error(" PREFERENCE BATCH ERROR - Something went wrong trying to read the file: {}", t.getMessage());
+			throw new IOException(" PREFERENCE BATCH ERROR - Something went wrong trying to read the file :" + t.getMessage());
+		}
 	}
 
 	/**
@@ -58,19 +67,19 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	 * @param t
 	 *           the cause of the failure
 	 */
+	@SneakyThrows
 	@Override
 	public void onSkipInProcess(InboundRegistration item, Throwable t)
 	{
-
-		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
-				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).fileName(item.getFileName())
-				.srcLanguagePref(item.getLanguagePreference().trim().toUpperCase()).updatedDate(new Date())
-				.emailStatus(getEmailStatus(t)).srcEmailAddress(item.getEmailAddress()).emailAddressPref(item.getEmailPermission())
-				.phonePref(item.getPhonePermission()).srcPhoneNumber(item.getPhoneNumber())
-				.srcPhoneExtension(item.getPhoneExtension()).srcTitleName(item.getTitle()).srcFirstName(item.getFirstName())
-				.srcLastName(item.getLastName()).srcAddress1(item.getAddress1()).srcAddress2(item.getAddress2())
-				.srcCity(item.getCity()).srcState(item.getProvince()).srcPostalCode(item.getPostalCode())
-				.mailAddressPref(item.getMailPermission()).emailPrefHdCa(item.getEmailPrefHDCA())
+		String filename = getFileName(item.getFileName());
+		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().fileId(getFromTableFileID(filename, jobName))
+				.status(ERROR).fileName(item.getFileName()).srcLanguagePref(item.getLanguagePreference().trim().toUpperCase())
+				.updatedDate(new Date()).emailStatus(getEmailStatus(t)).srcEmailAddress(item.getEmailAddress())
+				.emailAddressPref(item.getEmailPermission()).phonePref(item.getPhonePermission())
+				.srcPhoneNumber(item.getPhoneNumber()).srcPhoneExtension(item.getPhoneExtension()).srcTitleName(item.getTitle())
+				.srcFirstName(item.getFirstName()).srcLastName(item.getLastName()).srcAddress1(item.getAddress1())
+				.srcAddress2(item.getAddress2()).srcCity(item.getCity()).srcState(item.getProvince())
+				.srcPostalCode(item.getPostalCode()).mailAddressPref(item.getMailPermission()).emailPrefHdCa(item.getEmailPrefHDCA())
 				.emailPrefGardenClub(item.getGardenClub()).emailPrefPro(item.getEmailPrefPRO()).emailPrefNewMover(item.getNewMover())
 				.cellSmsFlag(item.getSmsFlag()).customerNbr(item.getContent1()).faxNumber(item.getFaxNumber())
 				.faxExtension(item.getFaxExtension()).content1(item.getContent1()).value1(item.getValue1())

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
+import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,8 +67,7 @@ class PreferenceServiceImplTest
 	@BeforeEach
 	public void setUp()
 	{
-		MockitoAnnotations.initMocks(this);
-		preferenceServiceImpl.baseUrl = "test/";
+		MockitoAnnotations.openMocks(this);
 	}
 
 
@@ -123,14 +123,14 @@ class PreferenceServiceImplTest
 	void insert()
 	{
 		String job_name = "testJob", inserted_by = "BATCH";
-		String status = "1";
 		BigDecimal status_id = BigDecimal.ONE;
 		Date start_time = new Date(), inserted_date = new Date();
 		int value = 1;
-		Mockito.when(jdbcTemplate.update(anyString(), eq(job_name), eq(status), eq(status_id), eq(start_time), eq(inserted_by),
-				eq(inserted_date))).thenReturn(value);
+		Mockito.when(
+				jdbcTemplate.update(anyString(), eq(job_name), eq(status_id), eq(start_time), eq(inserted_by), eq(inserted_date)))
+				.thenReturn(value);
 
-		int resultValue = preferenceServiceImpl.insert(job_name, status, status_id, start_time, inserted_by, inserted_date);
+		int resultValue = preferenceServiceImpl.insert(job_name, status_id, start_time, inserted_by, inserted_date);
 		assertEquals(value, resultValue);
 	}
 
@@ -157,13 +157,11 @@ class PreferenceServiceImplTest
 	void updateJob()
 	{
 		Job job = new Job();
-		String status = "C";
+		BigDecimal status = BigDecimal.ONE;
 		int rowsAffected = 1;
 
-		Mockito
-				.when(jdbcTemplate.update(anyString(), eq(job.getStatusId()), eq(job.getUpdatedDate()), eq(job.getUpdatedBy()),
-						eq(job.getStatus()), eq(job.getEndTime()), eq(job.getStartTime()), eq(job.getJobName()), eq(status)))
-				.thenReturn(rowsAffected);
+		Mockito.when(jdbcTemplate.update(SqlQueriesConstants.SQL_UPDATE_STATUS_JOB, job.getStatusId(), job.getUpdatedDate(),
+				job.getUpdatedBy(), job.getEndTime(), job.getStartTime(), job.getJobName(), status)).thenReturn(rowsAffected);
 
 		int currentRowsAffected = preferenceServiceImpl.updateJob(job, status);
 		assertEquals(rowsAffected, currentRowsAffected);
