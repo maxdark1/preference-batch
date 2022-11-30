@@ -1,15 +1,15 @@
 package ca.homedepot.preference.writer;
 
+import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.InternalFlexOutboundProcessorDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.slf4j.Logger;
 
 import java.io.FileOutputStream;
@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.STATUS_STR;
 import static org.mockito.Mockito.*;
 
 class InternalFlexOutboundFileWriterTest
@@ -28,6 +29,7 @@ class InternalFlexOutboundFileWriterTest
 	FileService fileService;
 	@Mock
 	Logger log;
+	@Spy
 	@InjectMocks
 	InternalFlexOutboundFileWriter internalFlexOutboundFileWriter;
 	Faker faker;
@@ -57,12 +59,16 @@ class InternalFlexOutboundFileWriterTest
 	void testWrite()
 	{
 
-		internalFlexOutboundFileWriter.folderSource = "/OUTBOUND/";
-		internalFlexOutboundFileWriter.repositorySource = "C:/batchFiles";
+		String repositorySource = "/batchFiles";
+		String folderSource = "/OUTBOUND/";
+		String fileName = "FLXEMCDAD20221028T185060.CEACI.ZZAX";
+		String record = "some|data|to|save||||||||";
+		internalFlexOutboundFileWriter.repositorySource = repositorySource;
+		internalFlexOutboundFileWriter.folderSource = folderSource;
 		internalFlexOutboundFileWriter.flexAttributesFileFormat = "FLXEMCDADYYYYMMDDTHHMISS.CEACI.ZZAX";
 
 		when(fileService.insert(any())).thenReturn(0);
-		when(fileService.getJobId(anyString())).thenReturn(new BigDecimal(0));
+		when(fileService.getJobId(anyString(), any(BigDecimal.class))).thenReturn(new BigDecimal(0));
 
 		try
 		{
@@ -78,7 +84,33 @@ class InternalFlexOutboundFileWriterTest
 					.lastUpdateDate(LocalDate.now().toString()).industryCode(faker.number().digits(4))
 					.companyName(faker.company().name()).contactFirstName(faker.name().firstName())
 					.contactLastName(faker.name().lastName()).contactRole(faker.company().profession()).build();
+
+
+			try (MockedStatic<GSFileWriterOutbound> mockMasterProcessor = mockStatic(GSFileWriterOutbound.class))
+			{
+
+				mockMasterProcessor.when(() -> MasterProcessor.getSourceID(STATUS_STR, SourceDelimitersConstants.VALID))
+						.thenReturn(new Master());
+
+			}
+			try (MockedStatic<CloudStorageUtils> mockMasterProcessor = mockStatic(CloudStorageUtils.class))
+			{
+
+				mockMasterProcessor.when(() -> {
+					CloudStorageUtils.generatePath(repositorySource, folderSource, fileName);
+				});
+			}
+			try (MockedStatic<MasterProcessor> mockMasterProcessor = mockStatic(MasterProcessor.class))
+			{
+
+				mockMasterProcessor.when(() -> {
+					GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
+							record.getBytes());
+				});
+			}
+
 			internalFlexOutboundFileWriter.write(List.of(flexOutboundProcessorDTO));
+			verify(internalFlexOutboundFileWriter).write(List.of(flexOutboundProcessorDTO));
 		}
 		catch (Exception e)
 		{

@@ -1,17 +1,16 @@
 package ca.homedepot.preference.writer;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import ca.homedepot.preference.service.FileService;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.stereotype.Component;
-
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INPROGRESS;
 
@@ -40,14 +39,25 @@ public class RegistrationAPIWriter implements ItemWriter<RegistrationRequest>
 	@Override
 	public void write(List<? extends RegistrationRequest> items) throws Exception
 	{
-		RegistrationResponse response = preferenceService.preferencesRegistration(items);
+		RegistrationResponse response;
+		try
+		{
+			response = preferenceService.preferencesRegistration(items);
+			/**
+			 * Updates status for each record
+			 */
+			response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus(new BigDecimal(resp.getId()),
+					resp.getStatus().substring(0, 1), INPROGRESS));
+			log.info("Service Response {} :", response);
+		}
+		catch (Exception e)
+		{
+			log.error(" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point \n: {}",
+					e.getMessage());
+			throw e;
+		}
 
-		/**
-		 * Updates status for each record
-		 */
-		response.getRegistration().forEach(resp -> fileService.updateInboundStgTableStatus(new BigDecimal(resp.getId()),
-				resp.getStatus().substring(0, 1), INPROGRESS));
-		log.info("Service Response {} :", response);
+
 
 	}
 }

@@ -1,13 +1,11 @@
 package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.util.validation.InboundValidator;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.util.validation.InboundValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.batch.item.validator.ValidationException;
 
 import java.math.BigDecimal;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExactTargetEmailProcessorTest
 {
@@ -36,6 +33,7 @@ class ExactTargetEmailProcessorTest
 		emailOptOuts.setReason("SOME REASON");
 		emailOptOuts.setStatus("unsubscribed");
 		emailOptOuts.setDateUnsubscribed("09/19/2022 8 :11");
+		emailOptOuts.setFileName("fileName_20220122.txt");
 
 		InboundValidator
 				.setValidEmailPattern("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
@@ -74,7 +72,7 @@ class ExactTargetEmailProcessorTest
 				() -> exactTargetEmailProcessor.process(emailOptOuts));
 
 
-		assertTrue(validationException.getMessage().contains("The item processed has the above validations erros:"));
+		assertTrue(validationException.getMessage().contains("The item processed has the above validation's errors:"));
 		assertNotNull(fileInboundStgTable);
 	}
 }

@@ -1,6 +1,12 @@
 package ca.homedepot.preference.util.validation;
 
-import static org.junit.jupiter.api.Assertions.*;
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.processor.MasterProcessor;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.batch.item.validator.ValidationException;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -9,14 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.processor.MasterProcessor;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.batch.item.validator.ValidationException;
-
-import ca.homedepot.preference.model.InboundRegistration;
+import static org.junit.jupiter.api.Assertions.*;
 
 class InboundValidatorTest
 {
@@ -181,7 +180,7 @@ class InboundValidatorTest
 			InboundValidator.isValidationsErros(error);
 		});
 
-		assertTrue(exception.getMessage().contains("validations erros"));
+		assertTrue(exception.getMessage().contains("The item processed has the above validation's errors:"));
 	}
 
 	@Test

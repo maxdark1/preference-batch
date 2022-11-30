@@ -5,21 +5,27 @@ import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
-import static ca.homedepot.preference.dto.enums.Preference.*;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.ERROR;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
+import static ca.homedepot.preference.dto.enums.Preference.NUMBER_0;
+import static ca.homedepot.preference.dto.enums.Preference.NUMBER_MINUS_1;
 
 @Component
 @JobScope
 @Setter
 @Getter
+@Slf4j
 public class SkipListenerLayoutB extends SkipFileService implements SkipListener<EmailOptOuts, FileInboundStgTable>
 {
 
@@ -36,10 +42,15 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 	 * @param t
 	 *           cause of the failure
 	 */
+	@SneakyThrows
 	@Override
 	public void onSkipInRead(Throwable t)
 	{
-		//Nothing to do in here
+		if (!shouldSkip(t))
+		{
+			log.error(" PREFERENCE BATCH ERROR - Something went wrong trying to read the file: {}", t.getMessage());
+			throw new IOException(" PREFERENCE BATCH ERROR - Something went wrong trying to read the file: " + t.getMessage());
+		}
 	}
 
 	/**
@@ -74,9 +85,10 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 		/**
 		 * Creating the File inbound statging table record
 		 */
-		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder()
-				.fileId(getFromTableFileID(item.getFileName(), jobName)).status(ERROR).srcEmailAddress(item.getEmailAddress())
-				.fileName(item.getFileName()).emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
+		String filename = getFileName(item.getFileName());
+		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().fileId(getFromTableFileID(filename, jobName))
+				.status(ERROR).srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
+				.emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
 				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
 				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
 				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();

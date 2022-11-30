@@ -1,12 +1,10 @@
 package ca.homedepot.preference.repositories.entities;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -34,18 +32,6 @@ public class FileEntity
 	@ManyToOne
 	@JoinColumn(name = "job_id")
 	private JobEntity job;
-
-	/**
-	 * The status.
-	 */
-	@Column(name = "status")
-	private String status;
-
-	/**
-	 * The file source id
-	 */
-	@Column(name = "file_source_id")
-	private BigDecimal fileSourceId;
 
 	/**
 	 * The start time.

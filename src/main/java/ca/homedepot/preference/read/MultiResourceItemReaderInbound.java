@@ -1,20 +1,27 @@
 package ca.homedepot.preference.read;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
+import ca.homedepot.preference.util.constants.StorageConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
-
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 
 /*
 *   MultiResourceItemReader
@@ -44,6 +51,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 * Map of file name and boolean to know if the file has been written before
 	 */
 	private Map<String, Boolean> canResourceBeWriting;
+
+
 
 	/**
 	 * Constructor to assign Source
@@ -84,11 +93,6 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		Resource[] resourcesArray = new Resource[resources.get(VALID).size()];
 		resources.get(VALID).toArray(resourcesArray);
 		this.setResources(resourcesArray);
-		/**
-		 * Writes all INVALID files
-		 */
-		resources.get("INVALID").forEach(fileName -> writeFile(fileName.getFilename(), false));
-
 	}
 
 	/**
@@ -108,7 +112,12 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	@Override
 	public void setResources(Resource[] resources)
 	{
+
 		super.setResources(resources);
+		if (resources.length == 0)
+		{
+			log.error(" PREFERENCE BATCH ERROR - No resources to read {} folder is empty.", source.toLowerCase());
+		}
 		canResourceBeWriting = new HashMap<>();
 		/**
 		 * Initialize Map with values
@@ -137,14 +146,24 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 		catch (Exception e)
 		{
 			resource = getCurrentResource();
-			status = !status;
-			if (resource != null)
+			status = false;
+			if (resource != null && resource.getFilename() != null)
 			{
-				FileUtil.moveFile(resource.getFilename(), status, source);
-				log.error(" An exception has ocurred reading file: " + resource.getFilename() + "\n " + e.getCause().getMessage());
+				String filename = resource.getFilename();
+
+				if (filename != null)
+				{
+					String blobToCopy = filename;
+					String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
+					filename = filename.substring(filename.lastIndexOf(StorageConstants.SLASH) + 1);
+					StorageApplicationGCS.moveObject(filename, blobToCopy, blobWhereToCopy);
+					log.error("PREFERENCE BATCH ERROR - An exception has occurred reading file: {} \n {}", resource.getFilename(),
+							e.getCause().getMessage());
+				}
 			}
 		}
-		/**
+
+		/*
 		 * Validates that a resources is not null and can be writing
 		 */
 		if (resource != null && canResourceBeWriting.get(resource.getFilename()))
@@ -165,7 +184,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 */
 	public void writeFile(String fileName, Boolean status)
 	{
-		BigDecimal jobId = fileService.getJobId(jobName);
+		fileName = fileName.replace(FileUtil.getPath(source) + FileUtil.getInbound(), "");
+		BigDecimal jobId = fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID("STATUS", Boolean.TRUE.equals(status) ? VALID : "INVALID");
 		BigDecimal masterId = MasterProcessor
 				.getSourceID("SOURCE", source.equals(SourceDelimitersConstants.FB_SFMC) ? SourceDelimitersConstants.SFMC : source)

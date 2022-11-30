@@ -1,14 +1,12 @@
 package ca.homedepot.preference.processor;
 
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.service.PreferenceService;
+import lombok.experimental.UtilityClass;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
-
-import lombok.experimental.UtilityClass;
-
-import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.service.PreferenceService;
 
 /**
  * Master Processor obtains information from Master catalog
@@ -73,7 +71,7 @@ public class MasterProcessor
 		BigDecimal masterId = new BigDecimal("-400");
 
 		Optional<Master> optional = masterList.stream().filter(master -> master.getOldID() != null
-				&& master.getKeyValue().equals("SOURCE_ID") && master.getOldID().toPlainString().equals(oldId)).findFirst();
+				&& master.getKeyValue().equals("SOURCE_ID") && master.getOldID().equals(new BigDecimal(oldId))).findFirst();
 		if (optional.isPresent())
 		{
 

@@ -1,21 +1,18 @@
 package ca.homedepot.preference.writer;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
+import ca.homedepot.preference.util.CloudStorageUtils;
+import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +24,10 @@ class PreferenceOutboundFileWriterTest
 	@Mock
 	FileServiceImpl fileService;
 
+	@Mock
+	Storage storage;
+
+	CloudStorageUtils cloudStorageUtils;
 	@InjectMocks
 	@Spy
 	PreferenceOutboundFileWriter preferenceOutboundFileWriter;
@@ -36,9 +37,14 @@ class PreferenceOutboundFileWriterTest
 	@BeforeEach
 	void setup()
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
+		cloudStorageUtils = new CloudStorageUtils();
+		cloudStorageUtils.setProjectId("projectID");
+		cloudStorageUtils.setBucketName("bucketName");
+		StorageApplicationGCS.setStorage(storage);
+		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		preferenceOutboundFileWriter.fileNameFormat = "LOYALTY_DAILY_YYYYMMDD.txt";
-		preferenceOutboundFileWriter.folderSorce = "";
+		preferenceOutboundFileWriter.folderSource = "";
 		preferenceOutboundFileWriter.repositorySource = "";
 
 		PreferenceOutboundDtoProcessor preferenceOutboundDto = new PreferenceOutboundDtoProcessor();
@@ -62,15 +68,12 @@ class PreferenceOutboundFileWriterTest
 		masterList.add(sourceId);
 		masterList.add(fileStatus);
 
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+
 		MasterProcessor.setMasterList(masterList);
 	}
 
-	@AfterAll
-	static void tearDown() throws IOException
-	{
-		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		FileUtils.forceDelete(new File("LOYALTY_DAILY_YYYYMMDD.txt".replace("YYYYMMDD", formatter.format(new Date()))));
-	}
+
 
 	@Test
 	void write() throws Exception

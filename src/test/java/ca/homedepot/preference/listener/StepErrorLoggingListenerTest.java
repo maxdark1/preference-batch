@@ -1,9 +1,11 @@
 package ca.homedepot.preference.listener;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +21,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class StepErrorLoggingListenerTest
@@ -110,8 +113,7 @@ class StepErrorLoggingListenerTest
 
 		// when
 		try (MockedStatic<FileUtil> fileUtil = Mockito.mockStatic(FileUtil.class))
-		{ // bypass due urgent delivery of bug fix<
-		  // as todo: fix the static mock due technical debt
+		{
 
 			stepErrorLoggingListener.moveFile();
 			fileUtil.verify(() -> FileUtil.moveFile(file.getFileName(), true, "VALID"));
@@ -124,5 +126,37 @@ class StepErrorLoggingListenerTest
 		// then
 		assertTrue(true);
 	}
+
+	@Test
+	void moveFilesGCS()
+	{
+		BigDecimal sourceType = BigDecimal.valueOf(2);
+		FileDTO instance = FileDTO.builder().fileId(BigDecimal.ONE).fileName("test.txt").endTime(new Date()).insertedBy("test")
+				.insertedDate(new Date()).job(BigDecimal.TEN).sourceType(sourceType).startTime(new Date()).updatedDate(new Date())
+				.updatedBy("test").statusId(BigDecimal.ONE).status("TEST").build();
+
+		when(fileService.getFilesToMove()).thenReturn(Collections.singletonList(instance));
+		when(fileService.updateFileEndTime(any(BigDecimal.class), any(Date.class), anyString(), any(Date.class), any(Master.class)))
+				.thenReturn(1);
+
+		try (MockedStatic<MasterProcessor> mockMasterProcessor = mockStatic(MasterProcessor.class))
+		{
+			mockMasterProcessor.when(() -> MasterProcessor.getValueVal(sourceType)).thenReturn("STATUS");
+			mockMasterProcessor.when(() -> MasterProcessor.getSourceID(anyString(), anyString())).thenReturn(new Master());
+		}
+		FileUtil.setInbound("SomeFile.txt");
+		FileUtil.setProcessed("MovedFile.txt");
+		FileUtil.setError("/ERRORS/");
+		try (MockedStatic<StorageApplicationGCS> storageApplicationGCSMockedStatic = mockStatic(StorageApplicationGCS.class))
+		{
+			storageApplicationGCSMockedStatic.verifyNoInteractions();
+		}
+		CloudStorageUtils cloudStorageUtils = mock(CloudStorageUtils.class);
+		doNothing().when(cloudStorageUtils).moveObject(anyString(), anyString(), anyString());
+		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
+		stepErrorLoggingListener.moveFileGCS();
+		verify(stepErrorLoggingListener).moveFileGCS();
+	}
+
 
 }

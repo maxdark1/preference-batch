@@ -2,9 +2,9 @@ package ca.homedepot.preference.util;
 
 import ca.homedepot.preference.util.validation.FileValidation;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.*;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
 
 class FileUtilTest
 {
@@ -122,7 +121,7 @@ class FileUtilTest
 		FileValidation.setFbSFMCBaseName("OPTIN_STANDARD_FLEX_GCFB_");
 		String fileName = "OPTIN_STANDARD_FLEX_20221216.TXT";
 
-		assertTrue(!FileUtil.isFBSFMC(fileName));
+		assertTrue(!FileUtil.isFBSFMC(fileName, "hybrids"));
 	}
 
 	@Test
@@ -145,7 +144,7 @@ class FileUtilTest
 	}
 
 	@Test
-	void getFilesOnFolder()
+	void getFilesOnFolder() throws IOException
 	{
 		String path = "fileUtil/INBOUND/";
 		String source = "hybris";

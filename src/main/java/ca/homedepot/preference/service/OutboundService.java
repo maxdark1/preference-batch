@@ -31,4 +31,6 @@ public interface OutboundService
 	int purgeFlexAttributesTable();
 
 	void internalFlexAttributes(InternalFlexOutboundDTO internalFlexOutboundDTO);
+
+	void createFileGCS(String repository, String folder, String fileNameFormat, String file) throws IOException;
 }

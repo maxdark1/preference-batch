@@ -19,8 +19,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class MultiResourceItemReaderInboundTest
 {
 
@@ -52,6 +50,10 @@ class MultiResourceItemReaderInboundTest
 
 		file = new File("test/error");
 		file.mkdirs();
+		Resource[] resources = new Resource[1];
+		resources[0] = new FileSystemResource(file);
+		multiResourceItemReaderInbound.setResources(resources);
+
 	}
 
 
@@ -74,6 +76,8 @@ class MultiResourceItemReaderInboundTest
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "hybris", true, null));
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true, null));
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true, null));
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+
 		MasterProcessor.setMasterList(masterList);
 
 		multiResourceItemReaderInbound.writeFile(fileName, status);
@@ -92,6 +96,7 @@ class MultiResourceItemReaderInboundTest
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "SOURCE", "SFMC", true, null));
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "VALID", true, null));
 		masterList.add(new Master(BigDecimal.ONE, BigDecimal.ONE, "STATUS", "INVALID", true, null));
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
 		MasterProcessor.setMasterList(masterList);
 
 		multiResourceItemReaderInbound.writeFile(fileName, status);

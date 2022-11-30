@@ -1,14 +1,14 @@
 package ca.homedepot.preference.service;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 
 @Service
@@ -40,9 +40,12 @@ public interface FileService
 	 * Gets job id
 	 * 
 	 * @param jobName
+	 *           job name of the job that we are looking for
+	 * @param statusId
+	 *           status from the job we are looking for
 	 * @return Job id
 	 */
-	BigDecimal getJobId(String jobName);
+	BigDecimal getJobId(String jobName, BigDecimal statusId);
 
 	/**
 	 * Gets file id

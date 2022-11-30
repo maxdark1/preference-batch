@@ -1,23 +1,27 @@
 package ca.homedepot.preference.listener;
 
 
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import ca.homedepot.preference.dto.FileDTO;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ItemWriteListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.service.FileService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.ItemWriteListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INPROGRESS;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.NOTSTARTED;
 
 @Component
 @RequiredArgsConstructor
@@ -89,7 +93,8 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	 */
 	public BigDecimal getFromTableFileID(String fileName)
 	{
-		BigDecimal jobId = fileService.getJobId(jobName);
+		BigDecimal jobId = fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId());
+		fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
 		return fileService.getFile(fileName, jobId);
 	}
 
@@ -110,13 +115,14 @@ public class RegistrationItemWriterListener implements ItemWriteListener<FileInb
 	/**
 	 *
 	 * @param exception
-	 *           thrown from {@link ItemWriter}
+	 *           thrown from {{Item Writer}
 	 * @param items
 	 *           attempted to be written.
 	 */
 	@Override
 	public void onWriteError(Exception exception, List<? extends FileInboundStgTable> items)
 	{
-		log.error(" An exception has occured while writing the items into file_inbound_stg_table: {} ", exception.getMessage());
+		log.error(" PREFERENCE BATCH ERROR - An exception has occurred while writing the items into file_inbound_stg_table: {} ",
+				exception.getMessage());
 	}
 }

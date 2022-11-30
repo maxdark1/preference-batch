@@ -3,6 +3,7 @@ package ca.homedepot.preference.writer;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.apache.commons.io.FileUtils;
@@ -10,20 +11,20 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class FileWriterOutBoundTest
@@ -62,6 +63,13 @@ class FileWriterOutBoundTest
 		fileStatus.setValueVal("VALID");
 		masterList.add(sourceId);
 		masterList.add(fileStatus);
+		masterList.add(new Master(new BigDecimal("15"), new BigDecimal("5"), "JOB_STATUS", "STARTED", true, null));
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+		masterList.add(new Master(new BigDecimal("17"), new BigDecimal("5"), "JOB_STATUS", "COMPLETED", true, null));
+		masterList.add(new Master(new BigDecimal("18"), new BigDecimal("5"), "JOB_STATUS", "ERROR", true, null));
+
+		MasterProcessor.setMasterList(masterList);
+
 
 		MasterProcessor.setMasterList(masterList);
 
@@ -101,9 +109,10 @@ class FileWriterOutBoundTest
 	{
 		BigDecimal jobId = BigDecimal.TEN;
 		FileDTO fileDTO = Mockito.mock(FileDTO.class);
+		String jobName = null;
 		int expectedValue = 1;
 
-		Mockito.when(fileService.getJobId(anyString())).thenReturn(jobId);
+		Mockito.when(fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId())).thenReturn(jobId);
 		Mockito.when(fileService.insert(fileDTO)).thenReturn(expectedValue);
 
 		fileWriterOutBound.saveFileRecord();

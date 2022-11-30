@@ -2,6 +2,7 @@ package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.util.constants.StorageConstants;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +13,14 @@ import java.util.Date;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.NOTSTARTED;
-import static ca.homedepot.preference.dto.enums.Preference.*;
+import static ca.homedepot.preference.dto.enums.Preference.NUMBER_0;
+import static ca.homedepot.preference.dto.enums.Preference.NUMBER_MINUS_1;
 
 @Slf4j
 public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, FileInboundStgTable>
 {
+
+	private int count = 0;
 
 	/**
 	 * Process the item from LayoutB (SFMC)
@@ -28,10 +32,9 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 	@Override
 	public FileInboundStgTable process(EmailOptOuts item)
 	{
-
+		count++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 
-		log.info(" Item in process: {}", item.toString());
 
 		/**
 		 * This saves all Validation's error messages If there are any
@@ -56,7 +59,9 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		}
 		catch (ValidationException e)
 		{
-			log.error(" Validation error: {} ", e.getMessage());
+			log.error(
+					" PREFERENCE BATCH VALIDATION ERROR - The record # {} has the above fields with validation error on file {}: {} ",
+					count, item.getFileName().substring(item.getFileName().lastIndexOf(StorageConstants.SLASH) + 1), e.getMessage());
 			/**
 			 * Throws the exception again after is being log This is catch on the Skipper of LayoutB
 			 */

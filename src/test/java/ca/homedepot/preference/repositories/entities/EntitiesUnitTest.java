@@ -1,12 +1,12 @@
 package ca.homedepot.preference.repositories.entities;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.Assert.*;
 
 class EntitiesUnitTest
 {
@@ -27,7 +27,6 @@ class EntitiesUnitTest
 		jobEntity = new JobEntity();
 		jobEntity.setJobId(new BigDecimal("1"));
 		jobEntity.setJobName("job name");
-		jobEntity.setStatus("C");
 		jobEntity.setInsertedBy("TEST");
 		jobEntity.setStartTime(new Date());
 		jobEntity.setInsertedDate(new Date());
@@ -40,8 +39,6 @@ class EntitiesUnitTest
 		fileEntity.setFileId(1L);
 		fileEntity.setFileName("TEST");
 		fileEntity.setJob(jobEntity);
-		fileEntity.setStatus("C");
-		fileEntity.setFileSourceId(new BigDecimal("12345"));
 		fileEntity.setStartTime(new Date());
 		fileEntity.setEndTime(new Date());
 		fileEntity.setInsertedBy("TEST");
@@ -54,7 +51,6 @@ class EntitiesUnitTest
 		assertNotNull(jobEntity);
 		assertEquals(new BigDecimal("1"), jobEntity.getJobId());
 		assertEquals("job name", jobEntity.getJobName());
-		assertEquals("C", jobEntity.getStatus());
 		assertNull(jobEntity.getUpdatedBy());
 		assertNull(jobEntity.getUpdatedDate());
 		assertNotNull(jobEntity.getStartTime());
@@ -75,9 +71,7 @@ class EntitiesUnitTest
 		assertNotNull(fileEntity.getInsertedDate());
 		assertNotNull(fileEntity.getEndTime());
 		assertEquals("TEST", fileEntity.getInsertedBy());
-		assertEquals(new BigDecimal("12345"), fileEntity.getFileSourceId());
 		assertNull(fileEntity.getUpdatedBy());
 		assertNull(fileEntity.getUpdatedDate());
-		assertEquals("C", fileEntity.getStatus());
 	}
 }

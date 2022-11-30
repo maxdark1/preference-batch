@@ -3,11 +3,13 @@ package ca.homedepot.preference.writer;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
@@ -71,9 +73,8 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 				Files.delete(new File(repositorySource + folderSource + fileName).toPath());
 			}
 			catch (IOException e)
-			{//TODO what needs to be done in case of exception
-			 // Batch status fail
-				log.info(" File for citi supresion will be created. ");
+			{
+				log.error(" File {} will be created ", fileName);
 			}
 		}
 		super.setResource(resource);
@@ -104,7 +105,7 @@ public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceEx
 
 	public void saveFileRecord()
 	{
-		BigDecimal jobId = fileService.getJobId(jobName);
+		BigDecimal jobId = fileService.getJobId(jobName, JobListener.status(BatchStatus.STARTED).getMasterId());
 		BigDecimal sourceId = MasterProcessor.getSourceID(SOURCE_ID_STR, CITI_SUP).getMasterId();
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 
