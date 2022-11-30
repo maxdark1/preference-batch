@@ -833,7 +833,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
 		citiSupressionFileWriter.setFolderSource(folderOutbound);
 		citiSupressionFileWriter.setRepositorySource(citiPath);
-		citiSupressionFileWriter.setHeader(CITI_SUPPRESION_HEADER);
 		citiSupressionFileWriter.setSource(CITI_BANK);
 		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
@@ -852,7 +851,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		loyaltyComplaintWriter.setFileService(hybrisWriterListener.getFileService());
 		loyaltyComplaintWriter.setFolderSource(folderOutbound);
 		loyaltyComplaintWriter.setRepositorySource(loyaltyCompliantPath);
-		loyaltyComplaintWriter.setHeader(LOYALTY_COMPLAINT_WEEKLY_HEADERS);
 		loyaltyComplaintWriter.setSource(CITI_BANK);
 		loyaltyComplaintWriter.setFileNameFormat(weeklyCompliantNameFormat);
 		loyaltyComplaintWriter.setJobName(JOB_NAME_LOYALTY_COMPLAINT);
@@ -922,7 +920,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		try
 		{
 			outboundService.createFileGCS(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
-					PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+					"");
 		}
 		catch (IOException ex)
 		{

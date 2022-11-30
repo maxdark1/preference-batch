@@ -114,8 +114,7 @@ class InvalidFileListenerTest
 					storage.list("BucketName", Storage.BlobListOption.prefix("path/"), Storage.BlobListOption.currentDirectory()))
 					.thenReturn(blobPage);
 			Mockito.when(cloudStorageUtils.listObjectInBucket("hybris")).thenReturn(paths);
-			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getGCPResource("hybris"))
-					.thenReturn(resourcesGoogle);
+			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getGCPResource("hybris")).thenReturn(resourcesGoogle);
 			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("hybris", "Directory"))
 					.thenReturn(map);
 			Mockito.when(spy.getResources("hybris", "Directory")).thenReturn(map);
