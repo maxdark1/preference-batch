@@ -956,7 +956,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File: " + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File on Job {}: {}", JOB_NAME_SEND_PREFERENCES_TO_CRM, ex.getMessage());
 			throw ex;
 		}
 
@@ -982,7 +982,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files" + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files on Job {} : {}", JOB_NAME_INTERNAL_DESTINATION , ex.getMessage());
 			throw ex;
 		}
 
@@ -992,6 +992,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
+	@SneakyThrows
 	public Job sendPreferencesToFlexInternalDestination()
 	{
 		OutboundService outboundService = new OutboundServiceImpl();
@@ -1002,8 +1003,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			//TODO catch the exception that is thrown and what should happen if there is exception
-			log.error("Error during the creation of Flex Internal Destination Files" + ex.getMessage());
+			log.error("Error during the creation of Flex Internal Destination Files on Job {} : {}", JOB_NAME_FLEX_INTERNAL_DESTINATION , ex.getMessage());
+			throw ex;
 		}
 
 		//Execute the Job
