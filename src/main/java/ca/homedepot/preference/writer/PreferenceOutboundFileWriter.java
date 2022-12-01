@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_SEND_PREFERENCES_TO_CRM;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;

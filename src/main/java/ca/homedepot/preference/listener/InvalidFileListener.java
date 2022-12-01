@@ -6,8 +6,10 @@ import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.constants.StorageConstants;
 import com.google.cloud.storage.StorageException;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +19,6 @@ import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import ca.homedepot.preference.util.FileUtil;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,6 +33,7 @@ import static ca.homedepot.preference.dto.enums.JobStatusEnum.IN_PROGRESS;
 @Component
 @Setter
 @Getter
+@Generated
 public class InvalidFileListener implements StepExecutionListener
 {
 
@@ -64,8 +66,8 @@ public class InvalidFileListener implements StepExecutionListener
 			if (this.invalidFiles != null && !this.invalidFiles.isEmpty())
 			{
 				this.invalidFiles.forEach(file -> {
-					String blobToCopy = file.getFilename(),
-							filename = blobToCopy.substring(blobToCopy.lastIndexOf(StorageConstants.SLASH) + 1);
+					String blobToCopy = file.getFilename();
+					String filename = blobToCopy.substring(blobToCopy.lastIndexOf(StorageConstants.SLASH) + 1);
 					String blobWhereToCopy = blobToCopy.replace(FileUtil.getInbound(), FileUtil.getError());
 					writeFile(filename, false);
 					try

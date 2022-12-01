@@ -1,13 +1,11 @@
 package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.util.validation.InboundValidator;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.util.validation.InboundValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.batch.item.validator.ValidationException;
 
 import java.math.BigDecimal;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExactTargetEmailProcessorTest
 {

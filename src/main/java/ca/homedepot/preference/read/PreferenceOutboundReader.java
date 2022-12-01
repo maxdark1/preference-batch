@@ -3,14 +3,8 @@ package ca.homedepot.preference.read;
 
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
-import ca.homedepot.preference.dto.InternalOutboundDto;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
-import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
-import ca.homedepot.preference.mapper.CitiSuppresionOutboundMapper;
-import ca.homedepot.preference.mapper.InternalOutboundStep1Mapper;
-import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
-import ca.homedepot.preference.mapper.SalesforceExtractOutboundMapper;
+import ca.homedepot.preference.dto.*;
+import ca.homedepot.preference.mapper.*;
 import ca.homedepot.preference.service.OutboundService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemReader;
@@ -95,6 +89,20 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
+	public ItemReader<InternalFlexOutboundDTO> outboundInternalFlexDBReader()
+	{
+		purgeFlexAttributes();
+		log.info(" Internal Flex Outbound : Internal Flex Attributes Outbound Reader Starter :" + new Date());
+		JdbcCursorItemReader<InternalFlexOutboundDTO> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION);
+		reader.setRowMapper(new InternalFlexOutboundStep1Mapper());
+
+		log.info(" Internal flex Outbound : Internal Flex Attributes Outbound Reader End :" + new Date());
+		return reader;
+	}
+
 	public JdbcCursorItemReader<InternalOutboundDto> outboundLoyaltyComplaintWeekly()
 	{
 		purgeLoyaltyComplaint();
@@ -141,6 +149,13 @@ public class PreferenceOutboundReader
 		outboundService.purgeLoyaltyComplaintTable();
 		log.info("Deleting hdpc_out_loyalty_compliant records at: {}", new Date());
 	}
+
+	public void purgeFlexAttributes()
+	{
+		outboundService.purgeFlexAttributesTable();
+		log.info("Deleting hdpc_out_program_compliant records at: {}", new Date());
+	}
+
 
 	public void setDataSource(DataSource dataSource)
 	{

@@ -8,17 +8,11 @@ import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

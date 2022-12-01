@@ -1,14 +1,12 @@
 package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.model.InboundRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import ca.homedepot.preference.model.FileInboundStgTable;
-import ca.homedepot.preference.model.InboundRegistration;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

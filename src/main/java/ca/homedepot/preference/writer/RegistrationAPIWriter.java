@@ -1,17 +1,16 @@
 package ca.homedepot.preference.writer;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import ca.homedepot.preference.service.FileService;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.stereotype.Component;
-
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INPROGRESS;
 

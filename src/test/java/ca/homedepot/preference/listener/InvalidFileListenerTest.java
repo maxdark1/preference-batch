@@ -1,16 +1,22 @@
 package ca.homedepot.preference.listener;
 
 import ca.homedepot.preference.config.StorageApplicationGCS;
+import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.CloudStorageUtils;
+import ca.homedepot.preference.util.FileUtil;
 import com.google.api.gax.paging.Page;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
+import lombok.extern.java.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.mockito.internal.verification.Times;
+import org.mockito.verification.VerificationMode;
+import org.slf4j.Logger;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.cloud.gcp.storage.GoogleStorageResource;
@@ -18,17 +24,14 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ca.homedepot.preference.config.StorageApplicationGCS.buildBlobURL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class InvalidFileListenerTest
 {
@@ -39,9 +42,13 @@ class InvalidFileListenerTest
 	CloudStorageUtils cloudStorageUtils;
 
 	@Mock
+	FileService fileService;
+	@Mock
+	Logger log;
+
+	@Mock
 	Page<Blob> blobPage;
 	@InjectMocks
-	@Spy
 	private InvalidFileListener invalidFileListener;
 
 	@BeforeEach
@@ -103,8 +110,11 @@ class InvalidFileListenerTest
 
 		Map<String, List<Resource>> map = new HashMap<>();
 		map.put("INVALID", resourcesGoogle);
+		StepExecution noExecution = new StepExecution("flexAttributesOutbound", new JobExecution(1L));
+		spy.beforeStep(noExecution);
+		verify(spy).beforeStep(noExecution);
 		StepExecution stepExecution = new StepExecution("readInboundCSVFileStep", new JobExecution(10L));
-		invalidFileListener = new InvalidFileListener();
+		//invalidFileListener = new InvalidFileListener();
 		spy.setDirectory("Directory");
 		spy.setProcess("hybris");
 		try (MockedStatic<StorageApplicationGCS> storageApplicationGCSMockedStatic = Mockito
@@ -163,10 +173,6 @@ class InvalidFileListenerTest
 			storageApplicationGCSMockedStatic.when(() -> StorageApplicationGCS.getsGCPResourceMap("Directory", "hybris"))
 					.thenReturn(expected);
 		}
-
-
-
-		//Mockito.when(invalidFileListener.getResources("Directory", "hybris")).thenReturn(expected);
 
 		Map<String, List<Resource>> map = invalidFileListener.getResources("Directory", "hybris");
 		assertEquals(expected, map);

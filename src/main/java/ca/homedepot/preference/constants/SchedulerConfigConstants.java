@@ -11,6 +11,7 @@ public class SchedulerConfigConstants
 	public static final String SOURCE = "source";
 
 	public static final String JOB_STR = "job_name";
+	public static final String FLEX_ATTRIBUTE = "flex_attribute";
 
 	private static final String FIRSTNAME = "FirstName";
 

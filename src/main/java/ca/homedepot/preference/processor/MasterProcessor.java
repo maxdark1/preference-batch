@@ -1,14 +1,12 @@
 package ca.homedepot.preference.processor;
 
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.service.PreferenceService;
+import lombok.experimental.UtilityClass;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
-
-import lombok.experimental.UtilityClass;
-
-import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.service.PreferenceService;
 
 /**
  * Master Processor obtains information from Master catalog
