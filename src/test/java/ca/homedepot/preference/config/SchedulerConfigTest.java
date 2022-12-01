@@ -444,7 +444,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(any(RegistrationLayoutBWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readDBSFMCOptOutsStep2());
+		assertNotNull(schedulerConfig.readDBSFMCOptOutsStep2("jobName"));
 	}
 
 	@Test

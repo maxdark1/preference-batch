@@ -1024,7 +1024,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job sfmcOptOutsEmailOutlookClient()
 	{
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2()).build()
+				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2(JOB_NAME_EXTACT_TARGET_EMAIL)).build()
 				.build();
 	}
 
@@ -1196,7 +1196,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 
 	@Bean
-	public Step readDBSFMCOptOutsStep2()
+	public Step readDBSFMCOptOutsStep2(String jobName)
 	{
 
 		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutB)
