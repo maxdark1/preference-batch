@@ -46,7 +46,7 @@ cron:
     sendPreferencesToCitiSuppresion: 0 40 17 ? * SUN
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
-    sendPreferencesToFlexInternalDestination: 30 * * * * *
+    sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
 server:
   port: 8080
 
