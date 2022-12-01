@@ -902,7 +902,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationHybrisInbound()
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS).to(readLayoutCInboundBDStep2())
+				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS).to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_INBOUND))
 				.build().build();
 
 	}
@@ -996,7 +996,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(COMPLETED_STATUS)
-				.to(readLayoutCInboundBDStep2()).build().build();
+				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_CRM_INBOUND)).build().build();
 
 	}
 
@@ -1011,7 +1011,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(COMPLETED_STATUS)
-				.to(readLayoutCInboundBDStep2()).build().build();
+				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).build().build();
 
 	}
 
@@ -1181,9 +1181,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	@Bean
-	public Step readLayoutCInboundBDStep2()
+	public Step readLayoutCInboundBDStep2(String jobName)
 	{
+		apiWriter.setJobName(jobName);
 		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
 				.reader(inboundDBReader()).writer(apiWriter).build();
 	}
@@ -1195,10 +1195,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	@Bean
 	public Step readDBSFMCOptOutsStep2(String jobName)
 	{
-
+		layoutBWriter.setJobName(jobName);
 		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutB)
 				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).build();
 

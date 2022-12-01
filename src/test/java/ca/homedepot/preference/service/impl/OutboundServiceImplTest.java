@@ -118,10 +118,8 @@ class OutboundServiceImplTest
 	{
 		String repository = "", folder = "OUTBOUND/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
 
-		outboundService.createFile(repository, folder, fileNameFormat,
-				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
-		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat,
-				PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+		outboundService.createFile(repository, folder, fileNameFormat, "");
+		Mockito.verify(outboundService).createFile(repository, folder, fileNameFormat, "");
 	}
 
 }

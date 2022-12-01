@@ -430,7 +430,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readLayoutCInboundBDStep2());
+		assertNotNull(schedulerConfig.readLayoutCInboundBDStep2("jobName"));
 	}
 
 	@Test
