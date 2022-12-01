@@ -1,24 +1,27 @@
 package ca.homedepot.preference.listener;
 
 
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import ca.homedepot.preference.dto.FileDTO;
+import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.service.FileService;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ca.homedepot.preference.model.FileInboundStgTable;
-import ca.homedepot.preference.service.FileService;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INPROGRESS;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.NOTSTARTED;
 
 @Component
 @RequiredArgsConstructor

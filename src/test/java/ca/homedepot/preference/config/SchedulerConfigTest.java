@@ -1,25 +1,22 @@
 package ca.homedepot.preference.config;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
-import javax.sql.DataSource;
-
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.InvalidFileListener;
+import ca.homedepot.preference.listener.JobListener;
+import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.processor.InternalOutboundProcessor;
 import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
+import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
+import ca.homedepot.preference.service.OutboundService;
+import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.*;
@@ -28,17 +25,14 @@ import com.google.cloud.storage.Storage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.batch.core.*;
+import org.mockito.*;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersIncrementer;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.job.builder.*;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.builder.FaultTolerantStepBuilder;
 import org.springframework.batch.core.step.builder.SimpleStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -51,11 +45,18 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.text.FieldPosition;
+import java.text.Format;
 
-import ca.homedepot.preference.listener.JobListener;
-import ca.homedepot.preference.listener.RegistrationItemWriterListener;
-import ca.homedepot.preference.processor.RegistrationItemProcessor;
-import ca.homedepot.preference.tasklet.BatchTasklet;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
 
 
 class SchedulerConfigTest
@@ -135,6 +136,7 @@ class SchedulerConfigTest
 	InternalOutboundProcessor internalOutboundProcessor;
 	@Mock
 	InternalOutboundFileWriter internalOutboundFileWriter;
+	@Spy
 	@InjectMocks
 	SchedulerConfig schedulerConfig;
 	@Autowired
@@ -626,4 +628,36 @@ class SchedulerConfigTest
 		assertNotNull(schedulerConfig.readSendPreferencesToInternalStep2());
 	}
 
+	@Test
+	void testSendPreferencesToFlexInternalDestination() throws IOException
+	{
+
+		OutboundService outboundService = mock(OutboundServiceImpl.class);
+
+		doNothing().when(outboundService).createFlexAttributesFile(anyString(), anyString(), anyString(), anyString());
+		JobBuilder mockJobBuilder = mock(JobBuilder.class);
+		SimpleJobBuilder mockSJobBuilder = mock(SimpleJobBuilder.class);
+		FlowBuilder.TransitionBuilder transitionBuilder1 = mock(FlowBuilder.TransitionBuilder.class);
+		FlowBuilder flowBuilder1 = mock(FlowBuilder.class);
+		when(jobBuilderFactory.get(anyString())).thenReturn(mockJobBuilder);
+		when(mockJobBuilder.incrementer(any(JobParametersIncrementer.class))).thenReturn(mockJobBuilder);
+		when(mockJobBuilder.listener(any(JobListener.class))).thenReturn(mockJobBuilder);
+		when(mockJobBuilder.start(any(Step.class))).thenReturn(mockSJobBuilder);
+		when(mockSJobBuilder.on(anyString())).thenReturn(transitionBuilder1);
+		when(transitionBuilder1.to(any(Step.class))).thenReturn(flowBuilder);
+		when(flowBuilder1.build()).thenReturn(flowJobBuilder);
+		when(flowJobBuilder.build()).thenReturn(job);
+
+		Format formatter = mock(Format.class);
+		when(formatter.format(any(), any(), any(FieldPosition.class))).thenReturn(new StringBuffer("20221125 101210"));
+
+		try
+		{
+			assertNotNull(schedulerConfig.sendPreferencesToFlexInternalDestination());
+		}
+		catch (Exception ex)
+		{
+			ex.getMessage();
+		}
+	}
 }

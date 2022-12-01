@@ -1,11 +1,7 @@
 package ca.homedepot.preference.read;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
-import ca.homedepot.preference.dto.InternalOutboundDto;
-import ca.homedepot.preference.dto.LoyaltyCompliantDTO;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
-import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
+import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.mapper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
@@ -55,6 +51,19 @@ public class PreferenceOutboundDBReader
 		reader.setRowMapper(new InternalOutboundStep2Mapper());
 
 		log.info(" Preference Outbound : Internal Outbound Step 2 Reader End :" + new Date());
+		return reader;
+	}
+
+	public JdbcCursorItemReader<InternalFlexOutboundDTO> outboundInternalFlexDbReader()
+	{
+		log.info(" Preference Outbound : Flex Attributes Internal Outbound Step 2 Reader Starter :" + new Date());
+		JdbcCursorItemReader<InternalFlexOutboundDTO> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_FLEX_ATTRIBUTES);
+		reader.setRowMapper(new InternalFlexOutboundStep2Mapper());
+
+		log.info(" Preference Outbound : Flex Attributes Internal Outbound Step 2 Reader End :" + new Date());
 		return reader;
 	}
 

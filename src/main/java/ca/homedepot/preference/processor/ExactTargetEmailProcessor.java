@@ -13,7 +13,8 @@ import java.util.Date;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.NOTSTARTED;
-import static ca.homedepot.preference.dto.enums.Preference.*;
+import static ca.homedepot.preference.dto.enums.Preference.NUMBER_0;
+import static ca.homedepot.preference.dto.enums.Preference.NUMBER_MINUS_1;
 
 @Slf4j
 public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, FileInboundStgTable>

@@ -1,18 +1,17 @@
 package ca.homedepot.preference.listener;
 
-import java.util.Date;
-
+import ca.homedepot.preference.dto.Job;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
+import ca.homedepot.preference.service.PreferenceService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ca.homedepot.preference.dto.Job;
-import ca.homedepot.preference.service.PreferenceService;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Date;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.JOB_STATUS;

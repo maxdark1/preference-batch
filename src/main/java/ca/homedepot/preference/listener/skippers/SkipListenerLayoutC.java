@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Date;
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.ERROR;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
 
 @Component
 @JobScope

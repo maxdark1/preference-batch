@@ -1,9 +1,5 @@
 package ca.homedepot.preference.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
 import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.Job;
@@ -16,6 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.SUCCESS;
 
