@@ -111,7 +111,7 @@ public class InboundValidator
 	 */
 	public static void validateLanguagePref(InboundRegistration item, StringBuilder error)
 	{
-		if (!item.getLanguagePreference().trim().matches("e|E|f|F|fr|FR|en|EN"))
+		if (!item.getLanguagePreference().toUpperCase().trim().matches("e|E|f|F|fr|FR|en|EN|UNK"))
 			error.append("invalid value for language_pref {}: ").append(item.getLanguagePreference())
 					.append(" not matches with: E, EN, F, FR\n");
 	}
@@ -127,7 +127,7 @@ public class InboundValidator
 	public static void validateEmailFormat(String email, StringBuilder error)
 	{
 		if (email != null && !email.matches(validEmailPattern))
-			error.append(" email address does not have a valid format {}: ").append(email).append("\n");
+			error.append(" email address does not have a valid format {}: ").append(email).append(",");
 
 	}
 
@@ -152,7 +152,7 @@ public class InboundValidator
 		}
 		catch (Exception ex)
 		{
-			error.append("Invalid date format ").append(date).append("\n");
+			error.append("Invalid date format ").append(date).append(",");
 			return asOfDate;
 		}
 	}
@@ -188,7 +188,7 @@ public class InboundValidator
 	public static void validateMonth(int month, StringBuilder error)
 	{
 		if (!(month >= 1 && month <= 12))
-			error.append(" Invalid Month: ").append(month).append(" \n");
+			error.append(" Invalid Month: ").append(month).append(" ,");
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class InboundValidator
 			maxDays = calendar.isLeapYear(year) ? 29 : 28;
 		}
 		if (day < 1 || day > maxDays)
-			error.append(" Invalid day: ").append(day).append("\n");
+			error.append(" Invalid day: ").append(day).append(",");
 	}
 
 	/**
@@ -252,7 +252,7 @@ public class InboundValidator
 		{
 			value = validateIsNumber(item.getValue5(), error);
 			if (value != null && value != 1 && value != 2 && value != 5)
-				error.append("invalid value for field {}: value5 =\n" + value);
+				error.append("invalid value for field {}: value5 =" + value);
 		}
 	}
 
@@ -280,7 +280,7 @@ public class InboundValidator
 		 */
 		if (masterId.equals(new BigDecimal("-400")))
 		{
-			error.append("  Not a valid Source ID ").append(value).append(" for this source. \n");
+			error.append("  Not a valid Source ID ").append(value).append(" for this source. ,");
 			return null;
 		}
 		return masterId;
@@ -326,7 +326,7 @@ public class InboundValidator
 		}
 		catch (NumberFormatException ex)
 		{
-			error.append("invalid number format\n");
+			error.append("invalid number format,");
 		}
 
 		return value;
@@ -343,7 +343,7 @@ public class InboundValidator
 	public static void validValueNumber(Integer value, String field, StringBuilder error)
 	{
 		if (value != null && (value < -1 || value > 1))
-			error.append(" invalid value for field {}: ").append(field).append("\n");
+			error.append(" invalid value for field {}: ").append(field).append(",");
 	}
 
 	/**
@@ -358,7 +358,7 @@ public class InboundValidator
 	{
 		if (item == null)
 		{
-			error.append(" Item should be present\n");
+			error.append(" Item should be present,");
 			return;
 		}
 		validateRequired(item.getLanguagePreference(), "language_pref", error);
@@ -388,7 +388,7 @@ public class InboundValidator
 	{
 		if (value == null || value.isBlank())
 		{
-			error.append(field).append(" should be present\n");
+			error.append(field).append(" should be present,");
 		}
 	}
 

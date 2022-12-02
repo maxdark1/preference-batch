@@ -934,7 +934,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationHybrisInbound()
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS).to(readLayoutCInboundBDStep2())
+				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS).to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_INBOUND))
 				.build().build();
 
 	}
@@ -955,7 +955,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File: " + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File on Job {}: {}", JOB_NAME_SEND_PREFERENCES_TO_CRM, ex.getMessage());
 			throw ex;
 		}
 
@@ -981,7 +981,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files" + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files on Job {} : {}", JOB_NAME_INTERNAL_DESTINATION , ex.getMessage());
 			throw ex;
 		}
 
@@ -991,6 +991,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
+	@SneakyThrows
 	public Job sendPreferencesToFlexInternalDestination()
 	{
 		OutboundService outboundService = new OutboundServiceImpl();
@@ -1001,8 +1002,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			//TODO catch the exception that is thrown and what should happen if there is exception
-			log.error("Error during the creation of Flex Internal Destination Files" + ex.getMessage());
+			log.error("Error during the creation of Flex Internal Destination Files on Job {} : {}", JOB_NAME_FLEX_INTERNAL_DESTINATION , ex.getMessage());
+			throw ex;
 		}
 
 		//Execute the Job
@@ -1064,7 +1065,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(COMPLETED_STATUS)
-				.to(readLayoutCInboundBDStep2()).build().build();
+				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_CRM_INBOUND)).build().build();
 
 	}
 
@@ -1079,7 +1080,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(COMPLETED_STATUS)
-				.to(readLayoutCInboundBDStep2()).build().build();
+				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).build().build();
 
 	}
 
@@ -1092,7 +1093,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job sfmcOptOutsEmailOutlookClient()
 	{
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2()).build()
+				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2(JOB_NAME_EXTACT_TARGET_EMAIL)).build()
 				.build();
 	}
 
@@ -1249,9 +1250,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	@Bean
-	public Step readLayoutCInboundBDStep2()
+	public Step readLayoutCInboundBDStep2(String jobName)
 	{
+		apiWriter.setJobName(jobName);
 		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
 				.reader(inboundDBReader()).writer(apiWriter).build();
 	}
@@ -1263,10 +1264,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	@Bean
-	public Step readDBSFMCOptOutsStep2()
+	public Step readDBSFMCOptOutsStep2(String jobName)
 	{
-
+		layoutBWriter.setJobName(jobName);
 		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutB)
 				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).build();
 

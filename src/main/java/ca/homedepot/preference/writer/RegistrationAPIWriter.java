@@ -30,6 +30,11 @@ public class RegistrationAPIWriter implements ItemWriter<RegistrationRequest>
 	private FileService fileService;
 
 	/**
+	 * The Job Name that is currently being executed
+	 */
+	private String jobName;
+
+	/**
 	 * Sends the item to the API via LayoutC endpoint
 	 * 
 	 * @param items
@@ -52,7 +57,7 @@ public class RegistrationAPIWriter implements ItemWriter<RegistrationRequest>
 		}
 		catch (Exception e)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point \n: {}",
+			log.error(" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point on job {} \n: {}", jobName,
 					e.getMessage());
 			throw e;
 		}
