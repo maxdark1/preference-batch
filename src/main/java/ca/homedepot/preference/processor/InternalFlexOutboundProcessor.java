@@ -15,6 +15,10 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlexOutboundDTO, InternalFlexOutboundProcessorDTO>
 {
+
+	private final Format formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 	/**
 	 * This method is used to transform the data coming from the db into the data to write in CSV file
 	 *
@@ -27,8 +31,6 @@ public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlex
 	public InternalFlexOutboundProcessorDTO process(InternalFlexOutboundDTO item) throws Exception
 	{
 
-		Format formatter1 = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
-		DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime itemEffectiveDate = item.getEffectiveDate();
 		String effectiveDate = null != itemEffectiveDate ? itemEffectiveDate.format(formatter2) : "";
 

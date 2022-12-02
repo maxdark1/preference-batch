@@ -1002,7 +1002,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			log.error("Error during the creation of Flex Internal Destination Files on Job {} : {}", JOB_NAME_FLEX_INTERNAL_DESTINATION , ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Flex Internal Destination Files on Job {} : {}", JOB_NAME_FLEX_INTERNAL_DESTINATION , ex.getMessage());
 			throw ex;
 		}
 
