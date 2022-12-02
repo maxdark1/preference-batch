@@ -80,7 +80,8 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		setFileRecord(fileName);
 		file = header + file;
 		byte[] content = file.getBytes();
-		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName), JOB_NAME_SEND_PREFERENCES_TO_CRM, content);
+		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName),
+				JOB_NAME_SEND_PREFERENCES_TO_CRM, content);
 	}
 
 	/**

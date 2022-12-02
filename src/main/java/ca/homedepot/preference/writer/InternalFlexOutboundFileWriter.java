@@ -34,6 +34,7 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 	public static final String COMMA = ",";
 	public static final String CR = "\n";
 	public static final String YYYYMMDD_HHMMSS = "yyyyMMdd HHmmss";
+	private final Format formatter = new SimpleDateFormat(YYYYMMDD_HHMMSS);
 	public static final String YYYYMMDD_T_HHMISS = "YYYYMMDDTHHMISS";
 	public static final String SPACE = " ";
 	public static final String TEE = "T";
@@ -76,8 +77,7 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 
 	private void generateFile(String record, String fileNameFormat) throws IOException
 	{
-		///
-		Format formatter = new SimpleDateFormat(YYYYMMDD_HHMMSS);
+
 		String stamp = formatter.format(Calendar.getInstance().getTime());
 		String fileName = fileNameFormat.replace(YYYYMMDD_T_HHMISS, stamp.replace(SPACE, TEE));
 

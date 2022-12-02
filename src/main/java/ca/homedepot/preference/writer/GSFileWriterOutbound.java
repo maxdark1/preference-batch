@@ -75,14 +75,18 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	 * @param filename
 	 * @param content
 	 */
-	public static void createFileOnGCS(String filename, String jobName ,byte[] content) {
-		try {
+	public static void createFileOnGCS(String filename, String jobName, byte[] content)
+	{
+		try
+		{
 			BlobId blobId = BlobId.of(getBucketName(), filename);
 			BlobInfo file = BlobInfo.newBuilder(blobId).build();
 			storage().create(file, content);
 
-		}catch (StorageException e){
-			log.error(" PREFERENCE BATCH ERROR - Failure on job {} to publish the file {} on bucket", jobName,filename);
+		}
+		catch (StorageException e)
+		{
+			log.error(" PREFERENCE BATCH ERROR - Failure on job {} to publish the file {} on bucket", jobName, filename);
 		}
 	}
 }

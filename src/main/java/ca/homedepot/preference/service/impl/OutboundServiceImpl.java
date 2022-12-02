@@ -28,6 +28,7 @@ public class OutboundServiceImpl implements OutboundService
 	private JdbcTemplate jdbcTemplate;
 
 	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
+	private final Format dateTimeFormatter = new SimpleDateFormat("yyyyMMdd HHmmss");
 
 	/**
 	 * This methos is used to make a connection with DB and execute a query to get necessary data
@@ -97,8 +98,7 @@ public class OutboundServiceImpl implements OutboundService
 			throws IOException
 	{
 		// Creat file and insert the headers
-		Format formatter = new SimpleDateFormat("yyyyMMdd HHmmss");
-		String stamp = formatter.format(Calendar.getInstance().getTime());
+		String stamp = dateTimeFormatter.format(Calendar.getInstance().getTime());
 		String fileName = fileNameFormat.replace("YYYYMMDDTHHMISS", stamp.replace(" ", "T"));
 
 		File tempFile = FileUtil.createTempFile(CloudStorageUtils.generatePath(folder, fileName));
@@ -111,7 +111,7 @@ public class OutboundServiceImpl implements OutboundService
 		catch (IOException ex)
 		{ // TODO is there any specific exception and what should happen in case of exception.
 		  // Make the batch status failed
-			log.error("File creation error" + ex.getMessage());
+			log.error("PREFERENCE BATCH ERROR - File {} creation error : {}", fileName, ex);
 		}
 
 	}

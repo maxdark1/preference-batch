@@ -934,8 +934,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationHybrisInbound()
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS).to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_INBOUND))
-				.build().build();
+				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS)
+				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_INBOUND)).build().build();
 
 	}
 
@@ -955,7 +955,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File on Job {}: {}", JOB_NAME_SEND_PREFERENCES_TO_CRM, ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File on Job {}: {}",
+					JOB_NAME_SEND_PREFERENCES_TO_CRM, ex.getMessage());
 			throw ex;
 		}
 
@@ -975,13 +976,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFileGCS(internalRepository, internalFolder, internalCANameFormat, INTERNAL_CA_HEADERS);
-			outboundService.createFileGCS(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
-			outboundService.createFileGCS(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
+			outboundService.createFileGCS(internalRepository, internalFolder, internalCANameFormat, "");
+			outboundService.createFileGCS(internalRepository, internalFolder, internalGardenNameFormat, "");
+			outboundService.createFileGCS(internalRepository, internalFolder, internalMoverNameFormat, "");
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files on Job {} : {}", JOB_NAME_INTERNAL_DESTINATION , ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files on Job {} : {}",
+					JOB_NAME_INTERNAL_DESTINATION, ex.getMessage());
 			throw ex;
 		}
 
@@ -1002,7 +1004,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			log.error("Error during the creation of Flex Internal Destination Files on Job {} : {}", JOB_NAME_FLEX_INTERNAL_DESTINATION , ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Flex Internal Destination Files on Job {} : {}",
+					JOB_NAME_FLEX_INTERNAL_DESTINATION, ex.getMessage());
 			throw ex;
 		}
 
@@ -1093,8 +1096,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job sfmcOptOutsEmailOutlookClient()
 	{
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2(JOB_NAME_EXTACT_TARGET_EMAIL)).build()
-				.build();
+				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS)
+				.to(readDBSFMCOptOutsStep2(JOB_NAME_EXTACT_TARGET_EMAIL)).build().build();
 	}
 
 	/**

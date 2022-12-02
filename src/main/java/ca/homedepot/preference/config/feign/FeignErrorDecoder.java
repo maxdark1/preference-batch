@@ -24,8 +24,8 @@ public class FeignErrorDecoder implements ErrorDecoder
 	@Override
 	public Exception decode(final String key, final Response response)
 	{
-		log.error("PREFERENCE BATCH ERROR - Error occurred while calling {} with the status {} and for the cause {}", key, response.status(),
-				response.reason());
+		log.error("PREFERENCE BATCH ERROR - Error occurred while calling {} with the status {} and for the cause {}", key,
+				response.status(), response.reason());
 		return FeignException.errorStatus(key, response);
 	}
 }

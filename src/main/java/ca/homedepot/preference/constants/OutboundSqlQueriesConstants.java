@@ -343,7 +343,7 @@ public class OutboundSqlQueriesConstants
 			+ "\tFROM hdpc_out_loyalty_compliant;";
 	public static final String SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE = "TRUNCATE TABLE hdpc_out_loyalty_compliant";
 
-	public static final String SQL_TRUNCATE_FLEX_ATTRIBUTE = "TRUNCATE TABLE public.hdpc_out_flex_attributes";
+	public static final String SQL_TRUNCATE_FLEX_ATTRIBUTE = "TRUNCATE TABLE hdpc_out_flex_attributes";
 	public static final String SQL_INSERT_FLEX_ATTRIBUTE = "INSERT INTO hdpc_out_flex_attributes(\n"
 			+ "\tfile_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, industry_code, company_name, contact_first_name, contact_last_name, contact_role)\n"
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -368,8 +368,7 @@ public class OutboundSqlQueriesConstants
 
 	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "SELECT file_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, "
 			+ "customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, "
-			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role "
-			+ "FROM public.hdpc_out_flex_attributes;";
+			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role " + "FROM hdpc_out_flex_attributes;";
 
 
 }
