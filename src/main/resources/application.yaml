@@ -40,10 +40,10 @@ spring:
 #      enabled: false
 cron:
   job:
-    hybrisIngestion: 0 0/5 * * * *
+    hybrisIngestion: 0 45 9 * * ?
     crmIngestion: 0 30 22 * * ?
     fbsfmcIngestion: 0 0 3 * * ?
-    ingestSFMCOutlookUnsubscribed: 0 0/6 * * * *
+    ingestSFMCOutlookUnsubscribed: 0 20 2 ? * FRI
     sendPreferencesToCRM: 0 0 18 * * ?
     sendPreferencesToCitiSuppresion: 0 40 17 ? * SUN
     sendPreferencesToInternalDestination: 0 0 10 ? * MON

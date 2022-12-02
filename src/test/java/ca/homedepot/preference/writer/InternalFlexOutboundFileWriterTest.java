@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_FLEX_INTERNAL_DESTINATION;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.STATUS_STR;
 import static org.mockito.Mockito.*;
 
@@ -104,8 +105,7 @@ class InternalFlexOutboundFileWriterTest
 			{
 
 				mockMasterProcessor.when(() -> {
-					GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
-							record.getBytes());
+					GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName), JOB_NAME_FLEX_INTERNAL_DESTINATION, record.getBytes());
 				});
 			}
 
