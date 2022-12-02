@@ -7,7 +7,7 @@ spring:
     password:
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: pcam
+      schema: public
   batch:
     job:
       enabled: false
