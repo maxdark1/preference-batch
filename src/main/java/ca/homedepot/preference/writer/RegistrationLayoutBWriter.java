@@ -57,8 +57,9 @@ public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest
 		}
 		catch (Exception e)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point on job {} \n: {}",jobName,
-					e.getMessage());
+			log.error(
+					" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point on job {} \n: {}",
+					jobName, e.getMessage());
 			throw e;
 		}
 

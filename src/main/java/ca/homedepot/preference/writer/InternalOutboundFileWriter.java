@@ -90,11 +90,12 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	 */
 	private void generateFileGCS(String file, String filepath, String header)
 	{
-		//file = header + file;
+		file = header + file;
 		String fileName = getFileName(filepath);
 		setFileRecord(fileName);
 		byte[] content = file.getBytes();
-		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName), JOB_NAME_INTERNAL_DESTINATION, content);
+		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
+				JOB_NAME_INTERNAL_DESTINATION, content);
 	}
 
 	/**

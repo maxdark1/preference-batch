@@ -105,7 +105,8 @@ class InternalFlexOutboundFileWriterTest
 			{
 
 				mockMasterProcessor.when(() -> {
-					GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName), JOB_NAME_FLEX_INTERNAL_DESTINATION, record.getBytes());
+					GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
+							JOB_NAME_FLEX_INTERNAL_DESTINATION, record.getBytes());
 				});
 			}
 

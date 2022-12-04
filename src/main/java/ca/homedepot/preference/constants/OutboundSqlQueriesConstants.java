@@ -371,5 +371,4 @@ public class OutboundSqlQueriesConstants
 			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role "
 			+ "FROM hdpc_out_flex_attributes;";
 
-
 }
