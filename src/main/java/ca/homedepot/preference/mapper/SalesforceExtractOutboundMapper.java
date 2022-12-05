@@ -24,7 +24,7 @@ public class SalesforceExtractOutboundMapper implements RowMapper<SalesforceExtr
 		salesforce.setEmailStatus(rs.getString("email_status"));
 		salesforce.setEmailPtc(rs.getString("email_ptc"));
 		salesforce.setLanguagePreference(rs.getString("language_preference"));
-		salesforce.setEarliestOptInDate(rs.getTimestamp("earliest_opt_in_date").toLocalDateTime());
+		salesforce.setEarliestOptInDate(rs.getTimestamp("earliest_opt_in_date") != null ? rs.getTimestamp("earliest_opt_in_date").toLocalDateTime() : null);
 		salesforce.setHdCanadaEmailCompliantFlag(rs.getString("hd_canada_email_compliant_flag"));
 		salesforce.setHdCanadaFlag(rs.getString("hd_canada_flag"));
 		salesforce.setGardenClubFlag(rs.getString("garden_club_flag"));
