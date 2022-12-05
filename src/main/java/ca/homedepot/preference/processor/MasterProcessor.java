@@ -62,6 +62,15 @@ public class MasterProcessor
 	}
 
 	/**
+	 * Gets Customer Type CD from Master table
+	 * @param oldId
+	 * @return Master value for old id assigned
+	 */
+	public static BigDecimal getCustTypeCD(String oldId)
+	{
+		return masterList.stream().filter(master -> master.getKeyValue().equals(CUST_TYPE) && master.getMasterId().toPlainString().equals(oldId)).map(Master::getMasterId).findFirst().orElse(null);
+	}
+	/**
 	 * Gets the actual MasterID for the current source
 	 * 
 	 * @param oldId
@@ -73,7 +82,7 @@ public class MasterProcessor
 		BigDecimal masterId = new BigDecimal("-400");
 
 		Optional<Master> optional = masterList.stream().filter(master -> master.getOldID() != null
-				&& (master.getKeyValue().equals("SOURCE_ID") || master.getKeyValue().equals(CUST_TYPE)) && master.getOldID().equals(new BigDecimal(oldId))).findFirst();
+				&& master.getKeyValue().equals("SOURCE_ID") && master.getOldID().equals(new BigDecimal(oldId))).findFirst();
 		if (optional.isPresent())
 		{
 

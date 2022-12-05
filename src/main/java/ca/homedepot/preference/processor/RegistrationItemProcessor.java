@@ -1,17 +1,18 @@
 package ca.homedepot.preference.processor;
 
-import ca.homedepot.preference.model.FileInboundStgTable;
-import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.util.constants.StorageConstants;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.validator.ValidationException;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.util.validation.InboundValidator.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
-import static ca.homedepot.preference.util.validation.InboundValidator.*;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.validator.ValidationException;
+
+import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.util.constants.StorageConstants;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RegistrationItemProcessor implements ItemProcessor<InboundRegistration, FileInboundStgTable>
@@ -86,7 +87,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 				.content2(item.getContent2()).storeNbr(item.getContent2()).value2(item.getValue2()).content3(item.getContent3())
 				.orgName(item.getContent3()).value3(item.getValue3()).content4(item.getContent4()).value4(item.getValue4())
 				.content5(item.getContent5()).custTypeCd(item.getContent5())
-				.value5(MasterProcessor.getSourceID(item.getValue5()).toPlainString()).content6(item.getContent6())
+				.value5(MasterProcessor.getCustTypeCD(item.getValue5()).toPlainString()).content6(item.getContent6())
 				.value6(item.getValue6()).content7(item.getContent7()).value7(item.getValue7()).content8(item.getValue8())
 				.value8(item.getValue8()).content9(item.getContent9()).value9(item.getValue9()).content10(item.getContent10())
 				.value10(item.getValue10()).content11(item.getContent11()).value11(item.getValue11()).content12(item.getContent12())
