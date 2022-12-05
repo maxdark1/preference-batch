@@ -68,7 +68,7 @@ public class MasterProcessor
 	 */
 	public static BigDecimal getCustTypeCD(String oldId)
 	{
-		return masterList.stream().filter(master -> master.getKeyValue().equals(CUST_TYPE) && master.getMasterId().toPlainString().equals(oldId)).map(Master::getMasterId).findFirst().orElse(null);
+		return masterList.stream().filter(master -> master.getKeyValue().equals(CUST_TYPE) && master.getOldID().equals(new BigDecimal(oldId))).map(Master::getMasterId).findFirst().orElse(null);
 	}
 	/**
 	 * Gets the actual MasterID for the current source
