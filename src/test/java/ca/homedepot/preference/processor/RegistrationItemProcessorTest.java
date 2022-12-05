@@ -68,8 +68,10 @@ public class RegistrationItemProcessorTest
 				.add(new Master(new BigDecimal("99"), BigDecimal.TEN, "SOURCE_ID", "CANADA SAP CRM", true, new BigDecimal("100")));
 		masterList.add(new Master(new BigDecimal("128"), BigDecimal.TEN, "SOURCE_ID", "Facebook Opt in campaign", true,
 				new BigDecimal("188")));
-		masterList.add(new Master(new BigDecimal("113"), BigDecimal.TEN, "CUST_TYPE_CD", "Facebook Opt in campaign", true,
-				new BigDecimal("01")));
+		masterList.add(new Master(new BigDecimal("113"), BigDecimal.TEN, "CUST_TYPE", "Facebook Opt in campaign", true,
+				new BigDecimal("1")));
+		masterList.add(new Master(new BigDecimal("113"), BigDecimal.TEN, "CUST_TYPE", "Facebook Opt in campaign", true,
+				new BigDecimal("2")));
 
 
 		MasterProcessor.setMasterList(masterList);
