@@ -605,7 +605,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.sendPreferencesToSFMC")
+	@Scheduled(cron = "${cron.job.sendPreferencesToSFMC}")
 	public void sendEmailMarketingPreferencesToSMFC() throws Exception
 	{
 		log.info(" Send Email Marketing Preferences To SMFC Job started at: {} ", new Date());
