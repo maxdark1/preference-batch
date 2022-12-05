@@ -49,6 +49,7 @@ cron:
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
     sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
+    sendPreferencesToSFMC: 0 0 18 * * ?
 server:
   port: 8080
 
