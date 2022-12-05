@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.CUST_TYPE;
+
 /**
  * Master Processor obtains information from Master catalog
  */
@@ -71,7 +73,7 @@ public class MasterProcessor
 		BigDecimal masterId = new BigDecimal("-400");
 
 		Optional<Master> optional = masterList.stream().filter(master -> master.getOldID() != null
-				&& master.getKeyValue().equals("SOURCE_ID") && master.getOldID().equals(new BigDecimal(oldId))).findFirst();
+				&& (master.getKeyValue().equals("SOURCE_ID") || master.getKeyValue().equals(CUST_TYPE)) && master.getOldID().equals(new BigDecimal(oldId))).findFirst();
 		if (optional.isPresent())
 		{
 
