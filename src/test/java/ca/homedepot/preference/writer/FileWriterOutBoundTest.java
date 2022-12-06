@@ -14,18 +14,17 @@ import org.mockito.*;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class FileWriterOutBoundTest

@@ -1,14 +1,12 @@
 package ca.homedepot.preference.dto;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
-import javax.validation.Valid;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.Map;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)

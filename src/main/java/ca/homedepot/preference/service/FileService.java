@@ -1,14 +1,14 @@
 package ca.homedepot.preference.service;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 
 @Service

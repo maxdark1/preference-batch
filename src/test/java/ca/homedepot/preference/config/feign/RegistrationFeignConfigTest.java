@@ -25,6 +25,9 @@ class RegistrationFeignConfigTest
 				registrationFeignConfig.preferenceRegistrationClient();
 			});
 		});
+		assertThat(registrationFeignConfig.feignContract()).isNotNull();
+		assertThat(registrationFeignConfig.feignErrorDecoder()).isNotNull();
+		assertThat(registrationFeignConfig.feignLoggerLevel()).isNotNull();
 	}
 
 }

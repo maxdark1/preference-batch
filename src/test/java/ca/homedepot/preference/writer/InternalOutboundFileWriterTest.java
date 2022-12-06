@@ -2,7 +2,8 @@ package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.dto.*;
+import ca.homedepot.preference.dto.InternalOutboundProcessorDto;
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,9 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 
 @Slf4j

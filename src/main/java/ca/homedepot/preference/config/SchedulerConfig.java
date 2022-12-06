@@ -1,36 +1,37 @@
 package ca.homedepot.preference.config;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-
-import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
+import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.InvalidFileListener;
+import ca.homedepot.preference.listener.JobListener;
+import ca.homedepot.preference.listener.RegistrationItemWriterListener;
 import ca.homedepot.preference.listener.StepErrorLoggingListener;
-import ca.homedepot.preference.mapper.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
+import ca.homedepot.preference.mapper.*;
+import ca.homedepot.preference.model.EmailOptOuts;
+import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.processor.*;
 import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
+import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import ca.homedepot.preference.util.validation.FileValidation;
+import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.*;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.springframework.batch.core.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -55,16 +56,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import ca.homedepot.preference.listener.JobListener;
-import ca.homedepot.preference.listener.RegistrationItemWriterListener;
-import ca.homedepot.preference.model.EmailOptOuts;
-import ca.homedepot.preference.model.FileInboundStgTable;
-import ca.homedepot.preference.model.InboundRegistration;
-import ca.homedepot.preference.tasklet.BatchTasklet;
-import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
-import ca.homedepot.preference.util.validation.InboundValidator;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static ca.homedepot.preference.constants.PreferenceBatchConstants.*;
 import static ca.homedepot.preference.constants.SchedulerConfigConstants.*;
@@ -99,6 +96,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
 
 	public static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
+
+	public static final String JOB_NAME_FLEX_INTERNAL_DESTINATION = "SendPreferencesToInternalFlexDestination";
 
 	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSource";
 	/**
@@ -148,9 +147,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	Integer chunkOutboundSalesforce;
 	@Value("${preference.centre.outboundInternal.chunk}")
 	Integer chunkOutboundInternal;
-
 	@Value("${preference.centre.outboundLoyalty.chunk}")
 	Integer chunkOutboundLoyalty;
+	@Value("${preference.centre.outboundFlexAttributes.chunk}")
+	Integer chunkOutboundFlexAttributes;
+
 	/**
 	 * The folders paths
 	 */
@@ -190,6 +191,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${folders.loyaltyCompliant.path}")
 	String loyaltyCompliantPath;
 
+	@Value("${folders.flexAttributes.path}")
+	String flexAttibutesPath;
+
 	/**
 	 * Folders ERROR, INBOUND AND PROCCESED
 	 */
@@ -216,11 +220,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String internalGardenNameFormat;
 	@Value("${outbound.files.internalMover}")
 	String internalMoverNameFormat;
+	@Value("${outbound.files.flexAttributes}")
+	String flexAttributesNameFormat;
 	@Value("${folders.internal.path}")
 	String internalRepository;
+	@Value("${folders.flexAttributes.path}")
+	String flexAttributesRepository;
+
 	@Value("${folders.outbound}")
 	String internalFolder;
 
+	@Value("${folders.outbound}")
+	String flexAttributesFolder;
 
 
 
@@ -354,6 +365,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private InternalOutboundProcessor internalOutboundProcessor;
 	@Autowired
 	private InternalOutboundFileWriter internalOutboundFileWriter;
+
+	@Autowired
+	private InternalFlexOutboundStep1Writer internalFlexOutboundStep1Writer;
+	@Autowired
+	private InternalFlexOutboundProcessor internalFlexOutboundProcessor;
+	@Autowired
+	private InternalFlexOutboundFileWriter internalFlexOutboundFileWriter;
+
 	@Autowired
 	InvalidFileListener invalidFileListener;
 
@@ -544,6 +563,19 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To Internal Destination Job finished with status : " + execution.getStatus());
 	}
 
+	@Scheduled(cron = "${cron.job.sendPreferencesToFlexInternalDestination}")
+	public void sendPreferencesToFlexInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+	{
+		log.info(" Send Preferences To Flex Internal Destination Job started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_FLEX_INTERNAL_DESTINATION, String.valueOf(System.currentTimeMillis()))
+				.addString(DIRECTORY, flexAttibutesPath + folderOutbound).addString(SOURCE, FLEX_ATTRIBUTE)
+				.addString(JOB_STR, JOB_NAME_FLEX_INTERNAL_DESTINATION).toJobParameters();
+		JobExecution execution = jobLauncher.run(sendPreferencesToFlexInternalDestination(), param);
+		log.info(" Send Preferences To Flex Internal Destination Job finished with status : " + execution.getStatus());
+	}
+
 	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
 	public void sendCitiSuppresionToCitiSuppresion() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
@@ -573,7 +605,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
+	@Scheduled(cron = "${cron.job.sendPreferencesToSFMC}")
 	public void sendEmailMarketingPreferencesToSMFC() throws Exception
 	{
 		log.info(" Send Email Marketing Preferences To SMFC Job started at: {} ", new Date());
@@ -833,7 +865,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
 		citiSupressionFileWriter.setFolderSource(folderOutbound);
 		citiSupressionFileWriter.setRepositorySource(citiPath);
-		citiSupressionFileWriter.setHeader(CITI_SUPPRESION_HEADER);
 		citiSupressionFileWriter.setSource(CITI_BANK);
 		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
@@ -852,7 +883,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		loyaltyComplaintWriter.setFileService(hybrisWriterListener.getFileService());
 		loyaltyComplaintWriter.setFolderSource(folderOutbound);
 		loyaltyComplaintWriter.setRepositorySource(loyaltyCompliantPath);
-		loyaltyComplaintWriter.setHeader(LOYALTY_COMPLAINT_WEEKLY_HEADERS);
 		loyaltyComplaintWriter.setSource(CITI_BANK);
 		loyaltyComplaintWriter.setFileNameFormat(weeklyCompliantNameFormat);
 		loyaltyComplaintWriter.setJobName(JOB_NAME_LOYALTY_COMPLAINT);
@@ -904,8 +934,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job registrationHybrisInbound()
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS).to(readLayoutCInboundBDStep2())
-				.build().build();
+				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS)
+				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_INBOUND)).build().build();
 
 	}
 
@@ -921,12 +951,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFileGCS(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat,
-					PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+			outboundService.createFileGCS(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat, "");
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File: " + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File on Job {}: {}",
+					JOB_NAME_SEND_PREFERENCES_TO_CRM, ex.getMessage());
 			throw ex;
 		}
 
@@ -952,7 +982,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files" + ex.getMessage());
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files on Job {} : {}",
+					JOB_NAME_INTERNAL_DESTINATION, ex.getMessage());
 			throw ex;
 		}
 
@@ -961,6 +992,45 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.start(readSendPreferencesToInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToInternalStep2()).build()
 				.build();
 	}
+
+	@SneakyThrows
+	public Job sendPreferencesToFlexInternalDestination()
+	{
+		OutboundService outboundService = new OutboundServiceImpl();
+		try
+		{
+			outboundService.createFlexAttributesFile(flexAttributesRepository, flexAttributesFolder, flexAttributesNameFormat,
+					FLEX_INTERNAL_HEADERS);
+		}
+		catch (IOException ex)
+		{
+			log.error("Error during the creation of Flex Internal Destination Files on Job {} : {}",
+					JOB_NAME_FLEX_INTERNAL_DESTINATION, ex.getMessage());
+			throw ex;
+		}
+
+		//Execute the Job
+		return jobBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(readSendPreferencesToFlexInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToFlexInternalStep2())
+				.build().build();
+	}
+
+	public Step readSendPreferencesToFlexInternalStep1()
+	{
+		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step1")
+				.<InternalFlexOutboundDTO, InternalFlexOutboundDTO> chunk(chunkOutboundFlexAttributes)
+				.reader(preferenceOutboundReader.outboundInternalFlexDBReader()).writer(internalFlexOutboundStep1Writer).build();
+	}
+
+	public Step readSendPreferencesToFlexInternalStep2()
+	{
+		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step2")
+				.<InternalFlexOutboundDTO, InternalFlexOutboundProcessorDTO> chunk(chunkOutboundFlexAttributes)
+				.reader(preferenceOutboundDBReader.outboundInternalFlexDbReader()).processor(internalFlexOutboundProcessor)
+				.writer(internalFlexOutboundFileWriter).build();
+	}
+
+
 
 	/**
 	 * Step 1 for get data from DB
@@ -998,7 +1068,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(COMPLETED_STATUS)
-				.to(readLayoutCInboundBDStep2()).build().build();
+				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_CRM_INBOUND)).build().build();
 
 	}
 
@@ -1013,7 +1083,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(COMPLETED_STATUS)
-				.to(readLayoutCInboundBDStep2()).build().build();
+				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).build().build();
 
 	}
 
@@ -1026,8 +1096,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job sfmcOptOutsEmailOutlookClient()
 	{
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS).to(readDBSFMCOptOutsStep2()).build()
-				.build();
+				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS)
+				.to(readDBSFMCOptOutsStep2(JOB_NAME_EXTACT_TARGET_EMAIL)).build().build();
 	}
 
 	/**
@@ -1183,9 +1253,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	@Bean
-	public Step readLayoutCInboundBDStep2()
+	public Step readLayoutCInboundBDStep2(String jobName)
 	{
+		apiWriter.setJobName(jobName);
 		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
 				.reader(inboundDBReader()).writer(apiWriter).build();
 	}
@@ -1197,10 +1267,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	@Bean
-	public Step readDBSFMCOptOutsStep2()
+	public Step readDBSFMCOptOutsStep2(String jobName)
 	{
-
+		layoutBWriter.setJobName(jobName);
 		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutB)
 				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).build();
 

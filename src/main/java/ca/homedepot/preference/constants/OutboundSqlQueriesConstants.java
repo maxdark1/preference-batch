@@ -343,5 +343,31 @@ public class OutboundSqlQueriesConstants
 			+ "\tFROM hdpc_out_loyalty_compliant;";
 	public static final String SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE = "TRUNCATE TABLE hdpc_out_loyalty_compliant";
 
+	public static final String SQL_TRUNCATE_FLEX_ATTRIBUTE = "TRUNCATE TABLE hdpc_out_flex_attributes";
+	public static final String SQL_INSERT_FLEX_ATTRIBUTE = "INSERT INTO hdpc_out_flex_attributes(\n"
+			+ "\tfile_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, industry_code, company_name, contact_first_name, contact_last_name, contact_role)\n"
+			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+	public static final String SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION = "select MAX(hfc.file_id) file_id\n"
+			+ "     , hfc.sequence_nbr, he.email email_addr, ha.address_id hd_hh_id\n"
+			+ "     , c.customer_id hd_ind_id, cx.customer_nbr, cx.store_nbr, cx.org_name\n"
+			+ "     , cx.industry_code company_cd, cx.cust_type cust_type_cd, c.source_type source_id\n"
+			+ "     , ce.updated_date last_update_date, cx.industry_code, cx.org_name company_name\n"
+			+ "     , c.first_name contact_first_name, c.last_name contact_last_name, '' contact_role\n"
+			+ "     , max(ce.effective_date) effective_date from hdpc_customer c  join hdpc_customer_email ce\n"
+			+ "              on c.customer_id = ce.customer_id AND ce.active\n"
+			+ "         left join hdpc_email he on ce.email_id = he.email_id\n"
+			+ "         left join hdpc_customer_address ca on c.customer_id = ca.customer_id\n"
+			+ "         left join hdpc_address ha on ha.address_id = c.def_address_id\n"
+			+ "         left join hdpc_customer_extn cx on c.customer_id = cx.customer_id\n"
+			+ "         left join hdpc_file_customer hfc on c.customer_id = hfc.customer_id\n"
+			+ " group by hfc.sequence_nbr, he.email, ha.address_id, c.customer_id\n"
+			+ "       , cx.customer_nbr, cx.store_nbr, cx.org_name, cx.industry_code\n"
+			+ "       , cx.cust_type, c.source_type, ce.updated_date, cx.industry_code\n"
+			+ "       , cx.org_name, c.first_name, c.last_name;";
+
+	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "SELECT file_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, "
+			+ "customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, "
+			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role " + "FROM hdpc_out_flex_attributes;";
 
 }

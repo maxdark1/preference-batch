@@ -1,17 +1,16 @@
 package ca.homedepot.preference.writer;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import ca.homedepot.preference.service.FileService;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.stereotype.Component;
-
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.service.PreferenceService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INPROGRESS;
 
@@ -29,6 +28,11 @@ public class RegistrationAPIWriter implements ItemWriter<RegistrationRequest>
 	 * The file service
 	 */
 	private FileService fileService;
+
+	/**
+	 * The Job Name that is currently being executed
+	 */
+	private String jobName;
 
 	/**
 	 * Sends the item to the API via LayoutC endpoint
@@ -53,8 +57,9 @@ public class RegistrationAPIWriter implements ItemWriter<RegistrationRequest>
 		}
 		catch (Exception e)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point \n: {}",
-					e.getMessage());
+			log.error(
+					" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point on job {} \n: {}",
+					jobName, e.getMessage());
 			throw e;
 		}
 
