@@ -6,7 +6,6 @@ import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import ca.homedepot.preference.util.CloudStorageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.ItemWriter;
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -37,6 +38,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	private String sourceId;
 	@Autowired
 	private FileService fileService;
+	private FileOutputStream writer;
 
 	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
 
@@ -66,22 +68,26 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 					.append(preference.getHdCaProSrcId());
 		}
 
-		generateFileGCS(fileBuilder.toString(), "");
+		generateFile(fileBuilder.toString());
 
 	}
 
 
 	/**
-	 * Generate file for GCP purposes
+	 * This Method saves in a plain text file the string that receives as parameter
+	 *
+	 * @param file
+	 * @throws IOException
 	 */
-	private void generateFileGCS(String file, String header)
+	private void generateFile(String file) throws IOException
 	{
 		String fileName = fileNameFormat.replace(YYYYMMDD_FILE, formatter.format(new Date()));
+
+		writer = new FileOutputStream(fileName, true);
+		byte[] toFile = file.getBytes();
+		writer.write(toFile);
+		writer.close();
 		setFileRecord(fileName);
-		file = header + file;
-		byte[] content = file.getBytes();
-		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName),
-				JOB_NAME_SEND_PREFERENCES_TO_CRM, content);
 	}
 
 	/**

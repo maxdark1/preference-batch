@@ -20,6 +20,7 @@ import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.tasklet.BatchTasklet;
+import ca.homedepot.preference.tasklet.SendToGCP;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
@@ -59,6 +60,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -951,7 +953,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFileGCS(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat, "");
+			outboundService.createFile(dailyCompliantNameFormat, "");
 		}
 		catch (IOException ex)
 		{
@@ -961,7 +963,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		}
 
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2()).build().build();
+				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2()).on(COMPLETED_STATUS)
+				.to(sendCrmToGCP()).build().build();
 	}
 
 	/**
@@ -976,21 +979,21 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFileGCS(internalRepository, internalFolder, internalCANameFormat, INTERNAL_CA_HEADERS);
-			outboundService.createFileGCS(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
-			outboundService.createFileGCS(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
+			outboundService.createFile(internalCANameFormat, INTERNAL_CA_HEADERS);
+			outboundService.createFile(internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
+			outboundService.createFile(internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
 		}
 		catch (IOException ex)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files on Job {} : {}",
+			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Temp Files on Job {} : {}",
 					JOB_NAME_INTERNAL_DESTINATION, ex.getMessage());
 			throw ex;
 		}
 
 		//Execute the Job
 		return jobBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSendPreferencesToInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToInternalStep2()).build()
-				.build();
+				.start(readSendPreferencesToInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToInternalStep2())
+				.on(COMPLETED_STATUS).to(sendInternalToGCP()).build().build();
 	}
 
 	@SneakyThrows
@@ -1055,6 +1058,32 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.<InternalOutboundDto, InternalOutboundProcessorDto> chunk(chunkOutboundInternal)
 				.reader(preferenceOutboundDBReader.outboundInternalDbReader()).processor(internalOutboundProcessor)
 				.writer(internalOutboundFileWriter).build();
+	}
+
+	public Step sendInternalToGCP()
+	{
+		List<String> files = new ArrayList<>();
+		files.add(internalCANameFormat);
+		files.add(internalGardenNameFormat);
+		files.add(internalMoverNameFormat);
+		SendToGCP step3 = new SendToGCP();
+		step3.setFiles(files);
+		step3.setRepository(internalRepository);
+		step3.setFolder(folderOutbound);
+		step3.setJobName(JOB_NAME_INTERNAL_DESTINATION);
+		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step3").tasklet(step3).build();
+	}
+
+	public Step sendCrmToGCP()
+	{
+		List<String> files = new ArrayList<>();
+		files.add(dailyCompliantNameFormat);
+		SendToGCP step3 = new SendToGCP();
+		step3.setFiles(files);
+		step3.setRepository("");
+		step3.setFolder(folderOutbound);
+		step3.setJobName(JOB_NAME_SEND_PREFERENCES_TO_CRM);
+		return stepBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM + "Step3").tasklet(step3).build();
 	}
 
 

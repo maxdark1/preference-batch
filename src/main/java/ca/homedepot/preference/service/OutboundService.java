@@ -24,7 +24,7 @@ public interface OutboundService
 
 	int purgeLoyaltyComplaintTable();
 
-	void createFile(String repository, String folder, String fileNameFormat, String file) throws IOException;
+	void createFile(String fileNameFormat, String file) throws IOException;
 
 	void createFlexAttributesFile(String repository, String folder, String fileNameFormat, String headers) throws IOException;
 

@@ -124,10 +124,8 @@ class OutboundServiceImplTest
 	{
 		String repository = "", folder = "OUTBOUND/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";
 
-		outboundService.createFile(repository, folder, fileNameFormat,
-				"PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS");
-		verify(outboundService).createFile(repository, folder, fileNameFormat,
-				"PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS");
+		outboundService.createFile(fileNameFormat, "PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS");
+		verify(outboundService).createFile(fileNameFormat, "PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS");
 	}
 
 	@Test

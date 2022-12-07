@@ -12,7 +12,8 @@ import org.springframework.batch.item.database.JdbcCursorItemReader;
 
 import javax.sql.DataSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PreferenceOutboundDBReaderTest
 {

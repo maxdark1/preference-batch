@@ -5,17 +5,17 @@ import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
+import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 
 import javax.sql.DataSource;
 
-import static org.junit.jupiter.api.Assertions.*;
-import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PreferenceOutboundReaderTest
 {

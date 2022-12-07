@@ -1,7 +1,6 @@
 package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.InternalOutboundDto;
-
 import ca.homedepot.preference.service.OutboundService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
