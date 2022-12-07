@@ -2,34 +2,20 @@ package ca.homedepot.preference.config.feign;
 
 import feign.FeignException;
 import feign.Request;
-import feign.Response;
-import org.apache.commons.lang.UnhandledException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static feign.Util.RETRY_AFTER;
-import static feign.Util.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import feign.FeignException;
-import feign.Request;
 import feign.Request.HttpMethod;
 import feign.Response;
 import feign.Util;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
+
+import static feign.Util.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class FeignErrorDecoderTest
 {

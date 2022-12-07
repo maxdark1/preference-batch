@@ -1,6 +1,5 @@
 package ca.homedepot.preference.dto;
 
-import com.github.javafaker.Bool;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

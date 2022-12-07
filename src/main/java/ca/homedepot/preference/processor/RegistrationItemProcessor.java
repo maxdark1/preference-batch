@@ -1,18 +1,17 @@
 package ca.homedepot.preference.processor;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
-import static ca.homedepot.preference.util.validation.InboundValidator.*;
-
-import java.math.BigDecimal;
-import java.util.Date;
-
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.validator.ValidationException;
-
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.util.constants.StorageConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.validator.ValidationException;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.util.validation.InboundValidator.*;
 
 @Slf4j
 public class RegistrationItemProcessor implements ItemProcessor<InboundRegistration, FileInboundStgTable>

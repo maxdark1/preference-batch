@@ -1,19 +1,14 @@
 package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.InternalOutboundDto;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
-import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 class InternalOutboundStep1WriterTest

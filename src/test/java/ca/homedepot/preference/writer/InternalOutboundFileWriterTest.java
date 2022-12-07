@@ -97,11 +97,9 @@ class InternalOutboundFileWriterTest
 		OutboundService outboundService = new OutboundServiceImpl();
 		try
 		{
-			outboundService.createFile("", "", "CA_COMPLIANT_FILE_YYYYMMDD.csv", PreferenceBatchConstants.INTERNAL_CA_HEADERS);
-			outboundService.createFile("", "", "GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv",
-					PreferenceBatchConstants.INTERNAL_GARDEN_HEADERS);
-			outboundService.createFile("", "", "NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv",
-					PreferenceBatchConstants.INTERNAL_MOVER_HEADERS);
+			outboundService.createFile("CA_COMPLIANT_FILE_YYYYMMDD.csv", PreferenceBatchConstants.INTERNAL_CA_HEADERS);
+			outboundService.createFile("GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv", PreferenceBatchConstants.INTERNAL_GARDEN_HEADERS);
+			outboundService.createFile("NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv", PreferenceBatchConstants.INTERNAL_MOVER_HEADERS);
 		}
 		catch (IOException e)
 		{

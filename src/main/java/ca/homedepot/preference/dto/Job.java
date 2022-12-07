@@ -1,9 +1,9 @@
 package ca.homedepot.preference.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
-
-import lombok.Data;
 
 @Data
 public class Job
