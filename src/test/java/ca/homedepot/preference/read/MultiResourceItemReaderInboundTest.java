@@ -1,8 +1,10 @@
 package ca.homedepot.preference.read;
 
+import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import org.apache.commons.io.FileUtils;
@@ -17,9 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 
 class MultiResourceItemReaderInboundTest
 {
@@ -52,6 +58,10 @@ class MultiResourceItemReaderInboundTest
 
 		file = new File("test/error");
 		file.mkdirs();
+		Resource[] resources = new Resource[1];
+		resources[0] = new FileSystemResource(file);
+		multiResourceItemReaderInbound.setResources(resources);
+
 	}
 
 
@@ -102,16 +112,27 @@ class MultiResourceItemReaderInboundTest
 	}
 
 	@Test
-	void read() throws Exception
+	void read()
 	{
-		Object value = new Object();
-		Resource resource = new FileSystemResource("test/archive_20220222.txt");
-		multiResourceItemReaderInbound.setResources(new Resource[] {});
-		Mockito.when(multiResourceItemReaderInbound.read()).thenReturn(value);
-		Mockito.when(multiResourceItemReaderInbound.getCurrentResource()).thenReturn(resource);
-
-		multiResourceItemReaderInbound.read();
-		Mockito.verify(multiResourceItemReaderInbound, Mockito.times(2)).read();
+		try
+		{
+			CloudStorageUtils cloudStorageUtils = mock(CloudStorageUtils.class);
+			doNothing().when(cloudStorageUtils).moveObject(anyString(), anyString(), anyString());
+			StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
+			Object value = new Object();
+			Resource resource = new FileSystemResource("test/archive_20220222.txt");
+			Resource[] resources = new Resource[1];
+			resources[0] = resource;
+			multiResourceItemReaderInbound.setResources(resources);
+			Mockito.when(multiResourceItemReaderInbound.read()).thenReturn(value);
+			Mockito.when(multiResourceItemReaderInbound.getCurrentResource()).thenReturn(resource);
+			multiResourceItemReaderInbound.read();
+			Mockito.verify(multiResourceItemReaderInbound, Mockito.times(2)).read();
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex.getMessage());
+		}
 	}
 
 	@Test

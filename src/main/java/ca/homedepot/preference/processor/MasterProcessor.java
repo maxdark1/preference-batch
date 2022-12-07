@@ -1,14 +1,14 @@
 package ca.homedepot.preference.processor;
 
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.service.PreferenceService;
+import lombok.experimental.UtilityClass;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-
-import lombok.experimental.UtilityClass;
-
-import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.service.PreferenceService;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.CUST_TYPE;
 
 /**
  * Master Processor obtains information from Master catalog
@@ -61,6 +61,15 @@ public class MasterProcessor
 				.orElse(null);
 	}
 
+	/**
+	 * Gets Customer Type CD from Master table
+	 * @param oldId
+	 * @return Master value for old id assigned
+	 */
+	public static BigDecimal getCustTypeCD(String oldId)
+	{
+		return masterList.stream().filter(master -> master.getKeyValue().equals(CUST_TYPE) && master.getOldID().equals(new BigDecimal(oldId))).map(Master::getMasterId).findFirst().orElse(null);
+	}
 	/**
 	 * Gets the actual MasterID for the current source
 	 * 

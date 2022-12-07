@@ -6,6 +6,8 @@ spring:
     username: postgres
     password:
     driverClassName: org.postgresql.Driver
+    hikari:
+      schema: public
   batch:
     job:
       enabled: false
@@ -46,7 +48,8 @@ cron:
     sendPreferencesToCitiSuppresion: 0 40 17 ? * SUN
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
-
+    sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
+    sendPreferencesToSFMC: 0 0 18 * * ?
 server:
   port: 8080
 
@@ -72,6 +75,7 @@ outbound:
     internalCa: CA_COMPLIANT_FILE_YYYYMMDD.csv
     internalGarden: GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv
     internalMover: NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv
+    flexAttributes: FLXEMCDADYYYYMMDDTHHMISS.CEACI.ZZAX
   citi:
     mastersuppresion: THDIN_THDDNS_MASTER_SUPPRESSION_YYYYMMDD.txt.pgp
   salesforce:
@@ -99,6 +103,8 @@ folders:
     path:
   loyaltyCompliant:
     path:
+  flexAttributes:
+    path:
 
 validation:
   extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
@@ -114,12 +120,14 @@ preference:
     outboundCRM:
       chunk: 10
     outboundCiti:
-      chunk: 1
+      chunk: 20
     outboundInternal:
       chunk: 20
     outboundSalesforce:
       chunk: 20
     outboundLoyalty:
+      chunk: 20
+    outboundFlexAttributes:
       chunk: 20
 
 gcp:

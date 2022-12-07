@@ -46,6 +46,11 @@ public final class SourceDelimitersConstants
 	public static final String DELIMITER_PIPELINE = "\\|";
 
 	public static final String SINGLE_PIPE = "|";
+
+	/**
+	 * CUST_TUPE value on Master table
+	 */
+	public static final String CUST_TYPE = "CUST_TYPE";
 	/**
 	 * The delimiter tab
 	 */

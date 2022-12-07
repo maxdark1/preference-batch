@@ -1,9 +1,7 @@
 package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.config.StorageApplicationGCS;
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
-import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
@@ -11,15 +9,13 @@ import com.google.cloud.storage.Storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ca.homedepot.preference.constants.SchedulerConfigConstants.CITI_SUPRESSION_NAMES;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GSFileWriterOutboundTest
 {

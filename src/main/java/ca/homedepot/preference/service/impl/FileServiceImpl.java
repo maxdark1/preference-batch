@@ -1,20 +1,18 @@
 package ca.homedepot.preference.service.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
+import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.service.FileService;
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 import static ca.homedepot.preference.constants.PreferenceBatchConstants.FILE_ID;
 

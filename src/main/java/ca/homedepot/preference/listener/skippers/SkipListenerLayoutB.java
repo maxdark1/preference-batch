@@ -16,8 +16,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
-import static ca.homedepot.preference.dto.enums.Preference.*;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.ERROR;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
+import static ca.homedepot.preference.dto.enums.Preference.NUMBER_0;
+import static ca.homedepot.preference.dto.enums.Preference.NUMBER_MINUS_1;
 
 @Component
 @JobScope

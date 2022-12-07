@@ -4,12 +4,14 @@ import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.StorageException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.*;
+import org.springframework.core.io.FileSystemResource;
 
-import java.io.*;
+import java.io.File;
+import java.io.OutputStream;
 import java.util.List;
 
 import static ca.homedepot.preference.config.StorageApplicationGCS.*;
@@ -32,7 +34,8 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	@Override
 	public void setResource()
 	{
-		stringBuilder = new StringBuilder(getHeader()).append("\n");
+		String headers = getHeader().isBlank() ? "" : getHeader() + "\n";
+		stringBuilder = new StringBuilder(headers);
 		setFilename();
 		deleteObject(getFolderSource(), getFileName());
 		tempFile = FileUtil.createTempFile(getFileName());
@@ -62,7 +65,7 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 		if (!stringBuilder.toString().equalsIgnoreCase(getHeader() + "\n"))
 		{
 			byte[] content = stringBuilder.toString().getBytes();
-			createFileOnGCS(CloudStorageUtils.generatePath(getFolderSource(), getFileName()), content);
+			createFileOnGCS(CloudStorageUtils.generatePath(getFolderSource(), getFileName()), getJobName(), content);
 		}
 	}
 
@@ -72,11 +75,18 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	 * @param filename
 	 * @param content
 	 */
-
-	public static void createFileOnGCS(String filename, byte[] content)
+	public static void createFileOnGCS(String filename, String jobName, byte[] content)
 	{
-		BlobId blobId = BlobId.of(getBucketName(), filename);
-		BlobInfo file = BlobInfo.newBuilder(blobId).build();
-		storage().create(file, content);
+		try
+		{
+			BlobId blobId = BlobId.of(getBucketName(), filename);
+			BlobInfo file = BlobInfo.newBuilder(blobId).build();
+			storage().create(file, content);
+
+		}
+		catch (StorageException e)
+		{
+			log.error(" PREFERENCE BATCH ERROR - Failure on job {} to publish the file {} on bucket", jobName, filename);
+		}
 	}
 }

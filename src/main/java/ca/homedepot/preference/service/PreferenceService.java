@@ -1,10 +1,13 @@
 package ca.homedepot.preference.service;
 
+import ca.homedepot.preference.dto.Job;
+import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.dto.RegistrationResponse;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import ca.homedepot.preference.dto.*;
 
 
 /**

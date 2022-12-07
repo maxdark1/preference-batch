@@ -1,17 +1,17 @@
 package ca.homedepot.preference.util.validation;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ExactTargetEmailValidationTest
 {

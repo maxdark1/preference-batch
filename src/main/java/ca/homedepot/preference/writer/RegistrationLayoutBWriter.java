@@ -4,7 +4,6 @@ import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.RegistrationResponse;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.service.PreferenceService;
-
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
@@ -30,6 +29,11 @@ public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest
 	private FileService fileService;
 
 	/**
+	 * The Job's name that is currently being executed
+	 */
+	private String jobName;
+
+	/**
 	 * Sends the items processed to the API LayoutB end point
 	 * 
 	 * @param items
@@ -53,8 +57,9 @@ public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest
 		}
 		catch (Exception e)
 		{
-			log.error(" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point \n: {}",
-					e.getMessage());
+			log.error(
+					" PREFERENCE BATCH ERROR - Service not available, ERROR occurs trying to send items throw end point on job {} \n: {}",
+					jobName, e.getMessage());
 			throw e;
 		}
 

@@ -17,11 +17,10 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_SEND_PREFERENCES_TO_CRM;
-import static ca.homedepot.preference.constants.PreferenceBatchConstants.PREFERENCE_OUTBOUND_COMPLIANT_HEADERS;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
 @Slf4j
@@ -67,7 +66,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 					.append(preference.getHdCaProSrcId());
 		}
 
-		generateFileGCS(fileBuilder.toString(), PREFERENCE_OUTBOUND_COMPLIANT_HEADERS);
+		generateFileGCS(fileBuilder.toString(), "");
 
 	}
 
@@ -81,7 +80,8 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		setFileRecord(fileName);
 		file = header + file;
 		byte[] content = file.getBytes();
-		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName), content);
+		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName),
+				JOB_NAME_SEND_PREFERENCES_TO_CRM, content);
 	}
 
 	/**

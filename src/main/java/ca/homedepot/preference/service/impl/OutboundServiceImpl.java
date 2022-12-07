@@ -1,6 +1,7 @@
 package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.dto.InternalFlexOutboundDTO;
 import ca.homedepot.preference.dto.InternalOutboundDto;
 import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.service.OutboundService;
@@ -11,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 @Service
@@ -27,6 +28,7 @@ public class OutboundServiceImpl implements OutboundService
 	private JdbcTemplate jdbcTemplate;
 
 	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
+	private final Format dateTimeFormatter = new SimpleDateFormat("yyyyMMdd HHmmss");
 
 	/**
 	 * This methos is used to make a connection with DB and execute a query to get necessary data
@@ -92,6 +94,41 @@ public class OutboundServiceImpl implements OutboundService
 
 	}
 
+	public void createFlexAttributesFile(String repository, String folder, String fileNameFormat, final String headers)
+			throws IOException
+	{
+		// Creat file and insert the headers
+		String stamp = dateTimeFormatter.format(Calendar.getInstance().getTime());
+		String fileName = fileNameFormat.replace("YYYYMMDDTHHMISS", stamp.replace(" ", "T"));
+
+		File tempFile = FileUtil.createTempFile(CloudStorageUtils.generatePath(folder, fileName));
+		try (FileOutputStream writer = new FileOutputStream(tempFile, false))
+		{
+			byte[] buffer = headers.getBytes();
+			writer.write(buffer);
+			writer.flush();
+		}
+		catch (IOException ex)
+		{ // TODO is there any specific exception and what should happen in case of exception.
+		  // Make the batch status failed
+			log.error("PREFERENCE BATCH ERROR - File {} creation error : {}", fileName, ex);
+		}
+
+	}
+
+	/**
+	 * @param item
+	 */
+	@Override
+	public void internalFlexAttributes(InternalFlexOutboundDTO item)
+	{
+		jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_INSERT_FLEX_ATTRIBUTE, item.getFileId(), item.getSequenceNbr(),
+				item.getEmailAddr(), item.getHdHhId(), item.getHdIndId(), item.getCustomerNbr(), item.getStoreNbr(),
+				item.getOrgName(), item.getCompanyCd(), item.getCustTypeCd(), item.getSourceId(), item.getEffectiveDate(),
+				item.getLastUpdateDate(), item.getIndustryCode(), item.getCompanyName(), item.getContactFirstName(),
+				item.getContactLastName(), item.getContactRole());
+	}
+
 	@Override
 	public void createFileGCS(String repository, String folder, String fileNameFormat, String headers) throws IOException
 	{
@@ -115,7 +152,6 @@ public class OutboundServiceImpl implements OutboundService
 		}
 	}
 
-
 	/**
 	 * This method is used to connect with the database and truncate a passtrougths table
 	 */
@@ -137,5 +173,10 @@ public class OutboundServiceImpl implements OutboundService
 		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE);
 	}
 
+	@Override
+	public int purgeFlexAttributesTable()
+	{
+		return jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_FLEX_ATTRIBUTE);
+	}
 
 }
