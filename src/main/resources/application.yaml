@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: postgres
+    password:
     driverClassName: org.postgresql.Driver
     hikari:
       schema: public
@@ -40,7 +40,7 @@ spring:
 #      enabled: false
 cron:
   job:
-    hybrisIngestion: 0/10 * * * * *
+    hybrisIngestion: 0 45 9 * * ?
     crmIngestion: 0 30 22 * * ?
     fbsfmcIngestion: 0 0 3 * * ?
     ingestSFMCOutlookUnsubscribed: 0 20 2 ? * FRI
@@ -116,7 +116,7 @@ preference:
     layoutb:
       chunk: 20
     layoutc:
-      chunk: 1
+      chunk: 10
     outboundCRM:
       chunk: 10
     outboundCiti:
