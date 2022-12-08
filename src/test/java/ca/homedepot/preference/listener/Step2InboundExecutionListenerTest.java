@@ -3,17 +3,18 @@ package ca.homedepot.preference.listener;
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.Response;
 import ca.homedepot.preference.service.PreferenceService;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.StepExecution;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class APIWriterListenerTest
+class Step2InboundExecutionListenerTest
 {
 
 	@Mock
@@ -21,13 +22,18 @@ class APIWriterListenerTest
 
 	@Mock
 	Response response;
+
+	@Mock
+	StepExecution stepExecution;
+
 	@InjectMocks
 	@Spy
-	APIWriterListener apiWriterListener;
+	Step2InboundExecutionListener step2InboundExecutionListener;
 
 
 
 	List<RegistrationRequest> items;
+
 
 
 	@BeforeEach
@@ -44,7 +50,7 @@ class APIWriterListenerTest
 		RegistrationRequest item4 = new RegistrationRequest();
 		item4.setFileId(new BigDecimal("12345"));
 
-		apiWriterListener.setJobName("jobName");
+		step2InboundExecutionListener.setJobName("jobName");
 
 		items = List.of(item, item2, item3, item4);
 	}
@@ -53,25 +59,19 @@ class APIWriterListenerTest
 	void beforeWrite()
 	{
 		Mockito.when(preferenceService.isServiceAvailable()).thenReturn(response);
-		apiWriterListener.beforeWrite(items);
-		Mockito.verify(apiWriterListener).beforeWrite(items);
+		step2InboundExecutionListener.beforeStep(stepExecution);
+		Mockito.verify(step2InboundExecutionListener).beforeStep(stepExecution);
 
 	}
 
 	@Test
-	void afterWrite()
+	void afterStep()
 	{
-		apiWriterListener.afterWrite(items);
-		Mockito.verify(apiWriterListener).afterWrite(items);
+		ExitStatus exitStatus = step2InboundExecutionListener.afterStep(stepExecution);
+		Mockito.verify(step2InboundExecutionListener).afterStep(stepExecution);
+		assertEquals(ExitStatus.COMPLETED, exitStatus);
 
 	}
 
 
-	@Test
-	void onWriteError()
-	{
-		Exception exception = new Exception();
-		apiWriterListener.onWriteError(exception, items);
-		Mockito.verify(apiWriterListener).onWriteError(exception, items);
-	}
 }

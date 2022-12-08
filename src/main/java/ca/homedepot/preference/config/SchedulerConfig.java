@@ -315,7 +315,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private RegistrationAPIWriter apiWriter;
 
 	@Autowired
-	private APIWriterListener apiWriterListener;
+	private Step2InboundExecutionListener step2InboundExecutionListener;
 
 
 	/**
@@ -1228,9 +1228,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readLayoutCInboundBDStep2(String jobName)
 	{
 		apiWriter.setJobName(jobName);
-		apiWriterListener.setJobName(jobName);
+		step2InboundExecutionListener.setJobName(jobName);
 		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
-				.reader(inboundDBReader()).writer(apiWriter).listener(apiWriterListener).build();
+				.reader(inboundDBReader()).writer(apiWriter).listener(step2InboundExecutionListener).build();
 	}
 
 	/**
@@ -1243,9 +1243,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readDBSFMCOptOutsStep2(String jobName)
 	{
 		layoutBWriter.setJobName(jobName);
-		apiWriterListener.setJobName(jobName);
+		step2InboundExecutionListener.setJobName(jobName);
 		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutB)
-				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).listener(apiWriterListener).build();
+				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).listener(step2InboundExecutionListener).build();
 
 	}
 

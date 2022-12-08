@@ -135,7 +135,7 @@ class SchedulerConfigTest
 	InternalOutboundFileWriter internalOutboundFileWriter;
 
 	@Mock
-	APIWriterListener apiWriterListener;
+	Step2InboundExecutionListener step2InboundExecutionListener;
 	@Spy
 	@InjectMocks
 	SchedulerConfig schedulerConfig;
@@ -183,7 +183,7 @@ class SchedulerConfigTest
 
 		schedulerConfig.setDataSource(dataSource);
 		schedulerConfig.setJobListener(jobListener);
-		schedulerConfig.setApiWriterListener(apiWriterListener);
+		schedulerConfig.setStep2InboundExecutionListener(step2InboundExecutionListener);
 		schedulerConfig.setChunkValue(100);
 		schedulerConfig.setChunkOutboundLoyalty(100);
 		schedulerConfig.setChunkOutboundInternal(100);
@@ -431,7 +431,7 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilder.chunk(10)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(step2InboundExecutionListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readLayoutCInboundBDStep2("jobName"));
@@ -446,7 +446,7 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilder.chunk(20)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(RegistrationLayoutBWriter.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(step2InboundExecutionListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readDBSFMCOptOutsStep2("jobName"));
