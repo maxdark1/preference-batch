@@ -1,16 +1,15 @@
 package ca.homedepot.preference.listener;
 
 import ca.homedepot.preference.dto.RegistrationRequest;
-import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class APIWriterListenerTest
 {

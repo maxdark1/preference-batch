@@ -1,7 +1,6 @@
 package ca.homedepot.preference.mapper;
 
 import ca.homedepot.preference.dto.LoyaltyCompliantDTO;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -12,7 +11,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class LoyaltyComplaintWeeklyMapperTest
 {

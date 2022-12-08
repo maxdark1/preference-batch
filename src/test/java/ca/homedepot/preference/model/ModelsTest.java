@@ -1,14 +1,14 @@
 package ca.homedepot.preference.model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.math.BigDecimal;
-import java.util.Date;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ModelsTest
 {

@@ -9,7 +9,6 @@ import org.mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 class PreferenceOutboundWriterTest
