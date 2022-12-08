@@ -17,6 +17,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.item.ExecutionContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,9 @@ class InternalOutboundFileWriterTest
 	BlobInfo.Builder builder;
 
 	CloudStorageUtils cloudStorageUtils;
+
+	@Mock
+	ExecutionContext executionContext;
 
 	@Mock
 	Storage storage;
@@ -94,17 +98,7 @@ class InternalOutboundFileWriterTest
 
 		MasterProcessor.setMasterList(masterList);
 
-		OutboundService outboundService = new OutboundServiceImpl();
-		try
-		{
-			outboundService.createFile("CA_COMPLIANT_FILE_YYYYMMDD.csv", PreferenceBatchConstants.INTERNAL_CA_HEADERS);
-			outboundService.createFile("GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv", PreferenceBatchConstants.INTERNAL_GARDEN_HEADERS);
-			outboundService.createFile("NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv", PreferenceBatchConstants.INTERNAL_MOVER_HEADERS);
-		}
-		catch (IOException e)
-		{
-			log.info(e.getMessage());
-		}
+		executionContext = new ExecutionContext();
 	}
 
 	@Test
@@ -118,10 +112,27 @@ class InternalOutboundFileWriterTest
 	static void tearDown() throws IOException
 	{
 		Format formatter = new SimpleDateFormat("yyyyMMdd");
-		FileUtils.forceDelete(new File(("CA_COMPLIANT_FILE_YYYYMMDD.csv").replace("YYYYMMDD", formatter.format(new Date()))));
-		FileUtils
-				.forceDelete(new File(("GARDEN_CLUB_COMPLIANT_FILE_YYYYMMDD.csv").replace("YYYYMMDD", formatter.format(new Date()))));
-		FileUtils
-				.forceDelete(new File(("NEW_MOVER_COMPLIANT_FILE_YYYYMMDD.csv").replace("YYYYMMDD", formatter.format(new Date()))));
+	}
+
+	@Test
+	void open()
+	{
+		internalOutboundFileWriter.open(executionContext);
+		Mockito.verify(internalOutboundFileWriter).open(executionContext);
+	}
+
+	@Test
+	void update()
+	{
+		internalOutboundFileWriter.update(executionContext);
+		Mockito.verify(internalOutboundFileWriter).update(executionContext);
+	}
+
+	@Test
+	void close()
+	{
+		internalOutboundFileWriter.sourceId = BigDecimal.TEN.toString();
+		internalOutboundFileWriter.close();
+		Mockito.verify(internalOutboundFileWriter).close();
 	}
 }
