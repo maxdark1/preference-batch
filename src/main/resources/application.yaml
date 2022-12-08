@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password:
+    password: postgres
     driverClassName: org.postgresql.Driver
     hikari:
       schema: public
@@ -40,7 +40,7 @@ spring:
 #      enabled: false
 cron:
   job:
-    hybrisIngestion: 0 45 9 * * ?
+    hybrisIngestion: 0/30 * * * * *
     crmIngestion: 0 30 22 * * ?
     fbsfmcIngestion: 0 0 3 * * ?
     ingestSFMCOutlookUnsubscribed: 0 20 2 ? * FRI
@@ -55,8 +55,8 @@ server:
 
 feign:
   retry:
-    period: 3000
-    maxPeriod: 3000
+    period: 30000
+    maxPeriod: 30000
     maxAttempts: 3
   restapi:
     baseurl: http://localhost:8081/hdpc/v1/

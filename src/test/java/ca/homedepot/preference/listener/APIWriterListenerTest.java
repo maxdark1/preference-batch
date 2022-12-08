@@ -1,6 +1,8 @@
 package ca.homedepot.preference.listener;
 
 import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.dto.Response;
+import ca.homedepot.preference.service.PreferenceService;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,18 +17,23 @@ class APIWriterListenerTest
 {
 
 	@Mock
-	FileServiceImpl fileService;
+	PreferenceService preferenceService;
 
+	@Mock
+	Response response;
 	@InjectMocks
 	@Spy
 	APIWriterListener apiWriterListener;
 
+
+
 	List<RegistrationRequest> items;
+
 
 	@BeforeEach
 	void setup()
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 
 		RegistrationRequest item = new RegistrationRequest();
 		item.setFileId(new BigDecimal("12345"));
@@ -37,12 +44,15 @@ class APIWriterListenerTest
 		RegistrationRequest item4 = new RegistrationRequest();
 		item4.setFileId(new BigDecimal("12345"));
 
+		apiWriterListener.setJobName("jobName");
+
 		items = List.of(item, item2, item3, item4);
 	}
 
 	@Test
 	void beforeWrite()
 	{
+		Mockito.when(preferenceService.isServiceAvailable()).thenReturn(response);
 		apiWriterListener.beforeWrite(items);
 		Mockito.verify(apiWriterListener).beforeWrite(items);
 
@@ -56,13 +66,6 @@ class APIWriterListenerTest
 
 	}
 
-	@Test
-	void getMapFileNameFileId()
-	{
-		List<BigDecimal> filesId = apiWriterListener.getMapFileNameFileId(items);
-
-		assertEquals(3, filesId.size());
-	}
 
 	@Test
 	void onWriteError()

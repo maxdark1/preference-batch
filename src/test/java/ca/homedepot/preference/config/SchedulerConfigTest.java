@@ -2,10 +2,7 @@ package ca.homedepot.preference.config;
 
 import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.*;
-import ca.homedepot.preference.listener.InvalidFileListener;
-import ca.homedepot.preference.listener.JobListener;
-import ca.homedepot.preference.listener.RegistrationItemWriterListener;
-import ca.homedepot.preference.listener.StepErrorLoggingListener;
+import ca.homedepot.preference.listener.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
@@ -136,6 +133,9 @@ class SchedulerConfigTest
 	InternalOutboundProcessor internalOutboundProcessor;
 	@Mock
 	InternalOutboundFileWriter internalOutboundFileWriter;
+
+	@Mock
+	APIWriterListener apiWriterListener;
 	@Spy
 	@InjectMocks
 	SchedulerConfig schedulerConfig;
@@ -183,6 +183,7 @@ class SchedulerConfigTest
 
 		schedulerConfig.setDataSource(dataSource);
 		schedulerConfig.setJobListener(jobListener);
+		schedulerConfig.setApiWriterListener(apiWriterListener);
 		schedulerConfig.setChunkValue(100);
 		schedulerConfig.setChunkOutboundLoyalty(100);
 		schedulerConfig.setChunkOutboundInternal(100);
@@ -430,6 +431,7 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilder.chunk(10)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(apiWriter)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readLayoutCInboundBDStep2("jobName"));
@@ -444,6 +446,7 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilder.chunk(20)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.writer(any(RegistrationLayoutBWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.listener(apiWriterListener)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.readDBSFMCOptOutsStep2("jobName"));

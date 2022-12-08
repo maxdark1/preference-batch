@@ -10,18 +10,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SendToGCPTest {
+class SendToGCPTest
+{
 
-    @Test
-    void execute() {
-        List<String> files = new ArrayList<>();
-        files.add("someFile.txt");
-        SendToGCP step3 = new SendToGCP();
-        step3.setFiles(files);
-        step3.setRepository("");
-        step3.setFolder("outbound");
-        step3.setJobName("jobName");
+	@Test
+	void execute()
+	{
+		List<String> files = new ArrayList<>();
+		files.add("someFile.txt");
+		SendToGCP step3 = new SendToGCP();
+		step3.setFiles(files);
+		step3.setRepository("");
+		step3.setFolder("outbound");
+		step3.setJobName("jobName");
 
-        assertNotNull(step3);
-    }
+		assertNotNull(step3);
+	}
 }

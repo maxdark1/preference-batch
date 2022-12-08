@@ -59,4 +59,29 @@ class FeignErrorDecoderTest
 		}
 
 	}
+
+	@Test
+	void decode404Case()
+	{
+		// Given
+		Map<String, Collection<String>> headers = new LinkedHashMap<>();
+		Response response = Response.builder().status(404).reason("Internal server error")
+				.request(Request.create(HttpMethod.GET, "/api", Collections.emptyMap(), null, Util.UTF_8)).headers(headers)
+				.body("{\"status\": \"NA\", \"details\":\"GCP  not connected\"}", UTF_8).build();
+		// When
+		try
+		{
+			throw feignErrorDecoder.decode("Service#foo()", response);
+		}
+		catch (FeignException e)
+		{
+			assertThat(e.getMessage()).isEqualTo("status 404 reading Service#foo()");
+			assertThat(e.contentUTF8()).isEqualTo("{\"status\": \"NA\", \"details\":\"GCP  not connected\"}");
+		}
+		catch (Exception ex)
+		{
+			System.out.println(ex);
+		}
+
+	}
 }
