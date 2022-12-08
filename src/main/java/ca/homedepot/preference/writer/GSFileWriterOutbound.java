@@ -49,8 +49,7 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 		super.write(items);
 
 		String line = super.doWrite(items);
-		if (!stringBuilder.toString().contains(line))
-			stringBuilder.append(line);
+		stringBuilder.append(line);
 
 	}
 
