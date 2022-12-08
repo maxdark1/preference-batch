@@ -948,18 +948,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@SneakyThrows
 	public Job crmSendPreferencesToCRM()
 	{
-		OutboundService outboundService = new OutboundServiceImpl();
-		try
-		{
-			outboundService.createFileGCS(dailyCompliantrepositorySource, dailyCompliantfolderSource, dailyCompliantNameFormat, "");
-		}
-		catch (IOException ex)
-		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of CRM Preferences File on Job {}: {}",
-					JOB_NAME_SEND_PREFERENCES_TO_CRM, ex.getMessage());
-			throw ex;
-		}
-
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2()).build().build();
 	}
@@ -972,22 +960,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@SneakyThrows
 	public Job sendPreferencesToInternalDestination()
 	{
-		//Generate the 3 Files
-		OutboundService outboundService = new OutboundServiceImpl();
-		try
-		{
-			outboundService.createFileGCS(internalRepository, internalFolder, internalCANameFormat, INTERNAL_CA_HEADERS);
-			outboundService.createFileGCS(internalRepository, internalFolder, internalGardenNameFormat, INTERNAL_GARDEN_HEADERS);
-			outboundService.createFileGCS(internalRepository, internalFolder, internalMoverNameFormat, INTERNAL_MOVER_HEADERS);
-		}
-		catch (IOException ex)
-		{
-			log.error(" PREFERENCE BATCH ERROR - Error during the creation of Internal Destination Files on Job {} : {}",
-					JOB_NAME_INTERNAL_DESTINATION, ex.getMessage());
-			throw ex;
-		}
-
-		//Execute the Job
 		return jobBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSendPreferencesToInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToInternalStep2()).build()
 				.build();

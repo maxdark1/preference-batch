@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static ca.homedepot.preference.util.validation.FormatUtil.*;
+import static ca.homedepot.preference.util.validation.FormatUtil.getIntegerValue;
 
 public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 {

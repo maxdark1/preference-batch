@@ -1,17 +1,16 @@
 package ca.homedepot.preference.mapper;
 
+import ca.homedepot.preference.constants.PreferenceBatchConstants;
+import ca.homedepot.preference.dto.Address;
+import ca.homedepot.preference.dto.RegistrationRequest;
+import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.jdbc.core.RowMapper;
-
-import ca.homedepot.preference.constants.PreferenceBatchConstants;
-import ca.homedepot.preference.dto.Address;
-import ca.homedepot.preference.dto.RegistrationRequest;
-
-import static ca.homedepot.preference.util.validation.FormatUtil.*;
+import static ca.homedepot.preference.util.validation.FormatUtil.getIntegerValue;
 
 public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 {

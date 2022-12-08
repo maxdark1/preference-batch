@@ -10,8 +10,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class SalesforcePreparedStatementTest
 {
 	@Mock

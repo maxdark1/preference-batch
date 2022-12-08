@@ -1,10 +1,10 @@
 package ca.homedepot.preference.model;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import lombok.Builder;
 import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @Builder

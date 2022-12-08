@@ -8,10 +8,6 @@ import org.mockito.*;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-
 class CitiSuppresionPreparedStatementTest
 {
 

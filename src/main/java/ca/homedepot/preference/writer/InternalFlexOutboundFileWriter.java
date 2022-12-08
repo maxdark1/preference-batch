@@ -75,6 +75,8 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 
 	}
 
+
+
 	private void generateFile(String record, String fileNameFormat) throws IOException
 	{
 
@@ -97,5 +99,6 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 
 		fileService.insert(file);
 	}
+
 
 }

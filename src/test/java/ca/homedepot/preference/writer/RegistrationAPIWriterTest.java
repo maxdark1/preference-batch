@@ -1,20 +1,19 @@
 package ca.homedepot.preference.writer;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
+import ca.homedepot.preference.dto.RegistrationRequest;
+import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.dto.Response;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
+import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.homedepot.preference.dto.RegistrationRequest;
-import ca.homedepot.preference.dto.RegistrationResponse;
-import ca.homedepot.preference.dto.Response;
-import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;

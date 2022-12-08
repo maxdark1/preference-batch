@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.item.ExecutionContext;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ class PreferenceOutboundFileWriterTest
 	PreferenceOutboundFileWriter preferenceOutboundFileWriter;
 
 	List<PreferenceOutboundDtoProcessor> items;
+
+	@Mock
+	ExecutionContext executionContext;
 
 	@BeforeEach
 	void setup()
@@ -71,6 +75,8 @@ class PreferenceOutboundFileWriterTest
 		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
 
 		MasterProcessor.setMasterList(masterList);
+
+		executionContext = new ExecutionContext();
 	}
 
 
@@ -82,5 +88,27 @@ class PreferenceOutboundFileWriterTest
 		preferenceOutboundFileWriter.write(items);
 		Mockito.verify(preferenceOutboundFileWriter).write(items);
 
+	}
+
+	@Test
+	void open()
+	{
+		preferenceOutboundFileWriter.open(executionContext);
+		Mockito.verify(preferenceOutboundFileWriter).open(executionContext);
+	}
+
+	@Test
+	void update()
+	{
+		preferenceOutboundFileWriter.update(executionContext);
+		Mockito.verify(preferenceOutboundFileWriter).update(executionContext);
+	}
+
+	@Test
+	void close()
+	{
+		preferenceOutboundFileWriter.sourceId = BigDecimal.TEN.toString();
+		preferenceOutboundFileWriter.close();
+		Mockito.verify(preferenceOutboundFileWriter).close();
 	}
 }
