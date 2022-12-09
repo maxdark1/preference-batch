@@ -82,13 +82,15 @@ public class StepErrorLoggingListener implements StepExecutionListener
 		 * Gets all files that don't haave end time
 		 */
 		List<FileDTO> filesToMove = fileService.getFilesToMove();
-
+		log.info("Step Error Line 85: " + filesToMove.toString());
 		if (filesToMove != null && !filesToMove.isEmpty())
 		{
 			filesToMove.forEach(file -> {
+				log.info("StepError Line 89 File Item: " + file);
 				StorageException storageException = null;
 				boolean status = true;
 				String source = MasterProcessor.getValueVal(file.getSourceType());
+				log.info("StepError Line 93 get File Name: " + file.getFileName());
 				source = source.equals("SFMC") && file.getFileName().contains(FileValidation.getFbSFMCBaseName()) ? "FB_SFMC"
 						: source;
 				String basename = FileUtil.getPath(source);

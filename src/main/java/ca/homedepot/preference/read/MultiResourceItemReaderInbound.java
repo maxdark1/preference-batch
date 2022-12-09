@@ -90,6 +90,7 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 */
 	public void setResources(Map<String, List<Resource>> resources)
 	{
+		log.info("Resources Founded in GCP Bucket: " + resources.toString());
 		Resource[] resourcesArray = new Resource[resources.get(VALID).size()];
 		resources.get(VALID).toArray(resourcesArray);
 		this.setResources(resourcesArray);
