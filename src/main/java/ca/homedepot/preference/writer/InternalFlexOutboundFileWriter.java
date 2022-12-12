@@ -15,13 +15,10 @@ import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.ItemStreamWriter;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -105,17 +102,20 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 
 
 	@Override
-	public void open(ExecutionContext executionContext) throws ItemStreamException {
+	public void open(ExecutionContext executionContext) throws ItemStreamException
+	{
 		recordBuilder = new StringBuilder();
 	}
 
 	@Override
-	public void update(ExecutionContext executionContext) throws ItemStreamException {
+	public void update(ExecutionContext executionContext) throws ItemStreamException
+	{
 		log.info(" Internal Flex Outbound Writer. Chunk Executed");
 	}
 
 	@Override
-	public void close() throws ItemStreamException {
+	public void close() throws ItemStreamException
+	{
 		String lineRow = recordBuilder.toString();
 		generateFile(lineRow, flexAttributesFileFormat);
 	}

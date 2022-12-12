@@ -1,14 +1,12 @@
 package ca.homedepot.preference.mapper;
 
 import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
-import org.bouncycastle.util.Times;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public class SalesforcePreparedStatement implements ItemPreparedStatementSetter<SalesforceExtractOutboundDTO>
 {
@@ -16,7 +14,7 @@ public class SalesforcePreparedStatement implements ItemPreparedStatementSetter<
 	public void setValues(SalesforceExtractOutboundDTO item, PreparedStatement ps) throws SQLException
 	{
 		ps.setString(1, item.getEmailAddress());
-		Timestamp asOfDate = item.getAsOfDate() == null ?   null: Timestamp.valueOf(item.getAsOfDate());
+		Timestamp asOfDate = item.getAsOfDate() == null ? null : Timestamp.valueOf(item.getAsOfDate());
 		ps.setTimestamp(2, asOfDate);
 		ps.setString(3, item.getSourceId());
 		ps.setString(4, item.getEmailStatus());
