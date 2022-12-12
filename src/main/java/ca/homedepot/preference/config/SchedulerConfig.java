@@ -3,10 +3,7 @@ package ca.homedepot.preference.config;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
-import ca.homedepot.preference.listener.InvalidFileListener;
-import ca.homedepot.preference.listener.JobListener;
-import ca.homedepot.preference.listener.RegistrationItemWriterListener;
-import ca.homedepot.preference.listener.StepErrorLoggingListener;
+import ca.homedepot.preference.listener.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.mapper.*;
@@ -316,6 +313,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Autowired
 	private RegistrationAPIWriter apiWriter;
+
+	@Autowired
+	private Step2InboundExecutionListener step2InboundExecutionListener;
 
 
 	/**
@@ -1228,8 +1228,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readLayoutCInboundBDStep2(String jobName)
 	{
 		apiWriter.setJobName(jobName);
+		step2InboundExecutionListener.setJobName(jobName);
 		return stepBuilderFactory.get("readInboundBDStep").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutC)
-				.reader(inboundDBReader()).writer(apiWriter).build();
+				.reader(inboundDBReader()).writer(apiWriter).listener(step2InboundExecutionListener).build();
 	}
 
 	/**
@@ -1242,8 +1243,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Step readDBSFMCOptOutsStep2(String jobName)
 	{
 		layoutBWriter.setJobName(jobName);
+		step2InboundExecutionListener.setJobName(jobName);
 		return stepBuilderFactory.get("readDBSFMCOptOutsStep2").<RegistrationRequest, RegistrationRequest> chunk(chunkLayoutB)
-				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).build();
+				.reader(inboundDBReaderSFMC()).writer(layoutBWriter).listener(step2InboundExecutionListener).build();
 
 	}
 

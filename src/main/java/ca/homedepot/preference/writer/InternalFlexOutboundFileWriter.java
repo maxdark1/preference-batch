@@ -86,7 +86,6 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
 				JOB_NAME_FLEX_INTERNAL_DESTINATION, record.getBytes());
 		setFileRecord(fileName);
-
 	}
 
 	private void setFileRecord(String fileName)

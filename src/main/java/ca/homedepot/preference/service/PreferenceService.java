@@ -1,9 +1,6 @@
 package ca.homedepot.preference.service;
 
-import ca.homedepot.preference.dto.Job;
-import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.dto.RegistrationRequest;
-import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.dto.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -66,4 +63,11 @@ public interface PreferenceService
 	 * @return
 	 */
 	int purgeStagingTableSuccessRecords();
+
+	/**
+	 * Check if the Service is available to send the items
+	 *
+	 * @return true if service is available, false the other cawse
+	 */
+	Response isServiceAvailable();
 }
