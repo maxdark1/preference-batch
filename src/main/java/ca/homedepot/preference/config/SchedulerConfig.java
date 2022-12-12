@@ -430,6 +430,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		MasterProcessor.setPreferenceService(batchTasklet.getPreferenceService());
 		MasterProcessor.getMasterInfo();
+		System.out.println(OutboundSqlQueriesConstants.SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION);
 	}
 
 	/**

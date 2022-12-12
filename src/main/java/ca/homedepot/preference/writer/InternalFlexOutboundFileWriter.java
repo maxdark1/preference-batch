@@ -8,14 +8,17 @@ import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.CloudStorageUtils;
+import com.google.cloud.storage.StorageException;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.ItemStreamException;
+import org.springframework.batch.item.ItemStreamWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -28,7 +31,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.STATUS
 
 @Slf4j
 @Component
-public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOutboundProcessorDTO>
+public class InternalFlexOutboundFileWriter implements ItemStreamWriter<InternalFlexOutboundProcessorDTO>
 {
 	public static final String PIPE = "|";
 	public static final String COMMA = ",";
@@ -50,12 +53,12 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 	@Autowired
 	private FileService fileService;
 
+	private StringBuilder recordBuilder;
 
 	@Override
 	public void write(List<? extends InternalFlexOutboundProcessorDTO> items) throws Exception
 	{
 		sourceId = items.get(0).getSourceId().replace(COMMA, "");
-		StringBuilder recordBuilder = new StringBuilder();
 
 		for (InternalFlexOutboundProcessorDTO item : items)
 		{
@@ -69,20 +72,17 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 					.append(item.getContactLastName()).append(PIPE).append(item.getContactRole()).append(COMMA).append(CR);
 
 		}
-		String lineRow = recordBuilder.toString();
-		generateFile(lineRow, flexAttributesFileFormat);
+
 
 
 	}
 
-
-
-	private void generateFile(String record, String fileNameFormat) throws IOException
+	@SneakyThrows
+	private void generateFile(String record, String fileNameFormat) throws StorageException
 	{
 
 		String stamp = formatter.format(Calendar.getInstance().getTime());
 		String fileName = fileNameFormat.replace(YYYYMMDD_T_HHMISS, stamp.replace(SPACE, TEE));
-
 		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
 				JOB_NAME_FLEX_INTERNAL_DESTINATION, record.getBytes());
 		setFileRecord(fileName);
@@ -100,4 +100,22 @@ public class InternalFlexOutboundFileWriter implements ItemWriter<InternalFlexOu
 	}
 
 
+	@Override
+	public void open(ExecutionContext executionContext) throws ItemStreamException
+	{
+		recordBuilder = new StringBuilder();
+	}
+
+	@Override
+	public void update(ExecutionContext executionContext) throws ItemStreamException
+	{
+		log.info(" Internal Flex Outbound Writer. Chunk Executed");
+	}
+
+	@Override
+	public void close() throws ItemStreamException
+	{
+		String lineRow = recordBuilder.toString();
+		generateFile(lineRow, flexAttributesFileFormat);
+	}
 }

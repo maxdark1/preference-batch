@@ -88,7 +88,7 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	@Override
 	public void update(ExecutionContext executionContext) throws ItemStreamException
 	{
-		log.info("Chunck Executed");
+		log.info("Chunk Executed");
 	}
 
 	@Override
