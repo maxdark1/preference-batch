@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password:
+    password: postgres
     driverClassName: org.postgresql.Driver
     hikari:
       schema: public
@@ -48,7 +48,7 @@ cron:
     sendPreferencesToCitiSuppresion: 0 40 17 ? * SUN
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
-    sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
+    sendPreferencesToFlexInternalDestination: 0/50 * * * * *
     sendPreferencesToSFMC: 0 0 18 * * ?
 server:
   port: 8080
