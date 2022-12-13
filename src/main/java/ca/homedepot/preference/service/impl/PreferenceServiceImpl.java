@@ -2,10 +2,7 @@ package ca.homedepot.preference.service.impl;
 
 import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
-import ca.homedepot.preference.dto.Job;
-import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.dto.RegistrationRequest;
-import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.service.PreferenceService;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +53,10 @@ public class PreferenceServiceImpl implements PreferenceService
 		this.preferenceRegistrationClient = preferenceRegistrationClient;
 	}
 
+	public Response isServiceAvailable()
+	{
+		return preferenceRegistrationClient.getServiceStatus();
+	}
 
 	/**
 	 * Send request to service for subscribe/unsubscribe from marketing programs
@@ -65,7 +66,6 @@ public class PreferenceServiceImpl implements PreferenceService
 	 */
 	public RegistrationResponse preferencesRegistration(List<? extends RegistrationRequest> items)
 	{
-
 		log.debug(" {} item(s) has been sent through Request Registration {} ", items.size(), new Gson().toJson(items));
 		log.info(" {} item(s) has been sent through Request Registration.", items.size());
 		return preferenceRegistrationClient.registration(items);

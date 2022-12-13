@@ -71,6 +71,18 @@ class PreferenceServiceImplTest
 
 
 	@Test
+	void testIsServiceAvailable()
+	{
+		Response response = Mockito.mock(Response.class);
+		Mockito.when(preferenceRegistrationClient.getServiceStatus()).thenReturn(response);
+		preferenceRegistrationClient.getServiceStatus();
+
+		Response responseActual = preferenceServiceImpl.isServiceAvailable();
+		assertEquals(response, responseActual);
+
+	}
+
+	@Test
 	void testPreferencesRegistration()
 	{
 

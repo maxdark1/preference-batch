@@ -267,11 +267,11 @@ public final class FileUtil
 	 */
 	public static String renameFile(String file)
 	{
-		log.info("FIRST STEP: "+ file);
+		log.info("FIRST STEP: " + file);
 		String baseName = "";
 		String extension = "";
 		String[] splittedName = file.split("\\.");
-		log.info("splitted name: "+ file);
+		log.info("splitted name: " + file);
 		if (splittedName.length > 0)
 		{
 			for (int i = 0; i < (splittedName.length - 1); i++)
