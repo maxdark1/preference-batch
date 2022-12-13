@@ -146,7 +146,6 @@ public class StorageApplicationGCS
 
 	public static void moveObject(String filename, String blobTobeMove, String blobWhereToCopy) throws StorageException
 	{
-
 		cloudStorageUtils.moveObject(filename, blobTobeMove, blobWhereToCopy);
 	}
 

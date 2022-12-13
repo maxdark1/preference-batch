@@ -2,6 +2,7 @@ package ca.homedepot.preference.config.feign;
 
 import ca.homedepot.preference.dto.RegistrationRequest;
 import ca.homedepot.preference.dto.RegistrationResponse;
+import ca.homedepot.preference.dto.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,4 +24,6 @@ public interface PreferenceRegistrationClient
 	@RequestMapping(method = RequestMethod.POST, value = "/preferences/registration/layoutB", consumes = "application/json")
 	RegistrationResponse registrationLayoutB(@RequestBody List<? extends RegistrationRequest> registrationRequest);
 
+	@RequestMapping(method = RequestMethod.GET, value = "/preferences/health", consumes = "application/json")
+	Response getServiceStatus();
 }

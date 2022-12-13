@@ -14,12 +14,14 @@ public class SalesforcePreparedStatement implements ItemPreparedStatementSetter<
 	public void setValues(SalesforceExtractOutboundDTO item, PreparedStatement ps) throws SQLException
 	{
 		ps.setString(1, item.getEmailAddress());
-		ps.setTimestamp(2, Timestamp.valueOf(item.getAsOfDate()));
+		Timestamp asOfDate = item.getAsOfDate() == null ? null : Timestamp.valueOf(item.getAsOfDate());
+		ps.setTimestamp(2, asOfDate);
 		ps.setString(3, item.getSourceId());
 		ps.setString(4, item.getEmailStatus());
 		ps.setString(5, item.getEmailPtc());
 		ps.setString(6, item.getLanguagePreference());
-		ps.setTimestamp(7, Timestamp.valueOf(item.getEarliestOptInDate()));
+		Timestamp earliestOptinDate = item.getEarliestOptInDate() == null ? null : Timestamp.valueOf(item.getEarliestOptInDate());
+		ps.setTimestamp(7, earliestOptinDate);
 		ps.setString(8, item.getHdCanadaEmailCompliantFlag());
 		ps.setString(9, item.getHdCanadaFlag());
 		ps.setString(10, item.getGardenClubFlag());

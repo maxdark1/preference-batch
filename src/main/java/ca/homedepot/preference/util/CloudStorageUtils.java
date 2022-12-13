@@ -43,6 +43,7 @@ public class CloudStorageUtils
 
 	public void moveObject(String filename, String blobTobeMove, String blobWhereToCopy) throws StorageException
 	{
+		log.info("File Name: " + filename);
 		String fileRename = FileUtil.renameFile(filename);
 		BlobId firstLocation = BlobId.of(bucketName, blobTobeMove);
 		BlobId secondLocation = BlobId.of(bucketName, blobWhereToCopy.replace(filename, fileRename));
