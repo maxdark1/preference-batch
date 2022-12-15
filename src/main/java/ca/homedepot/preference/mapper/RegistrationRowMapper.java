@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -20,9 +19,11 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 
 	String timezone;
 
-	public RegistrationRowMapper(String timezone){
+	public RegistrationRowMapper(String timezone)
+	{
 		this.timezone = timezone;
 	}
+
 	/**
 	 * Mapper for request of LayoutC
 	 * 
@@ -49,7 +50,8 @@ public class RegistrationRowMapper implements RowMapper<RegistrationRequest>
 		Integer emailStatus = getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
 		registrationRequest.setEmailStatus(emailStatus);
 		registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
-		OffsetDateTime srcDate = rs.getTimestamp(PreferenceBatchConstants.SRC_DATE).toLocalDateTime().atZone(ZoneId.of(timezone)).toOffsetDateTime();
+		OffsetDateTime srcDate = rs.getTimestamp(PreferenceBatchConstants.SRC_DATE).toLocalDateTime().atZone(ZoneId.of(timezone))
+				.toOffsetDateTime();
 		registrationRequest.setSrcDate(srcDate.toString());
 
 		registrationRequest.setCellSmsFlag(getIntegerValue(rs.getString(PreferenceBatchConstants.CELL_SMS_FLAG)));

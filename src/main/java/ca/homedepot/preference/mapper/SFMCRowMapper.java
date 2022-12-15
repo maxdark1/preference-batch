@@ -15,6 +15,7 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 {
 
 	String timezone;
+
 	/**
 	 *
 	 * @param rs
@@ -29,6 +30,7 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 	{
 		this.timezone = timezone;
 	}
+
 	@Override
 	public RegistrationRequest mapRow(ResultSet rs, int rowNum) throws SQLException
 	{
@@ -44,7 +46,8 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 		registrationRequest.setEmailStatus(emailStatus);
 		registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
 
-		OffsetDateTime srcDate = rs.getTimestamp(PreferenceBatchConstants.SRC_DATE).toLocalDateTime().atZone(ZoneId.of(timezone)).toOffsetDateTime();
+		OffsetDateTime srcDate = rs.getTimestamp(PreferenceBatchConstants.SRC_DATE).toLocalDateTime().atZone(ZoneId.of(timezone))
+				.toOffsetDateTime();
 		registrationRequest.setSrcDate(srcDate.toString());
 
 		registrationRequest.setEmailPrefHDCa(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_HD_CA)));
