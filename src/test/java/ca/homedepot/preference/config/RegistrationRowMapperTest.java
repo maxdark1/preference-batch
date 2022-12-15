@@ -6,11 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.threeten.bp.LocalDateTime;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +40,8 @@ class RegistrationRowMapperTest
 			content16 = "content16", value16 = "value16", content17 = "content17", value17 = "value17", content18 = "content18",
 			value18 = "2022-10-12", content19 = "content19", value19 = "value19", content20 = "content20", value20 = "value20";
 	Date srcDate = new Date(2022, 9, 27);
+	Timestamp srcDateTimes = Timestamp.valueOf("2022-12-12 10:00:00");
+
 	Map<String, String> map = new HashMap<>();
 
 	RegistrationRequest registrationRequest;
@@ -103,7 +107,7 @@ class RegistrationRowMapperTest
 		Mockito.when(resultSet.getString("src_email_address")).thenReturn(emailAddress);
 		Mockito.when(resultSet.getString("email_status")).thenReturn(emailStatus);
 		Mockito.when(resultSet.getString("email_address_pref")).thenReturn(email_address_pref);
-		Mockito.when(resultSet.getDate("src_date")).thenReturn(srcDate);
+		Mockito.when(resultSet.getTimestamp("src_date")).thenReturn(srcDateTimes);
 		Mockito.when(resultSet.getString("cell_sms_flag")).thenReturn(cellSmsFlag);
 
 
