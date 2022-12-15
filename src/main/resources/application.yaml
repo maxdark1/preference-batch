@@ -27,6 +27,7 @@ spring:
         generate_statistics: false
         jdbc:
           batch_size: 25
+          time_zone: America/New_York
         order_inserts: true
         order_updates: true
     hibernate:
@@ -35,6 +36,8 @@ spring:
     batch-size: 25
   application:
     name: preference-batch
+  jackson:
+    time-zone: America/New_York
 #  h2:
 #    console:
 #      enabled: false

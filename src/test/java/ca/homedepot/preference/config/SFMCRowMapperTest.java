@@ -24,7 +24,7 @@ class SFMCRowMapperTest
 	void setup()
 	{
 		resultSet = Mockito.mock(ResultSet.class);
-		sfmcRowMapper = new SFMCRowMapper();
+		sfmcRowMapper = new SFMCRowMapper("America/New_York");
 	}
 
 	@Test

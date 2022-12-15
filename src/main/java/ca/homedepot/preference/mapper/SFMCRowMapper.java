@@ -6,11 +6,15 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 
 import static ca.homedepot.preference.util.validation.FormatUtil.getIntegerValue;
 
 public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 {
+
+	String timezone;
 	/**
 	 *
 	 * @param rs
@@ -20,6 +24,11 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 	 * @return
 	 * @throws SQLException
 	 */
+
+	public SFMCRowMapper(String timezone)
+	{
+		this.timezone = timezone;
+	}
 	@Override
 	public RegistrationRequest mapRow(ResultSet rs, int rowNum) throws SQLException
 	{
@@ -34,8 +43,9 @@ public class SFMCRowMapper implements RowMapper<RegistrationRequest>
 		Integer emailStatus = getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_STATUS));
 		registrationRequest.setEmailStatus(emailStatus);
 		registrationRequest.setEmailAddressPref(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_ADDRESS_PREF)));
-		registrationRequest.setSrcDate(rs.getDate(PreferenceBatchConstants.SRC_DATE).toString());
 
+		OffsetDateTime srcDate = rs.getTimestamp(PreferenceBatchConstants.SRC_DATE).toLocalDateTime().atZone(ZoneId.of(timezone)).toOffsetDateTime();
+		registrationRequest.setSrcDate(srcDate.toString());
 
 		registrationRequest.setEmailPrefHDCa(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_HD_CA)));
 		registrationRequest.setEmailPrefGardenClub(getIntegerValue(rs.getString(PreferenceBatchConstants.EMAIL_PREF_GARDEN_CLUB)));

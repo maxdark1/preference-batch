@@ -45,7 +45,7 @@ class RegistrationRowMapperTest
 	@BeforeEach
 	void setup()
 	{
-		registrationrowMapper = new RegistrationRowMapper();
+		registrationrowMapper = new RegistrationRowMapper("America/New_York");
 		resultSet = Mockito.mock(ResultSet.class);
 
 		registrationRequest = new RegistrationRequest();
