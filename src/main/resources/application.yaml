@@ -35,6 +35,8 @@ spring:
     batch-size: 25
   application:
     name: preference-batch
+  jackson:
+    time-zone: America/New_York
 #  h2:
 #    console:
 #      enabled: false

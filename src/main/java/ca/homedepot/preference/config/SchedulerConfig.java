@@ -272,6 +272,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Value("${validation.email}")
 	String emailRegex;
 
+
+	@Value("${spring.jackson.time-zone}")
+	String timezone;
+
 	/**
 	 * The Data Source
 	 */
@@ -760,7 +764,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		reader.setDataSource(dataSource);
 		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_NOT_SFMC + "'" + JOB_NAME_EXTACT_TARGET_EMAIL + "'"
 				+ SqlQueriesConstants.SQL_CONDITION_IP);
-		reader.setRowMapper(new RegistrationRowMapper());
+		reader.setRowMapper(new RegistrationRowMapper(timezone));
 
 		return reader;
 	}
@@ -779,7 +783,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		reader.setDataSource(dataSource);
 		reader.setSql(SqlQueriesConstants.SQL_GET_LAST_FILE_INSERTED_RECORDS_SFMC + "'" + JOB_NAME_EXTACT_TARGET_EMAIL + "'"
 				+ SqlQueriesConstants.SQL_CONDITION_IP);
-		reader.setRowMapper(new SFMCRowMapper());
+		reader.setRowMapper(new SFMCRowMapper(timezone));
 
 		return reader;
 	}
