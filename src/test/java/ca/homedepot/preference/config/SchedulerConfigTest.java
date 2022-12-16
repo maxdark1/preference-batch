@@ -191,6 +191,7 @@ class SchedulerConfigTest
 		schedulerConfig.setHybrisPath("hybris/");
 		schedulerConfig.setFbSFMCPath("fbsfmc/");
 		schedulerConfig.setCitiPath("citi/");
+		schedulerConfig.setTimezone("America/New_York");
 		schedulerConfig.setSalesforcePath("salesforce/");
 		schedulerConfig.setLoyaltyCompliantPath("loyalty/");
 		schedulerConfig.setFolderInbound("inbound/");

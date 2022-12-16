@@ -31,14 +31,16 @@ public class Step2InboundExecutionListener implements StepExecutionListener
 
 
 	@Override
-	public void beforeStep(StepExecution stepExecution) {
+	public void beforeStep(StepExecution stepExecution)
+	{
 		Response response = preferenceService.isServiceAvailable();
 		log.info(" Service is available on Job {} to send items through API got response {}.", jobName,
 				new Gson().toJson(response));
 	}
 
 	@Override
-	public ExitStatus afterStep(StepExecution stepExecution) {
+	public ExitStatus afterStep(StepExecution stepExecution)
+	{
 		return ExitStatus.COMPLETED;
 	}
 }
