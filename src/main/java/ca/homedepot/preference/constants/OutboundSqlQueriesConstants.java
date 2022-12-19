@@ -75,7 +75,8 @@ public class OutboundSqlQueriesConstants
 			+ "        FROM pref_per_cust cust\n" + "        LEFT JOIN hdpc_customer_extn cust_extn\n"
 			+ "            ON cust.customer_id = cust_extn.customer_id\n" + "        LEFT JOIN hdpc_customer_address cust_addr\n"
 			+ "            ON cust_addr.active = true AND cust.customer_id = cust_addr.customer_id\n"
-			+ "        LEFT JOIN hdpc_address addr\n" + "            ON cust_addr.address_id = addr.address_id;\n";
+			+ "        LEFT JOIN hdpc_address addr\n" + "            ON cust_addr.address_id = addr.address_id"
+			+ " WHERE CND_COMPLIANT_FLAG = 'Y' AND email_pref_pro = 'Y' ;";
 
 	public static final String SQL_INSERT_STG_PREFERENCE_OUTBOUND = "INSERT INTO hdpc_out_daily_compliant(\n" + "\temail_addr, \n"
 			+ "\tcan_ptc_effective_date,\n" + "\tcan_ptc_source_id,\n" + "\temail_status, \n" + "\tcan_ptc_flag, \n"
