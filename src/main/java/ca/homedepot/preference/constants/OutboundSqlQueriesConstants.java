@@ -228,89 +228,196 @@ public class OutboundSqlQueriesConstants
 
 	public static final String SQL_TRUNCATE_SALESFORCE_EXTRACT = "TRUNCATE TABLE hdpc_out_salesforce_extract";
 
-	public static final String SQL_SELECT_FOR_INTERNAL_DESTINATION = "WITH\n"
-			+ "    cust_with_pref AS -- getting customers that must contain \"pro\" value active as preference flag\n" + "    (\n"
-			+ "        SELECT pref.customer_id\n" + "            FROM  hdpc_customer_preference pref \n"
-			+ "            JOIN hdpc_master mast\n" + "                ON pref.preference_type = mast.master_id\n"
-			+ "            JOIN hdpc_master_key mast_key\n" + "                ON mast.key_id = mast_key.key_id\n"
-			+ "            WHERE mast_key.key_value = 'PREFERENCE_FLAG'\n" + "                --AND mast.value_val = 'Pro'\n"
-			+ "                --AND pref.permission_val\n" + "    ),\n" + "    min_opt_in_date AS\n" + "    (\n"
-			+ "        SELECT  customer_id\n" + "              , MIN(opt_in_date) opt_in_date\n"
-			+ "            FROM  hdpc_customer_pref_hist\n" + "            WHERE permission_val\n"
-			+ "        GROUP BY customer_id \n" + "    ) ,\n" + "    pref_per_cust AS\n" + "    (\n"
-			+ "        SELECT    cust.customer_id\n" + "                , cust.first_name first_name\n"
-			+ "                , cust.last_name last_name\n" + "                , email.email\n"
-			+ "                , cust_email.effective_date    effective_date\n"
-			+ "                                                                , cust_email.effective_date early_opt_in_date\n"
-			+ "                , email_sou_id.old_id source_id\n" + "                , rel_id.old_id    email_status\n"
-			+ "                                                , CASE\n"
-			+ "                 WHEN cust_email.permission_val is null then 'U'  \n"
-			+ "                      WHEN cust_email.permission_val = true then 'Y'\n"
-			+ "                 WHEN cust_email.permission_val = false then 'N' end email_permission\n"
-			+ "                               , cust.language_pref language_preference\n"
-			+ "            , CASE WHEN cust_email.permission_val\n" + "                    AND email.status_id <> 0 \n"
-			+ "                        then 'Y' \n" + "                    else 'N' \n"
-			+ "                    end cnd_compliant_flag\n" + "            , MAX(CASE WHEN mast.value_val = 'hd_ca'\n"
-			+ "                   AND pref.permission_val \n" + "                        then 'Y'\n"
-			+ "                    else 'N' end) email_pref_hd_ca\n" + "            , MAX(CASE WHEN mast.value_val = 'garden_club'\n"
-			+ "                  AND pref.permission_val \n" + "                     then 'Y' \n"
-			+ "                    else 'N' end) email_pref_garden_club\n" + "            , MAX(CASE WHEN mast.value_val = 'Pro'\n"
-			+ "                 AND pref.permission_val \n" + "                      then 'Y' \n"
-			+ "                    else 'N' end) email_pref_pro\n" + "\t\t\t, MAX(CASE WHEN mast.value_val = 'new_mover'\n"
-			+ "             AND pref.permission_val \n" + "                       then 'Y' \n"
-			+ "                    else 'N' end) email_pref_new_mover\n"
-			+ "                                                , MAX(CASE WHEN mast.value_val = 'Pro' THEN sou_id.old_id else 0 end) hd_ca_pro_src_id\n"
-			+ "            , MIN(COALESCE(min_opt.opt_in_date, pref.opt_in_date))\n"
-			+ "                                                , MAX(CASE WHEN phone.phone_type = 10 THEN phone.phone_number ELSE '' END) phone_number\n"
-			+ "                                                , MAX(CASE WHEN phone.phone_type = 12 THEN phone.phone_number ELSE '' END) cell_number\n"
-			+ "                                                , MAX(CASE WHEN cust_phone.text_permission AND phone.phone_type = 12 THEN 'Y' \n"
-			+ "                                                                                                WHEN cust_phone.text_permission = FALSE AND phone.phone_type = 12 THEN 'N'\n"
-			+ "                                                                                                WHEN cust_phone.text_permission IS NULL AND phone.phone_type = 12 THEN 'U' END\n"
-			+ "                  ) phone_ptc_flag\n"
-			+ "                                                , MAX(CASE WHEN cust_phone.call_permission THEN 'Y' \n"
-			+ "                                                                                                WHEN cust_phone.call_permission = FALSE THEN 'N'\n"
-			+ "                                                                                                WHEN cust_phone.call_permission IS NULL THEN 'U' END\n"
-			+ "                  ) dncl_suppresion\n" + "        FROM hdpc_customer cust\n"
-			+ "        JOIN cust_with_pref  preference\n" + "            ON cust.customer_id = preference.customer_id\n"
-			+ "        JOIN hdpc_customer_preference pref\n" + "            ON cust.customer_id = pref.customer_id\n"
-			+ "        JOIN hdpc_master mast\n" + "            ON pref.preference_type = mast.master_id\n"
-			+ "        JOIN hdpc_master_key mast_key\n" + "            ON mast.key_id = mast_key.key_id\n"
-			+ "        LEFT JOIN min_opt_in_date min_opt\n" + "            ON cust.customer_id = min_opt.customer_id\n"
-			+ "        LEFT JOIN hdpc_customer_email cust_email\n" + "            ON cust_email.customer_id = cust.customer_id\n"
-			+ "        LEFT JOIN hdpc_email email\n" + "            ON email.email_id = cust_email.email_id\n"
-			+ "        LEFT JOIN hdpc_customer_phone cust_phone\n" + "            ON cust.customer_id = cust_phone.customer_id\n"
-			+ "        LEFT JOIN hdpc_phone phone\n" + "            ON cust_phone.phone_id = phone.phone_id  \n"
-			+ "        LEFT JOIN hdpc_master_id_rel rel_id\n" + "            ON rel_id.pcam_id = email.status_id\n"
-			+ "            AND rel_id.type = 'email_status_id'\n" + "        LEFT JOIN hdpc_master_id_rel sou_id\n"
-			+ "            ON sou_id.pcam_id = pref.source_type \n" + "            and sou_id.type = 'source_id'\n"
-			+ "        LEFT JOIN hdpc_master_id_rel email_sou_id\n" + "            ON email_sou_id.pcam_id = email.source_type\n"
-			+ "            and email_sou_id.type = 'source_id'                                                                                                                               \n"
-			+ "        WHERE mast_key.key_value = 'PREFERENCE_FLAG' \n" + "    GROUP BY cust.customer_id\n"
-			+ "                                                , email.email\n"
-			+ "                                                , cust_email.effective_date\n"
-			+ "                                                , email_sou_id.old_id\n"
-			+ "                                                , email.status_id  \n"
-			+ "                                                , cust.first_name \n"
-			+ "                               , cust.last_name \n"
-			+ "                                                                                                \n"
-			+ "            , CASE\n" + "                 WHEN cust_email.permission_val is null then 'U'  \n"
-			+ "                  WHEN cust_email.permission_val = true then 'Y'\n"
-			+ "                 WHEN cust_email.permission_val = false then 'N' end \n"
-			+ "                               , cust.language_pref \n" + "            , CASE WHEN cust_email.permission_val\n"
-			+ "                    AND email.status_id <> 0 \n" + "                        then 'Y' \n"
-			+ "                    else 'N' \n" + "                    end\n"
-			+ "                                                , rel_id.old_id\n" + "    )\n" + "    SELECT cust.*\n"
-			+ "      , cust_extn.org_name as business_name\n" + "      , cust_extn.industry_code industry_code\n"
-			+ "      , cust_extn.org_name business_name\n" + "      , cust_extn.industry_code industry_code\n"
-			+ "                  , cust_extn.customer_nbr customer_nbr\n" + "\t\t\t\t  , cust_extn.move_date move_date\n"
-			+ "\t\t\t\t  , cust_extn.dwelling_type dwelling_type\n" + "      , addr.city city\n"
-			+ "                  , addr.postal_code src_postal_code\n" + "      , addr.province province\n"
-			+ "        FROM pref_per_cust cust\n" + "                                LEFT JOIN hdpc_customer_extn cust_extn\n"
-			+ "                                                ON cust.customer_id = cust_extn.customer_id\n"
-			+ "                                LEFT JOIN hdpc_customer_address cust_addr\n"
-			+ "                                                ON cust_addr.active = true AND cust.customer_id = cust_addr.customer_id\n"
-			+ "                                LEFT JOIN hdpc_address addr\n"
-			+ "                                                ON cust_addr.address_id = addr.address_id;\n";
+	public static final String SQL_SELECT_FOR_INTERNAL_DESTINATION = "with email_status\n" +
+			"AS\n" +
+			"(\n" +
+			"    SELECT email_stat.master_id\n" +
+			"        , id_rel.old_id\n" +
+			"        FROM hdpc_master email_stat\n" +
+			"        JOIN hdpc_master_key master_key\n" +
+			"            ON email_stat.key_id = master_key.key_id\n" +
+			"        JOIN hdpc_master_id_rel id_rel\n" +
+			"            ON email_stat.master_id = id_rel.pcam_id\n" +
+			"            AND id_rel.type = 'email_status_id'\n" +
+			"        WHERE master_key.key_value = 'EMAIL_STATUS'\n" +
+			")\n" +
+			", source_id \n" +
+			"AS\n" +
+			"(\n" +
+			"    SELECT email_src.master_id\n" +
+			"        , id_rel.old_id\n" +
+			"        FROM hdpc_master email_src\n" +
+			"        JOIN hdpc_master_key master_key\n" +
+			"            ON email_src.key_id = master_key.key_id\n" +
+			"        JOIN hdpc_master_id_rel id_rel\n" +
+			"            ON email_src.master_id = id_rel.pcam_id\n" +
+			"            AND id_rel.type = 'source_id'\n" +
+			"        WHERE master_key.key_value = 'SOURCE_ID'\n" +
+			")\n" +
+			", earliest_opt_in_date AS\n" +
+			"(\n" +
+			"    select email.email_id\n" +
+			"        , MIN(COALESCE(hist.effective_date, email.effective_date)) earliest_date\n" +
+			"        from hdpc_email email\n" +
+			"        left join hdpc_email_hist hist\n" +
+			"            on email.email_id = hist.email_id\n" +
+			"    group by email.email_id\n" +
+			")\n" +
+			", preference_type AS\n" +
+			"(\n" +
+			"    SELECT pref.master_id\n" +
+			"        , pref.value_val pref_val\n" +
+			"        FROM hdpc_master pref\n" +
+			"        JOIN hdpc_master_key master_key\n" +
+			"            ON pref.key_id = master_key.key_id\n" +
+			"        where master_key.key_value = 'PREFERENCE_FLAG'\n" +
+			")\n" +
+			", phone_type AS\n" +
+			"(\n" +
+			"    SELECT mast.master_id\n" +
+			"        FROM hdpc_master mast\n" +
+			"        JOIN hdpc_master_key master_key\n" +
+			"            ON mast.key_id = master_key.key_id\n" +
+			"        WHERE master_key.key_value = 'PHONE_TYPE'\n" +
+			"            AND mast.value_val = 'home'\n" +
+			")\n" +
+			", customer_phone AS\n" +
+			"(\n" +
+			"    select cust_phone.customer_id\n" +
+			"        , cust_phone.call_permission\n" +
+			"        , phone.phone_number\n" +
+			"        from hdpc_customer_phone cust_phone \n" +
+			"        join hdpc_phone phone\n" +
+			"            on cust_phone.phone_id = phone.phone_id\n" +
+			"        join phone_type\n" +
+			"            on phone.phone_type = phone_type.master_id\n" +
+			"        where cust_phone.active\n" +
+			")\n" +
+			"\n" +
+			"select email.email email_address\n" +
+			"    , cust_email.effective_date as_of_date\n" +
+			"    , source_id.old_id source_id\n" +
+			"    , CASE WHEN email_stat.old_id = 0 THEN '00' ELSE CAST(email_stat.old_id AS TEXT) END email_status\n" +
+			"    , CASE cust_email.permission_val\n" +
+			"        WHEN TRUE   THEN 'Y'\n" +
+			"        WHEN FALSE  THEN 'N'\n" +
+			"        ELSE 'U' \n" +
+			"        END email_ptc\n" +
+			"    , cust.language_pref language_preference\n" +
+			"    , earliest_opt_in_date.earliest_date earliest_opt_in_date\n" +
+			"    , CASE \n" +
+			"        WHEN    cust_email.permission_val\n" +
+			"            AND email_stat.old_id in (0,51)\n" +
+			"        THEN 'Y'\n" +
+			"        ELSE 'N'\n" +
+			"        END hd_canada_email_compliant_flag\n" +
+			"    , MAX( CASE \n" +
+			"            WHEN pref_type.pref_val = 'hd_ca' \n" +
+			"             THEN  \n" +
+			"                   CASE WHEN pref.permission_val THEN 'Y'\n" +
+			"                         WHEN pref.permission_val = FALSE THEN 'N'\n" +
+			"                        ELSE 'U'\n" +
+			"                    END\n" +
+			"            ELSE NULL\n" +
+			"            END\n" +
+			"        ) HD_Canada_Flag\n" +
+			"    , MAX( CASE \n" +
+			"            WHEN pref_type.pref_val = 'garden_club' \n" +
+			"              THEN  \n" +
+			"                  CASE WHEN pref.permission_val THEN 'Y'\n" +
+			"                        WHEN pref.permission_val = FALSE THEN 'N'\n" +
+			"                       ELSE 'U'\n" +
+			"                    END\n" +
+			"            ELSE NULL\n" +
+			"           END\n" +
+			"        ) garden_club_flag\n" +
+			"                , MAX( CASE \n" +
+			"            WHEN pref_type.pref_val = 'new_mover' \n" +
+			"            THEN  \n" +
+			"                 CASE WHEN pref.permission_val THEN 'Y'\n" +
+			"                      WHEN pref.permission_val = FALSE THEN 'N'\n" +
+			"                      ELSE 'U'\n" +
+			"                    END\n" +
+			"            ELSE NULL\n" +
+			"           END\n" +
+			"        ) new_mover_flag\n" +
+			"                , MAX( CASE \n" +
+			"            WHEN pref_type.pref_val = 'Pro' \n" +
+			"           THEN  \n" +
+			"                    CASE WHEN pref.permission_val THEN 'Y' \n" +
+			"                       WHEN pref.permission_val = FALSE THEN 'N'\n" +
+			"                    ELSE 'U'\n" +
+			"                    END\n" +
+			"            ELSE NULL\n" +
+			"            END\n" +
+			"        ) pro_flag\n" +
+			"                , CASE WHEN customer_phone.call_permission THEN 'Y' ELSE 'N' END phone_ptc_flag\n" +
+			"                , cust.first_name\n" +
+			"                , cust.last_name\n" +
+			"                , addr.postal_code\n" +
+			"\t\t\t\t, addr.province\n" +
+			"                , addr.city            \n" +
+			"                , customer_phone.phone_number\n" +
+			"                , cust_extn.org_name business_name\n" +
+			"                , cust_extn.business_type business_type\n" +
+			"                , cust_extn.move_date\n" +
+			"                , cust_extn.dwelling_type\n" +
+			"    from hdpc_email email\n" +
+			"    join earliest_opt_in_date\n" +
+			"        on email.email_id = earliest_opt_in_date.email_id\n" +
+			"    left join hdpc_customer_email cust_email\n" +
+			"       on email.email_id = cust_email.email_id\n" +
+			"    left join hdpc_customer cust\n" +
+			"        on cust_email.customer_id = cust.customer_id\n" +
+			"    left join hdpc_customer_preference pref\n" +
+			"        on cust.customer_id = pref.customer_id\n" +
+			"    left join hdpc_customer_address cust_addr\n" +
+			"        on cust_addr.active = true AND cust.customer_id = cust_addr.customer_id\n" +
+			"    left join hdpc_address addr\n" +
+			"        on cust_addr.address_id = addr.address_id\n" +
+			"    left join hdpc_customer_extn cust_extn\n" +
+			"        on cust.customer_id = cust_extn.customer_id\n" +
+			"    left join customer_phone\n" +
+			"        on cust.customer_id = customer_phone.customer_id\n" +
+			"    left join preference_type pref_type\n" +
+			"        on pref.preference_type = pref_type.master_id\n" +
+			"    left join email_status email_stat\n" +
+			"        on email.status_id = email_stat.master_id\n" +
+			"    left join source_id\n" +
+			"        on email.source_type = source_id.master_id\n" +
+			"    group by email.email\n" +
+			"            , cust_email.effective_date \n" +
+			"            , source_id.old_id \n" +
+			"            , CASE WHEN email_stat.old_id = 0 THEN '00' ELSE CAST(email_stat.old_id AS TEXT) END\n" +
+			"            , CASE cust_email.permission_val\n" +
+			"                WHEN TRUE   THEN 'Y'\n" +
+			"                WHEN FALSE  THEN 'N'\n" +
+			"                ELSE 'U' \n" +
+			"                END \n" +
+			"            , cust.language_pref \n" +
+			"            , earliest_opt_in_date.earliest_date\n" +
+			"            , CASE \n" +
+			"                WHEN    cust_email.permission_val\n" +
+			"                    AND email_stat.old_id in (0,51)\n" +
+			"                THEN 'Y'\n" +
+			"                ELSE 'N'\n" +
+			"                END\n" +
+			"            , customer_phone.call_permission\n" +
+			"            , cust.first_name\n" +
+			"            , cust.last_name\n" +
+			"            , addr.postal_code\n" +
+			"            , addr.province\n" +
+			"            , addr.city            \n" +
+			"            , customer_phone.phone_number\n" +
+			"            , cust_extn.org_name \n" +
+			"            , cust_extn.business_type \n" +
+			"            , cust_extn.move_date\n" +
+			"            , cust_extn.dwelling_type\n" +
+			"\t\t\torder by 1;\n" +
+			"\t\t\t\n" +
+			"\t\t\t\n" +
+			"\t\t\t\n" +
+			"\t\n";
 
 	public static final String SQL_TRUNCATE_PROGRAM_COMPLIANT = "TRUNCATE TABLE hdpc_out_program_compliant";
 
