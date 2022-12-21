@@ -23,6 +23,8 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	private int count = 0;
 
+	private String fileName = "";
+
 	public void setCount(int count)
 	{
 		this.count = count;
@@ -49,6 +51,14 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	@Override
 	public FileInboundStgTable process(InboundRegistration item) throws Exception
 	{
+		if (fileName.equals(""))
+		{
+			fileName = item.getFileName();
+		}
+		else if (!fileName.equals(item.getFileName()))
+		{
+			count = 0;
+		}
 		count++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 		Date asOfDate = null;
