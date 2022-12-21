@@ -1178,10 +1178,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		RegistrationItemProcessor processor = layoutCProcessor(CRM);
 		processor.setCount(0);
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(crmPath + folderInbound, CRM, jobName))
-				.processor(processor).faultTolerant().processorNonTransactional().skip(ValidationException.class)
-				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(crmWriterListener)
-				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
+				.reader(multiResourceItemReaderInboundFileReader(crmPath + folderInbound, CRM, jobName)).processor(processor)
+				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
+				.listener(skipListenerLayoutC).listener(crmWriterListener).writer(inboundRegistrationDBWriter())
+				.listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
@@ -1201,10 +1201,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		RegistrationItemProcessor processor = layoutCProcessor(FB_SFMC);
 		processor.setCount(0);
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath + folderInbound, FB_SFMC, jobName))
-				.processor(processor).faultTolerant().processorNonTransactional().skip(ValidationException.class)
-				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(fbsfmcWriterListener)
-				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
+				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath + folderInbound, FB_SFMC, jobName)).processor(processor)
+				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
+				.listener(skipListenerLayoutC).listener(fbsfmcWriterListener).writer(inboundRegistrationDBWriter())
+				.listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
