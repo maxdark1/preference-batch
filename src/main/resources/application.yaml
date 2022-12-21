@@ -137,3 +137,11 @@ gcp:
   bucket:
     name: commsvc-preference-centre-feeds
     url: gs://commsvc-preference-centre-feeds
+
+logging:
+  level:
+    ca.homedepot.preference: DEBUG
+    root: DEBUG
+    org:
+      hibernate: ERROR
+      springframework: ERROR
