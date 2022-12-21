@@ -62,7 +62,7 @@ public class InboundValidator
 	public static void isValidationsErros(StringBuilder errors)
 	{
 		if (errors.length() > 0)
-			throw new ValidationException(" The item processed has the above validation's errors: \n" + errors);
+			throw new ValidationException(" The item processed has the above validation's errors: " + errors);
 	}
 
 	/**
@@ -390,6 +390,7 @@ public class InboundValidator
 		{
 			error.append(field).append(" should be present,");
 		}
+		log.info("String Builder ERROR: {}",  error.toString());
 	}
 
 
