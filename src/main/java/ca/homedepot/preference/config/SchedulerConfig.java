@@ -1,7 +1,6 @@
 package ca.homedepot.preference.config;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.*;

@@ -70,7 +70,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 		setLineAggregator(getLineAgreggator());
 	}
 
-	public void setDelimiter(String delimiter) {
+	public void setDelimiter(String delimiter)
+	{
 		this.delimiter = delimiter;
 	}
 
