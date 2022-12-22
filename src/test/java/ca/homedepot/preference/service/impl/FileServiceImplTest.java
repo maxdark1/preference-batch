@@ -173,6 +173,20 @@ class FileServiceImplTest
 	}
 
 	@Test
+	void insertOldId()
+	{
+		int record = 1, actualUpdatedRecord = 0;
+		FileDTO file = Mockito.mock(FileDTO.class);
+		when(jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE_OLD_ID, file.getFileName(), file.getJob(),
+				file.getSourceType(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(), file.getStatusId(),
+				file.getEndTime())).thenReturn(record);
+		when(fileService.insertOldId(file)).thenReturn(record);
+
+		actualUpdatedRecord = fileService.insertOldId(file);
+		assertEquals(record, actualUpdatedRecord);
+	}
+
+	@Test
 	void getFilesToMove()
 	{
 		List<FileDTO> files = new ArrayList<>();
