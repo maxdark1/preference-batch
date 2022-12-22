@@ -1,6 +1,5 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.InternalFlexOutboundProcessorDTO;
 import ca.homedepot.preference.dto.Master;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_FLEX_INTERNAL_DESTINATION;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.SOURCE_STR;
 
 @Slf4j
 @Component
@@ -93,7 +91,7 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	{
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_FLEX_INTERNAL_DESTINATION,
 				JobListener.status(BatchStatus.STARTED).getMasterId());
-		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, SourceDelimitersConstants.VALID);
+		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
 				fileStatus.getMasterId(), new Date(), new Date(), "BATCH", new Date(), null, null);
 

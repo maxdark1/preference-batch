@@ -35,6 +35,7 @@ public interface FileService
 	 * @return how many records have been inserted
 	 */
 	int insert(FileDTO file);
+
 	int insertOldId(FileDTO file);
 
 	/**

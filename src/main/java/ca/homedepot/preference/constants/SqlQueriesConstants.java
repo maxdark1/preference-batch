@@ -76,7 +76,8 @@ public final class SqlQueriesConstants
 			+ "start_time, inserted_by, inserted_date, status_id, end_time) " + "VALUES (? , ? , ?, ?, ? , ?, ?, ?); ";
 
 	public static final String SQL_INSERT_HDPC_FILE_OLD_ID = "INSERT INTO hdpc_file (file_name, job_id, source_type, "
-			+ "start_time, inserted_by, inserted_date, status_id, end_time) " + "VALUES (? , ? , (select pcam_id from hdpc_master_id_rel where old_id = ?), ?, ? , ?, ?, ?); ";
+			+ "start_time, inserted_by, inserted_date, status_id, end_time) "
+			+ "VALUES (? , ? , (select pcam_id from hdpc_master_id_rel where old_id = ?), ?, ? , ?, ?, ?); ";
 
 	/**
 	 * Insert to hdpc_file_inbound_stg_error table
