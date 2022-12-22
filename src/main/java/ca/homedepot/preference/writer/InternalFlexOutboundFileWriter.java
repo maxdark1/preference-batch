@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -53,7 +54,7 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	@Autowired
 	private FileService fileService;
 
-	private StringBuilder recordBuilder;
+	private StringBuilder recordBuilder = new StringBuilder();
 
 	@Override
 	public void write(List<? extends InternalFlexOutboundProcessorDTO> items) throws Exception
@@ -103,7 +104,7 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	@Override
 	public void open(ExecutionContext executionContext) throws ItemStreamException
 	{
-		recordBuilder = new StringBuilder();
+		log.info(" Internal Flex Outbound Writer Started. ");
 	}
 
 	@Override
@@ -117,5 +118,6 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	{
 		String lineRow = recordBuilder.toString();
 		generateFile(lineRow, flexAttributesFileFormat);
+		recordBuilder = new StringBuilder();
 	}
 }
