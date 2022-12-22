@@ -94,7 +94,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
 				fileStatus.getMasterId(), new Date(), new Date(), INSERTEDBY, new Date(), null, null);
 
-		fileService.insert(file);
+		fileService.insertOldId(file);
 	}
 
 	@Override
