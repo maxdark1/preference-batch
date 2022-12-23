@@ -96,43 +96,80 @@ public class OutboundSqlQueriesConstants
 	 * For Citi Suppression
 	 */
 
-	public static final String SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1 = "WITH citisuppresion as\n"
-			+ "\t(WITH  customer_preference AS\n" + "\t\t(\n"
-			+ "\t\t\tSELECT customer_id, count(customer_id) as opt_out_preference\n" + "\t\t\tFROM hdpc_customer_preference\n"
-			+ "\t\t\tWHERE permission_val = false\n" + "\t\t\tgroup by customer_id\n" + "\t\t\thaving count(customer_id) >= 1\n"
-			+ "\t\t),\n" + "\t compliant as \n" + "\t (\n" + "\t \tSELECT customer_id,  \n"
-			+ "\t\t CASE WHEN custemail.permission_val AND old_id <> 0 \n" + "\t\t THEN 'Y' ELSE 'N' END as cnd_compliant_flag\n"
-			+ "\t\t FROM hdpc_customer_email custemail\n"
-			+ "\t\t INNER JOIN hdpc_email email ON custemail.email_id = email.email_id\n"
-			+ "\t\t INNER JOIN hdpc_master_id_rel idrel ON idrel.pcam_id = email.status_id AND idrel.type = 'email_status_id'\n"
-			+ "\t )\n" + "\tSELECT email.email as email_addr,\n" + "\t\t'' as phone,\n" + "\t\t'' as sms_mobile_phone,\n"
-			+ "\t \tcustomerextn.org_name as business_name,\n" + "\t\tCASE \n"
-			+ "\t\t\tWHEN  (opt_out_preference >= 1 OR compliant.cnd_compliant_flag = 'N' or old_id = 98 ) THEN 'Y'\n"
-			+ "\t\t\tELSE 'N' END as email_opt_out,\n" + "\t\t'' as phone_opt_out,\n" + "\t\t'' as sms_opt_out\n"
-			+ "\tFROM hdpc_email email\n" + "\tjoin hdpc_customer_email custemail ON custemail.email_id = email.email_id\n"
-			+ "\tjoin customer_preference ON customer_preference.customer_id = custemail.customer_id\n"
-			+ "\tjoin hdpc_customer_extn customerextn ON custemail.customer_id = customerextn.customer_id\n"
-			+ "\tjoin hdpc_master_id_rel idrel ON idrel.pcam_id = email.status_id and idrel.type = 'email_status_id'\n"
-			+ "\tjoin compliant ON compliant.customer_id = custemail.customer_id\n" + "\t where custemail.active\n" + "\n"
-			+ "\tUNION\n" + "\t-- Phone Opt out\n" + "\tSELECT '' as email_addr, \n" + "\t phone.phone_number as phone,\n"
-			+ "\t'' as sms_mobile_phone,\n" + "\t'' as business_name,\n" + "\t'' as email_opt_out,\n" + "\tCASE\n"
-			+ "\t\t\tWHEN custphone.call_permission is null then 'U'\n" + "\t\t\tWHEN custphone.call_permission = true then 'N'\n"
-			+ "\t\t\tWHEN custphone.call_permission = false then 'Y'\n" + "\t\tEND as Phone_Opt_Out,\n" + "\t\t'' as sms_opt_out\n"
-			+ "\tFROM hdpc_phone phone\n" + "\tINNER JOIN hdpc_customer_phone custphone ON phone.phone_id = custphone.phone_id\n"
-			+ "\tINNER JOIN hdpc_master master ON master.master_id = phone.phone_type AND master.value_val = 'home'\n"
-			+ "\tINNER JOIN hdpc_master_key masterkey on master.key_id = masterkey.key_id AND masterkey.key_value = 'PHONE_TYPE'\n"
-			+ "\tWHERE custphone.active\n" + "\tUNION\n" + "\t-- SMS opt out\n"
-			+ "\tSELECT '' as email_addr,'' as phone, phone.phone_number as sms_mobile_phone,\n" + "\t'' as business_name,\n"
-			+ "\t '' as email_opt_out,\n" + "\t'' as Phone_Opt_Out,\n" + "\tCASE\n"
-			+ "\t\t\tWHEN custphone.text_permission is null then 'U'\n" + "\t\t\tWHEN custphone.text_permission = true then 'N'\n"
-			+ "\t\t\tWHEN custphone.text_permission = false then 'Y'\n" + "\t\tEND as sms_opt_out\n" + "\tFROM hdpc_phone phone\n"
-			+ "\tINNER JOIN hdpc_customer_phone custphone ON phone.phone_id = custphone.phone_id\n"
-			+ "\tINNER JOIN hdpc_master master ON master.master_id = phone.phone_type AND master.value_val = 'cellphone'\n"
-			+ "\tINNER JOIN hdpc_master_key masterkey on master.key_id = masterkey.key_id AND masterkey.key_value = 'PHONE_TYPE'\n"
-			+ "\tWHERE custphone.active),\n" + "\tdmcolumns as (\n"
-			+ "\tSELECT '' as First_name, '' as middle_initial, '' as last_name, '' as addr_line_1, '' as addr_line_2, '' as city, '' as state_cd, '' as postal_cd, '' as dm_opt_out)\n"
-			+ "SELECT * , dmcolumns.* FROM citisuppresion, dmcolumns\n"
-			+ "WHERE email_opt_out = 'Y' OR phone_opt_out = 'Y' OR sms_opt_out = 'Y';";
+	public static final String SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1 = "WITH citisuppresion as\n" +
+			"\t(WITH  customer_preference AS\n" +
+			"\t\t(\n" +
+			"\t\t\tSELECT customer_id, count(customer_id) as opt_out_preference\n" +
+			"\t\t\tFROM hdpc_customer_preference\n" +
+			"\t\t\tWHERE permission_val = false\n" +
+			"\t\t\tgroup by customer_id\n" +
+			"\t\t\thaving count(customer_id) >= 1\n" +
+			"\t\t),\n" +
+			"\t compliant as \n" +
+			"\t (\n" +
+			"\t \tSELECT customer_id,  \n" +
+			"\t\t CASE WHEN custemail.permission_val AND old_id <> 0 \n" +
+			"\t\t THEN 'Y' ELSE 'N' END as cnd_compliant_flag, email.email_id, email.email\n" +
+			"\t\t FROM hdpc_customer_email custemail\n" +
+			"\t\t INNER JOIN hdpc_email email ON custemail.email_id = email.email_id\n" +
+			"\t\t INNER JOIN hdpc_master_id_rel idrel ON idrel.pcam_id = email.status_id AND idrel.type = 'email_status_id'\n" +
+			"\t )\n" +
+			"\tSELECT email.email as email_addr,\n" +
+			"\t\t'' as phone,\n" +
+			"\t\t'' as sms_mobile_phone,\n" +
+			"\t \tcustomerextn.org_name as business_name,\n" +
+			"\t\tCASE \n" +
+			"\t\t\tWHEN  (opt_out_preference >= 1 OR compliant.cnd_compliant_flag = 'N' or old_id = 98 ) THEN 'Y'\n" +
+			"\t\t\tELSE 'N' END as email_opt_out,\n" +
+			"\t\t'' as phone_opt_out,\n" +
+			"\t\t'' as sms_opt_out\n" +
+			"\tFROM hdpc_email email\n" +
+			"\tjoin hdpc_customer_email custemail ON custemail.email_id = email.email_id\n" +
+			"\tleft join compliant ON compliant.email_id = custemail.email_id\n" +
+			"\tleft join customer_preference ON customer_preference.customer_id = custemail.customer_id\n" +
+			"\tleft join hdpc_customer_extn customerextn ON custemail.customer_id = customerextn.customer_id\n" +
+			"\tjoin hdpc_master_id_rel idrel ON idrel.pcam_id = email.status_id and idrel.type = 'email_status_id'\n" +
+			"\t where custemail.active\n" +
+			"\n" +
+			"\tUNION\n" +
+			"\t-- Phone Opt out\n" +
+			"\tSELECT '' as email_addr, \n" +
+			"\t phone.phone_number as phone,\n" +
+			"\t'' as sms_mobile_phone,\n" +
+			"\t'' as business_name,\n" +
+			"\t'' as email_opt_out,\n" +
+			"\tCASE\n" +
+			"\t\t\tWHEN custphone.call_permission is null then 'U'\n" +
+			"\t\t\tWHEN custphone.call_permission = true then 'N'\n" +
+			"\t\t\tWHEN custphone.call_permission = false then 'Y'\n" +
+			"\t\tEND as Phone_Opt_Out,\n" +
+			"\t\t'' as sms_opt_out\n" +
+			"\tFROM hdpc_phone phone\n" +
+			"\tINNER JOIN hdpc_customer_phone custphone ON phone.phone_id = custphone.phone_id\n" +
+			"\tINNER JOIN hdpc_master master ON master.master_id = phone.phone_type AND master.value_val = 'home'\n" +
+			"\tINNER JOIN hdpc_master_key masterkey on master.key_id = masterkey.key_id AND masterkey.key_value = 'PHONE_TYPE'\n" +
+			"\tWHERE custphone.active\n" +
+			"\tUNION\n" +
+			"\t-- SMS opt out\n" +
+			"\tSELECT '' as email_addr,'' as phone, phone.phone_number as sms_mobile_phone,\n" +
+			"\t'' as business_name,\n" +
+			"\t '' as email_opt_out,\n" +
+			"\t'' as Phone_Opt_Out,\n" +
+			"\tCASE\n" +
+			"\t\t\tWHEN custphone.text_permission is null then 'U'\n" +
+			"\t\t\tWHEN custphone.text_permission = true then 'N'\n" +
+			"\t\t\tWHEN custphone.text_permission = false then 'Y'\n" +
+			"\t\tEND as sms_opt_out\n" +
+			"\tFROM hdpc_phone phone\n" +
+			"\tINNER JOIN hdpc_customer_phone custphone ON phone.phone_id = custphone.phone_id\n" +
+			"\tINNER JOIN hdpc_master master ON master.master_id = phone.phone_type AND master.value_val = 'cellphone'\n" +
+			"\tINNER JOIN hdpc_master_key masterkey on master.key_id = masterkey.key_id AND masterkey.key_value = 'PHONE_TYPE'\n" +
+			"\tWHERE custphone.active),\n" +
+			"\tdmcolumns as (\n" +
+			"\tSELECT '' as First_name, '' as middle_initial, '' as last_name, '' as addr_line_1, '' as addr_line_2, '' as city, '' as state_cd, '' as postal_cd, '' as dm_opt_out)\n" +
+			"SELECT * , dmcolumns.* FROM citisuppresion, dmcolumns\n" +
+			"WHERE email_opt_out = 'Y' OR phone_opt_out = 'Y' OR sms_opt_out = 'Y';\n" +
+			"\n";
 
 	public static final String SQL_SELECT_CITI_SUPPRESION_TABLE = "SELECT first_name, middle_initial, last_name, addr_line_1, addr_line_2, city, state_cd, postal_cd, email_addr, phone, sms_mobile_phone, business_name, dm_opt_out, email_opt_out, phone_opt_out, sms_opt_out\n"
 			+ "\tFROM hdpc_out_citi_suppresion;";
