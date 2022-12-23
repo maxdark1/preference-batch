@@ -35,7 +35,7 @@ public class FeignErrorDecoder implements ErrorDecoder
 			try
 			{
 				conflict = IOUtils.toString(response.body().asInputStream(), Charsets.UTF_8.toString());
-				log.error(" PREFERENCE BATCH ERROR - Service not available got status {}, response from service {}",
+				log.error(" PREFERENCE BATCH SERVICE ERROR - Service not available got status {}, response from service {}",
 						response.status(), conflict);
 			}
 			catch (IOException e)
@@ -47,7 +47,7 @@ public class FeignErrorDecoder implements ErrorDecoder
 		}
 		else
 		{
-			log.error("PREFERENCE BATCH ERROR - Error occurred while calling {} with the status {} and for the cause {}", key,
+			log.error("PREFERENCE BATCH SERVICE ERROR - Error occurred while calling {} with the status {} and for the cause {}", key,
 					response.status(), response.reason());
 		}
 
