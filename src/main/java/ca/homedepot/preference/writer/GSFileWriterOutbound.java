@@ -39,7 +39,6 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 		setFilename();
 		deleteObject(getFolderSource(), getFileName());
 		tempFile = FileUtil.createTempFile(getFileName());
-
 		super.setResource(new FileSystemResource(tempFile));
 	}
 

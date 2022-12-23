@@ -924,9 +924,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		salesforceExtractFileWriter.setRepositorySource(salesforcePath);
 		salesforceExtractFileWriter.setFileNameFormat(salesforcefileNameFormat);
 		salesforceExtractFileWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
+		salesforceExtractFileWriter.setDelimiter(SINGLE_DELIMITER_TAB);
 		salesforceExtractFileWriter.setNames(SALESFORCE_EXTRACT_NAMES);
 		salesforceExtractFileWriter.setResource();
-
 		return salesforceExtractFileWriter;
 	}
 

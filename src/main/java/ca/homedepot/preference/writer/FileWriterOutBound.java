@@ -51,6 +51,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	private String[] names;
 
+	private String delimiter = ",";
+
 	public FileWriterOutBound()
 	{
 		setAppendAllowed(true);
@@ -66,6 +68,11 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 	{
 		this.names = names;
 		setLineAggregator(getLineAgreggator());
+	}
+
+	public void setDelimiter(String delimiter)
+	{
+		this.delimiter = delimiter;
 	}
 
 	public void setFilename()
@@ -111,7 +118,7 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 		beanWrapperFieldExtractor.setNames(names);
 
 		DelimitedLineAggregator<T> delimitedLineAggregator = new DelimitedLineAggregator<>();
-		delimitedLineAggregator.setDelimiter(",");
+		delimitedLineAggregator.setDelimiter(this.delimiter);
 		delimitedLineAggregator.setFieldExtractor(beanWrapperFieldExtractor);
 		return delimitedLineAggregator;
 	}
