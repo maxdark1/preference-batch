@@ -62,6 +62,11 @@ public class SkipFileService
 		return t.getMessage().contains("email address");
 	}
 
+	public boolean isDateInvalid(Throwable t)
+	{
+		return t.getMessage().contains("date format");
+	}
+
 	public String getFileName(String filename)
 	{
 		int index = filename.lastIndexOf(SLASH) + 1;
