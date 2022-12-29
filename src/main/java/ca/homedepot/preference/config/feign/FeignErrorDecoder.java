@@ -47,8 +47,8 @@ public class FeignErrorDecoder implements ErrorDecoder
 		}
 		else
 		{
-			log.error("PREFERENCE BATCH SERVICE ERROR - Error occurred while calling {} with the status {} and for the cause {}", key,
-					response.status(), response.reason());
+			log.error("PREFERENCE BATCH SERVICE ERROR - Error occurred while calling {} with the status {} and for the cause {}",
+					key, response.status(), response.reason());
 		}
 
 		return FeignException.errorStatus(key, response);

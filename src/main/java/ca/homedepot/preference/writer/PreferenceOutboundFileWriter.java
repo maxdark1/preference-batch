@@ -43,6 +43,8 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Autowired
 	private FileService fileService;
 
+	private JobListener jobListener;
+
 	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
 
 	StringBuilder fileBuilder = new StringBuilder();
@@ -112,10 +114,16 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	@Override
 	public void close() throws ItemStreamException
 	{
-		String filaName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-		createFileOnGCS(CloudStorageUtils.generatePath(folderSource, filaName), JOB_NAME_SEND_PREFERENCES_TO_CRM,
+		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+		jobListener.setFiles(fileName);
+		createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName), JOB_NAME_SEND_PREFERENCES_TO_CRM,
 				fileBuilder.toString().getBytes());
 		fileBuilder = new StringBuilder();
-		setFileRecord(filaName);
+		setFileRecord(fileName);
+	}
+
+	public void setJobListener(JobListener jobListener)
+	{
+		this.jobListener = jobListener;
 	}
 }

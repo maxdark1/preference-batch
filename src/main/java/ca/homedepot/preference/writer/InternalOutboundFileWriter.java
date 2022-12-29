@@ -48,6 +48,8 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 	@Autowired
 	private FileService fileService;
 
+	private JobListener jobListener;
+
 	private Format formatter = new SimpleDateFormat("yyyyMMdd");
 
 	private StringBuilder caFile = new StringBuilder();
@@ -103,6 +105,8 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 		createFileOnGCS(CloudStorageUtils.generatePath(repositorySource + folderSource, gardenfileName),
 				JOB_NAME_INTERNAL_DESTINATION, caFile.toString().getBytes());
 		caFile = new StringBuilder();
+		jobListener.setFiles(new StringBuilder().append(cafileName).append(",").append(movefileName).append(",")
+				.append(gardenfileName).toString());
 		setFileRecord(cafileName);
 		setFileRecord(movefileName);
 		setFileRecord(gardenfileName);
@@ -124,4 +128,8 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 		fileService.insertOldId(file);
 	}
 
+	public void setJobListener(JobListener jobListener)
+	{
+		this.jobListener = jobListener;
+	}
 }

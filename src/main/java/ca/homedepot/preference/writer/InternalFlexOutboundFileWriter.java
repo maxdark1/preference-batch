@@ -41,6 +41,8 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	public static final String SPACE = " ";
 	public static final String TEE = "T";
 
+	private JobListener jobListener;
+
 	@Value("${folders.flexAttributes.path}")
 	protected String repositorySource;
 	@Value("${folders.outbound}")
@@ -82,6 +84,7 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 
 		String stamp = formatter.format(Calendar.getInstance().getTime());
 		String fileName = fileNameFormat.replace(YYYYMMDD_T_HHMISS, stamp.replace(SPACE, TEE));
+		jobListener.setFiles(fileName);
 		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
 				JOB_NAME_FLEX_INTERNAL_DESTINATION, record.getBytes());
 		setFileRecord(fileName);
@@ -117,5 +120,10 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 		String lineRow = recordBuilder.toString();
 		generateFile(lineRow, flexAttributesFileFormat);
 		recordBuilder = new StringBuilder();
+	}
+
+	public void setJobListener(JobListener jobListener)
+	{
+		this.jobListener = jobListener;
 	}
 }
