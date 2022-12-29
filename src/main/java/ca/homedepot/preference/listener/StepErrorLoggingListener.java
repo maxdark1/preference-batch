@@ -123,7 +123,7 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				if (storageException != null)
 					throw storageException;
 			});
-			jobListener.setFiles(files.substring(0, files.toString().length() - 2));
+			jobListener.setFiles(files.substring(0, files.toString().length() - 1));
 		}
 	}
 
