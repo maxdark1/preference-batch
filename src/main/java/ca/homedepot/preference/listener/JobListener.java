@@ -4,6 +4,7 @@ import ca.homedepot.preference.dto.Job;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.PreferenceService;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
@@ -22,6 +23,7 @@ import static ca.homedepot.preference.dto.enums.JobStatusEnum.*;
  * The type Job listener.
  */
 @Slf4j
+@Setter
 @Component
 public class JobListener implements JobExecutionListener
 {
@@ -29,6 +31,8 @@ public class JobListener implements JobExecutionListener
 	 * Preference service
 	 */
 	private PreferenceService preferenceService;
+
+	private String files = "";
 
 	/**
 	 * Set preference service
@@ -118,15 +122,21 @@ public class JobListener implements JobExecutionListener
 	@Override
 	public void afterJob(JobExecution jobExecution)
 	{
-
+		String jobName = jobExecution.getJobInstance().getJobName();
 		if (jobExecution.getStatus() == BatchStatus.COMPLETED)
-			log.info(" Job {} ends with completes status ", jobExecution.getJobInstance().getJobName());
-
+		{
+			String process = "inbound";
+			//Outbound process
+			if (jobName.toUpperCase().contains("SEND"))
+				process = "outbound";
+			log.error(" JOB COMPLETED SUCCESSFULLY- The {} file(s) [ {} ] has been successfully processed ", process, files);
+			log.info(" Job {} ends with completed status ", jobName);
+		}
 		/**
 		 * Gets the current value for the job that is ending
 		 */
 		Job job = new Job();
-		job.setJobName(jobExecution.getJobInstance().getJobName());
+		job.setJobName(jobName);
 
 		Master master = status(jobExecution.getStatus());
 		Master status = status(BatchStatus.STARTED);

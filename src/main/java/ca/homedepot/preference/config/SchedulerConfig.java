@@ -434,6 +434,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		MasterProcessor.setPreferenceService(batchTasklet.getPreferenceService());
 		MasterProcessor.getMasterInfo();
+		stepListener.setJobListener(jobListener);
+		preferenceOutboundFileWriter.setJobListener(jobListener);
+		internalOutboundFileWriter.setJobListener(jobListener);
+		internalFlexOutboundFileWriter.setJobListener(jobListener);
 	}
 
 	/**
@@ -874,6 +878,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
 		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
 		citiSupressionFileWriter.setResource();
+		jobListener.setFiles(citiSupressionFileWriter.getFileName());
 
 		return citiSupressionFileWriter;
 	}
@@ -892,6 +897,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		loyaltyComplaintWriter.setJobName(JOB_NAME_LOYALTY_COMPLAINT);
 		loyaltyComplaintWriter.setNames(LOYALTY_COMPLIANT_NAMES);
 		loyaltyComplaintWriter.setResource();
+		jobListener.setFiles(loyaltyComplaintWriter.getFileName());
 		return loyaltyComplaintWriter;
 	}
 
@@ -927,6 +933,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		salesforceExtractFileWriter.setDelimiter(SINGLE_DELIMITER_TAB);
 		salesforceExtractFileWriter.setNames(SALESFORCE_EXTRACT_NAMES);
 		salesforceExtractFileWriter.setResource();
+		jobListener.setFiles(salesforceExtractFileWriter.getFileName());
 		return salesforceExtractFileWriter;
 	}
 
