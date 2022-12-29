@@ -129,8 +129,8 @@ public class JobListener implements JobExecutionListener
 			//Outbound process
 			if (jobName.toUpperCase().contains("SEND"))
 				process = "outbound";
-			log.error("The {} file(s) [ {} ] has been successfully processed ", process, files);
-			log.info(" Job {} COMPLETED SUCCESSFULLY  ", jobName);
+			log.error(" JOB COMPLETED SUCCESSFULLY- The {} file(s) [ {} ] has been successfully processed ", process, files);
+			log.info(" Job {} ends with completed status ", jobName);
 		}
 		/**
 		 * Gets the current value for the job that is ending
