@@ -1,6 +1,5 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.InternalFlexOutboundProcessorDTO;
 import ca.homedepot.preference.dto.Master;
@@ -27,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_FLEX_INTERNAL_DESTINATION;
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.STATUS_STR;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
 @Slf4j
 @Component
@@ -42,6 +41,8 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	public static final String SPACE = " ";
 	public static final String TEE = "T";
 
+	private JobListener jobListener;
+
 	@Value("${folders.flexAttributes.path}")
 	protected String repositorySource;
 	@Value("${folders.outbound}")
@@ -53,7 +54,7 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	@Autowired
 	private FileService fileService;
 
-	private StringBuilder recordBuilder;
+	private StringBuilder recordBuilder = new StringBuilder();
 
 	@Override
 	public void write(List<? extends InternalFlexOutboundProcessorDTO> items) throws Exception
@@ -83,6 +84,7 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 
 		String stamp = formatter.format(Calendar.getInstance().getTime());
 		String fileName = fileNameFormat.replace(YYYYMMDD_T_HHMISS, stamp.replace(SPACE, TEE));
+		jobListener.setFiles(fileName);
 		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
 				JOB_NAME_FLEX_INTERNAL_DESTINATION, record.getBytes());
 		setFileRecord(fileName);
@@ -92,18 +94,18 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	{
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_FLEX_INTERNAL_DESTINATION,
 				JobListener.status(BatchStatus.STARTED).getMasterId());
-		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, SourceDelimitersConstants.VALID);
+		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
 		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
 				fileStatus.getMasterId(), new Date(), new Date(), "BATCH", new Date(), null, null);
 
-		fileService.insert(file);
+		fileService.insertOldId(file);
 	}
 
 
 	@Override
 	public void open(ExecutionContext executionContext) throws ItemStreamException
 	{
-		recordBuilder = new StringBuilder();
+		log.info(" Internal Flex Outbound Writer Started. ");
 	}
 
 	@Override
@@ -117,5 +119,11 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 	{
 		String lineRow = recordBuilder.toString();
 		generateFile(lineRow, flexAttributesFileFormat);
+		recordBuilder = new StringBuilder();
+	}
+
+	public void setJobListener(JobListener jobListener)
+	{
+		this.jobListener = jobListener;
 	}
 }

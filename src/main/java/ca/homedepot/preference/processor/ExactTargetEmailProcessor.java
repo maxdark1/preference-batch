@@ -22,6 +22,8 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 
 	private int count = 0;
 
+	private String fileName = "";
+
 	public void setCount(int count)
 	{
 		this.count = count;
@@ -37,6 +39,15 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 	@Override
 	public FileInboundStgTable process(EmailOptOuts item)
 	{
+		if (fileName.equals(""))
+		{
+			fileName = item.getFileName();
+		}
+		else if (!fileName.equals(item.getFileName()))
+		{
+			count = 0;
+		}
+
 		count++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 

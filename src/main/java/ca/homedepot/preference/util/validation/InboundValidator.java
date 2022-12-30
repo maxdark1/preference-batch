@@ -19,6 +19,8 @@ public class InboundValidator
 
 	public static String validEmailPattern;
 
+	public static final SimpleDateFormat srcDateSDF = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+
 	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
 	public static final String[] FIELD_NAMES_REGISTRATION = new String[]
@@ -62,7 +64,7 @@ public class InboundValidator
 	public static void isValidationsErros(StringBuilder errors)
 	{
 		if (errors.length() > 0)
-			throw new ValidationException(" The item processed has the above validation's errors: \n" + errors);
+			throw new ValidationException(" The item processed has the above validation's errors: " + errors);
 	}
 
 	/**
@@ -141,12 +143,10 @@ public class InboundValidator
 	 */
 	public static Date validateDateFormat(String date, StringBuilder error)
 	{
-
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 		Date asOfDate = new Date();
 		try
 		{
-			asOfDate = simpleDateFormat.parse(date);
+			asOfDate = srcDateSDF.parse(date);
 			validateDayMonth(date, "-", error);
 			return asOfDate;
 		}

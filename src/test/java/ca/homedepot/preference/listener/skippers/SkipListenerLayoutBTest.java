@@ -14,7 +14,7 @@ import org.springframework.batch.core.BatchStatus;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SkipListenerLayoutBTest
 {
@@ -66,6 +66,7 @@ class SkipListenerLayoutBTest
 		String fileName = "TEST";
 		FileInboundStgTable fileInboundStgTable = Mockito.mock(FileInboundStgTable.class);
 		EmailOptOuts item = new EmailOptOuts();
+		item.setDateUnsubscribed("2/2/2022 7 :22");
 		item.setFileName(fileName);
 		item.setStatus("held");
 		String jobName = "jobName";
@@ -78,6 +79,14 @@ class SkipListenerLayoutBTest
 
 		skipListenerLayoutB.onSkipInProcess(item, t);
 		Mockito.verify(skipListenerLayoutB).onSkipInProcess(item, t);
+	}
+
+	@Test
+	void getDateToInsertTest()
+	{
+		Throwable t = new Exception("month");
+		String date = "2-2-2022 2 :2";
+		assertNull(skipListenerLayoutB.getDateToInsert(date, t));
 	}
 
 	@Test
