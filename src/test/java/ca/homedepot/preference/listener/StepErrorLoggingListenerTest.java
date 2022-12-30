@@ -30,14 +30,20 @@ class StepErrorLoggingListenerTest
 	@Mock
 	FileService fileService;
 
+	@Mock
+	JobListener jobListener;
+
 	@InjectMocks
 	@Spy
 	private StepErrorLoggingListener stepErrorLoggingListener;
 
+
+
 	@BeforeEach
 	void setUp()
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
+		stepErrorLoggingListener.setJobListener(jobListener);
 
 		List<Master> masterList = List.of(new Master(BigDecimal.TEN, BigDecimal.ONE, "KEY_VALUE", "hybris", true, null),
 				new Master(BigDecimal.valueOf(2L), BigDecimal.valueOf(2L), "STATUS", "VALID", true, null),
