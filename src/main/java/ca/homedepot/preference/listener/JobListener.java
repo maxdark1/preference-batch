@@ -155,7 +155,7 @@ public class JobListener implements JobExecutionListener
 		int updatedRecords = preferenceService.updateJob(job, status.getMasterId());
 
 		log.info("  {} Job(s) updated", updatedRecords);
-
+		files = "";
 	}
 
 }
