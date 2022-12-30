@@ -342,25 +342,25 @@ public class OutboundSqlQueriesConstants
 			+ "\tfile_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, industry_code, company_name, contact_first_name, contact_last_name, contact_role)\n"
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	public static final String SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION = "select MAX(hfc.file_id) file_id\n" +
-			"     , hfc.sequence_nbr, he.email email_addr, ha.address_id hd_hh_id\n" +
-			"     , c.customer_id hd_ind_id, cx.customer_nbr, cx.store_nbr, cx.org_name\n" +
-			"     , cx.industry_code company_cd, custtype.old_id cust_type_cd, idrel.old_id source_id\n" +
-			"     , ce.updated_date last_update_date, cx.industry_code, cx.org_name company_name\n" +
-			"     , c.first_name contact_first_name, c.last_name contact_last_name, '' contact_role\n" +
-			"     , max(ce.effective_date) effective_date from hdpc_customer c  join hdpc_customer_email ce\n" +
-			"              on c.customer_id = ce.customer_id AND ce.active\n" +
-			"\t\t join hdpc_master_id_rel idrel on c.source_type = idrel.pcam_id\n" +
-			"         left join hdpc_email he on ce.email_id = he.email_id\n" +
-			"         left join hdpc_customer_address ca on c.customer_id = ca.customer_id\n" +
-			"         left join hdpc_address ha on ha.address_id = c.def_address_id\n" +
-			"         left join hdpc_customer_extn cx on c.customer_id = cx.customer_id\n" +
-			"\t\t JOIN hdpc_master_id_rel custtype ON custtype.pcam_id::varchar = cx.cust_type\n" +
-			"         left join hdpc_file_customer hfc on c.customer_id = hfc.customer_id\n" +
-			" group by hfc.sequence_nbr, he.email, ha.address_id, c.customer_id\n" +
-			"       , cx.customer_nbr, cx.store_nbr, cx.org_name, cx.industry_code\n" +
-			"       , custtype.old_id, idrel.old_id, ce.updated_date, cx.industry_code\n" +
-			"       , cx.org_name, c.first_name, c.last_name;";
+	public static final String SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION = "select MAX(hfc.file_id) file_id\n"
+			+ "     , hfc.sequence_nbr, he.email email_addr, ha.address_id hd_hh_id\n"
+			+ "     , c.customer_id hd_ind_id, cx.customer_nbr, cx.store_nbr, cx.org_name\n"
+			+ "     , cx.industry_code company_cd, custtype.old_id cust_type_cd, idrel.old_id source_id\n"
+			+ "     , ce.updated_date last_update_date, cx.industry_code, cx.org_name company_name\n"
+			+ "     , c.first_name contact_first_name, c.last_name contact_last_name, '' contact_role\n"
+			+ "     , max(ce.effective_date) effective_date from hdpc_customer c  join hdpc_customer_email ce\n"
+			+ "              on c.customer_id = ce.customer_id AND ce.active\n"
+			+ "\t\t join hdpc_master_id_rel idrel on c.source_type = idrel.pcam_id\n"
+			+ "         left join hdpc_email he on ce.email_id = he.email_id\n"
+			+ "         left join hdpc_customer_address ca on c.customer_id = ca.customer_id\n"
+			+ "         left join hdpc_address ha on ha.address_id = c.def_address_id\n"
+			+ "         left join hdpc_customer_extn cx on c.customer_id = cx.customer_id\n"
+			+ "\t\t JOIN hdpc_master_id_rel custtype ON custtype.pcam_id::varchar = cx.cust_type\n"
+			+ "         left join hdpc_file_customer hfc on c.customer_id = hfc.customer_id\n"
+			+ " group by hfc.sequence_nbr, he.email, ha.address_id, c.customer_id\n"
+			+ "       , cx.customer_nbr, cx.store_nbr, cx.org_name, cx.industry_code\n"
+			+ "       , custtype.old_id, idrel.old_id, ce.updated_date, cx.industry_code\n"
+			+ "       , cx.org_name, c.first_name, c.last_name;";
 
 	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "SELECT file_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, "
 			+ "customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, "
