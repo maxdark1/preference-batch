@@ -6,6 +6,7 @@ import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 
 public class FileInboundStgTablePreparedStatement implements ItemPreparedStatementSetter<FileInboundStgTable>
 {
@@ -30,7 +31,7 @@ public class FileInboundStgTablePreparedStatement implements ItemPreparedStateme
 		ps.setString(16, item.getPhonePref());
 		ps.setString(17, item.getEmailAddressPref());
 		ps.setString(18, item.getMailAddressPref());
-		ps.setTimestamp(19, new Timestamp(item.getSrcDate().getTime()));
+		ps.setTimestamp(19, new Timestamp(new Date(item.getSrcDate()).getTime()));
 		ps.setBigDecimal(20, item.getEmailStatus());
 		ps.setString(21, item.getSrcPhoneExtension());
 		ps.setString(22, item.getEmailPrefHdCa());

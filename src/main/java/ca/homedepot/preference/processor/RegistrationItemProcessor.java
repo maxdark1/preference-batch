@@ -79,7 +79,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		{
 			log.error(
 					" PREFERENCE BATCH VALIDATION ERROR - The record # {} has the above fields with validation error on file {}: {} ",
-					count, item.getFileName().substring(item.getFileName().lastIndexOf(StorageConstants.SLASH) + 1), e.getMessage());
+				count, item.getFileName().substring(item.getFileName().lastIndexOf(StorageConstants.SLASH) + 1), e.getMessage());
 			/**
 			 * Throws the exception again after has been logged This is catch on the LayoutC's skippers
 			 */
@@ -87,7 +87,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		}
 
 		builder.status(NOTSTARTED).fileName(item.getFileName()).srcLanguagePref(item.getLanguagePreference().trim().toUpperCase())
-				.updatedDate(new Date()).srcDate(asOfDate).srcEmailAddress(item.getEmailAddress())
+				.updatedDate(new Date()).srcDate(asOfDate.toString()).srcEmailAddress(item.getEmailAddress())
 				.emailStatus(
 						item.getEmailAddress() == null ? null : MasterProcessor.getSourceID(EMAIL_STATUS, VALID_EMAIL).getMasterId())
 				.emailAddressPref(item.getEmailPermission()).phonePref(item.getPhonePermission())
