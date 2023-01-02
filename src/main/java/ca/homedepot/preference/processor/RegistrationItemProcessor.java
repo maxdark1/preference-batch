@@ -79,7 +79,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		{
 			log.error(
 					" PREFERENCE BATCH VALIDATION ERROR - The record # {} has the above fields with validation error on file {}: {} ",
-				count, item.getFileName().substring(item.getFileName().lastIndexOf(StorageConstants.SLASH) + 1), e.getMessage());
+					count, item.getFileName().substring(item.getFileName().lastIndexOf(StorageConstants.SLASH) + 1), e.getMessage());
 			/**
 			 * Throws the exception again after has been logged This is catch on the LayoutC's skippers
 			 */

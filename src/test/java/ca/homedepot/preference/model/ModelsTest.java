@@ -27,8 +27,8 @@ class ModelsTest
 		emailOptOuts.setDateUnsubscribed("22-11-2022");
 
 		fileInboundStgTable = new FileInboundStgTable.FileInboundStgTableBuilder().fileId(BigDecimal.ONE).fileName("TEST_FILE")
-				.status("status").srcDate(new Date().toString()).updatedDate(new Date()).srcEmailAddress("email@gmail.com").phonePref("1")
-				.srcPhoneNumber("123456789").srcPhoneExtension("52").srcTitleName("Sr").emailAddressPref("-1")
+				.status("status").srcDate(new Date().toString()).updatedDate(new Date()).srcEmailAddress("email@gmail.com")
+				.phonePref("1").srcPhoneNumber("123456789").srcPhoneExtension("52").srcTitleName("Sr").emailAddressPref("-1")
 				.sourceId(BigDecimal.ONE).emailPrefHdCa("1").srcFirstName("Michael").srcLastName("Penia").srcAddress1("address1")
 				.srcAddress2("address 2").srcCity("city").srcState("st").srcDate(new Date().toString()).srcPostalCode("123456")
 				.mailAddressPref("-1").emailPrefHdCa("-1").emailPrefPro("-1").emailPrefNewMover("-1").customerNbr("1234")
