@@ -84,15 +84,13 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 
 		Boolean isEmailInvalid = isEmailInvalid(t);
 
-		Date srcDate = getDateToInsert(item.getDateUnsubscribed(), t);
-
 		/**
 		 * Creating the File inbound staging table record
 		 */
 		String filename = getFileName(item.getFileName());
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().fileId(getFromTableFileID(filename, jobName))
-				.srcDate(srcDate).status(ERROR).srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
-				.emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
+				.srcDate(item.getDateUnsubscribed()).status(ERROR).srcEmailAddress(item.getEmailAddress())
+				.fileName(item.getFileName()).emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
 				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
 				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
 				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
