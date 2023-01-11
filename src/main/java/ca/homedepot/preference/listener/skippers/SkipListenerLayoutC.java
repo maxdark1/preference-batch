@@ -76,9 +76,8 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	public void onSkipInProcess(InboundRegistration item, Throwable t)
 	{
 		String filename = getFileName(item.getFileName());
-		Date srcDate = getDateToInsert(item.getAsOfDate(), t);
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().fileId(getFromTableFileID(filename, jobName))
-				.srcDate(srcDate).status(ERROR).fileName(item.getFileName())
+				.srcDate(item.getAsOfDate()).status(ERROR).fileName(item.getFileName())
 				.srcLanguagePref(item.getLanguagePreference().trim().toUpperCase()).updatedDate(new Date())
 				.emailStatus(getEmailStatus(t)).srcEmailAddress(item.getEmailAddress()).emailAddressPref(item.getEmailPermission())
 				.phonePref(item.getPhonePermission()).srcPhoneNumber(item.getPhoneNumber())
