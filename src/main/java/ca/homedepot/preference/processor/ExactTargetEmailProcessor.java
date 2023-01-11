@@ -22,6 +22,8 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 
 	private int count = 0;
 
+	private String fileName = "";
+
 	public void setCount(int count)
 	{
 		this.count = count;
@@ -37,6 +39,15 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 	@Override
 	public FileInboundStgTable process(EmailOptOuts item)
 	{
+		if (fileName.equals(""))
+		{
+			fileName = item.getFileName();
+		}
+		else if (!fileName.equals(item.getFileName()))
+		{
+			count = 0;
+		}
+
 		count++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 
@@ -78,8 +89,8 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		 */
 		return builder.srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
 				.sourceId(ExactTargetEmailValidation.getSourceId(item.getReason()))
-				.emailStatus(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status(NOTSTARTED).srcDate(srcDate)
-				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
+				.emailStatus(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status(NOTSTARTED)
+				.srcDate(srcDate.toString()).emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
 				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
 				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
 	}

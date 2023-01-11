@@ -113,7 +113,7 @@ public class FileInboundStgTable
 	 * Field src_date on persistence
 	 *
 	 */
-	Date srcDate;
+	String srcDate;
 
 	/*
 	 * Field src_postal_code on persistence

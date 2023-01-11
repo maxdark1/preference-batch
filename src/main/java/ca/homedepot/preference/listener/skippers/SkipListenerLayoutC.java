@@ -2,6 +2,7 @@ package ca.homedepot.preference.listener.skippers;
 
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
+import ca.homedepot.preference.util.validation.InboundValidator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.ERROR;
@@ -75,13 +77,14 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 	{
 		String filename = getFileName(item.getFileName());
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().fileId(getFromTableFileID(filename, jobName))
-				.status(ERROR).fileName(item.getFileName()).srcLanguagePref(item.getLanguagePreference().trim().toUpperCase())
-				.updatedDate(new Date()).emailStatus(getEmailStatus(t)).srcEmailAddress(item.getEmailAddress())
-				.emailAddressPref(item.getEmailPermission()).phonePref(item.getPhonePermission())
-				.srcPhoneNumber(item.getPhoneNumber()).srcPhoneExtension(item.getPhoneExtension()).srcTitleName(item.getTitle())
-				.srcFirstName(item.getFirstName()).srcLastName(item.getLastName()).srcAddress1(item.getAddress1())
-				.srcAddress2(item.getAddress2()).srcCity(item.getCity()).srcState(item.getProvince())
-				.srcPostalCode(item.getPostalCode()).mailAddressPref(item.getMailPermission()).emailPrefHdCa(item.getEmailPrefHDCA())
+				.srcDate(item.getAsOfDate()).status(ERROR).fileName(item.getFileName())
+				.srcLanguagePref(item.getLanguagePreference().trim().toUpperCase()).updatedDate(new Date())
+				.emailStatus(getEmailStatus(t)).srcEmailAddress(item.getEmailAddress()).emailAddressPref(item.getEmailPermission())
+				.phonePref(item.getPhonePermission()).srcPhoneNumber(item.getPhoneNumber())
+				.srcPhoneExtension(item.getPhoneExtension()).srcTitleName(item.getTitle()).srcFirstName(item.getFirstName())
+				.srcLastName(item.getLastName()).srcAddress1(item.getAddress1()).srcAddress2(item.getAddress2())
+				.srcCity(item.getCity()).srcState(item.getProvince()).srcPostalCode(item.getPostalCode())
+				.mailAddressPref(item.getMailPermission()).emailPrefHdCa(item.getEmailPrefHDCA())
 				.emailPrefGardenClub(item.getGardenClub()).emailPrefPro(item.getEmailPrefPRO()).emailPrefNewMover(item.getNewMover())
 				.cellSmsFlag(item.getSmsFlag()).customerNbr(item.getContent1()).faxNumber(item.getFaxNumber())
 				.faxExtension(item.getFaxExtension()).content1(item.getContent1()).value1(item.getValue1())
@@ -101,5 +104,13 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 		 * Insertion to staging error on failed item
 		 */
 		fileService.insertInboundStgError(fileInboundStgTable);
+	}
+
+	public Date getDateToInsert(String date, Throwable t) throws ParseException
+	{
+
+		if (!isDateInvalid(t))
+			return InboundValidator.srcDateSDF.parse(date);
+		return null;
 	}
 }

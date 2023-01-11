@@ -4,6 +4,7 @@ import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.constants.PreferenceBatchConstants;
 import ca.homedepot.preference.dto.InternalOutboundProcessorDto;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
@@ -39,6 +40,9 @@ class InternalOutboundFileWriterTest
 
 	@Mock
 	FileServiceImpl fileService;
+
+	@Mock
+	JobListener jobListener;
 
 	@InjectMocks
 	@Spy
@@ -99,6 +103,7 @@ class InternalOutboundFileWriterTest
 		MasterProcessor.setMasterList(masterList);
 
 		executionContext = new ExecutionContext();
+		internalOutboundFileWriter.setJobListener(jobListener);
 	}
 
 	@Test

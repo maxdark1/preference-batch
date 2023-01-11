@@ -30,7 +30,7 @@ spring:
         order_inserts: true
         order_updates: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   jdbc:
     batch-size: 25
   application:

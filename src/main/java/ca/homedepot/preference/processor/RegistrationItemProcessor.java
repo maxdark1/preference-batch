@@ -23,6 +23,8 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 
 	private int count = 0;
 
+	private String fileName = "";
+
 	public void setCount(int count)
 	{
 		this.count = count;
@@ -49,6 +51,14 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	@Override
 	public FileInboundStgTable process(InboundRegistration item) throws Exception
 	{
+		if (fileName.equals(""))
+		{
+			fileName = item.getFileName();
+		}
+		else if (!fileName.equals(item.getFileName()))
+		{
+			count = 0;
+		}
 		count++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 		Date asOfDate = null;
@@ -77,7 +87,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		}
 
 		builder.status(NOTSTARTED).fileName(item.getFileName()).srcLanguagePref(item.getLanguagePreference().trim().toUpperCase())
-				.updatedDate(new Date()).srcDate(asOfDate).srcEmailAddress(item.getEmailAddress())
+				.updatedDate(new Date()).srcDate(asOfDate.toString()).srcEmailAddress(item.getEmailAddress())
 				.emailStatus(
 						item.getEmailAddress() == null ? null : MasterProcessor.getSourceID(EMAIL_STATUS, VALID_EMAIL).getMasterId())
 				.emailAddressPref(item.getEmailPermission()).phonePref(item.getPhonePermission())

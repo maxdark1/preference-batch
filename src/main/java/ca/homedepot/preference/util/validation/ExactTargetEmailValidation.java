@@ -18,7 +18,7 @@ public class ExactTargetEmailValidation
 	public static final String[] FIELD_NAMES_SFMC_OPTOUTS = new String[]
 	{ "Email Address", "Status", "Reason", "Date Unsubscribed" };
 
-	static final SimpleDateFormat[] simpleDateFormatArray =
+	public static final SimpleDateFormat[] simpleDateFormatArray =
 	{ new SimpleDateFormat("MM/dd/yyyy H :mm"), new SimpleDateFormat("MM/dd/yyyy HH:mm"), new SimpleDateFormat("MM/dd/yyyy HH:m"),
 			new SimpleDateFormat("MM/dd/yyyy H :m"), };
 

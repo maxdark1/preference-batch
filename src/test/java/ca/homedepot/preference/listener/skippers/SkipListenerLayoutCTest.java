@@ -12,9 +12,11 @@ import org.mockito.*;
 import org.springframework.batch.core.BatchStatus;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SkipListenerLayoutCTest
 {
@@ -65,6 +67,7 @@ class SkipListenerLayoutCTest
 		InboundRegistration item = new InboundRegistration();
 		item.setFileName(fileName);
 		item.setLanguagePreference("F");
+		item.setAsOfDate("01-22-2022 22:22:22");
 		String jobName = "jobName";
 		skipListenerLayoutC.setJobName("jobName");
 		Throwable t = new Exception("message");
@@ -75,6 +78,19 @@ class SkipListenerLayoutCTest
 
 		skipListenerLayoutC.onSkipInProcess(item, t);
 		Mockito.verify(skipListenerLayoutC).onSkipInProcess(item, t);
+	}
+
+	@Test
+	void getDateToInsert() throws ParseException
+	{
+		String correctDate = "01-01-2022 22:22:22", incorrectDate = "00/00/00 00:00:00";
+		Throwable t = new Exception("month");
+		Date date = skipListenerLayoutC.getDateToInsert(correctDate, t);
+		t = new Exception("month date format");
+
+		Date dateIncorrect = skipListenerLayoutC.getDateToInsert(incorrectDate, t);
+		assertNotNull(date);
+		assertNull(dateIncorrect);
 	}
 
 	@Test

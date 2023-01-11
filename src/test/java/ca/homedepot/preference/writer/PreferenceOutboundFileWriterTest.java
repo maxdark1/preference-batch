@@ -3,6 +3,7 @@ package ca.homedepot.preference.writer;
 import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
@@ -27,6 +28,8 @@ class PreferenceOutboundFileWriterTest
 
 	@Mock
 	Storage storage;
+	@Mock
+	JobListener jobListener;
 
 	CloudStorageUtils cloudStorageUtils;
 	@InjectMocks
@@ -77,6 +80,7 @@ class PreferenceOutboundFileWriterTest
 		MasterProcessor.setMasterList(masterList);
 
 		executionContext = new ExecutionContext();
+		preferenceOutboundFileWriter.setJobListener(jobListener);
 	}
 
 

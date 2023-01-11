@@ -63,6 +63,21 @@ public class FileServiceImpl implements FileService
 	}
 
 	/**
+	 * Inserts file on persistence OldId
+	 *
+	 * @param file
+	 * @return inserted records
+	 */
+	@Override
+	@Transactional
+	public int insertOldId(FileDTO file)
+	{
+		return jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_HDPC_FILE_OLD_ID, file.getFileName(), file.getJob(),
+				file.getSourceType(), file.getStartTime(), file.getInsertedBy(), file.getInsertedDate(), file.getStatusId(),
+				file.getEndTime());
+	}
+
+	/**
 	 * Gets job id
 	 *
 	 * @param jobName

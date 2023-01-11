@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 @Slf4j
 public class PreferenceOutboundProcessor implements ItemProcessor<PreferenceOutboundDto, PreferenceOutboundDtoProcessor>
 {
-	private final Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+	private final Format formatter = new SimpleDateFormat("MM/dd/YYYY HH:MM:SS");
 
 	@Override
 	public PreferenceOutboundDtoProcessor process(PreferenceOutboundDto preferenceOutboundDto) throws Exception

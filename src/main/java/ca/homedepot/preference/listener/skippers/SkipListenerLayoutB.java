@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.ERROR;
@@ -83,12 +85,12 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 		Boolean isEmailInvalid = isEmailInvalid(t);
 
 		/**
-		 * Creating the File inbound statging table record
+		 * Creating the File inbound staging table record
 		 */
 		String filename = getFileName(item.getFileName());
 		FileInboundStgTable fileInboundStgTable = FileInboundStgTable.builder().fileId(getFromTableFileID(filename, jobName))
-				.status(ERROR).srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
-				.emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
+				.srcDate(item.getDateUnsubscribed()).status(ERROR).srcEmailAddress(item.getEmailAddress())
+				.fileName(item.getFileName()).emailStatus(Boolean.TRUE.equals(isEmailInvalid) ? getEmailStatus(t) : emailStatus)
 				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
 				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
 				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
@@ -99,5 +101,20 @@ public class SkipListenerLayoutB extends SkipFileService implements SkipListener
 		fileService.insertInboundStgError(fileInboundStgTable);
 	}
 
-
+	public Date getDateToInsert(String date, Throwable t)
+	{
+		if (!isDateInvalid(t))
+			for (SimpleDateFormat dateFormat : ExactTargetEmailValidation.simpleDateFormatArray)
+			{
+				try
+				{
+					return dateFormat.parse(date);
+				}
+				catch (ParseException e)
+				{
+					log.debug(" Getting the date format to insert on stg_error... {}", date);
+				}
+			}
+		return null;
+	}
 }
