@@ -29,7 +29,7 @@ class FileInboundStgTablePreparedStatementTest
 		MockitoAnnotations.openMocks(this);
 		item = FileInboundStgTable.builder().build();
 		item.setInsertedDate(new Date());
-		item.setSrcDate(String.valueOf(new Date()));
+		item.setSrcDate(new Date().toString());
 	}
 
 	@Test
