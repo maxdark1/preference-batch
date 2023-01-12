@@ -82,6 +82,17 @@ class InboundValidatorTest
 	}
 
 	@Test
+	void validateMaxLengthNotReqNulleable()
+	{
+		String field = "addr1", value = "";
+		int maxLength = 3;
+
+		String result = InboundValidator.validateMaxLengthNotReq(field, value, maxLength, error, true);
+		assertNull(result);
+
+	}
+
+	@Test
 	void validateLanguagePref()
 	{
 		input.setLanguagePreference("ENGLISH");
