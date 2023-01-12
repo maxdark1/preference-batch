@@ -47,6 +47,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
 
+
 	StringBuilder fileBuilder = new StringBuilder();
 
 	/**
