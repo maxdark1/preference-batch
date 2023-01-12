@@ -173,15 +173,15 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	{
 		item.setEmailAddress(validateMaxLengthNotReq("email_addr", item.getEmailAddress(), 72, error));
 		item.setPhonePermission(validateMaxLengthNotReq("phone_permission", item.getPhonePermission(), 2, error));
-		item.setPhoneNumber(validateMaxLengthNotReq("phone_num", item.getPhoneNumber(), 10, error));
+		item.setPhoneNumber(validateMaxLengthNotReq("phone_num", item.getPhoneNumber(), 10, error, true));
 		item.setPhoneExtension(validateMaxLengthNotReq("phone_ext", item.getPhoneExtension(), 6, error));
 		item.setTitle(validateMaxLengthNotReq("title", item.getTitle(), 20, error));
 		item.setFirstName(validateMaxLengthNotReq("first_name", item.getFirstName(), 40, error));
 		item.setLastName(validateMaxLengthNotReq("last_name", item.getLastName(), 60, error));
-		item.setAddress1(validateMaxLengthNotReq("addr1", item.getAddress1(), 100, error));
-		item.setAddress2(validateMaxLengthNotReq("addr2", item.getAddress2(), 60, error));
-		item.setCity(validateMaxLengthNotReq("city", item.getCity(), 60, error));
-		item.setProvince(validateMaxLengthNotReq("province", item.getProvince(), 2, error));
+		item.setAddress1(validateMaxLengthNotReq("addr1", item.getAddress1(), 100, error, true));
+		item.setAddress2(validateMaxLengthNotReq("addr2", item.getAddress2(), 60, error, true));
+		item.setCity(validateMaxLengthNotReq("city", item.getCity(), 60, error, true));
+		item.setProvince(validateMaxLengthNotReq("province", item.getProvince(), 2, error, true));
 		item.setPostalCode(validateMaxLengthNotReq("postal_code", item.getPostalCode(), 7, error));
 		item.setSmsFlag(validateMaxLengthNotReq("sms_flag", item.getSmsFlag(), 2, error));
 		item.setFaxNumber(validateMaxLengthNotReq("fax_number", item.getFaxNumber(), 30, error));
