@@ -28,7 +28,7 @@ class PreferenceOutboundProcessorTest
 	{
 		String split = SourceDelimitersConstants.SINGLE_DELIMITER_TAB;
 		Date date = new Date();
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+		Format formatter = new SimpleDateFormat("MM/dd/YYYY HH:MM:SS");
 
 		preferenceOutboundDto = Mockito.mock(PreferenceOutboundDto.class);
 

@@ -95,8 +95,9 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_FLEX_INTERNAL_DESTINATION,
 				JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
-		FileDTO file = new FileDTO(null, fileName, jobId, new BigDecimal(sourceId), fileStatus.getValueVal(),
-				fileStatus.getMasterId(), new Date(), new Date(), "BATCH", new Date(), null, null);
+		BigDecimal sourceIdBD = sourceId == null ? null : new BigDecimal(sourceId);
+		FileDTO file = new FileDTO(null, fileName, jobId, sourceIdBD, fileStatus.getValueVal(), fileStatus.getMasterId(),
+				new Date(), new Date(), "BATCH", new Date(), null, null);
 
 		fileService.insertOldId(file);
 	}
