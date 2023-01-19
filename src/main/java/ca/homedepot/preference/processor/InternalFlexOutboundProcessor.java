@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -37,11 +38,17 @@ public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlex
 		String lastUpdateDate = item.getLastUpdateDate() != null ? formatter1.format(item.getLastUpdateDate()) : "";
 
 		return InternalFlexOutboundProcessorDTO.builder().fileId(item.getFileId().toString()).sequenceNbr(item.getSequenceNbr())
-				.emailAddr(item.getEmailAddr()).hdHhId(item.getHdHhId().toString()).hdIndId(item.getHdIndId().toString())
+				.emailAddr(item.getEmailAddr()).hdHhId(isValueNull(item.getHdHhId())).hdIndId(isValueNull(item.getHdIndId()))
 				.customerNbr(item.getCustomerNbr()).storeNbr(item.getStoreNbr()).orgName(item.getOrgName())
-				.companyCd(item.getCompanyCd()).custTypeCd(item.getCustTypeCd()).sourceId(item.getSourceId().toString())
+				.companyCd(item.getCompanyCd()).custTypeCd(item.getCustTypeCd()).sourceId(item.getSourceId()+"")
 				.effectiveDate(effectiveDate).lastUpdateDate(lastUpdateDate).industryCode(item.getIndustryCode())
 				.companyName(item.getCompanyName()).contactFirstName(item.getContactFirstName())
 				.contactLastName(item.getContactLastName()).contactRole(item.getContactRole()).build();
+	}
+
+	public String isValueNull(BigDecimal value){
+		if(value == null)
+			return null;
+		return value.toPlainString();
 	}
 }
