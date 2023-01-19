@@ -34,7 +34,7 @@ public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlex
 		LocalDateTime itemEffectiveDate = item.getEffectiveDate();
 		String effectiveDate = null != itemEffectiveDate ? itemEffectiveDate.format(formatter2) : "";
 
-		String lastUpdateDate = formatter1.format(item.getLastUpdateDate());
+		String lastUpdateDate = item.getLastUpdateDate() != null ? formatter1.format(item.getLastUpdateDate()) : "";
 
 		return InternalFlexOutboundProcessorDTO.builder().fileId(item.getFileId().toString()).sequenceNbr(item.getSequenceNbr())
 				.emailAddr(item.getEmailAddr()).hdHhId(item.getHdHhId().toString()).hdIndId(item.getHdIndId().toString())
