@@ -15,8 +15,9 @@ public class InternalOutboundPreparedStatement implements ItemPreparedStatementS
 
 		ps.setString(1, item.getEmailAddr());
 		ps.setTimestamp(2, new Timestamp(item.getCanPtcEffectiveDate().getTime()));
-		ps.setString(3, item.getCanPtcSourceId().toPlainString());
-		String emailStatus = item.getEmailStatus().toPlainString();
+		String sourceId = item.getCanPtcSourceId() == null ? null : item.getCanPtcSourceId().toPlainString();
+		ps.setString(3, sourceId);
+		String emailStatus = item.getEmailStatus() == null ? null : item.getEmailStatus().toPlainString();
 		if (emailStatus.equals("0"))
 			emailStatus = "00";
 		ps.setString(4, emailStatus);

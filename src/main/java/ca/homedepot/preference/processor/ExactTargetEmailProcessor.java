@@ -89,8 +89,8 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		 */
 		return builder.srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
 				.sourceId(ExactTargetEmailValidation.getSourceId(item.getReason()))
-				.emailStatus(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status(NOTSTARTED).srcDate(srcDate.toString())
-				.emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
+				.emailStatus(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status(NOTSTARTED)
+				.srcDate(srcDate.toString()).emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
 				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
 				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
 	}

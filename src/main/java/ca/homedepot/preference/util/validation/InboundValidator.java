@@ -82,6 +82,18 @@ public class InboundValidator
 		return value;
 	}
 
+	public static String validateMaxLengthNotReq(String field, String value, int maxLength, StringBuilder error, Boolean nulleable)
+	{
+		if (value.isBlank())
+		{
+			return null;
+		}
+		if (value != null)
+			return validateMaxLength(field, value, maxLength, error);
+
+		return value;
+	}
+
 	/**
 	 * Validates field length
 	 *
