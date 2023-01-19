@@ -46,7 +46,8 @@ public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlex
 				.contactLastName(item.getContactLastName()).contactRole(item.getContactRole()).build();
 	}
 
-	public String isValueNull(BigDecimal value){
+	private static String isValueNull(BigDecimal value)
+	{
 		if(value == null)
 			return null;
 		return value.toPlainString();
