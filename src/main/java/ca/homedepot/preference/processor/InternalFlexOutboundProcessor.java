@@ -37,18 +37,19 @@ public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlex
 
 		String lastUpdateDate = item.getLastUpdateDate() != null ? formatter1.format(item.getLastUpdateDate()) : "";
 
-		return InternalFlexOutboundProcessorDTO.builder().fileId(item.getFileId().toString()).sequenceNbr(item.getSequenceNbr())
+		return InternalFlexOutboundProcessorDTO.builder().fileId(isValueNull(item.getFileId())).sequenceNbr(item.getSequenceNbr())
 				.emailAddr(item.getEmailAddr()).hdHhId(isValueNull(item.getHdHhId())).hdIndId(isValueNull(item.getHdIndId()))
 				.customerNbr(item.getCustomerNbr()).storeNbr(item.getStoreNbr()).orgName(item.getOrgName())
-				.companyCd(item.getCompanyCd()).custTypeCd(item.getCustTypeCd()).sourceId(item.getSourceId()+"")
-				.effectiveDate(effectiveDate).lastUpdateDate(lastUpdateDate).industryCode(item.getIndustryCode())
-				.companyName(item.getCompanyName()).contactFirstName(item.getContactFirstName())
-				.contactLastName(item.getContactLastName()).contactRole(item.getContactRole()).build();
+				.companyCd(item.getCompanyCd()).custTypeCd(item.getCustTypeCd())
+				.sourceId(item.getSourceId() != null ? item.getSourceId() + "" : null).effectiveDate(effectiveDate)
+				.lastUpdateDate(lastUpdateDate).industryCode(item.getIndustryCode()).companyName(item.getCompanyName())
+				.contactFirstName(item.getContactFirstName()).contactLastName(item.getContactLastName())
+				.contactRole(item.getContactRole()).build();
 	}
 
 	private static String isValueNull(BigDecimal value)
 	{
-		if(value == null)
+		if (value == null)
 			return null;
 		return value.toPlainString();
 	}
