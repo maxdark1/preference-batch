@@ -845,6 +845,20 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
+	@Bean
+	public JdbcBatchItemWriter<InternalFlexOutboundDTO> internalFlexOutboundDTOJdbcBatchItemWriter()
+	{
+		JdbcBatchItemWriter<InternalFlexOutboundDTO> writer = new JdbcBatchItemWriter<>();
+
+		writer.setDataSource(dataSource);
+		writer.setSql(OutboundSqlQueriesConstants.SQL_INSERT_FLEX_ATTRIBUTE);
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
+		writer.setItemPreparedStatementSetter(new InternalFlexPreparedStatement());
+
+		return writer;
+	}
+
+
 	/***
 	 * Writer to outbound Loyalty complaint stg table
 	 *
@@ -1002,7 +1016,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step1")
 				.<InternalFlexOutboundDTO, InternalFlexOutboundDTO> chunk(chunkOutboundFlexAttributes)
-				.reader(preferenceOutboundReader.outboundInternalFlexDBReader()).writer(internalFlexOutboundStep1Writer).build();
+				.reader(preferenceOutboundReader.outboundInternalFlexDBReader()).writer(internalFlexOutboundDTOJdbcBatchItemWriter())
+				.build();
 	}
 
 	public Step readSendPreferencesToFlexInternalStep2()
