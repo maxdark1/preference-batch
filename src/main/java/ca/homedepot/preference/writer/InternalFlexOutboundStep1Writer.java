@@ -3,9 +3,7 @@ package ca.homedepot.preference.writer;
 import ca.homedepot.preference.dto.InternalFlexOutboundDTO;
 import ca.homedepot.preference.service.OutboundService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.item.ItemStreamException;
-import org.springframework.batch.item.ItemStreamWriter;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class InternalFlexOutboundStep1Writer implements ItemStreamWriter<InternalFlexOutboundDTO>
+public class InternalFlexOutboundStep1Writer implements ItemWriter<InternalFlexOutboundDTO>
 {
 
 	@Autowired
@@ -30,27 +28,13 @@ public class InternalFlexOutboundStep1Writer implements ItemStreamWriter<Interna
 	@Override
 	public void write(List<? extends InternalFlexOutboundDTO> items) throws Exception
 	{
+		log.info(" Preference Outbound : Preference Outbound Writer Starter :" + new Date());
 		for (InternalFlexOutboundDTO internalOutboundDto : items)
 		{
 			outboundService.internalFlexAttributes(internalOutboundDto);
 		}
-	}
-
-	@Override
-	public void open(ExecutionContext executionContext) throws ItemStreamException
-	{
-		log.info(" Preference Outbound : Preference Outbound Writer Starter :" + new Date());
-	}
-
-	@Override
-	public void update(ExecutionContext executionContext) throws ItemStreamException
-	{
-
-	}
-
-	@Override
-	public void close() throws ItemStreamException
-	{
 		log.info(" Preference Outbound : Preference Outbound Writer END :" + new Date());
+
+
 	}
 }
