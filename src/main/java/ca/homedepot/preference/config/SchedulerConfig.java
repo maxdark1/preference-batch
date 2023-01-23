@@ -888,6 +888,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setFolderSource(folderOutbound);
 		citiSupressionFileWriter.setRepositorySource(citiPath);
 		citiSupressionFileWriter.setSource(CITI_BANK);
+		citiSupressionFileWriter.setIsCiti(true);
 		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
 		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
