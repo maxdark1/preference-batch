@@ -143,7 +143,7 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 		FormatterLineAggregator<T> formatterLineAggregator = new FormatterLineAggregator<>();
 		formatterLineAggregator
-				.setFormat("%1$30s%2$1s%3$30s%4$60s%5$60s%6$40s%7$2s%8$7s%9$150s%10$10s%11$10s%12$30s%13$1s%14$1s%15$1s%16$1s");
+				.setFormat("%1$-30s%2$-1s%3$-30s%4$-60s%5$-60s%6$-40s%7$-2s%8$-7s%9$-150s%10$-10s%11$-10s%12$-30s%13$-1s%14$-1s%15$-1s%16$-1s");
 		formatterLineAggregator.setFieldExtractor(beanWrapperFieldExtractor);
 		return formatterLineAggregator;
 	}
