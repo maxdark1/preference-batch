@@ -11,8 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
-import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
+import org.springframework.batch.item.file.transform.*;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -53,6 +52,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 
 	private String delimiter = ",";
 
+	private boolean isCiti = false;
+
 	public FileWriterOutBound()
 	{
 		setAppendAllowed(true);
@@ -67,7 +68,19 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 	public void setNames(String[] names)
 	{
 		this.names = names;
-		setLineAggregator(getLineAgreggator());
+		if (isCiti)
+		{
+			setLineAggregator(getCitiAgreggator());
+		}
+		else
+		{
+			setLineAggregator(getLineAgreggator());
+		}
+	}
+
+	public void setIsCiti(boolean citi)
+	{
+		this.isCiti = citi;
 	}
 
 	public void setDelimiter(String delimiter)
@@ -123,6 +136,17 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 		return delimitedLineAggregator;
 	}
 
+	public FormatterLineAggregator<T> getCitiAgreggator()
+	{
+		BeanWrapperFieldExtractor<T> beanWrapperFieldExtractor = new BeanWrapperFieldExtractor<>();
+		beanWrapperFieldExtractor.setNames(names);
+
+		FormatterLineAggregator<T> formatterLineAggregator = new FormatterLineAggregator<>();
+		formatterLineAggregator
+				.setFormat("%1$-30s%2$-1s%3$-30s%4$-60s%5$-60s%6$-40s%7$-2s%8$-7s%9$-150s%10$-10s%11$-10s%12$-30s%13$-1s%14$-1s%15$-1s%16$-1s");
+		formatterLineAggregator.setFieldExtractor(beanWrapperFieldExtractor);
+		return formatterLineAggregator;
+	}
 
 	public void saveFileRecord()
 	{
