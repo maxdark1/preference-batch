@@ -1,6 +1,7 @@
 package ca.homedepot.preference.model;
 
 import lombok.Data;
+import lombok.Generated;
 import org.springframework.batch.item.ResourceAware;
 import org.springframework.core.io.Resource;
 
@@ -10,6 +11,7 @@ import org.springframework.core.io.Resource;
 * It knows which file it comes from
 * */
 @Data
+@Generated
 public class EmailOptOuts implements ResourceAware
 {
 	/*

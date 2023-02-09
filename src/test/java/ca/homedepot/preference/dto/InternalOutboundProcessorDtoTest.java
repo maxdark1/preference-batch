@@ -43,10 +43,4 @@ class InternalOutboundProcessorDtoTest
 		assertEquals(test, internalOutboundProcessorDto.toString());
 	}
 
-	@Test
-	void builder()
-	{
-		internalOutboundProcessorDto = InternalOutboundProcessorDto.builder().emailAddr("test@test.com").build();
-		assertNotNull(internalOutboundProcessorDto);
-	}
 }

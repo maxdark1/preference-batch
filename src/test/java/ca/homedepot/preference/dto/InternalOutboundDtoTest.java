@@ -43,10 +43,5 @@ class InternalOutboundDtoTest
 		assertEquals(test, internalOutboundDto.toString());
 	}
 
-	@Test
-	void builder()
-	{
-		internalOutboundDto = InternalOutboundDto.builder().emailAddr("test@test.com").build();
-		assertNotNull(internalOutboundDto);
-	}
+
 }

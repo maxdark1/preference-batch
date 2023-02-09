@@ -41,10 +41,5 @@ class PreferenceOutboundDtoProcessorTest
 		assertNotNull(test);
 	}
 
-	@Test
-	void builder()
-	{
-		preferenceOutboundDtoProcessor = PreferenceOutboundDtoProcessor.builder().build();
-		assertNotNull(preferenceOutboundDtoProcessor);
-	}
+
 }

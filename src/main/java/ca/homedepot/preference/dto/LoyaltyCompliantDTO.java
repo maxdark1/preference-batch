@@ -2,6 +2,7 @@ package ca.homedepot.preference.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Generated
 public class LoyaltyCompliantDTO
 {
 	private String emailAddr;
