@@ -33,7 +33,6 @@ import static ca.homedepot.preference.dto.enums.JobStatusEnum.IN_PROGRESS;
 @Component
 @Setter
 @Getter
-@Generated
 public class InvalidFileListener implements StepExecutionListener
 {
 

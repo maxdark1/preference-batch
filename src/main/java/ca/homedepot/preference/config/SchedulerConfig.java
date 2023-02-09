@@ -77,7 +77,6 @@ import static ca.homedepot.preference.writer.GSFileWriterOutbound.createFileOnGC
 @EnableScheduling
 @Setter
 @RequiredArgsConstructor
-@Generated
 public class SchedulerConfig extends DefaultBatchConfigurer
 {
 	/**
