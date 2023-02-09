@@ -7,6 +7,7 @@ import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+
 @Generated
 
 public class InternalOutboundPreparedStatement implements ItemPreparedStatementSetter<InternalOutboundDto>
