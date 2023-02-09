@@ -5,6 +5,7 @@ import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.processor.InternalOutboundProcessor;
 import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
@@ -12,6 +13,7 @@ import ca.homedepot.preference.processor.RegistrationItemProcessor;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
+import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.CloudStorageUtils;
@@ -44,13 +46,16 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -59,7 +64,13 @@ import static org.mockito.Mockito.*;
 
 class SchedulerConfigTest
 {
+	@Mock
+	StringBuilder stringBuilder;
 
+	@Mock
+	FileServiceImpl fileServiceImpl;
+	@Mock
+	OutputStream os;
 	@Mock
 	JobBuilderFactory jobBuilderFactory;
 
@@ -151,6 +162,10 @@ class SchedulerConfigTest
 
 	@Mock
 	CloudStorageUtils cloudStorageUtils;
+
+	@InjectMocks
+	@Spy
+	GSFileWriterOutbound<CitiSuppresionOutboundDTO> gsFileWriterOutbound;
 
 
 	private void setFinalStaticField(Class<?> clazz, String fieldName, Object value)
@@ -665,4 +680,46 @@ class SchedulerConfigTest
 			ex.getMessage();
 		}
 	}
+
+    @Test
+    void createEmailFile() {
+		Boolean validator;
+		try {
+			gsFileWriterOutbound.setStringBuilder(stringBuilder);
+			gsFileWriterOutbound.setOs(os);
+			gsFileWriterOutbound.setFileService(fileServiceImpl);
+			gsFileWriterOutbound.setHeader("header");
+			gsFileWriterOutbound.setFileNameFormat("filename_YYYYMMDD.txt");
+			Counters counter = new Counters(0, 0, 0);
+			List<Counters> countersList = new ArrayList<>();
+			countersList.add(counter);
+			schedulerConfig.createEmailFile(countersList, "somename");
+			Mockito.verify(gsFileWriterOutbound).close();
+			validator = true;
+		} catch (Exception ex){
+			validator = false;
+		}
+		assertTrue(!validator);
+    }
+
+    @Test
+    void createEmailFileOutbound() {
+		Boolean validator;
+		try {
+			gsFileWriterOutbound.setStringBuilder(stringBuilder);
+			gsFileWriterOutbound.setOs(os);
+			gsFileWriterOutbound.setFileService(fileServiceImpl);
+			gsFileWriterOutbound.setHeader("header");
+			gsFileWriterOutbound.setFileNameFormat("filename_YYYYMMDD.txt");
+			Counters counter = new Counters(0, 0, 0);
+			List<Counters> countersList = new ArrayList<>();
+			countersList.add(counter);
+			schedulerConfig.createEmailFileOutbound(countersList, "somename");
+			Mockito.verify(gsFileWriterOutbound).close();
+			validator = true;
+		} catch (Exception ex){
+			validator = false;
+		}
+		assertTrue(!validator);
+    }
 }
