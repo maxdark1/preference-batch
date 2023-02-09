@@ -2,9 +2,11 @@ package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.dto.InternalFlexOutboundDTO;
 import ca.homedepot.preference.dto.InternalFlexOutboundProcessorDTO;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
+
 
 import java.math.BigDecimal;
 import java.text.Format;
@@ -14,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 @Slf4j
+@Generated
 public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlexOutboundDTO, InternalFlexOutboundProcessorDTO>
 {
 
