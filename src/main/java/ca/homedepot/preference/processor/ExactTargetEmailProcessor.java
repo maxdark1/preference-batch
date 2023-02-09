@@ -6,6 +6,7 @@ import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.constants.StorageConstants;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import ca.homedepot.preference.util.validation.InboundValidator;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.validator.ValidationException;
@@ -19,6 +20,8 @@ import static ca.homedepot.preference.dto.enums.Preference.NUMBER_0;
 import static ca.homedepot.preference.dto.enums.Preference.NUMBER_MINUS_1;
 
 @Slf4j
+@Generated
+
 public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, FileInboundStgTable>
 {
 
