@@ -9,7 +9,6 @@ import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.constants.StorageConstants;
 import com.google.cloud.storage.StorageException;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,7 @@ import static ca.homedepot.preference.dto.enums.JobStatusEnum.IN_PROGRESS;
 @Component
 @Setter
 @Getter
-@Generated
+
 public class InvalidFileListener implements StepExecutionListener
 {
 

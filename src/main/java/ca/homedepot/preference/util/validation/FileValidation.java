@@ -1,6 +1,5 @@
 package ca.homedepot.preference.util.validation;
 
-import lombok.Generated;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.LineCallbackHandler;
@@ -14,7 +13,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.SFMC;
 
 @Slf4j
 @UtilityClass
-@Generated
+
 
 public class FileValidation
 {

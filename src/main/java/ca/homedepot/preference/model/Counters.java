@@ -1,8 +1,5 @@
 package ca.homedepot.preference.model;
 
-import lombok.Generated;
-
-@Generated
 public class Counters
 {
 	public String fileName;

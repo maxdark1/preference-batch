@@ -6,7 +6,6 @@ import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +37,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 @Component
 @Getter
 @Setter
-@Generated
+
 public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceExtractOutboundDTO>
 {
 	@Value("${folders.salesforce.path}")

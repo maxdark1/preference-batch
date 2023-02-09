@@ -2,7 +2,6 @@ package ca.homedepot.preference.tasklet;
 
 
 import ca.homedepot.preference.util.CloudStorageUtils;
-import lombok.Generated;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
@@ -26,7 +25,6 @@ import static ca.homedepot.preference.writer.GSFileWriterOutbound.createFileOnGC
 @Component
 @Setter
 @Slf4j
-@Generated
 public class SendToGCP implements Tasklet
 {
 	List<String> files = new ArrayList<>();

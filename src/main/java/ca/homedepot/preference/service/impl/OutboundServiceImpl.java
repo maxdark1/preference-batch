@@ -7,7 +7,6 @@ import ca.homedepot.preference.dto.PreferenceOutboundDto;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
-import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +22,7 @@ import java.util.Date;
 
 @Service
 @Slf4j
-@Generated
+
 
 public class OutboundServiceImpl implements OutboundService
 {

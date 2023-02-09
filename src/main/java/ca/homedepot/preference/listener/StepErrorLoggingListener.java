@@ -8,7 +8,6 @@ import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
 import ca.homedepot.preference.util.validation.FileValidation;
 import com.google.cloud.storage.StorageException;
-import lombok.Generated;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;
@@ -25,7 +24,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
 @Slf4j
 @Component
-@Generated
+
 public class StepErrorLoggingListener implements StepExecutionListener
 {
 

@@ -5,7 +5,6 @@ import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.service.PreferenceService;
 import com.google.gson.Gson;
-import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +21,6 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.SUCCES
  */
 @Service
 @Slf4j
-@Generated
 
 public class PreferenceServiceImpl implements PreferenceService
 {

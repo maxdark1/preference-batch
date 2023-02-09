@@ -5,7 +5,6 @@ import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
-import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.processor.InternalOutboundProcessor;
 import ca.homedepot.preference.processor.PreferenceOutboundProcessor;

@@ -3,7 +3,6 @@ package ca.homedepot.preference.read;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.mapper.*;
-import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@Generated
 
 public class PreferenceOutboundDBReader
 {

@@ -5,7 +5,6 @@ import com.google.api.client.util.Charsets;
 import feign.FeignException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
-import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
@@ -17,8 +16,6 @@ import java.io.IOException;
  * The type Feign error decoder.
  */
 @Slf4j
-@Generated
-
 public class FeignErrorDecoder implements ErrorDecoder
 {
 

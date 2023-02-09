@@ -1,12 +1,10 @@
 package ca.homedepot.preference.util.validation;
 
-import lombok.Generated;
 import lombok.experimental.UtilityClass;
 
 import java.util.Date;
 
 @UtilityClass
-@Generated
 
 public class FormatUtil
 {

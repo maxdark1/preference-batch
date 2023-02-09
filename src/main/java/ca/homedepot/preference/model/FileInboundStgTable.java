@@ -2,14 +2,13 @@ package ca.homedepot.preference.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Generated;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @Builder
-@Generated
+
 public class FileInboundStgTable
 {
 	/**
