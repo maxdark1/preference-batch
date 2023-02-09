@@ -3,6 +3,7 @@ package ca.homedepot.preference.listener.skippers;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -28,6 +29,8 @@ import static ca.homedepot.preference.dto.enums.Preference.NUMBER_MINUS_1;
 @Setter
 @Getter
 @Slf4j
+@Generated
+
 public class SkipListenerLayoutB extends SkipFileService implements SkipListener<EmailOptOuts, FileInboundStgTable>
 {
 

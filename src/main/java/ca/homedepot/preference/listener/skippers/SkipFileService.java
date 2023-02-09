@@ -3,6 +3,7 @@ package ca.homedepot.preference.listener.skippers;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
+import lombok.Generated;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,8 @@ import static ca.homedepot.preference.util.constants.StorageConstants.SLASH;
  * Used as a parent class to make the skippers inherit the Service
  */
 @Component
+@Generated
+
 public class SkipFileService
 {
 	/**

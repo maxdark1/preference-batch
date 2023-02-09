@@ -5,6 +5,7 @@ import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.service.FileService;
+import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import static ca.homedepot.preference.constants.PreferenceBatchConstants.FILE_ID
 
 
 @Service
+@Generated
+
 public class FileServiceImpl implements FileService
 {
 	/**
