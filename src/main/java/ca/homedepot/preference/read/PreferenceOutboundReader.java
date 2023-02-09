@@ -1,7 +1,6 @@
 package ca.homedepot.preference.read;
 
 
-
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.mapper.*;
@@ -17,6 +16,8 @@ import java.util.Date;
 
 @Component
 @Slf4j
+
+
 public class PreferenceOutboundReader
 {
 	@Autowired

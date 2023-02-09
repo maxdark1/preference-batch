@@ -17,6 +17,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.INPROG
 @Slf4j
 @Component
 @Setter
+
 public class RegistrationLayoutBWriter implements ItemWriter<RegistrationRequest>
 {
 	/**

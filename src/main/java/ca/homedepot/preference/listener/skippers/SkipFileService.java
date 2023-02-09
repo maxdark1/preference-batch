@@ -16,6 +16,7 @@ import static ca.homedepot.preference.util.constants.StorageConstants.SLASH;
  * Used as a parent class to make the skippers inherit the Service
  */
 @Component
+
 public class SkipFileService
 {
 	/**

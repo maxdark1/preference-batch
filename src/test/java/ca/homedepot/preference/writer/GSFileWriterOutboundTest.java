@@ -2,6 +2,7 @@ package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
@@ -66,6 +67,10 @@ class GSFileWriterOutboundTest
 	@Test
 	void close()
 	{
+		Counters counter = new Counters(0, 0, 0);
+		List<Counters> counters = new ArrayList<>();
+		counters.add(counter);
+		gsFileWriterOutbound.setCounters(counters);
 		gsFileWriterOutbound.close();
 		Mockito.verify(gsFileWriterOutbound).close();
 	}

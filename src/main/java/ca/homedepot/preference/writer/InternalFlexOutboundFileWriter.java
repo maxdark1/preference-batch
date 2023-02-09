@@ -26,10 +26,12 @@ import java.util.Date;
 import java.util.List;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_FLEX_INTERNAL_DESTINATION;
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.STATUS_STR;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 
 @Slf4j
 @Component
+
 public class InternalFlexOutboundFileWriter implements ItemStreamWriter<InternalFlexOutboundProcessorDTO>
 {
 	public static final String PIPE = "|";
@@ -95,7 +97,8 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_FLEX_INTERNAL_DESTINATION,
 				JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
-		BigDecimal sourceIdBD = sourceId == null ? MasterProcessor.getSourceID("SOURCE_ID","database").getMasterId(): new BigDecimal(sourceId);
+		BigDecimal sourceIdBD = sourceId == null ? MasterProcessor.getSourceID("SOURCE_ID", "database").getMasterId()
+				: new BigDecimal(sourceId);
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceIdBD, fileStatus.getValueVal(), fileStatus.getMasterId(),
 				new Date(), new Date(), "BATCH", new Date(), null, null);
 

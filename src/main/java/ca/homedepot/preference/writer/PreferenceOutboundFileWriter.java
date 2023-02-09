@@ -4,6 +4,7 @@ import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.listener.JobListener;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.CloudStorageUtils;
@@ -47,8 +48,17 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 
 	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
 
-
+	private int quantityRecords = 0;
 	StringBuilder fileBuilder = new StringBuilder();
+
+	private List<Counters> counters;
+
+	private Counters counter = new Counters(0, 0, 0);
+
+	public void setCounters(List<Counters> counters)
+	{
+		this.counters = counters;
+	}
 
 	/**
 	 * Method used to generate a plain text file
@@ -72,6 +82,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 					.append(preference.getFirstName()).append(preference.getLastName()).append(preference.getBusinessName())
 					.append(preference.getIndustryCode()).append(preference.getCity()).append(preference.getProvince())
 					.append(preference.getHdCaProSrcId());
+			quantityRecords++;
 		}
 	}
 
@@ -121,6 +132,11 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 				fileBuilder.toString().getBytes());
 		fileBuilder = new StringBuilder();
 		setFileRecord(fileName);
+		counter.quantityRecords = quantityRecords;
+		counter.fileName = fileName;
+		counter.date = new Date().toString();
+		counters.add(counter);
+		quantityRecords = 0;
 	}
 
 	public void setJobListener(JobListener jobListener)

@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
 * It knows which file it comes from
 * */
 @Data
+
 public class EmailOptOuts implements ResourceAware
 {
 	/*

@@ -4,6 +4,7 @@ import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.listener.JobListener;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
@@ -111,6 +112,10 @@ class PreferenceOutboundFileWriterTest
 	@Test
 	void close()
 	{
+		Counters counter = new Counters(0, 0, 0);
+		List<Counters> counters = new ArrayList<>();
+		counters.add(counter);
+		preferenceOutboundFileWriter.setCounters(counters);
 		preferenceOutboundFileWriter.sourceId = BigDecimal.TEN.toString();
 		preferenceOutboundFileWriter.close();
 		Mockito.verify(preferenceOutboundFileWriter).close();
