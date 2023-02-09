@@ -130,14 +130,18 @@ public class FileValidation
 	{
 		String baseName = getFileName(fileName);
 		boolean isfileNameWrong = baseName.contains(getBaseName(source));
-		int start = getBaseName(source).length();
-		int end = start + formatDate.length();
+		//int start = getBaseName(source).length();
+		//int end = start + formatDate.length();
 		boolean isNotAValidExtension = !validateExtension(getExtension(fileName, baseName));
-		if (end != baseName.length() || isNotAValidExtension || !isfileNameWrong)
+		if (isNotAValidExtension || !isfileNameWrong)
 		{
 			return false;
 		}
-		return validateSimpleFileDateFormat(fileName.substring(start, end), formatDate);
+		/**
+		 * Keep the code commented to be uncommented again when we know the rigth format of the date return
+		 * validateSimpleFileDateFormat(fileName.substring(start, end), formatDate);
+		 */
+		return true;
 	}
 
 	/**
