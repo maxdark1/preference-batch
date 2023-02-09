@@ -1,6 +1,7 @@
 package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.model.InboundRegistration;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,10 @@ public class RegistrationItemProcessorTest
 	public void setup()
 	{
 		registrationItemProcessor = new RegistrationItemProcessor("hybris");
-
+		Counters counter = new Counters(0, 0, 0);
+		List<Counters> counters = new ArrayList<>();
+		counters.add(counter);
+		registrationItemProcessor.setCounters(counters);
 		input = new InboundRegistration();
 		input.setAsOfDate("08-26-2022 10:10:10");
 		input.setLanguagePreference("E");
@@ -84,7 +88,10 @@ public class RegistrationItemProcessorTest
 		registrationItemProcessor.process(input);
 		assertEquals("02-02-2022 22:22:22", input.getAsOfDate());
 		input.setAsOfDate(null);
-
+		Counters counter = new Counters(0, 0, 0);
+		List<Counters> counters = new ArrayList<>();
+		counters.add(counter);
+		registrationItemProcessor.setCounters(counters);
 		ValidationException validationException = assertThrows(ValidationException.class, () -> {
 			registrationItemProcessor.process(input);
 		});
@@ -97,7 +104,7 @@ public class RegistrationItemProcessorTest
 	public void validateIsNumberTest() throws Exception
 	{
 		input.setEmailPermission("a");
-
+		registrationItemProcessor.setCounters(new ArrayList<>());
 		ValidationException validationException = assertThrows(ValidationException.class, () -> {
 			registrationItemProcessor.process(input);
 		});
