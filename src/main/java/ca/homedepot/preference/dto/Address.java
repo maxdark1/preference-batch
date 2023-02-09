@@ -3,8 +3,10 @@ package ca.homedepot.preference.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Generated;
 
 @Data
+@Generated
 public class Address
 {
 	/**

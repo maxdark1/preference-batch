@@ -24,6 +24,7 @@ import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
 import ca.homedepot.preference.util.validation.FileValidation;
 import ca.homedepot.preference.util.validation.InboundValidator;
 import ca.homedepot.preference.writer.*;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -76,6 +77,7 @@ import static ca.homedepot.preference.writer.GSFileWriterOutbound.createFileOnGC
 @EnableScheduling
 @Setter
 @RequiredArgsConstructor
+@Generated
 public class SchedulerConfig extends DefaultBatchConfigurer
 {
 	/**

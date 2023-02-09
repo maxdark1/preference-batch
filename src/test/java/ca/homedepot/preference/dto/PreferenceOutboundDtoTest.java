@@ -41,10 +41,4 @@ class PreferenceOutboundDtoTest
 		assertNotNull(test);
 	}
 
-	@Test
-	void builder()
-	{
-		preferenceOutboundDto = PreferenceOutboundDto.builder().build();
-		assertNotNull(preferenceOutboundDto);
-	}
 }

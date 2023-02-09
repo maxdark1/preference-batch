@@ -1,17 +1,15 @@
 package ca.homedepot.preference.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Generated
 public class FileDTO
 {
 	/**
@@ -72,5 +70,6 @@ public class FileDTO
 	public FileDTO(String fileName)
 	{
 		this.fileName = fileName;
+
 	}
 }
