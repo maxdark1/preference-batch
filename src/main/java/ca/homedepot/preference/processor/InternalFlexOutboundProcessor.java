@@ -40,7 +40,7 @@ public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlex
 		return InternalFlexOutboundProcessorDTO.builder().fileId(item.getFileId().toString()).sequenceNbr(item.getSequenceNbr())
 				.emailAddr(item.getEmailAddr()).hdHhId(isValueNull(item.getHdHhId())).hdIndId(isValueNull(item.getHdIndId()))
 				.customerNbr(item.getCustomerNbr()).storeNbr(item.getStoreNbr()).orgName(item.getOrgName())
-				.companyCd(item.getCompanyCd()).custTypeCd(item.getCustTypeCd()).sourceId(item.getSourceId()+"")
+				.companyCd(item.getCompanyCd()).custTypeCd(item.getCustTypeCd()).sourceId(item.getSourceId() + "")
 				.effectiveDate(effectiveDate).lastUpdateDate(lastUpdateDate).industryCode(item.getIndustryCode())
 				.companyName(item.getCompanyName()).contactFirstName(item.getContactFirstName())
 				.contactLastName(item.getContactLastName()).contactRole(item.getContactRole()).build();
@@ -48,7 +48,7 @@ public class InternalFlexOutboundProcessor implements ItemProcessor<InternalFlex
 
 	private static String isValueNull(BigDecimal value)
 	{
-		if(value == null)
+		if (value == null)
 			return null;
 		return value.toPlainString();
 	}

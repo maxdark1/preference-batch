@@ -1,5 +1,6 @@
 package ca.homedepot.preference.processor;
 
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.util.constants.StorageConstants;
@@ -9,6 +10,7 @@ import org.springframework.batch.item.validator.ValidationException;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 import static ca.homedepot.preference.util.validation.InboundValidator.*;
@@ -30,6 +32,15 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		this.count = count;
 	}
 
+	private List<Counters> counters;
+
+	public void setCounters(List<Counters> counters)
+	{
+		this.counters = counters;
+	}
+
+	private Counters counter = new Counters(0, 0, 0);
+
 	/**
 	 * Constructor with resource
 	 *
@@ -39,6 +50,10 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 	{
 		this.source = source;
 	}
+
+	private int fileIndex;
+
+	private Date fileDate;
 
 	/**
 	 * Process item
@@ -54,12 +69,27 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		if (fileName.equals(""))
 		{
 			fileName = item.getFileName();
+			fileDate = new Date();
+			fileIndex = 0;
+			counter = new Counters(0, 0, 0);
+			counter.fileName = this.fileName;
+			counter.date = this.fileDate.toString();
+			counters.add(counter);
 		}
 		else if (!fileName.equals(item.getFileName()))
 		{
 			count = 0;
+			fileName = item.getFileName();
+			fileDate = new Date();
+			fileIndex++;
+			counter = new Counters(0, 0, 0);
+			counter.fileName = this.fileName;
+			counter.date = this.fileDate.toString();
+			counters.add(counter);
 		}
+
 		count++;
+		counters.get(fileIndex).quantityRecords++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 		Date asOfDate = null;
 		BigDecimal sourceId = null;
@@ -74,9 +104,11 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 			 * Throws an exception if it finds any Error message on StringBuilder container
 			 */
 			isValidationsErros(error);
+			counters.get(fileIndex).quantityLoaded++;
 		}
 		catch (ValidationException e)
 		{
+			counters.get(fileIndex).quantityFailed++;
 			log.error(
 					" PREFERENCE BATCH VALIDATION ERROR - The record # {} has the above fields with validation error on file {}: {} ",
 					count, item.getFileName().substring(item.getFileName().lastIndexOf(StorageConstants.SLASH) + 1), e.getMessage());

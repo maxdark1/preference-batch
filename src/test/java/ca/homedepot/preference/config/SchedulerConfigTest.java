@@ -5,6 +5,7 @@ import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.listener.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
 import ca.homedepot.preference.processor.InternalOutboundProcessor;
 import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
@@ -48,6 +49,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.FieldPosition;
 import java.text.Format;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -324,7 +326,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 		schedulerConfig.setInvalidFileListener(invalidFileListener);
 
-		assertNotNull(schedulerConfig.readInboundHybrisFileStep1("JOB_NAME"));
+		assertNotNull(schedulerConfig.readInboundHybrisFileStep1("JOB_NAME", new ArrayList<>()));
 	}
 
 	@Test
@@ -351,7 +353,7 @@ class SchedulerConfigTest
 		String error = "";
 		try
 		{
-			assertNotNull(schedulerConfig.readInboundCRMFileStep1("JOB_NAME"));
+			assertNotNull(schedulerConfig.readInboundCRMFileStep1("JOB_NAME", new ArrayList<>()));
 		}
 		catch (Exception ex)
 		{
@@ -382,7 +384,7 @@ class SchedulerConfigTest
 		schedulerConfig.setInvalidFileListener(invalidFileListener);
 
 
-		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName"));
+		assertNotNull(schedulerConfig.readSFMCOptOutsStep1("JobName", new ArrayList<>()));
 	}
 
 	@Test
@@ -411,7 +413,7 @@ class SchedulerConfigTest
 		String error = "";
 		try
 		{
-			assertNotNull(schedulerConfig.readInboundFBSFMCFileStep1("JOB_NAME"));
+			assertNotNull(schedulerConfig.readInboundFBSFMCFileStep1("JOB_NAME", new ArrayList<>()));
 		}
 		catch (Exception ex)
 		{
@@ -516,7 +518,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(any(GSFileWriterOutbound.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.salesforceExtractDBReaderFileWriterStep2());
+		assertNotNull(schedulerConfig.salesforceExtractDBReaderFileWriterStep2(new ArrayList<>()));
 	}
 
 	@Test
@@ -584,7 +586,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(any(PreferenceOutboundFileWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.readSendPreferencesToCRMStep2());
+		assertNotNull(schedulerConfig.readSendPreferencesToCRMStep2(new ArrayList<>()));
 	}
 
 	@Test

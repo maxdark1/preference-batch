@@ -86,7 +86,7 @@ public class InboundValidator
 	{
 		if (value != null)
 		{
-			if(value.isBlank())
+			if (value.isBlank())
 				return null;
 			return validateMaxLength(field, value, maxLength, error);
 		}

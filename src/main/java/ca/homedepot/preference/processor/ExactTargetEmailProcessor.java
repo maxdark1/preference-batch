@@ -1,5 +1,6 @@
 package ca.homedepot.preference.processor;
 
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.constants.StorageConstants;
@@ -10,6 +11,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.validator.ValidationException;
 
 import java.util.Date;
+import java.util.List;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INSERTEDBY;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.NOTSTARTED;
@@ -29,6 +31,19 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		this.count = count;
 	}
 
+	private int fileIndex;
+
+	private Date fileDate;
+
+	private List<Counters> counters;
+
+	public void setCounters(List<Counters> counters)
+	{
+		this.counters = counters;
+	}
+
+	private Counters counter = new Counters(0, 0, 0);
+
 	/**
 	 * Process the item from LayoutB (SFMC)
 	 * 
@@ -42,13 +57,27 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		if (fileName.equals(""))
 		{
 			fileName = item.getFileName();
+			fileDate = new Date();
+			fileIndex = 0;
+			counter = new Counters(0, 0, 0);
+			counter.fileName = this.fileName;
+			counter.date = this.fileDate.toString();
+			counters.add(counter);
 		}
 		else if (!fileName.equals(item.getFileName()))
 		{
 			count = 0;
+			fileName = item.getFileName();
+			fileDate = new Date();
+			fileIndex++;
+			counter = new Counters(0, 0, 0);
+			counter.fileName = this.fileName;
+			counter.date = this.fileDate.toString();
+			counters.add(counter);
 		}
 
 		count++;
+		counters.get(fileIndex).quantityRecords++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
 
 
@@ -72,9 +101,11 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 			 * Throws an exception if it finds any Error message on StringBuilder container
 			 */
 			InboundValidator.isValidationsErros(error);
+			counters.get(fileIndex).quantityLoaded++;
 		}
 		catch (ValidationException e)
 		{
+			counters.get(fileIndex).quantityFailed++;
 			log.error(
 					" PREFERENCE BATCH VALIDATION ERROR - The record # {} has the above fields with validation error on file {}: {} ",
 					count, item.getFileName().substring(item.getFileName().lastIndexOf(StorageConstants.SLASH) + 1), e.getMessage());
