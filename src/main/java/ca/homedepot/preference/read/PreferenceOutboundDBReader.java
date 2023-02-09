@@ -13,6 +13,7 @@ import java.util.Date;
 
 @Component
 @Slf4j
+
 public class PreferenceOutboundDBReader
 {
 	@Autowired

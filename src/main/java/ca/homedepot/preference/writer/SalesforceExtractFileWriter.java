@@ -37,6 +37,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 @Component
 @Getter
 @Setter
+
 public class SalesforceExtractFileWriter extends FlatFileItemWriter<SalesforceExtractOutboundDTO>
 {
 	@Value("${folders.salesforce.path}")

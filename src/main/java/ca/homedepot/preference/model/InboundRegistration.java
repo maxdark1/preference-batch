@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
  * LayoutC fields Resource aware from which one is coming
  */
 @Data
+
 public class InboundRegistration implements ResourceAware
 {
 	/**

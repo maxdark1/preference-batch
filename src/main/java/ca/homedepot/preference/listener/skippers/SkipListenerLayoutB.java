@@ -28,6 +28,7 @@ import static ca.homedepot.preference.dto.enums.Preference.NUMBER_MINUS_1;
 @Setter
 @Getter
 @Slf4j
+
 public class SkipListenerLayoutB extends SkipFileService implements SkipListener<EmailOptOuts, FileInboundStgTable>
 {
 

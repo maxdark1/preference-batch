@@ -24,6 +24,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
 @Slf4j
 @Component
+
 public class StepErrorLoggingListener implements StepExecutionListener
 {
 

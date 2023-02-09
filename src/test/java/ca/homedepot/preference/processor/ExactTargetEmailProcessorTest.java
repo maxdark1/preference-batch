@@ -1,6 +1,7 @@
 package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.util.validation.InboundValidator;
@@ -27,6 +28,11 @@ class ExactTargetEmailProcessorTest
 	void setUp()
 	{
 		exactTargetEmailProcessor = new ExactTargetEmailProcessor();
+
+		Counters counter = new Counters(0, 0, 0);
+		List<Counters> counters = new ArrayList<>();
+		counters.add(counter);
+		exactTargetEmailProcessor.setCounters(counters);
 
 		emailOptOuts = new EmailOptOuts();
 		emailOptOuts.setEmailAddress("email@address.com");
@@ -67,6 +73,10 @@ class ExactTargetEmailProcessorTest
 
 		FileInboundStgTable fileInboundStgTable = exactTargetEmailProcessor.process(emailOptOuts);
 		emailOptOuts.setEmailAddress(null);
+		Counters counter = new Counters(0, 0, 0);
+		List<Counters> counters = new ArrayList<>();
+		counters.add(counter);
+		exactTargetEmailProcessor.setCounters(counters);
 
 		ValidationException validationException = assertThrows(ValidationException.class,
 				() -> exactTargetEmailProcessor.process(emailOptOuts));
