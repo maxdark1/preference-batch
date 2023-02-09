@@ -1,11 +1,12 @@
 package ca.homedepot.preference.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Generated
 public class PreferenceOutboundDtoProcessor
 {
 	private String email;

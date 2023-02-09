@@ -2,7 +2,6 @@ package ca.homedepot.preference.tasklet;
 
 
 import ca.homedepot.preference.service.PreferenceService;
-import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Generated
 
 public class BatchTasklet implements Tasklet
 {

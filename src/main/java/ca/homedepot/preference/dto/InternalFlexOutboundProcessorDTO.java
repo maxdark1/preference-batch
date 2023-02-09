@@ -1,13 +1,15 @@
 package ca.homedepot.preference.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Generated
 public class InternalFlexOutboundProcessorDTO
 {
 	private String fileId;

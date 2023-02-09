@@ -6,7 +6,6 @@ import ca.homedepot.preference.util.FileUtil;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.StorageException;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,7 @@ import static ca.homedepot.preference.config.StorageApplicationGCS.*;
 @Getter
 @Setter
 @Slf4j
-@Generated
+
 public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 {
 

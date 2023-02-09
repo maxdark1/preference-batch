@@ -3,7 +3,6 @@ package ca.homedepot.preference.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.Generated;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -11,7 +10,6 @@ import java.util.Map;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Generated
 public class RegistrationRequest
 {
 	/**

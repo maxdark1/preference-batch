@@ -2,7 +2,6 @@ package ca.homedepot.preference.model;
 
 
 import lombok.Data;
-import lombok.Generated;
 import org.springframework.batch.item.ResourceAware;
 import org.springframework.core.io.Resource;
 
@@ -10,7 +9,7 @@ import org.springframework.core.io.Resource;
  * LayoutC fields Resource aware from which one is coming
  */
 @Data
-@Generated
+
 public class InboundRegistration implements ResourceAware
 {
 	/**

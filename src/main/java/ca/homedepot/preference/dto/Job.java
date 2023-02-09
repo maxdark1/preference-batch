@@ -1,13 +1,11 @@
 package ca.homedepot.preference.dto;
 
 import lombok.Data;
-import lombok.Generated;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@Generated
 public class Job
 {
 	/**

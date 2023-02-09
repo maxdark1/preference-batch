@@ -8,7 +8,6 @@ import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import com.google.cloud.storage.StorageException;
-import lombok.Generated;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
@@ -27,11 +26,12 @@ import java.util.Date;
 import java.util.List;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_FLEX_INTERNAL_DESTINATION;
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.STATUS_STR;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 
 @Slf4j
 @Component
-@Generated
+
 public class InternalFlexOutboundFileWriter implements ItemStreamWriter<InternalFlexOutboundProcessorDTO>
 {
 	public static final String PIPE = "|";

@@ -1,8 +1,5 @@
 package ca.homedepot.preference.dto.enums;
 
-import lombok.Generated;
-
-@Generated
 public enum Preference
 {
 	NUMBER_1("1"),
