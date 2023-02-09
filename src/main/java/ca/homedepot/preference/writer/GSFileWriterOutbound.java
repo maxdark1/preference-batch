@@ -1,5 +1,6 @@
 package ca.homedepot.preference.writer;
 
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import com.google.cloud.storage.BlobId;
@@ -12,6 +13,7 @@ import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 
 import static ca.homedepot.preference.config.StorageApplicationGCS.*;
@@ -27,6 +29,18 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	private OutputStream os;
 
 	private StringBuilder stringBuilder;
+
+	private int quantityRecords = 0;
+	StringBuilder fileBuilder = new StringBuilder();
+
+	private List<Counters> counters;
+
+	private Counters counter = new Counters(0, 0, 0);
+
+	public void setCounters(List<Counters> counters)
+	{
+		this.counters = counters;
+	}
 
 	/**
 	 * Set the filename and delete if exists in the current bucket
@@ -49,6 +63,7 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 
 		String line = super.doWrite(items);
 		stringBuilder.append(line);
+		quantityRecords += items.size();
 
 	}
 
@@ -64,6 +79,11 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 		{
 			byte[] content = stringBuilder.toString().getBytes();
 			createFileOnGCS(CloudStorageUtils.generatePath(getFolderSource(), getFileName()), getJobName(), content);
+			counter.quantityRecords = quantityRecords;
+			counter.fileName = getFileName();
+			counter.date = new Date().toString();
+			counters.add(counter);
+			quantityRecords = 0;
 		}
 	}
 
