@@ -249,6 +249,7 @@ class SchedulerConfigTest
 		schedulerConfig.setInternalOutboundStep1Writer(internalOutboundStep1Writer);
 		schedulerConfig.setInternalOutboundProcessor(internalOutboundProcessor);
 		schedulerConfig.setInternalOutboundFileWriter(internalOutboundFileWriter);
+		schedulerConfig.setDailyCompliantNameFormat("dailyCompliantYYYYMMDD.csv");
 		//setFinalStaticField(schedulerConfig.getClass(), "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
 
 
@@ -319,6 +320,25 @@ class SchedulerConfigTest
 		assertNotNull(schedulerConfig);
 		assertNotNull(schedulerConfig.inboundRegistrationDBWriter());
 	}
+
+	@Test
+	void dailyCountReportStep1Writer()
+	{
+		schedulerConfig.setDailyCompliantfolderSource("outbound/");
+		schedulerConfig.setDailyCountReportFormat("daily_count_YYYYMMDD.csv");
+		assertNotNull(schedulerConfig);
+		assertNotNull(schedulerConfig.dailyCountReportStep1Writer());
+	}
+
+	@Test
+	void dailyCountReportStep2Writer()
+	{
+		schedulerConfig.setDailyCompliantfolderSource("outbound/");
+		schedulerConfig.setDailyCountReportFormat("daily_count_YYYYMMDD.csv");
+		assertNotNull(schedulerConfig);
+		assertNotNull(schedulerConfig.dailyCountReportStep2Writer(new StringBuilder()));
+	}
+
 
 	@Test
 	void readInboundCSVFileStep() throws Exception
@@ -649,6 +669,40 @@ class SchedulerConfigTest
 	}
 
 	@Test
+	void dailyCountReportStep1()
+	{
+		schedulerConfig.setChunkDailyCountReport(100);
+		FileWriterOutBound<DailyCountReportDTOStep1> writerStep1 = new FileWriterOutBound<>();
+		JdbcCursorItemReader<DailyCountReportDTOStep1> jdbcCursorItemReader = new JdbcCursorItemReader<>();
+		Mockito.when(preferenceOutboundReader.dailyCountReportStep1()).thenReturn(jdbcCursorItemReader);
+
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.dailyCountReportStep1(writerStep1));
+	}
+
+	@Test
+	void dailyCountReportStep2()
+	{
+		schedulerConfig.setChunkDailyCountReport(100);
+		FileWriterOutBound<DailyCountReportStep2> writerStep1 = new FileWriterOutBound<>();
+		JdbcCursorItemReader<DailyCountReportStep2> jdbcCursorItemReader = new JdbcCursorItemReader<>();
+		Mockito.when(preferenceOutboundReader.dailyCountReportStep2()).thenReturn(jdbcCursorItemReader);
+
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.dailyCountReportStep2(writerStep1));
+	}
+
+	@Test
 	void testSendPreferencesToFlexInternalDestination() throws IOException
 	{
 
@@ -681,10 +735,12 @@ class SchedulerConfigTest
 		}
 	}
 
-    @Test
-    void createEmailFile() {
+	@Test
+	void createEmailFile()
+	{
 		Boolean validator;
-		try {
+		try
+		{
 			gsFileWriterOutbound.setStringBuilder(stringBuilder);
 			gsFileWriterOutbound.setOs(os);
 			gsFileWriterOutbound.setFileService(fileServiceImpl);
@@ -696,16 +752,20 @@ class SchedulerConfigTest
 			schedulerConfig.createEmailFile(countersList, "somename");
 			Mockito.verify(gsFileWriterOutbound).close();
 			validator = true;
-		} catch (Exception ex){
+		}
+		catch (Exception ex)
+		{
 			validator = false;
 		}
 		assertTrue(!validator);
-    }
+	}
 
-    @Test
-    void createEmailFileOutbound() {
+	@Test
+	void createEmailFileOutbound()
+	{
 		Boolean validator;
-		try {
+		try
+		{
 			gsFileWriterOutbound.setStringBuilder(stringBuilder);
 			gsFileWriterOutbound.setOs(os);
 			gsFileWriterOutbound.setFileService(fileServiceImpl);
@@ -717,9 +777,11 @@ class SchedulerConfigTest
 			schedulerConfig.createEmailFileOutbound(countersList, "somename");
 			Mockito.verify(gsFileWriterOutbound).close();
 			validator = true;
-		} catch (Exception ex){
+		}
+		catch (Exception ex)
+		{
 			validator = false;
 		}
 		assertTrue(!validator);
-    }
+	}
 }
