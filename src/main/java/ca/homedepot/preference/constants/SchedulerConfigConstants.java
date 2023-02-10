@@ -29,4 +29,11 @@ public class SchedulerConfigConstants
 			"HdCanadaEmailCompliantFlag", "HdCanadaFlag", "GardenClubFlag", "NewMoverFlag", "ProFlag", "PhonePtcFlag", FIRSTNAME,
 			LASTNAME, "PostalCode", "Province", "City", "PhoneNumber", "BusinessName", "BusinessType", "MoveDate", "DwellingType" };
 
+	public static final String[] DAILY_COUNT_REPORT_STEP1_DTO = new String[]
+	{ "field1", "field2", "field3", "field4", "field5", "field6", "field7", "field8", "field9" };
+
+	public static final String[] DAILY_COUNT_REPORT_STEP2_DTO = new String[]
+	{ "countDate", "thdY", "diffThdY", "thdN", "diffThdN", "thdU", "diffthdU", "gcY", "diffGCY", "gcN", "diffGCN", "gcU",
+			"diffGCU", "nmY", "diffNMY", "nmN", "diffNMN", "nmU", "diffNMU", "proY", "diffPROY", "proN", "diffPRON", "proU",
+			"diffPROU", "caY", "diffCAY", "caN", "diffCAN", "caU", "diffCAU" };
 }
