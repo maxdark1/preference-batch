@@ -3,6 +3,7 @@ package ca.homedepot.preference.read;
 
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
+import ca.homedepot.preference.constants.ReportsQueries;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.mapper.*;
 import ca.homedepot.preference.service.OutboundService;
@@ -114,6 +115,28 @@ public class PreferenceOutboundReader
 		reader.setRowMapper(new InternalOutboundStep1Mapper());
 
 		log.info(" Loyalty Complaint Outbound : Loyalty Complaint Outbound Reader End :" + new Date());
+		return reader;
+	}
+
+	public JdbcCursorItemReader<DailyCountReportDTOStep1> dailyCountReportStep1()
+	{
+		JdbcCursorItemReader<DailyCountReportDTOStep1> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(ReportsQueries.DAILY_COUNT_REPORT_EMAIL_PREFERENCES_QUERY);
+		reader.setRowMapper(new DailyCountReportPreferencesEmail());
+
+		return reader;
+	}
+
+	public JdbcCursorItemReader<DailyCountReportStep2> dailyCountReportStep2()
+	{
+		JdbcCursorItemReader<DailyCountReportStep2> reader = new JdbcCursorItemReader<>();
+
+		reader.setDataSource(dataSource);
+		reader.setSql(ReportsQueries.DAILY_COUNT_REPORT_OVERALL_PREFERENCES);
+		reader.setRowMapper(new DailyCountReportPreferencesOverallRowMapper());
+
 		return reader;
 	}
 

@@ -25,6 +25,7 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 
 	private File tempFile;
 	private OutputStream os;
+	private Boolean isFirstStep = true;
 
 	private StringBuilder stringBuilder;
 
@@ -34,10 +35,9 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	@Override
 	public void setResource()
 	{
-		String headers = getHeader().isBlank() ? "" : getHeader() + "\n";
-		stringBuilder = new StringBuilder(headers);
 		setFilename();
 		deleteObject(getFolderSource(), getFileName());
+		stringBuilder = new StringBuilder();
 		tempFile = FileUtil.createTempFile(getFileName());
 		super.setResource(new FileSystemResource(tempFile));
 	}
@@ -46,7 +46,8 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	public void write(List<? extends T> items) throws Exception
 	{
 		super.write(items);
-
+		String headers = getHeader().isBlank() ? "" : getHeader() + "\n";
+		stringBuilder.append(headers);
 		String line = super.doWrite(items);
 		stringBuilder.append(line);
 
