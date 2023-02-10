@@ -99,5 +99,16 @@ class PreferenceOutboundReaderTest
 		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION, test.getSql());
 	}
 
+	@Test
+	void testdailyCountReportStep1()
+	{
+		assertNotNull(preferenceOutboundReader.dailyCountReportStep1());
+	}
+
+	@Test
+	void testdailyCountReportStep2()
+	{
+		assertNotNull(preferenceOutboundReader.dailyCountReportStep2());
+	}
 
 }
