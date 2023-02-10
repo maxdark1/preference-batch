@@ -28,6 +28,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 *  To can manage properly the exceptions
 * */
 @Slf4j
+
 public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T>
 {
 

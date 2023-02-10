@@ -156,6 +156,9 @@ public class JobListener implements JobExecutionListener
 
 		log.info("  {} Job(s) updated", updatedRecords);
 		files = "";
+
+
+
 	}
 
 }

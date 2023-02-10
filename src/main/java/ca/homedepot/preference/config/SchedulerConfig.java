@@ -7,6 +7,7 @@ import ca.homedepot.preference.listener.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.mapper.*;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.model.EmailOptOuts;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
@@ -56,6 +57,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,7 @@ import java.util.Map;
 import static ca.homedepot.preference.constants.PreferenceBatchConstants.*;
 import static ca.homedepot.preference.constants.SchedulerConfigConstants.*;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.writer.GSFileWriterOutbound.createFileOnGCS;
 
 /**
  * The type Scheduler config.
@@ -464,8 +467,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_NAME_REGISTRATION_INBOUND, String.valueOf(System.currentTimeMillis()))
 				.addString(DIRECTORY, hybrisPath + folderInbound).addString("document", hybrisCrmRegistrationFile)
 				.addString(SOURCE, HYBRIS).addString("job_name", JOB_NAME_REGISTRATION_INBOUND).toJobParameters();
-
-		JobExecution execution = jobLauncher.run(registrationHybrisInbound(), param);
+		List<Counters> counters = new ArrayList<>();
+		JobExecution execution = jobLauncher.run(registrationHybrisInbound(counters), param);
+		createEmailFile(counters, "hybrids_inbound_email_");
 		log.info("Registration Inbound Hybris finished with status :" + execution.getStatus());
 	}
 
@@ -487,8 +491,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_NAME_REGISTRATION_CRM_INBOUND, String.valueOf(System.currentTimeMillis()))
 				.addString(DIRECTORY, crmPath + folderInbound).addString(SOURCE, CRM)
 				.addString(JOB_STR, JOB_NAME_REGISTRATION_CRM_INBOUND).toJobParameters();
-
-		JobExecution execution = jobLauncher.run(registrationCRMInbound(), param);
+		List<Counters> counters = new ArrayList<>();
+		JobExecution execution = jobLauncher.run(registrationCRMInbound(counters), param);
+		createEmailFile(counters, "crm_inbound_email_");
 		log.info("Registration Inbound CRM finished with status :" + execution.getStatus());
 	}
 
@@ -510,8 +515,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_NAME_REGISTRATION_FBSFMC_INBOUND, String.valueOf(System.currentTimeMillis()))
 				.addString(DIRECTORY, fbSFMCPath + folderInbound).addString(SOURCE, FB_SFMC)
 				.addString(JOB_STR, JOB_NAME_REGISTRATION_FBSFMC_INBOUND).toJobParameters();
-
-		JobExecution execution = jobLauncher.run(registrationFBSFMCGardenClubInbound(), param);
+		List<Counters> counters = new ArrayList<>();
+		JobExecution execution = jobLauncher.run(registrationFBSFMCGardenClubInbound(counters), param);
+		createEmailFile(counters, "fbsfmc_inbound_email_");
 		log.info("Registration Inbound FB-SFMC finished with status :" + execution.getStatus());
 	}
 
@@ -533,7 +539,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_NAME_EXTACT_TARGET_EMAIL, String.valueOf(System.currentTimeMillis()))
 				.addString(DIRECTORY, sfmcPath + folderInbound).addString(SOURCE, SFMC)
 				.addString(JOB_STR, JOB_NAME_EXTACT_TARGET_EMAIL).toJobParameters();
-		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(), param);
+		List<Counters> counters = new ArrayList<>();
+		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(counters), param);
+		createEmailFile(counters, "sfmc_inbound_email_");
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
 	}
 
@@ -551,7 +559,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_NAME_SEND_PREFERENCES_TO_CRM, String.valueOf(System.currentTimeMillis()))
 				.addString(DIRECTORY, crmPath + folderOutbound).addString(SOURCE, CRM)
 				.addString(JOB_STR, JOB_NAME_SEND_PREFERENCES_TO_CRM).toJobParameters();
-		JobExecution execution = jobLauncher.run(crmSendPreferencesToCRM(), param);
+		List<Counters> counters = new ArrayList<>();
+		JobExecution execution = jobLauncher.run(crmSendPreferencesToCRM(counters), param);
+		createEmailFileOutbound(counters, "crm_outbound_email_");
 		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
 	}
 
@@ -626,7 +636,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_SALESFORCE_EXTRACT, String.valueOf(System.currentTimeMillis()))
 				.addString("job_name", JOB_NAME_SALESFORCE_EXTRACT).toJobParameters();
-		JobExecution execution = jobLauncher.run(sendPreferencesToSMFC(), param);
+		List<Counters> counters = new ArrayList<>();
+		JobExecution execution = jobLauncher.run(sendPreferencesToSMFC(counters), param);
+		createEmailFileOutbound(counters, "sfmc_outbound_email_");
 		log.info(" Send Email Marketing Preferences To SMFC Job finished with status: {} ", execution.getStatus());
 	}
 
@@ -650,6 +662,33 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	/**
 	 * Read inbound files
 	 */
+
+	public void createEmailFile(List<Counters> counters, String fileName)
+	{
+		StringBuilder report = new StringBuilder();
+		report.append("File Name|File Date|Total Quantity|Quantity Loaded|Quantity Failed\n");
+		for (Counters counter : counters)
+		{
+			report.append(counter.fileName + "|" + counter.date + "|" + counter.quantityRecords + "|" + counter.quantityLoaded + "|"
+					+ counter.quantityFailed + "\n");
+		}
+		createFileOnGCS(CloudStorageUtils.generatePath(folderOutbound, fileName + new Date() + ".txt"), "emailGenerator",
+				report.toString().getBytes());
+		log.error("EMAIL FILE CREATED " + fileName + new Date());
+	}
+
+	public void createEmailFileOutbound(List<Counters> counters, String fileName)
+	{
+		StringBuilder report = new StringBuilder();
+		report.append("File Name|File Date|Records Quantity\n");
+		for (Counters counter : counters)
+		{
+			report.append(counter.fileName + "|" + counter.date + "|" + counter.quantityRecords + "\n");
+		}
+		createFileOnGCS(CloudStorageUtils.generatePath(folderOutbound, fileName + new Date() + ".txt"), "emailGenerator",
+				report.toString().getBytes());
+		log.error("EMAIL FILE CREATED " + fileName + new Date());
+	}
 
 	/**
 	 * MultipleResourceItemReaders Use to read the existing files on the directory /** Create Multi Resource reader for
@@ -994,7 +1033,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
-	public GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter()
+	public GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter(List<Counters> counters)
 	{
 		GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter = new GSFileWriterOutbound<>();
 		salesforceExtractFileWriter.setName("salesforceExtractFileWriter");
@@ -1008,6 +1047,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		salesforceExtractFileWriter.setDelimiter(SINGLE_DELIMITER_TAB);
 		salesforceExtractFileWriter.setNames(SALESFORCE_EXTRACT_NAMES);
 		salesforceExtractFileWriter.setResource();
+		salesforceExtractFileWriter.setCounters(counters);
 		jobListener.setFiles(salesforceExtractFileWriter.getFileName());
 		return salesforceExtractFileWriter;
 	}
@@ -1017,10 +1057,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return the job
 	 */
-	public Job registrationHybrisInbound()
+	public Job registrationHybrisInbound(List<Counters> counters)
 	{
+
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND)).on(COMPLETED_STATUS)
+				.start(readInboundHybrisFileStep1(JOB_NAME_REGISTRATION_INBOUND, counters)).on(COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_INBOUND)).build().build();
 
 	}
@@ -1032,10 +1073,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 
 	@SneakyThrows
-	public Job crmSendPreferencesToCRM()
+	public Job crmSendPreferencesToCRM(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2()).build().build();
+				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2(counters)).build()
+				.build();
 	}
 
 	/**
@@ -1123,10 +1165,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Job
 	 *
 	 */
-	public Job registrationCRMInbound()
+	public Job registrationCRMInbound(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_CRM_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND)).on(COMPLETED_STATUS)
+				.start(readInboundCRMFileStep1(JOB_NAME_REGISTRATION_CRM_INBOUND, counters)).on(COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_CRM_INBOUND)).build().build();
 
 	}
@@ -1138,10 +1180,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 
-	public Job registrationFBSFMCGardenClubInbound()
+	public Job registrationFBSFMCGardenClubInbound(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_REGISTRATION_FBSFMC_INBOUND).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).on(COMPLETED_STATUS)
+				.start(readInboundFBSFMCFileStep1(JOB_NAME_REGISTRATION_FBSFMC_INBOUND, counters)).on(COMPLETED_STATUS)
 				.to(readLayoutCInboundBDStep2(JOB_NAME_REGISTRATION_FBSFMC_INBOUND)).build().build();
 
 	}
@@ -1152,10 +1194,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Job
 	 *
 	 */
-	public Job sfmcOptOutsEmailOutlookClient()
+	public Job sfmcOptOutsEmailOutlookClient(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_EXTACT_TARGET_EMAIL).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL)).on(COMPLETED_STATUS)
+				.start(readSFMCOptOutsStep1(JOB_NAME_EXTACT_TARGET_EMAIL, counters)).on(COMPLETED_STATUS)
 				.to(readDBSFMCOptOutsStep2(JOB_NAME_EXTACT_TARGET_EMAIL)).build().build();
 	}
 
@@ -1189,11 +1231,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Job
 	 */
-	public Job sendPreferencesToSMFC()
+	public Job sendPreferencesToSMFC(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(salesforceExtractDBReaderStep1()).on(COMPLETED_STATUS).to(salesforceExtractDBReaderFileWriterStep2()).build()
-				.build();
+				.start(salesforceExtractDBReaderStep1()).on(COMPLETED_STATUS).to(salesforceExtractDBReaderFileWriterStep2(counters))
+				.build().build();
 	}
 
 	public Job createDailyCountReport()
@@ -1226,8 +1268,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * 
 	 * @return
 	 */
-	public Step readSendPreferencesToCRMStep2()
+	public Step readSendPreferencesToCRMStep2(List<Counters> counters)
 	{
+		preferenceOutboundFileWriter.setCounters(counters);
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
 				.<PreferenceOutboundDto, PreferenceOutboundDtoProcessor> chunk(chunkOutboundCRM)
 				.reader(preferenceOutboundDBReader.outboundDBReader()).processor(preferenceOutboundProcessor)
@@ -1241,7 +1284,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *           The job_name that is processing
 	 * @return the step
 	 */
-	public Step readInboundHybrisFileStep1(String jobName)
+	public Step readInboundHybrisFileStep1(String jobName, List<Counters> counters)
 	{
 		invalidFileListener.setDirectory(hybrisPath);
 		invalidFileListener.setSource(folderInbound);
@@ -1249,6 +1292,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		invalidFileListener.setJobName(jobName);
 		RegistrationItemProcessor processor = layoutCProcessor(HYBRIS);
 		processor.setCount(0);
+		processor.setCounters(counters);
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(hybrisPath + folderInbound, HYBRIS, jobName)) // change source to constants
 				.processor(processor).faultTolerant().processorNonTransactional().skip(ValidationException.class)
@@ -1264,7 +1308,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return the step
 	 */
 
-	public Step readInboundCRMFileStep1(String jobName)
+	public Step readInboundCRMFileStep1(String jobName, List<Counters> counters)
 	{
 		invalidFileListener.setDirectory(crmPath);
 		invalidFileListener.setSource(folderInbound);
@@ -1272,6 +1316,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		invalidFileListener.setJobName(jobName);
 		RegistrationItemProcessor processor = layoutCProcessor(CRM);
 		processor.setCount(0);
+		processor.setCounters(counters);
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(crmPath + folderInbound, CRM, jobName)).processor(processor)
 				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
@@ -1287,7 +1332,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return the step
 	 */
 
-	public Step readInboundFBSFMCFileStep1(String jobName)
+	public Step readInboundFBSFMCFileStep1(String jobName, List<Counters> counters)
 	{
 		invalidFileListener.setDirectory(fbSFMCPath);
 		invalidFileListener.setSource(folderInbound);
@@ -1295,6 +1340,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		invalidFileListener.setJobName(jobName);
 		RegistrationItemProcessor processor = layoutCProcessor(FB_SFMC);
 		processor.setCount(0);
+		processor.setCounters(counters);
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath + folderInbound, FB_SFMC, jobName)).processor(processor)
 				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
@@ -1309,7 +1355,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *           The job_name that is processing
 	 * @return the step
 	 */
-	public Step readSFMCOptOutsStep1(String jobName)
+	public Step readSFMCOptOutsStep1(String jobName, List<Counters> counters)
 	{
 		invalidFileListener.setDirectory(sfmcPath);
 		invalidFileListener.setFileService(hybrisWriterListener.getFileService());
@@ -1318,6 +1364,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		invalidFileListener.setJobName(jobName);
 		ExactTargetEmailProcessor processor = layoutBProcessor();
 		processor.setCount(0);
+		processor.setCounters(counters);
 		return stepBuilderFactory.get("readSFMCOptOutsStep1").<EmailOptOuts, FileInboundStgTable> chunk(chunkValue)
 				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath + folderInbound, SFMC, jobName)).processor(processor)
 				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
@@ -1404,11 +1451,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Step 2 for salesforce Extract
 	 */
-	public Step salesforceExtractDBReaderFileWriterStep2()
+	public Step salesforceExtractDBReaderFileWriterStep2(List<Counters> counters)
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
-				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(salesforceExtractFileWriter()).build();
+				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(salesforceExtractFileWriter(counters))
+				.build();
 	}
 
 	@JobScope

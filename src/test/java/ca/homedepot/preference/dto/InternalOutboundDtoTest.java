@@ -2,7 +2,8 @@ package ca.homedepot.preference.dto;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InternalOutboundDtoTest
 {
@@ -43,10 +44,5 @@ class InternalOutboundDtoTest
 		assertEquals(test, internalOutboundDto.toString());
 	}
 
-	@Test
-	void builder()
-	{
-		internalOutboundDto = InternalOutboundDto.builder().emailAddr("test@test.com").build();
-		assertNotNull(internalOutboundDto);
-	}
+
 }

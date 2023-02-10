@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemWriter;
-import org.springframework.batch.item.file.transform.*;
+import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
+import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
+import org.springframework.batch.item.file.transform.FormatterLineAggregator;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -29,6 +31,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 @Slf4j
 @Getter
 @Setter
+
 public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 {
 	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
@@ -142,8 +145,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 		beanWrapperFieldExtractor.setNames(names);
 
 		FormatterLineAggregator<T> formatterLineAggregator = new FormatterLineAggregator<>();
-		formatterLineAggregator
-				.setFormat("%1$-30s%2$-1s%3$-30s%4$-60s%5$-60s%6$-40s%7$-2s%8$-7s%9$-150s%10$-10s%11$-10s%12$-30s%13$-1s%14$-1s%15$-1s%16$-1s");
+		formatterLineAggregator.setFormat(
+				"%1$-30s%2$-1s%3$-30s%4$-60s%5$-60s%6$-40s%7$-2s%8$-7s%9$-150s%10$-10s%11$-10s%12$-30s%13$-1s%14$-1s%15$-1s%16$-1s");
 		formatterLineAggregator.setFieldExtractor(beanWrapperFieldExtractor);
 		return formatterLineAggregator;
 	}

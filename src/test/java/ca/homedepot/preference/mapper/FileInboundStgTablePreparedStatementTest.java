@@ -38,4 +38,12 @@ class FileInboundStgTablePreparedStatementTest
 		fileInboundStgTablePreparedStatement.setValues(item, ps);
 		Mockito.verify(fileInboundStgTablePreparedStatement).setValues(item, ps);
 	}
+
+	@Test
+	void stringConverter() throws SQLException
+	{
+		fileInboundStgTablePreparedStatement.setValues(item, ps);
+		fileInboundStgTablePreparedStatement.toString();
+		Mockito.verify(fileInboundStgTablePreparedStatement).setValues(item, ps);
+	}
 }

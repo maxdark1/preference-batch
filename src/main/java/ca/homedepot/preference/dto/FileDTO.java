@@ -9,9 +9,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FileDTO
 {
 	/**
@@ -72,5 +72,6 @@ public class FileDTO
 	public FileDTO(String fileName)
 	{
 		this.fileName = fileName;
+
 	}
 }
