@@ -35,7 +35,7 @@ public class ReportsQueries
 
 	public static String DAILY_COUNT_REPORT_OVERALL_PREFERENCES = "WITH dates as (\n"
 			+ "\tSELECT DISTINCT CAST(custp.opt_in_date as DATE) count_date\n" + "\tFROM hdpc_customer_preference custp\n"
-			+ "\t--WHERE CAST(custp.opt_in_date as date) >= CAST(now() - '7 day'::INTERVAL as DATE)\n" + ")\t\n" + ",sum_pref as \n"
+			+ "\tWHERE CAST(custp.opt_in_date as date) >= CAST(now() - '7 day'::INTERVAL as DATE)\n" + ")\t\n" + ",sum_pref as \n"
 			+ "(SELECT CAST(custp.opt_in_date as DATE) sum_date, preference_type,  \n"
 			+ "\t  SUM(CASE WHEN(permission_val = true) THEN 1 ELSE 0 END) as Y,\n"
 			+ "      SUM(CASE WHEN(permission_val = false) THEN 1 ELSE 0 END) as N, \n"
