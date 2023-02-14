@@ -52,7 +52,7 @@ cron:
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
     sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
     sendPreferencesToSFMC: 0 0 18 * * ?
-    createDailyCountReport: 0/30 * * * * *
+    createDailyCountReport: 0 0 7 * * ?
 server:
   port: 8080
 

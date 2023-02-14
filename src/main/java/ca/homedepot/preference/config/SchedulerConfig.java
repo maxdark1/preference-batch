@@ -650,12 +650,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Scheduled(cron = "${cron.job.createDailyCountReport}")
 	public void triggeringCreationOfDailyCountReport() throws Exception
 	{
-		log.info(" Send Email Marketing Preferences To SMFC Job started at: {} ", new Date());
+		log.info(" Creation of Daily Count Report Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_DAILY_COUNT_REPORT, String.valueOf(System.currentTimeMillis()))
 				.addString("job_name", JOB_NAME_DAILY_COUNT_REPORT).toJobParameters();
 		JobExecution execution = jobLauncher.run(createDailyCountReport(), param);
-		log.info(" Send Email Marketing Preferences To SMFC Job finished with status: {} ", execution.getStatus());
+		log.info(" Creation of Daily Count Report Job finished with status: {} ", execution.getStatus());
 	}
 
 
@@ -987,6 +987,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		dailyCountReportWriter.setFileService(hybrisWriterListener.getFileService());
 		dailyCountReportWriter.setFolderSource(folderOutbound);
 		dailyCountReportWriter.setSource(CITI_BANK);
+		dailyCountReportWriter.setCounters(new ArrayList<>());
 		dailyCountReportWriter.setFileNameFormat(dailyCountReportFormat);
 		dailyCountReportWriter.setJobName(JOB_NAME_DAILY_COUNT_REPORT);
 		dailyCountReportWriter.setNames(DAILY_COUNT_REPORT_STEP1_DTO);
@@ -1005,6 +1006,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		dailyCountReportWriter.setFileService(hybrisWriterListener.getFileService());
 		dailyCountReportWriter.setHeader(DAILY_COUNT_REPORT_HEADER);
 		dailyCountReportWriter.setFolderSource(folderOutbound);
+		dailyCountReportWriter.setCounters(new ArrayList<>());
 		dailyCountReportWriter.setSource(CITI_BANK);
 		dailyCountReportWriter.setFileNameFormat(dailyCountReportFormat);
 		dailyCountReportWriter.setJobName(JOB_NAME_DAILY_COUNT_REPORT);

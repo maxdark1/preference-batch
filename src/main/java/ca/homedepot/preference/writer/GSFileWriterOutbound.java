@@ -61,8 +61,11 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	public void write(List<? extends T> items) throws Exception
 	{
 		super.write(items);
-		String headers = getHeader().isBlank() ? "" : getHeader() + "\n";
-		stringBuilder.append(headers);
+		if (quantityRecords == 0)
+		{
+			String headers = getHeader().isBlank() ? "" : getHeader() + "\n";
+			stringBuilder.append(headers);
+		}
 		String line = super.doWrite(items);
 		stringBuilder.append(line);
 		quantityRecords += items.size();
