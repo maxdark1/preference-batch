@@ -144,8 +144,10 @@ gcp:
 
 logging:
   level:
-    ca.homedepot.preference: DEBUG
-    root: DEBUG
+    ca.homedepot.preference: ERROR
+    root: ERROR
     org:
       hibernate: ERROR
       springframework: ERROR
+
+version: PCAM-305-pcam-daily-count-report
