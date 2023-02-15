@@ -240,9 +240,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String flexAttributesFolder;
 
 
-
-
-
 	/**
 	 * Document's base name
 	 *
@@ -392,6 +389,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private CloudStorageUtils cloudStorageUtils;
 
+	@Value("${version}")
+	private String version;
+
 	@Autowired
 	public void setUpListener()
 	{
@@ -440,6 +440,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@PostConstruct
 	public void getMasterInfo()
 	{
+		log.error("PREFERENCE-BATCH-VERSION: " + this.version);
 		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		MasterProcessor.setPreferenceService(batchTasklet.getPreferenceService());
 		MasterProcessor.getMasterInfo();
