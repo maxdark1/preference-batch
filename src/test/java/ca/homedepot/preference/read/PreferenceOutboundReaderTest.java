@@ -1,15 +1,13 @@
 package ca.homedepot.preference.read;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
-import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
-import ca.homedepot.preference.dto.InternalOutboundDto;
-import ca.homedepot.preference.dto.PreferenceOutboundDto;
-import ca.homedepot.preference.dto.SalesforceExtractOutboundDTO;
+import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 
 import javax.sql.DataSource;
@@ -67,6 +65,15 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
+	void testPurgeSalesForceExtract()
+	{
+		Mockito.doNothing().when(preferenceOutboundReader).purgeSalesforceExtractTable();
+
+		preferenceOutboundReader.purgeSalesforceExtractTable();
+		Mockito.verify(preferenceOutboundReader).purgeSalesforceExtractTable();
+	}
+
+	@Test
 	void testPurgeCitiSuppresionTable()
 	{
 		Mockito.doNothing().when(preferenceOutboundReader).purgeCitiSuppresionTable();
@@ -93,10 +100,35 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
+	void purgeLoyaltyComplaint()
+	{
+		Mockito.doNothing().when(preferenceOutboundReader).purgeLoyaltyComplaint();
+
+		preferenceOutboundReader.purgeLoyaltyComplaint();
+		Mockito.verify(preferenceOutboundReader).purgeLoyaltyComplaint();
+	}
+
+	@Test
+	void purgeFlexAttributes()
+	{
+		Mockito.doNothing().when(preferenceOutboundReader).purgeFlexAttributes();
+
+		preferenceOutboundReader.purgeFlexAttributes();
+		Mockito.verify(preferenceOutboundReader).purgeFlexAttributes();
+	}
+
+	@Test
 	void outboundLoyaltyComplaintWeekly()
 	{
 		JdbcCursorItemReader<InternalOutboundDto> test = preferenceOutboundReader.outboundLoyaltyComplaintWeekly();
 		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION, test.getSql());
+	}
+
+	@Test
+	void outboundInternalFlexDBReader()
+	{
+		ItemReader<InternalFlexOutboundDTO> test = preferenceOutboundReader.outboundInternalFlexDBReader();
+		assertNotNull(test);
 	}
 
 	@Test
