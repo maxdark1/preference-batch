@@ -52,6 +52,7 @@ cron:
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
     sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
     sendPreferencesToSFMC: 0 0 18 * * ?
+    createDailyCountReport: 0 0 7 * * ?
 server:
   port: 8080
 
@@ -72,6 +73,7 @@ inbound:
 
 outbound:
   files:
+    dailycountreport: daily_count_report_YYYYMMDD.csv
     complaintWeekly: LOYALTY_COMPLIANT_FILE_YYYYMMDD.csv.gz
     compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
     internalCa: CA_COMPLIANT_FILE_YYYYMMDD.csv
@@ -131,6 +133,8 @@ preference:
       chunk: 20
     outboundFlexAttributes:
       chunk: 20
+    dailyCountReport:
+      chunk: 5
 
 gcp:
   project-id: np-cadotcom
@@ -140,8 +144,10 @@ gcp:
 
 logging:
   level:
-    ca.homedepot.preference: DEBUG
-    root: DEBUG
+    ca.homedepot.preference: ERROR
+    root: ERROR
     org:
       hibernate: ERROR
       springframework: ERROR
+
+version: PCAM-305-pcam-daily-count-report

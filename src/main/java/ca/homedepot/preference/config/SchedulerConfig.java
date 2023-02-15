@@ -100,6 +100,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public static final String JOB_NAME_FLEX_INTERNAL_DESTINATION = "SendPreferencesToInternalFlexDestination";
 
 	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSource";
+
+	private static final String JOB_NAME_DAILY_COUNT_REPORT = "createDailyCountReport";
 	/**
 	 * The Job builder factory.
 	 */
@@ -151,6 +153,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	Integer chunkOutboundLoyalty;
 	@Value("${preference.centre.outboundFlexAttributes.chunk}")
 	Integer chunkOutboundFlexAttributes;
+	@Value("${preference.centre.dailyCountReport.chunk}")
+	Integer chunkDailyCountReport;
 
 	/**
 	 * The folders paths
@@ -222,6 +226,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	String internalMoverNameFormat;
 	@Value("${outbound.files.flexAttributes}")
 	String flexAttributesNameFormat;
+	@Value("${outbound.files.dailycountreport}")
+	String dailyCountReportFormat;
 	@Value("${folders.internal.path}")
 	String internalRepository;
 	@Value("${folders.flexAttributes.path}")
@@ -232,9 +238,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Value("${folders.outbound}")
 	String flexAttributesFolder;
-
-
-
 
 
 	/**
@@ -386,6 +389,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private CloudStorageUtils cloudStorageUtils;
 
+	@Value("${version}")
+	private String version;
+
 	@Autowired
 	public void setUpListener()
 	{
@@ -434,6 +440,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@PostConstruct
 	public void getMasterInfo()
 	{
+		log.error("PREFERENCE-BATCH-VERSION: " + this.version);
 		StorageApplicationGCS.setCloudStorageUtils(cloudStorageUtils);
 		MasterProcessor.setPreferenceService(batchTasklet.getPreferenceService());
 		MasterProcessor.getMasterInfo();
@@ -635,6 +642,23 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		createEmailFileOutbound(counters, "sfmc_outbound_email_");
 		log.info(" Send Email Marketing Preferences To SMFC Job finished with status: {} ", execution.getStatus());
 	}
+
+	/**
+	 * Triggers the daily count report in a determinated period of time
+	 *
+	 * @throws Exception
+	 */
+	@Scheduled(cron = "${cron.job.createDailyCountReport}")
+	public void triggeringCreationOfDailyCountReport() throws Exception
+	{
+		log.info(" Creation of Daily Count Report Job started at: {} ", new Date());
+		JobParameters param = new JobParametersBuilder()
+				.addString(JOB_NAME_DAILY_COUNT_REPORT, String.valueOf(System.currentTimeMillis()))
+				.addString("job_name", JOB_NAME_DAILY_COUNT_REPORT).toJobParameters();
+		JobExecution execution = jobLauncher.run(createDailyCountReport(), param);
+		log.info(" Creation of Daily Count Report Job finished with status: {} ", execution.getStatus());
+	}
+
 
 	/**
 	 * Read inbound files
@@ -955,6 +979,45 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return loyaltyComplaintWriter;
 	}
 
+	@JobScope
+	@StepScope
+	public FileWriterOutBound<DailyCountReportDTOStep1> dailyCountReportStep1Writer()
+	{
+		GSFileWriterOutbound<DailyCountReportDTOStep1> dailyCountReportWriter = new GSFileWriterOutbound<>();
+		dailyCountReportWriter.setName("dailyCountReportWriter");
+		dailyCountReportWriter.setFileService(hybrisWriterListener.getFileService());
+		dailyCountReportWriter.setFolderSource(folderOutbound);
+		dailyCountReportWriter.setSource(CITI_BANK);
+		dailyCountReportWriter.setCounters(new ArrayList<>());
+		dailyCountReportWriter.setFileNameFormat(dailyCountReportFormat);
+		dailyCountReportWriter.setJobName(JOB_NAME_DAILY_COUNT_REPORT);
+		dailyCountReportWriter.setNames(DAILY_COUNT_REPORT_STEP1_DTO);
+		dailyCountReportWriter.setResource();
+		jobListener.setFiles(dailyCountReportWriter.getFileName());
+		return dailyCountReportWriter;
+	}
+
+	@JobScope
+	@StepScope
+	public FileWriterOutBound<DailyCountReportStep2> dailyCountReportStep2Writer(StringBuilder stringBuilder)
+	{
+		GSFileWriterOutbound<DailyCountReportStep2> dailyCountReportWriter = new GSFileWriterOutbound<>();
+		dailyCountReportWriter.setName("dailyCountReportWriter");
+		dailyCountReportWriter.setStringBuilder(stringBuilder);
+		dailyCountReportWriter.setFileService(hybrisWriterListener.getFileService());
+		dailyCountReportWriter.setHeader(DAILY_COUNT_REPORT_HEADER);
+		dailyCountReportWriter.setFolderSource(folderOutbound);
+		dailyCountReportWriter.setCounters(new ArrayList<>());
+		dailyCountReportWriter.setSource(CITI_BANK);
+		dailyCountReportWriter.setFileNameFormat(dailyCountReportFormat);
+		dailyCountReportWriter.setJobName(JOB_NAME_DAILY_COUNT_REPORT);
+		dailyCountReportWriter.setNames(DAILY_COUNT_REPORT_STEP2_DTO);
+		dailyCountReportWriter.setIsFirstStep(false);
+		dailyCountReportWriter.setResource();
+		jobListener.setFiles(dailyCountReportWriter.getFileName());
+		return dailyCountReportWriter;
+	}
+
 	/***
 	 * Writer to outbound Salesforce Extract stg table
 	 *
@@ -1176,6 +1239,18 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(salesforceExtractDBReaderStep1()).on(COMPLETED_STATUS).to(salesforceExtractDBReaderFileWriterStep2(counters))
 				.build().build();
+	}
+
+	public Job createDailyCountReport()
+	{
+		FileWriterOutBound<DailyCountReportDTOStep1> writer = dailyCountReportStep1Writer();
+		StringBuilder stringBuilder = new StringBuilder();
+		((GSFileWriterOutbound) writer).setStringBuilder(stringBuilder);
+		FileWriterOutBound<DailyCountReportStep2> writerStep2 = dailyCountReportStep2Writer(
+				((GSFileWriterOutbound) writer).getStringBuilder());
+		((GSFileWriterOutbound) writerStep2).setStringBuilder(stringBuilder);
+		return jobBuilderFactory.get(JOB_NAME_DAILY_COUNT_REPORT).incrementer(new RunIdIncrementer()).listener(jobListener)
+				.start(dailyCountReportStep1(writer)).on(COMPLETED_STATUS).to(dailyCountReportStep2(writerStep2)).build().build();
 	}
 
 
@@ -1401,6 +1476,22 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return stepBuilderFactory.get("loyaltyComplaintDBReaderFileWriterStep2")
 				.<LoyaltyCompliantDTO, LoyaltyCompliantDTO> chunk(chunkOutboundLoyalty)
 				.reader(preferenceOutboundDBReader.loyaltyComplaintDBTableReader()).writer(loyaltyComplaintWriter()).build();
+	}
+
+	public Step dailyCountReportStep1(FileWriterOutBound<DailyCountReportDTOStep1> writer)
+	{
+		return stepBuilderFactory.get("dailyCountReportStep1")
+				.<DailyCountReportDTOStep1, DailyCountReportDTOStep1> chunk(chunkDailyCountReport)
+				.reader(preferenceOutboundReader.dailyCountReportStep1()).writer(writer).build();
+
+	}
+
+	public Step dailyCountReportStep2(FileWriterOutBound<DailyCountReportStep2> writer)
+	{
+		return stepBuilderFactory.get("dailyCountReportStep2")
+				.<DailyCountReportStep2, DailyCountReportStep2> chunk(chunkDailyCountReport)
+				.reader(preferenceOutboundReader.dailyCountReportStep2()).writer(writer).build();
+
 	}
 
 	/**
