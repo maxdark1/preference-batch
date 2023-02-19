@@ -6,10 +6,7 @@ import ca.homedepot.preference.listener.*;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutB;
 import ca.homedepot.preference.listener.skippers.SkipListenerLayoutC;
 import ca.homedepot.preference.model.Counters;
-import ca.homedepot.preference.processor.ExactTargetEmailProcessor;
-import ca.homedepot.preference.processor.InternalOutboundProcessor;
-import ca.homedepot.preference.processor.PreferenceOutboundProcessor;
-import ca.homedepot.preference.processor.RegistrationItemProcessor;
+import ca.homedepot.preference.processor.*;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
@@ -147,6 +144,9 @@ class SchedulerConfigTest
 	InternalOutboundFileWriter internalOutboundFileWriter;
 
 	@Mock
+	InternalFlexOutboundFileWriter internalFlexOutboundFileWriter;
+
+	@Mock
 	Step2InboundExecutionListener step2InboundExecutionListener;
 	@Spy
 	@InjectMocks
@@ -250,6 +250,8 @@ class SchedulerConfigTest
 		schedulerConfig.setInternalOutboundProcessor(internalOutboundProcessor);
 		schedulerConfig.setInternalOutboundFileWriter(internalOutboundFileWriter);
 		schedulerConfig.setDailyCompliantNameFormat("dailyCompliantYYYYMMDD.csv");
+		schedulerConfig.setInternalFlexOutboundFileWriter(new InternalFlexOutboundFileWriter());
+		schedulerConfig.setInternalFlexOutboundProcessor(new InternalFlexOutboundProcessor());
 		//setFinalStaticField(schedulerConfig.getClass(), "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
 
 
@@ -703,6 +705,45 @@ class SchedulerConfigTest
 	}
 
 	@Test
+	void internalFlexOutboundDTOJdbcBatchItemWriter()
+	{
+		assertNotNull(schedulerConfig.internalFlexOutboundDTOJdbcBatchItemWriter());
+	}
+
+	@Test
+	void readSendPreferencesToFlexInternalStep1()
+	{
+		schedulerConfig.setChunkOutboundFlexAttributes(100);
+		JdbcCursorItemReader<InternalFlexOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
+		Mockito.when(preferenceOutboundReader.outboundInternalFlexDBReader()).thenReturn(jdbcCursorItemReader);
+
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(JdbcBatchItemWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.readSendPreferencesToFlexInternalStep1());
+	}
+
+	@Test
+	void readSendPreferencesToFlexInternalStep2()
+	{
+		schedulerConfig.setChunkOutboundFlexAttributes(100);
+		JdbcCursorItemReader<InternalFlexOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
+		Mockito.when(preferenceOutboundDBReader.outboundInternalFlexDbReader()).thenReturn(jdbcCursorItemReader);
+
+		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
+		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.processor(any(InternalFlexOutboundProcessor.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(InternalFlexOutboundFileWriter.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
+
+		assertNotNull(schedulerConfig.readSendPreferencesToFlexInternalStep2());
+	}
+
+	@Test
 	void testSendPreferencesToFlexInternalDestination() throws IOException
 	{
 
@@ -784,4 +825,6 @@ class SchedulerConfigTest
 		}
 		assertTrue(!validator);
 	}
+
+
 }
