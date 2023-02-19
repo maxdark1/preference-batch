@@ -273,22 +273,23 @@ public final class FileUtil
 		log.info("FIRST STEP: " + file);
 		String baseName = "";
 		String extension = "";
-		String[] splittedName = file.split("\\.");
-		log.info("splitted name: " + file);
-		if (splittedName.length > 0)
-		{
-			for (int i = 0; i < (splittedName.length - 1); i++)
-			{
-				baseName += splittedName[i] + ".";
+		try {
+			String[] splittedName = file.split("\\.");
+			log.info("splitted name: " + file);
+			if (splittedName.length > 0) {
+				for (int i = 0; i < (splittedName.length - 1); i++) {
+					baseName += splittedName[i] + ".";
+				}
+				log.info("Base Name: " + baseName);
+				baseName = baseName.substring(0, baseName.length() - 1);
+				extension = splittedName[splittedName.length - 1];
+				log.info("Extension: " + extension);
+			} else {
+				baseName = file;
 			}
-			log.info("Base Name: " + baseName);
-			baseName = baseName.substring(0, baseName.length() - 1);
-			extension = splittedName[splittedName.length - 1];
-			log.info("Extension: " + extension);
-		}
-		else
-		{
-			baseName = file;
+		} catch (Exception ex){
+			log.error("PREFERENCE-BATCH-ERROR: Error during renaming the file using default name");
+			baseName = file + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date());
 		}
 
 		return baseName + "_" + (new SimpleDateFormat("yyyyMMSSHHmmssSSSS")).format(new Date()) + "." + extension;

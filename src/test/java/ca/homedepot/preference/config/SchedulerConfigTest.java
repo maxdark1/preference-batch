@@ -279,7 +279,7 @@ class SchedulerConfigTest
 	void testinboundEmailPreferencesSMFCReader()
 	{
 		assertNotNull(schedulerConfig);
-		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader());
+		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader("UTF-8"));
 	}
 
 	@Test
@@ -302,7 +302,7 @@ class SchedulerConfigTest
 	{
 		schedulerConfig.hybrisCrmRegistrationFile = "ET.CAN.YYYYMMDD";
 		assertNotNull(schedulerConfig);
-		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader());
+		assertNotNull(schedulerConfig.inboundEmailPreferencesSMFCReader("UTF-8"));
 
 	}
 
