@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.FB_SFMC;
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.SFMC;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 
 @Slf4j
 @UtilityClass
@@ -112,11 +112,19 @@ public class FileValidation
 	 * @param separator
 	 * @return line calll back handler
 	 */
-	public static LineCallbackHandler lineCallbackHandler(String[] headerFile, String separator)
+	public static LineCallbackHandler lineCallbackHandler(String[] headerFile, String separator, String encoding)
 	{
 		return line -> {
-			String[] header = line.split(separator);
-			if (!Arrays.equals(header, headerFile))
+			boolean invalid = false;
+			String[] header = line.split(DELIMITER_TAB);
+			for (int i = 0; i < header.length; i++)
+			{
+				if (!header[i].contains(headerFile[i]))
+				{
+					invalid = true;
+				}
+			}
+			if (invalid)
 				throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
 		};
 	}
