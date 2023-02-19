@@ -783,10 +783,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
 				.targetType(EmailOptOuts.class).linesToSkip(1)
 				/* Validation file's header */
-				.skippedLinesCallback(
-						FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS, DELIMITER_TAB, encoding))
-				.encoding(encoding)
-				.build();
+				.skippedLinesCallback(FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS,
+						DELIMITER_TAB, encoding))
+				.encoding(encoding).build();
 	}
 
 	/**

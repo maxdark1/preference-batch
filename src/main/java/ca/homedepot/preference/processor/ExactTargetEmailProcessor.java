@@ -68,7 +68,8 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		else if (!fileName.equals(item.getFileName()))
 		{
 			fileIndex++;
-			if(counters.size() < 1){
+			if (counters.size() < 1)
+			{
 				fileIndex = 0;
 			}
 			count = 0;

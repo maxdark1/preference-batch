@@ -6,8 +6,6 @@ import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -114,12 +112,15 @@ public class FileValidation
 	 * @param separator
 	 * @return line calll back handler
 	 */
-	public static LineCallbackHandler lineCallbackHandler(String[] headerFile, String separator, String encoding) {
+	public static LineCallbackHandler lineCallbackHandler(String[] headerFile, String separator, String encoding)
+	{
 		return line -> {
 			boolean invalid = false;
 			String[] header = line.split(DELIMITER_TAB);
-			for (int i = 0; i < header.length; i++) {
-				if (!header[i].contains(headerFile[i])) {
+			for (int i = 0; i < header.length; i++)
+			{
+				if (!header[i].contains(headerFile[i]))
+				{
 					invalid = true;
 				}
 			}

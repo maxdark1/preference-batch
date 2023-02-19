@@ -125,8 +125,9 @@ public class ExactTargetEmailValidation
 		return line -> {
 			boolean invalid = false;
 			String[] header = line.split(DELIMITER_TAB);
-			for(int i = 0; i < header.length; i++){
-				if(!header[i].contains(FIELD_NAMES_SFMC_OPTOUTS[i]))
+			for (int i = 0; i < header.length; i++)
+			{
+				if (!header[i].contains(FIELD_NAMES_SFMC_OPTOUTS[i]))
 					invalid = true;
 			}
 			if (invalid)

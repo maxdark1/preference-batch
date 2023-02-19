@@ -103,26 +103,33 @@ public class StorageApplicationGCS
 				.collect(Collectors.toList());
 	}
 
-	public List<GoogleStorageResource> validateEncoding(List<GoogleStorageResource> resourcesGCS) throws IOException {
-		try {
+	public List<GoogleStorageResource> validateEncoding(List<GoogleStorageResource> resourcesGCS) throws IOException
+	{
+		try
+		{
 			String encoding = getEncoding(resourcesGCS.get(0));
 			log.error("FILE-ENCODING: " + encoding);
-			for(int i = 0; i < resourcesGCS.size(); i++){
-				if(!encoding.equals(getEncoding(resourcesGCS.get(i)))){
+			for (int i = 0; i < resourcesGCS.size(); i++)
+			{
+				if (!encoding.equals(getEncoding(resourcesGCS.get(i))))
+				{
 					resourcesGCS.remove(i);
 				}
 			}
 			Encoding = encoding;
 		}
-		catch (Exception ex){
+		catch (Exception ex)
+		{
 			log.error("PREFERENCE-BATCH-ERROR: Error During Encoding Validation " + ex.getMessage());
 		}
 		return resourcesGCS;
 	}
 
-	public String getEncoding(GoogleStorageResource resource){
+	public String getEncoding(GoogleStorageResource resource)
+	{
 		String encoding = "";
-		try {
+		try
+		{
 			byte[] buff = new byte[4096];
 			Blob blob = resource.getBlob();
 			ReadChannel reader = blob.reader();
@@ -131,7 +138,8 @@ public class StorageApplicationGCS
 			UniversalDetector detector = new UniversalDetector();
 
 			int nread;
-			while ((nread = fis.read(buff)) > 0 && !detector.isDone()) {
+			while ((nread = fis.read(buff)) > 0 && !detector.isDone())
+			{
 				detector.handleData(buff, 0, nread);
 			}
 
@@ -140,7 +148,9 @@ public class StorageApplicationGCS
 			encoding = detector.getDetectedCharset();
 			fis.close();
 			reader.close();
-		} catch (Exception ex){
+		}
+		catch (Exception ex)
+		{
 			log.error("PREFERENCE-BATCH-ERROR: Error During Get File Encoding" + ex.getMessage());
 		}
 		return encoding;
@@ -151,10 +161,13 @@ public class StorageApplicationGCS
 
 		Map<String, List<Resource>> resources = new HashMap<>();
 		List<GoogleStorageResource> resourcesGCS = getGCPResource(folder);
-		try {
+		try
+		{
 			resourcesGCS = validateEncoding(resourcesGCS);
-		} catch (Exception ex){
-			log.error("PREFERENCE-BATCH-ERROR: Encoding Validation" +ex.getMessage());
+		}
+		catch (Exception ex)
+		{
+			log.error("PREFERENCE-BATCH-ERROR: Encoding Validation" + ex.getMessage());
 		}
 
 		List<Resource> validResources = new ArrayList<>();
