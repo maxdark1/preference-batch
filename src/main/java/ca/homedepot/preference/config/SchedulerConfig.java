@@ -67,6 +67,7 @@ import static ca.homedepot.preference.constants.SchedulerConfigConstants.*;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
 import static ca.homedepot.preference.writer.GSFileWriterOutbound.createFileOnGCS;
 
+
 /**
  * The type Scheduler config.
  */
@@ -745,7 +746,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		multiReaderResourceInbound.setName("multiResourceItemReaderSFMCUnsubcribed");
 
 		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(source, directory));
-		multiReaderResourceInbound.setDelegate(inboundEmailPreferencesSMFCReader());
+		multiReaderResourceInbound.setDelegate(inboundEmailPreferencesSMFCReader(StorageApplicationGCS.Encoding));
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
 
@@ -765,7 +766,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(
-						FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, DELIMITER_PIPELINE))
+						FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, DELIMITER_PIPELINE, ""))
 				.build();
 	}
 
@@ -775,16 +776,16 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return FlatFileItemReader<EmailOptOuts>
 	 */
 	@StepScope
-	public FlatFileItemReader<EmailOptOuts> inboundEmailPreferencesSMFCReader()
+	public FlatFileItemReader<EmailOptOuts> inboundEmailPreferencesSMFCReader(String encoding)
 	{
 		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
 				.lineTokenizer(
 						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
 				.targetType(EmailOptOuts.class).linesToSkip(1)
 				/* Validation file's header */
-				.skippedLinesCallback(
-						FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS, DELIMITER_TAB))
-				.build();
+				.skippedLinesCallback(FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS,
+						DELIMITER_TAB, encoding))
+				.encoding(encoding).build();
 	}
 
 	/**
