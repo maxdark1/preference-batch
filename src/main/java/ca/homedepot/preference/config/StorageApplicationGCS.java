@@ -3,13 +3,19 @@ package ca.homedepot.preference.config;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.constants.StorageConstants;
 import ca.homedepot.preference.util.validation.FileValidation;
+import com.google.cloud.ReadChannel;
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gcp.storage.GoogleStorageResource;
 import org.springframework.core.io.Resource;
 
+
+import java.io.IOException;
+import java.nio.channels.Channels;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +24,17 @@ import java.util.stream.Collectors;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INVALID;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
+import org.mozilla.universalchardet.UniversalDetector;
 
 @UtilityClass
+@Slf4j
 public class StorageApplicationGCS
 {
 	private static Storage storage;
 
 	private static CloudStorageUtils cloudStorageUtils;
+
+	protected static String Encoding;
 
 	/**
 	 * Create the storage if it doesn't exist
@@ -93,11 +103,72 @@ public class StorageApplicationGCS
 				.collect(Collectors.toList());
 	}
 
+	public List<GoogleStorageResource> validateEncoding(List<GoogleStorageResource> resourcesGCS) throws IOException
+	{
+		try
+		{
+			String encoding = getEncoding(resourcesGCS.get(0));
+			log.error("FILE-ENCODING: " + encoding);
+			for (int i = 0; i < resourcesGCS.size(); i++)
+			{
+				if (!encoding.equals(getEncoding(resourcesGCS.get(i))))
+				{
+					resourcesGCS.remove(i);
+				}
+			}
+			Encoding = encoding;
+		}
+		catch (Exception ex)
+		{
+			log.error("PREFERENCE-BATCH-ERROR: Error During Encoding Validation " + ex.getMessage());
+		}
+		return resourcesGCS;
+	}
+
+	public String getEncoding(GoogleStorageResource resource)
+	{
+		String encoding = "";
+		try
+		{
+			byte[] buff = new byte[4096];
+			Blob blob = resource.getBlob();
+			ReadChannel reader = blob.reader();
+
+			java.io.InputStream fis = Channels.newInputStream(reader);
+			UniversalDetector detector = new UniversalDetector();
+
+			int nread;
+			while ((nread = fis.read(buff)) > 0 && !detector.isDone())
+			{
+				detector.handleData(buff, 0, nread);
+			}
+
+			detector.dataEnd();
+
+			encoding = detector.getDetectedCharset();
+			fis.close();
+			reader.close();
+		}
+		catch (Exception ex)
+		{
+			log.error("PREFERENCE-BATCH-ERROR: Error During Get File Encoding" + ex.getMessage());
+		}
+		return encoding;
+	}
+
 	public Map<String, List<Resource>> getsGCPResourceMap(String source, String folder)
 	{
 
 		Map<String, List<Resource>> resources = new HashMap<>();
 		List<GoogleStorageResource> resourcesGCS = getGCPResource(folder);
+		try
+		{
+			resourcesGCS = validateEncoding(resourcesGCS);
+		}
+		catch (Exception ex)
+		{
+			log.error("PREFERENCE-BATCH-ERROR: Encoding Validation" + ex.getMessage());
+		}
 
 		List<Resource> validResources = new ArrayList<>();
 		List<Resource> invalidResources = new ArrayList<>();
