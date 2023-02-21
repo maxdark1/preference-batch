@@ -955,6 +955,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
 		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
+		citiSupressionFileWriter.setCounters(new ArrayList<>());
 		citiSupressionFileWriter.setResource();
 		jobListener.setFiles(citiSupressionFileWriter.getFileName());
 
