@@ -123,8 +123,14 @@ public class ExactTargetEmailValidation
 	public static LineCallbackHandler lineCallbackHandler()
 	{
 		return line -> {
+			boolean invalid = false;
 			String[] header = line.split(DELIMITER_TAB);
-			if (!Arrays.equals(header, FIELD_NAMES_SFMC_OPTOUTS))
+			for (int i = 0; i < header.length; i++)
+			{
+				if (!header[i].contains(FIELD_NAMES_SFMC_OPTOUTS[i]))
+					invalid = true;
+			}
+			if (invalid)
 				throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
 		};
 	}

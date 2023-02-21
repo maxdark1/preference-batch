@@ -105,9 +105,10 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_SEND_PREFERENCES_TO_CRM,
 				JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
-		BigDecimal sourceIDBD = (sourceId == null) ? MasterProcessor.getSourceID("SOURCE_ID", "database").getMasterId(): new BigDecimal(sourceId);
-		FileDTO file = new FileDTO(null, fileName, jobId, sourceIDBD, fileStatus.getValueVal(),
-				fileStatus.getMasterId(), new Date(), new Date(), INSERTEDBY, new Date(), null, null);
+		BigDecimal sourceIDBD = (sourceId == null) ? MasterProcessor.getSourceID("SOURCE_ID", "database").getMasterId()
+				: new BigDecimal(sourceId);
+		FileDTO file = new FileDTO(null, fileName, jobId, sourceIDBD, fileStatus.getValueVal(), fileStatus.getMasterId(),
+				new Date(), new Date(), INSERTEDBY, new Date(), null, null);
 
 		fileService.insertOldId(file);
 	}
