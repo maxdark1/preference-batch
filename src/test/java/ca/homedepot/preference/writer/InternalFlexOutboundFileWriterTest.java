@@ -2,6 +2,7 @@ package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.InternalFlexOutboundProcessorDTO;
 import ca.homedepot.preference.dto.Master;
+import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import com.github.javafaker.Faker;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 
@@ -101,6 +103,13 @@ class InternalFlexOutboundFileWriterTest
 		ExecutionContext executionContext = Mockito.mock(ExecutionContext.class);
 		internalFlexOutboundFileWriter.update(executionContext);
 		verify(internalFlexOutboundFileWriter).update(executionContext);
+	}
+
+	@Test
+	void setJobListener()
+	{
+		internalFlexOutboundFileWriter.setJobListener(new JobListener());
+		assertNotNull(internalFlexOutboundFileWriter);
 	}
 
 }

@@ -127,7 +127,7 @@ public class JobListener implements JobExecutionListener
 		{
 			String process = "inbound";
 			//Outbound process
-			if (jobName.toUpperCase().contains("SEND") || jobName.toUpperCase().contains("DailyCountReport"))
+			if (jobName.toUpperCase().contains("SEND") || jobName.toUpperCase().contains("DAILYCOUNTREPORT"))
 				process = "outbound";
 			log.error(" JOB COMPLETED SUCCESSFULLY- The {} file(s) [ {} ] has been successfully processed on job [{}]", process,
 					files, jobName);
