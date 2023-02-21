@@ -120,6 +120,37 @@ class OutboundServiceImplTest
 	}
 
 	@Test
+	void purgeLoyaltyComplaintTable()
+	{
+		int recordsDeleted = 1;
+
+		Mockito.when(jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE))
+				.thenReturn(recordsDeleted);
+		outboundService.purgeLoyaltyComplaintTable();
+		verify(outboundService).purgeLoyaltyComplaintTable();
+	}
+
+	@Test
+	void purgeFlexAttributesTable()
+	{
+		int recordsDeleted = 1;
+
+		Mockito.when(jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_FLEX_ATTRIBUTE)).thenReturn(recordsDeleted);
+		outboundService.purgeFlexAttributesTable();
+		verify(outboundService).purgeFlexAttributesTable();
+	}
+
+	@Test
+	void purgeSalesforceExtractTable()
+	{
+		int recordsDeleted = 1;
+
+		Mockito.when(jdbcTemplate.update(OutboundSqlQueriesConstants.SQL_TRUNCATE_SALESFORCE_EXTRACT)).thenReturn(recordsDeleted);
+		outboundService.purgeSalesforceExtractTable();
+		verify(outboundService).purgeSalesforceExtractTable();
+	}
+
+	@Test
 	void createFileTest() throws IOException
 	{
 		String repository = "", folder = "OUTBOUND/", fileNameFormat = "ANYTHING_YYYYMMDD.txt";

@@ -77,6 +77,7 @@ class PreferenceOutboundFileWriterTest
 		masterList.add(fileStatus);
 
 		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+		masterList.add(new Master(new BigDecimal("10"), new BigDecimal("10"), "SOURCE_ID", "IN PROGRESS", true, BigDecimal.TEN));
 
 		MasterProcessor.setMasterList(masterList);
 

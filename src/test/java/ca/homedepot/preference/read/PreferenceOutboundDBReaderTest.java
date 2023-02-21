@@ -65,4 +65,10 @@ class PreferenceOutboundDBReaderTest
 		assertNotNull(reader);
 	}
 
+	@Test
+	void outboundInternalFlexDbReader()
+	{
+		assertNotNull(preferenceOutboundDBReader.outboundInternalFlexDbReader());
+	}
+
 }

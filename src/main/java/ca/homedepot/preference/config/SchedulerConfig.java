@@ -956,6 +956,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
 		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
+		citiSupressionFileWriter.setCounters(new ArrayList<>());
 		citiSupressionFileWriter.setResource();
 		jobListener.setFiles(citiSupressionFileWriter.getFileName());
 
@@ -972,6 +973,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		loyaltyComplaintWriter.setFolderSource(folderOutbound);
 		loyaltyComplaintWriter.setRepositorySource(loyaltyCompliantPath);
 		loyaltyComplaintWriter.setSource(CITI_BANK);
+		loyaltyComplaintWriter.setCounters(new ArrayList<>());
 		loyaltyComplaintWriter.setFileNameFormat(weeklyCompliantNameFormat);
 		loyaltyComplaintWriter.setJobName(JOB_NAME_LOYALTY_COMPLAINT);
 		loyaltyComplaintWriter.setNames(LOYALTY_COMPLIANT_NAMES);
