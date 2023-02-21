@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.batch.core.BatchStatus;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
@@ -30,7 +31,7 @@ class SkipListenerLayoutCTest
 	@BeforeEach
 	void setUp()
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 		skipListenerLayoutC.setJobName("JOB_NAME");
 
 		MasterProcessor.setMasterList(
@@ -46,6 +47,16 @@ class SkipListenerLayoutCTest
 		Throwable t = Mockito.mock(Throwable.class);
 		skipListenerLayoutC.onSkipInRead(t);
 		Mockito.verify(skipListenerLayoutC).onSkipInRead(t);
+	}
+
+	@Test
+	void onSkipInReadCase2()
+	{
+		Throwable t = new IOException("Exception");
+		IOException ioException = assertThrows(IOException.class, () -> {
+			skipListenerLayoutC.onSkipInRead(t);
+		});
+		assertTrue(ioException.getMessage().contains("PREFERENCE BATCH ERROR"));
 	}
 
 	@Test
