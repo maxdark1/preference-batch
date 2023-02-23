@@ -1,6 +1,8 @@
 package ca.homedepot.preference.mapper;
 
 import ca.homedepot.preference.model.FileInboundStgTable;
+import ca.homedepot.preference.util.validation.ExactTargetEmailValidation;
+import ca.homedepot.preference.util.validation.InboundValidator;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 
 import java.sql.PreparedStatement;
@@ -31,7 +33,10 @@ public class FileInboundStgTablePreparedStatement implements ItemPreparedStateme
 		ps.setString(16, item.getPhonePref());
 		ps.setString(17, item.getEmailAddressPref());
 		ps.setString(18, item.getMailAddressPref());
-		ps.setTimestamp(19, new Timestamp(new Date(item.getSrcDate()).getTime()));
+		Date date = InboundValidator.validateDateFormat(item.getSrcDate(), new StringBuilder());
+		if (date == null)
+			date = ExactTargetEmailValidation.validateDateFormat(item.getSrcDate(), new StringBuilder());
+		ps.setTimestamp(19, new Timestamp(date.getTime()));
 		ps.setBigDecimal(20, item.getEmailStatus());
 		ps.setString(21, item.getSrcPhoneExtension());
 		ps.setString(22, item.getEmailPrefHdCa());

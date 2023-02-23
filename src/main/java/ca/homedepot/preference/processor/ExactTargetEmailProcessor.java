@@ -90,7 +90,6 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		 * This saves all Validation's error messages If there are any
 		 */
 		StringBuilder error = new StringBuilder();
-		Date srcDate = null;
 		try
 		{
 			InboundValidator.validateRequired(item.getEmailAddress(), "email address", error);
@@ -98,7 +97,7 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 			InboundValidator.validateRequired(item.getDateUnsubscribed(), "Date Unsubscribed", error);
 			InboundValidator.validateMaxLength("Email Address", item.getEmailAddress(), 150, error);
 			ExactTargetEmailValidation.validateStatusEmail(item.getStatus(), error);
-			srcDate = ExactTargetEmailValidation.validateDateFormat(item.getDateUnsubscribed(), error);
+			ExactTargetEmailValidation.validateDateFormat(item.getDateUnsubscribed(), error);
 
 			InboundValidator.validateEmailFormat(item.getEmailAddress(), error);
 
@@ -126,7 +125,7 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 		return builder.srcEmailAddress(item.getEmailAddress()).fileName(item.getFileName())
 				.sourceId(ExactTargetEmailValidation.getSourceId(item.getReason()))
 				.emailStatus(ExactTargetEmailValidation.getExactTargetStatus(item.getStatus())).status(NOTSTARTED)
-				.srcDate(srcDate.toString()).emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
+				.srcDate(item.getDateUnsubscribed()).emailAddressPref(NUMBER_0.getValue()).emailPrefHdCa(NUMBER_0.getValue())
 				.emailPrefGardenClub(NUMBER_MINUS_1.getValue()).emailPrefPro(NUMBER_MINUS_1.getValue())
 				.emailPrefNewMover(NUMBER_MINUS_1.getValue()).insertedBy(INSERTEDBY).insertedDate(new Date()).build();
 	}

@@ -87,6 +87,7 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 		String stamp = formatter.format(Calendar.getInstance().getTime());
 		String fileName = fileNameFormat.replace(YYYYMMDD_T_HHMISS, stamp.replace(SPACE, TEE));
 		jobListener.setFiles(fileName);
+		log.error(" PREFERENCE-BATCH: file: {} going to be write on DataBase", fileName);
 		GSFileWriterOutbound.createFileOnGCS(CloudStorageUtils.generatePath(repositorySource, folderSource, fileName),
 				JOB_NAME_FLEX_INTERNAL_DESTINATION, record.getBytes());
 		setFileRecord(fileName);
@@ -97,10 +98,13 @@ public class InternalFlexOutboundFileWriter implements ItemStreamWriter<Internal
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_FLEX_INTERNAL_DESTINATION,
 				JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE old_id: {}", sourceId);
 		BigDecimal sourceId = MasterProcessor.getSourceID(this.sourceId);
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE master_id: {}", sourceId);
 		BigDecimal sourceIdBD = sourceId == null || sourceId.equals(BigDecimal.valueOf(-400L))
 				? MasterProcessor.getSourceID("SOURCE_ID", "database").getOldID()
 				: sourceId;
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE to insert: {}", sourceIdBD);
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceIdBD, fileStatus.getValueVal(), fileStatus.getMasterId(),
 				new Date(), new Date(), "BATCH", new Date(), null, null);
 
