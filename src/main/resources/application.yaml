@@ -150,4 +150,4 @@ logging:
       hibernate: ERROR
       springframework: ERROR
 
-version: PCAM-Source type issue solved
+version: PCAM-Source type issue logs

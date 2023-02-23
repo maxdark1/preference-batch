@@ -71,6 +71,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 	public void write(List<? extends PreferenceOutboundDtoProcessor> items) throws Exception
 	{
 		sourceId = items.get(0).getSourceId().replace(SINGLE_DELIMITER_TAB, "");
+
 		for (PreferenceOutboundDtoProcessor preference : items)
 		{
 			fileBuilder.append(preference.getEmail()).append(preference.getEffectiveDate()).append(preference.getSourceId())
@@ -105,10 +106,13 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_SEND_PREFERENCES_TO_CRM,
 				JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE old_id: {}", sourceId);
 		BigDecimal sourceId = MasterProcessor.getSourceID(this.sourceId);
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE master_id: {}", sourceId);
 		BigDecimal sourceIdBD = sourceId == null || sourceId.equals(BigDecimal.valueOf(-400L))
 				? MasterProcessor.getSourceID("SOURCE_ID", "database").getOldID()
 				: sourceId;
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE to insert: {}", sourceIdBD);
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceIdBD, fileStatus.getValueVal(), fileStatus.getMasterId(),
 				new Date(), new Date(), INSERTEDBY, new Date(), null, null);
 
@@ -135,6 +139,7 @@ public class PreferenceOutboundFileWriter implements ItemWriter<PreferenceOutbou
 		createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName), JOB_NAME_SEND_PREFERENCES_TO_CRM,
 				fileBuilder.toString().getBytes());
 		fileBuilder = new StringBuilder();
+		log.error(" PREFERENCE-BATCH: file: {} going to be write on DataBase", fileName);
 		setFileRecord(fileName);
 		counter.quantityRecords = quantityRecords;
 		counter.fileName = fileName;

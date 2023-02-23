@@ -154,7 +154,7 @@ public class InboundValidator
 	 */
 	public static Date validateDateFormat(String date, StringBuilder error)
 	{
-		Date asOfDate = new Date();
+		Date asOfDate = null;
 		try
 		{
 			asOfDate = srcDateSDF.parse(date);
