@@ -82,9 +82,11 @@ class MasterProcessorTest
 	{
 		BigDecimal masterValid = MasterProcessor.getSourceID("1");
 		BigDecimal masterInvalid = MasterProcessor.getSourceID("2");
+		BigDecimal masterNull = MasterProcessor.getSourceID(null);
 
 		assertEquals(BigDecimal.valueOf(2), masterValid);
 		assertEquals(new BigDecimal("-400"), masterInvalid);
+		assertEquals(new BigDecimal("-400"), masterNull);
 	}
 
 

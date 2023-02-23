@@ -99,6 +99,7 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 		String cafileName = caFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
 		String movefileName = moverFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
 		String gardenfileName = gardenFileFormat.replace("YYYYMMDD", formatter.format(new Date()));
+		log.error(" PREFERENCE-BATCH: file: {}, {}, {} going to be write on DataBase", cafileName, movefileName, gardenfileName);
 		createFileOnGCS(CloudStorageUtils.generatePath(repositorySource + folderSource, cafileName), JOB_NAME_INTERNAL_DESTINATION,
 				caFile.toString().getBytes());
 		createFileOnGCS(CloudStorageUtils.generatePath(repositorySource + folderSource, movefileName),
@@ -123,10 +124,13 @@ public class InternalOutboundFileWriter implements ItemWriter<InternalOutboundPr
 		BigDecimal jobId = fileService.getJobId(JOB_NAME_INTERNAL_DESTINATION,
 				JobListener.status(BatchStatus.STARTED).getMasterId());
 		Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, VALID);
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE old_id: {}", sourceId);
 		BigDecimal sourceId = MasterProcessor.getSourceID(this.sourceId);
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE master_id: {}", sourceId);
 		BigDecimal sourceIdBD = sourceId == null || sourceId.equals(BigDecimal.valueOf(-400L))
 				? MasterProcessor.getSourceID("SOURCE_ID", "database").getOldID()
 				: sourceId;
+		log.error(" PREFERENCE-BATCH: SOURCE_TYPE to insert: {}", sourceIdBD);
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceIdBD, fileStatus.getValueVal(), fileStatus.getMasterId(),
 				new Date(), new Date(), "BATCH", new Date(), null, null);
 

@@ -95,13 +95,13 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		count++;
 		counters.get(fileIndex).quantityRecords++;
 		FileInboundStgTable.FileInboundStgTableBuilder builder = FileInboundStgTable.builder();
-		Date asOfDate = null;
+
 		BigDecimal sourceId = null;
 		String asOfDateStr = item.getAsOfDate();
 		try
 		{
 			StringBuilder error = validate(item);
-			asOfDate = validateDateFormat(asOfDateStr, error);
+			validateDateFormat(asOfDateStr, error);
 			sourceId = validateSourceID(item.getSourceID(), source, error);
 
 			/**
@@ -123,7 +123,7 @@ public class RegistrationItemProcessor implements ItemProcessor<InboundRegistrat
 		}
 
 		builder.status(NOTSTARTED).fileName(item.getFileName()).srcLanguagePref(item.getLanguagePreference().trim().toUpperCase())
-				.updatedDate(new Date()).srcDate(asOfDate.toString()).srcEmailAddress(item.getEmailAddress())
+				.updatedDate(new Date()).srcDate(item.getAsOfDate()).srcEmailAddress(item.getEmailAddress())
 				.emailStatus(
 						item.getEmailAddress() == null ? null : MasterProcessor.getSourceID(EMAIL_STATUS, VALID_EMAIL).getMasterId())
 				.emailAddressPref(item.getEmailPermission()).phonePref(item.getPhonePermission())
