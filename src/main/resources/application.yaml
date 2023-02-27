@@ -73,7 +73,7 @@ inbound:
 
 outbound:
   files:
-    dailycountreport: daily_count_report_YYYYMMDD.csv
+    dailycountreport: pcam_daily_count_report_YYYYMMDD.csv
     complaintWeekly: LOYALTY_COMPLIANT_FILE_YYYYMMDD.csv.gz
     compliant: LOYALTY_DAILY_COMPLIANT.YYYYMMDD.txt.AXCOI.ZZAX
     internalCa: CA_COMPLIANT_FILE_YYYYMMDD.csv
@@ -150,4 +150,4 @@ logging:
       hibernate: ERROR
       springframework: ERROR
 
-version: PCAM-Source type issue logs
+version: PCAM-Existing email in the database
