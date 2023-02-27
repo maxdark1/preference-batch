@@ -80,6 +80,12 @@ public class ExactTargetEmailProcessor implements ItemProcessor<EmailOptOuts, Fi
 			counter.date = this.fileDate.toString();
 			counters.add(counter);
 		}
+		if(counters.size() < 1){
+			counter = new Counters(0, 0, 0);
+			counter.fileName = this.fileName;
+			counter.date = this.fileDate.toString();
+			counters.add(counter);
+		}
 
 		count++;
 		counters.get(fileIndex).quantityRecords++;

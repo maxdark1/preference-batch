@@ -93,12 +93,9 @@ public class StepErrorLoggingListener implements StepExecutionListener
 		log.info("Step Error Line 85: " + filesToMove.toString());
 		if (filesToMove != null && !filesToMove.isEmpty())
 		{
-			StringBuilder files = new StringBuilder();
-
+			StringBuilder files = new StringBuilder(" ");
 			filesToMove.forEach(file -> {
-				files.append(file.getFileName()).append(",");
 				log.info("StepError Line 89 File Item: " + file);
-				StorageException storageException = null;
 				boolean status = true;
 				String source = MasterProcessor.getValueVal(file.getSourceType());
 				log.info("StepError Line 93 get File Name: " + file.getFileName());
@@ -110,19 +107,17 @@ public class StepErrorLoggingListener implements StepExecutionListener
 				try
 				{
 					StorageApplicationGCS.moveObject(file.getFileName(), blobToCopy, blobWhereToCopy);
+					files.append(file.getFileName()).append(",");
 				}
 				catch (StorageException e)
 				{
 					status = false;
 					log.error(" PREFERENCE BATCH ERROR - Error has occurred trying to move file {} : {}", file.getFileName(),
 							e.getMessage());
-					storageException = e;
 				}
 
 				Master fileStatus = MasterProcessor.getSourceID(STATUS_STR, status ? VALID : INVALID);
 				fileService.updateFileEndTime(file.getFileId(), new Date(), INSERTEDBY, new Date(), fileStatus);
-				if (storageException != null)
-					throw storageException;
 			});
 			jobListener.setFiles(files.substring(0, files.toString().length() - 1));
 		}
