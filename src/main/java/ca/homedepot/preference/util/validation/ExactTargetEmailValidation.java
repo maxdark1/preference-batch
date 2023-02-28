@@ -131,7 +131,7 @@ public class ExactTargetEmailValidation
 					invalid = true;
 			}
 			if (invalid)
-				throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
+				throw new ValidationException(" Invalid header {} : " + Arrays.toString(header));
 		};
 	}
 }
