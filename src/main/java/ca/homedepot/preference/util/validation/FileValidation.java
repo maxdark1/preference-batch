@@ -121,10 +121,13 @@ public class FileValidation
 			String converted = null;
 			for (int i = 0; i < header.length; i++)
 			{
-				try {
+				try
+				{
 					byte[] toConvert = header[i].getBytes(encoding);
 					converted = new String(toConvert, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
+				}
+				catch (UnsupportedEncodingException e)
+				{
 					throw new RuntimeException(e);
 				}
 				if (converted.contains(headerFile[i]))
