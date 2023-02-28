@@ -109,7 +109,7 @@ public class StorageApplicationGCS
 		{
 			String encoding = getEncoding(resourcesGCS.get(0));
 			log.error("FILE-ENCODING: " + encoding);
-			for (int i = 0; i <= resourcesGCS.size(); i++)
+			for (int i = 0; i < resourcesGCS.size(); i++)
 			{
 				if (!encoding.equals(getEncoding(resourcesGCS.get(i))))
 				{
