@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
+import java.io.UnsupportedEncodingException;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -117,15 +118,25 @@ public class FileValidation
 		return line -> {
 			boolean invalid = false;
 			String[] header = line.split(DELIMITER_TAB);
+			String converted = null;
 			for (int i = 0; i < header.length; i++)
 			{
-				if (!header[i].contains(headerFile[i]))
+				try
+				{
+					byte[] toConvert = header[i].getBytes(encoding);
+					converted = new String(toConvert, "UTF-8");
+				}
+				catch (UnsupportedEncodingException e)
+				{
+					throw new RuntimeException(e);
+				}
+				if (converted.contains(headerFile[i]))
 				{
 					invalid = true;
 				}
 			}
 			if (invalid)
-				throw new ValidationException(" Invalid header {}: " + Arrays.toString(header));
+				throw new ValidationException(" Invalid header {} : " + Arrays.toString(header));
 		};
 	}
 
