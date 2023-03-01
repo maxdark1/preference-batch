@@ -117,20 +117,23 @@ public class FileValidation
 	{
 		return line -> {
 			boolean invalid = false;
-			String[] header = line.split(DELIMITER_TAB);
+			String[] header = line.split(separator);
 			String converted = null;
 			for (int i = 0; i < header.length; i++)
 			{
-				try
-				{
-					byte[] toConvert = header[i].getBytes(encoding);
-					converted = new String(toConvert, "UTF-8");
+				if(encoding != "UTF-8") {
+					try {
+						byte[] toConvert = header[i].getBytes(encoding);
+						converted = new String(toConvert, "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						throw new RuntimeException(e);
+					}
 				}
-				catch (UnsupportedEncodingException e)
-				{
-					throw new RuntimeException(e);
+				else {
+					converted = header[i];
 				}
-				if (converted.contains(headerFile[i]))
+
+				if (converted.contains(headerFile[i] + "."))
 				{
 					invalid = true;
 				}

@@ -274,7 +274,7 @@ class SchedulerConfigTest
 	{
 		schedulerConfig.hybrisCrmRegistrationFile = "OPTIN_STANDARD_FLEX_YYYYMMDD";
 		assertNotNull(schedulerConfig);
-		assertNotNull(schedulerConfig.inboundFileReader());
+		assertNotNull(schedulerConfig.inboundFileReader("UTF-8"));
 	}
 
 	@Test
