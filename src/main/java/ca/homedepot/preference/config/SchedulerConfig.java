@@ -717,7 +717,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 		log.info("Bucket Path: Source:" + source + " Directory: " + directory);
 		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(source, directory));
-		multiReaderResourceInbound.setDelegate(inboundFileReader());
+		multiReaderResourceInbound.setDelegate(inboundFileReader(StorageApplicationGCS.Encoding));
 		multiReaderResourceInbound.setStrict(false);
 		return multiReaderResourceInbound;
 	}
@@ -759,15 +759,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 */
 	@StepScope
-	public FlatFileItemReader<InboundRegistration> inboundFileReader()
+	public FlatFileItemReader<InboundRegistration> inboundFileReader(String encoding)
 	{
 		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
 				.lineTokenizer(lineTokenizer(SINGLE_PIPE, InboundValidator.FIELD_OBJ_NAMES_INBOUND_REGISTRATION))
 				.targetType(InboundRegistration.class).linesToSkip(1)
 				/* Validation file's header */
 				.skippedLinesCallback(
-						FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, DELIMITER_PIPELINE, ""))
-				.build();
+						FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, DELIMITER_PIPELINE, encoding))
+				.encoding(encoding).build();
 	}
 
 	/**
