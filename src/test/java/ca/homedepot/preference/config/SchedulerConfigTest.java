@@ -588,7 +588,7 @@ class SchedulerConfigTest
 		Mockito.when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
-		assertNotNull(schedulerConfig.citiSuppresionDBReaderFileWriterStep2());
+		assertNotNull(schedulerConfig.citiSuppresionDBReaderFileWriterStep2(new ArrayList<>()));
 	}
 
 	@Test
