@@ -87,6 +87,13 @@ public class PreferenceServiceImpl implements PreferenceService
 		return preferenceRegistrationClient.registrationLayoutB(items);
 	}
 
+	@Override
+	public RegistrationResponse sendEmail(EmailNotificationRequest email)
+	{
+		log.error("PREFERENCE-BATCH-LOG: Calling Notification Email Endpoint");
+		return preferenceRegistrationClient.sendEmail(email);
+	}
+
 
 	/**
 	 * Inserts on persistence job information
@@ -140,6 +147,15 @@ public class PreferenceServiceImpl implements PreferenceService
 	public int purgeStagingTableSuccessRecords()
 	{
 		return jdbcTemplate.update(SqlQueriesConstants.SQL_PURGE_SUCCESS_STG_TABLE, SUCCESS);
+	}
+
+	@Override
+	public int saveNotificationEvent(String filaName, String Quantity, String loaded, String failed, String sourceName,
+			String type, String insertedBy)
+	{
+		jdbcTemplate.update(SqlQueriesConstants.SQL_INSERT_NOTIFICATION, filaName, Quantity, loaded, failed, sourceName, type,
+				insertedBy);
+		return jdbcTemplate.queryForObject(SqlQueriesConstants.SQL_GET_NOTIFICATION_ID, Integer.class);
 	}
 
 

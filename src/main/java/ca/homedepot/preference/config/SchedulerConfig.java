@@ -16,6 +16,7 @@ import ca.homedepot.preference.read.MultiResourceItemReaderInbound;
 import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
+import ca.homedepot.preference.service.PreferenceService;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.CloudStorageUtils;
@@ -49,6 +50,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -57,6 +59,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,7 +68,6 @@ import java.util.Map;
 import static ca.homedepot.preference.constants.PreferenceBatchConstants.*;
 import static ca.homedepot.preference.constants.SchedulerConfigConstants.*;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
-import static ca.homedepot.preference.writer.GSFileWriterOutbound.createFileOnGCS;
 
 
 /**
@@ -394,6 +396,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private String version;
 
 	@Autowired
+	private PreferenceService service;
+
+	@Autowired
+	private Environment env;
+
+	@Autowired
 	public void setUpListener()
 	{
 		jobListener.setPreferenceService(batchTasklet.getPreferenceService());
@@ -471,7 +479,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(SOURCE, HYBRIS).addString("job_name", JOB_NAME_REGISTRATION_INBOUND).toJobParameters();
 		List<Counters> counters = new ArrayList<>();
 		JobExecution execution = jobLauncher.run(registrationHybrisInbound(counters), param);
-		createEmailFile(counters, "hybrids_inbound_email_");
+		createEmailFile(counters, HYBRIS);
 		log.info("Registration Inbound Hybris finished with status :" + execution.getStatus());
 	}
 
@@ -495,7 +503,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_STR, JOB_NAME_REGISTRATION_CRM_INBOUND).toJobParameters();
 		List<Counters> counters = new ArrayList<>();
 		JobExecution execution = jobLauncher.run(registrationCRMInbound(counters), param);
-		createEmailFile(counters, "crm_inbound_email_");
 		log.info("Registration Inbound CRM finished with status :" + execution.getStatus());
 	}
 
@@ -519,7 +526,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_STR, JOB_NAME_REGISTRATION_FBSFMC_INBOUND).toJobParameters();
 		List<Counters> counters = new ArrayList<>();
 		JobExecution execution = jobLauncher.run(registrationFBSFMCGardenClubInbound(counters), param);
-		createEmailFile(counters, "fbsfmc_inbound_email_");
 		log.info("Registration Inbound FB-SFMC finished with status :" + execution.getStatus());
 	}
 
@@ -543,7 +549,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_STR, JOB_NAME_EXTACT_TARGET_EMAIL).toJobParameters();
 		List<Counters> counters = new ArrayList<>();
 		JobExecution execution = jobLauncher.run(sfmcOptOutsEmailOutlookClient(counters), param);
-		createEmailFile(counters, "sfmc_inbound_email_");
+		createEmailFile(counters, SFMC);
 		log.info("Ingest SFMC Opt-Outs Job finished with status :" + execution.getStatus());
 	}
 
@@ -563,7 +569,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString(JOB_STR, JOB_NAME_SEND_PREFERENCES_TO_CRM).toJobParameters();
 		List<Counters> counters = new ArrayList<>();
 		JobExecution execution = jobLauncher.run(crmSendPreferencesToCRM(counters), param);
-		createEmailFileOutbound(counters, "crm_outbound_email_");
+		createEmailFileOutbound(counters, CRM);
 		log.info(" Send Preferences To CRM Job finished with status : " + execution.getStatus());
 	}
 
@@ -610,7 +616,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		JobParameters param = new JobParametersBuilder()
 				.addString(JOB_NAME_CITI_SUPPRESION, String.valueOf(System.currentTimeMillis()))
 				.addString(JOB_STR, JOB_NAME_CITI_SUPPRESION).toJobParameters();
-		JobExecution execution = jobLauncher.run(sendCitiSuppresionToCiti(), param);
+		List<Counters> counters = new ArrayList<>();
+		JobExecution execution = jobLauncher.run(sendCitiSuppresionToCiti(counters), param);
+		createEmailFileOutbound(counters, "citi");
 		log.info(" Send Citi Suppresion file to source finished with status : " + execution.getStatus());
 	}
 
@@ -640,7 +648,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString("job_name", JOB_NAME_SALESFORCE_EXTRACT).toJobParameters();
 		List<Counters> counters = new ArrayList<>();
 		JobExecution execution = jobLauncher.run(sendPreferencesToSMFC(counters), param);
-		createEmailFileOutbound(counters, "sfmc_outbound_email_");
+		createEmailFileOutbound(counters, SFMC);
 		log.info(" Send Email Marketing Preferences To SMFC Job finished with status: {} ", execution.getStatus());
 	}
 
@@ -665,31 +673,93 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * Read inbound files
 	 */
 
-	public void createEmailFile(List<Counters> counters, String fileName)
+	public void createEmailFile(List<Counters> counters, String processName)
 	{
-		StringBuilder report = new StringBuilder();
-		report.append("File Name|File Date|Total Quantity|Quantity Loaded|Quantity Failed\n");
+		String emails = env.getProperty("notification.inbound." + processName + ".email") != null ? env.getProperty("notification.inbound." + processName + ".email") : "";
+		String names = env.getProperty("notification.inbound." + processName + ".name") != null ? env.getProperty("notification.inbound." + processName + ".name") : "";
+		String[] result = getEmails(emails, names);
+		String subject = env.getProperty("notification.inbound." + processName + ".subject") != null ? env.getProperty("notification.inbound." + processName + ".subject") : "";
+		String fromEmail = env.getProperty("notification.inbound." + processName + ".fromEmail") != null ? env.getProperty("notification.inbound." + processName + ".fromEmail") : "";
+		String eventName = env.getProperty("notification.inbound." + processName + ".eventName") != null ? env.getProperty("notification.inbound." + processName + ".eventName") : "";
+		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition") != null ? env.getProperty("notification.inbound." + processName + ".eventDefinition") : "";
+		String systemSource = env.getProperty("notification.inbound." + processName + ".source") != null ? env.getProperty("notification.inbound." + processName + ".source") : "";
 		for (Counters counter : counters)
 		{
-			report.append(counter.fileName + "|" + counter.date + "|" + counter.quantityRecords + "|" + counter.quantityLoaded + "|"
-					+ counter.quantityFailed + "\n");
+			for (String email : result)
+			{
+				EmailNotificationRequest notification = assemblyEmail(counter, email.split(",")[0], email.split(",")[1], processName,
+						"inbound", subject, fromEmail, eventName, localDef, systemSource);
+				service.sendEmail(notification);
+				log.error("PREFERENCE-BATCH-LOG: Notification Sended TO: " + email.split(",")[0]);
+			}
 		}
-		createFileOnGCS(CloudStorageUtils.generatePath(folderOutbound, fileName + new Date() + ".txt"), "emailGenerator",
-				report.toString().getBytes());
-		log.error("EMAIL FILE CREATED " + fileName + new Date());
 	}
 
-	public void createEmailFileOutbound(List<Counters> counters, String fileName)
+	public void createEmailFileOutbound(List<Counters> counters, String processName)
 	{
-		StringBuilder report = new StringBuilder();
-		report.append("File Name|File Date|Records Quantity\n");
+		String emails = env.getProperty("notification.outbound." + processName + ".email") != null ? env.getProperty("notification.outbound." + processName + ".email") : "";
+		String names = env.getProperty("notification.outbound." + processName + ".name") != null ? env.getProperty("notification.outbound." + processName + ".name") : "";
+		String[] result = getEmails(emails, names);
+		String subject = env.getProperty("notification.outbound." + processName + ".subject") != null ? env.getProperty("notification.outbound." + processName + ".subject") : "";
+		String fromEmail = env.getProperty("notification.outbound." + processName + ".fromEmail") != null ? env.getProperty("notification.outbound." + processName + ".fromEmail") : "";
+		String eventName = env.getProperty("notification.outbound." + processName + ".eventName") != null ? env.getProperty("notification.outbound." + processName + ".eventName") : "";
+		String localDef = env.getProperty("notification.outbound." + processName + ".eventDefinition") != null ? env.getProperty("notification.outbound." + processName + ".eventDefinition") : "";
+		String systemSource = env.getProperty("notification.outbound." + processName + ".source") != null ? env.getProperty("notification.outbound." + processName + ".source") : "";
 		for (Counters counter : counters)
 		{
-			report.append(counter.fileName + "|" + counter.date + "|" + counter.quantityRecords + "\n");
+			for (String email : result)
+			{
+				EmailNotificationRequest notification = assemblyEmail(counter, email.split(",")[0], email.split(",")[1], processName,
+						"outbound", subject, fromEmail, eventName, localDef, systemSource);
+				service.sendEmail(notification);
+				log.error("PREFERENCE-BATCH-LOG: Notification Sended TO: " + email.split(",")[0]);
+			}
 		}
-		createFileOnGCS(CloudStorageUtils.generatePath(folderOutbound, fileName + new Date() + ".txt"), "emailGenerator",
-				report.toString().getBytes());
-		log.error("EMAIL FILE CREATED " + fileName + new Date());
+	}
+
+	public String[] getEmails(String emails, String names)
+	{
+		String[] result;
+		String[] splittedEmails = emails.split(",");
+		String[] splittedNames = names.split(",");
+		result = new String[splittedEmails.length];
+		for (int i = 0; i < splittedEmails.length; i++)
+		{
+			result[i] = splittedEmails[i] + "," + splittedNames[i];
+		}
+		return result;
+	}
+
+	public EmailNotificationRequest assemblyEmail(Counters counter, String email, String name, String Source, String type,
+			String subject, String fromEmail, String eventName, String localDefinition, String systemSource)
+	{
+		EmailNotificationRequest notification = new EmailNotificationRequest();
+		EmailNotificationTo to = new EmailNotificationTo();
+		to.setEmail(email);
+		to.setName(name);
+		List<EmailNotificationTo> toList = new ArrayList<EmailNotificationTo>();
+		toList.add(to);
+		EmailNotificationMessageBody body = new EmailNotificationMessageBody();
+		body.setFileName(counter.fileName);
+		body.setEventDate(new Date().toString());
+		SimpleDateFormat formatter = new SimpleDateFormat("kk:mm:ss");
+		body.setEventTime(formatter.format(new Date()));
+		body.setQuantityInFile(String.valueOf(counter.quantityRecords));
+		body.setQuantityFailed(String.valueOf(counter.quantityFailed));
+		body.setQuantityLoaded(String.valueOf(counter.quantityLoaded));
+		body.setSourceName(Source);
+		notification.setTo(toList);
+
+		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(), body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
+		notification.setEmailSubject(subject);
+		notification.setFromEmail(fromEmail);
+		notification.setEventId(id.toString());
+		notification.setEventName(eventName);
+		notification.setLocalEventDefinitionId(localDefinition);
+		notification.setSourceSystemId(systemSource);
+		notification.setMessageBody(body);
+
+		return notification;
 	}
 
 	/**
@@ -943,7 +1013,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@JobScope
 	@StepScope
-	public FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter()
+	public FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter(List<Counters> counters)
 	{
 
 		GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new GSFileWriterOutbound<>();
@@ -956,8 +1026,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
 		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
 		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
-		citiSupressionFileWriter.setCounters(new ArrayList<>());
 		citiSupressionFileWriter.setResource();
+		citiSupressionFileWriter.setCounters(counters);
 		jobListener.setFiles(citiSupressionFileWriter.getFileName());
 
 		return citiSupressionFileWriter;
@@ -1212,10 +1282,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Jon
 	 */
-	public Job sendCitiSuppresionToCiti()
+	public Job sendCitiSuppresionToCiti(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_CITI_SUPPRESION).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(citiSuppresionDBReaderStep1()).on(COMPLETED_STATUS).to(citiSuppresionDBReaderFileWriterStep2()).build()
+				.start(citiSuppresionDBReaderStep1()).on(COMPLETED_STATUS).to(citiSuppresionDBReaderFileWriterStep2(counters)).build()
 				.build();
 	}
 
@@ -1431,11 +1501,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Step 2 for citi suppresion
 	 */
 	@JobScope
-	public Step citiSuppresionDBReaderFileWriterStep2()
+	public Step citiSuppresionDBReaderFileWriterStep2(List<Counters> counters)
 	{
 		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
-				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter()).build();
+				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter(counters)).build();
 	}
 
 	/**
