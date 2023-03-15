@@ -6,11 +6,11 @@ import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
 import java.io.UnsupportedEncodingException;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.FB_SFMC;
+import static ca.homedepot.preference.constants.SourceDelimitersConstants.SFMC;
 
 @Slf4j
 @UtilityClass
@@ -121,16 +121,21 @@ public class FileValidation
 			String converted = null;
 			for (int i = 0; i < header.length; i++)
 			{
-				if(encoding != "UTF-8") {
-					try {
+				if (encoding != "UTF-8")
+				{
+					try
+					{
 						byte[] toConvert = header[i].getBytes(encoding);
 						converted = new String(toConvert, "UTF-8");
-					} catch (UnsupportedEncodingException e) {
+					}
+					catch (UnsupportedEncodingException e)
+					{
 						throw new RuntimeException(e);
 					}
 				}
-				else {
-					converted = header[i];
+				else
+				{
+					converted = header[i] + ".";
 				}
 
 				if (converted.contains(headerFile[i] + "."))

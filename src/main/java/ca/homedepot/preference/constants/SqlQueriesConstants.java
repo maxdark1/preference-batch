@@ -135,4 +135,10 @@ public final class SqlQueriesConstants
 
 	public static final String SQL_PURGE_SUCCESS_STG_TABLE = "DELETE FROM hdpc_file_inbound_stg WHERE status = ?;";
 
+	public static final String SQL_INSERT_NOTIFICATION = "INSERT INTO pcam.hdpc_email_notification(\n"
+			+ "\t file_name, quantity_in_file, quantity_loaded, quantity_failed, source_name, type_file, inserted_date, inserted_by)\n"
+			+ "\tVALUES (?, ?, ?, ?, ?, ?, current_date, ?);";
+
+	public static final String SQL_GET_NOTIFICATION_ID = "select max(event_id) from pcam.hdpc_email_notification;";
+
 }
