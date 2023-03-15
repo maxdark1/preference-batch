@@ -12,6 +12,7 @@ import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.validation.InboundValidator;
@@ -39,6 +40,8 @@ import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.validator.ValidationException;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
@@ -57,8 +60,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-
-
+@TestPropertySource(locations = {"/resources/application.yaml"})
 class SchedulerConfigTest
 {
 	@Mock
@@ -166,6 +168,12 @@ class SchedulerConfigTest
 	@InjectMocks
 	@Spy
 	GSFileWriterOutbound<CitiSuppresionOutboundDTO> gsFileWriterOutbound;
+
+	@Mock
+	Environment env;
+
+	@Mock
+	PreferenceServiceImpl service;
 
 
 	private void setFinalStaticField(Class<?> clazz, String fieldName, Object value)
@@ -827,4 +835,36 @@ class SchedulerConfigTest
 	}
 
 
+	@Test
+
+	void testCreateEmailFile() {
+		List<Counters> counters = new ArrayList<>();
+		Counters counter = new Counters(10,10,0);
+		counter.fileName = "fileName";
+		counters.add(counter);
+		env = mock(Environment.class);
+		when(env.getProperty("notification.inbound.hybris.email")).thenReturn("juan.lara@homedepot.com");
+		when(env.getProperty("notification.inbound.hybris.name")).thenReturn("Juan Lara");
+		schedulerConfig.setEnv(env);
+		schedulerConfig.setService(service);
+		when(service.saveNotificationEvent("","","","","","","")).thenReturn(1);
+		schedulerConfig.createEmailFile(counters,"hybris");
+		assertNotNull(counters);
+	}
+
+	@Test
+	void testCreateEmailFileOutbound() {
+		List<Counters> counters = new ArrayList<>();
+		Counters counter = new Counters(10,10,0);
+		counter.fileName = "fileName";
+		counters.add(counter);
+		env = mock(Environment.class);
+		when(env.getProperty("notification.outbound.SFMC.email")).thenReturn("juan.lara@homedepot.com");
+		when(env.getProperty("notification.outbound.SFMC.name")).thenReturn("Juan Lara");
+		schedulerConfig.setEnv(env);
+		schedulerConfig.setService(service);
+		when(service.saveNotificationEvent("","","","","","","")).thenReturn(1);
+		schedulerConfig.createEmailFileOutbound(counters,"SFMC");
+		assertNotNull(counters);
+	}
 }

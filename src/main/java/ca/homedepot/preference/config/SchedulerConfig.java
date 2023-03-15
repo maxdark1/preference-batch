@@ -648,7 +648,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.addString("job_name", JOB_NAME_SALESFORCE_EXTRACT).toJobParameters();
 		List<Counters> counters = new ArrayList<>();
 		JobExecution execution = jobLauncher.run(sendPreferencesToSMFC(counters), param);
-		createEmailFileOutbound(counters, "sfmc_outbound_email_");
+		createEmailFileOutbound(counters, SFMC);
 		log.info(" Send Email Marketing Preferences To SMFC Job finished with status: {} ", execution.getStatus());
 	}
 
@@ -675,14 +675,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public void createEmailFile(List<Counters> counters, String processName)
 	{
-		String emails = env.getProperty("notification.inbound." + processName + ".email");
-		String names = env.getProperty("notification.inbound." + processName + ".name");
+		String emails = env.getProperty("notification.inbound." + processName + ".email") != null ? env.getProperty("notification.inbound." + processName + ".email") : "";
+		String names = env.getProperty("notification.inbound." + processName + ".name") != null ? env.getProperty("notification.inbound." + processName + ".name") : "";
 		String[] result = getEmails(emails, names);
-		String subject = env.getProperty("notification.inbound." + processName + ".subject");
-		String fromEmail = env.getProperty("notification.inbound." + processName + ".fromEmail");
-		String eventName = env.getProperty("notification.inbound." + processName + ".eventName");
-		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition");
-		String systemSource = env.getProperty("notification.inbound." + processName + ".source");
+		String subject = env.getProperty("notification.inbound." + processName + ".subject") != null ? env.getProperty("notification.inbound." + processName + ".subject") : "";
+		String fromEmail = env.getProperty("notification.inbound." + processName + ".fromEmail") != null ? env.getProperty("notification.inbound." + processName + ".fromEmail") : "";
+		String eventName = env.getProperty("notification.inbound." + processName + ".eventName") != null ? env.getProperty("notification.inbound." + processName + ".eventName") : "";
+		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition") != null ? env.getProperty("notification.inbound." + processName + ".eventDefinition") : "";
+		String systemSource = env.getProperty("notification.inbound." + processName + ".source") != null ? env.getProperty("notification.inbound." + processName + ".source") : "";
 		for (Counters counter : counters)
 		{
 			for (String email : result)
@@ -697,14 +697,14 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public void createEmailFileOutbound(List<Counters> counters, String processName)
 	{
-		String emails = env.getProperty("notification.outbound." + processName + ".email");
-		String names = env.getProperty("notification.outbound." + processName + ".name");
+		String emails = env.getProperty("notification.outbound." + processName + ".email") != null ? env.getProperty("notification.outbound." + processName + ".email") : "";
+		String names = env.getProperty("notification.outbound." + processName + ".name") != null ? env.getProperty("notification.outbound." + processName + ".name") : "";
 		String[] result = getEmails(emails, names);
-		String subject = env.getProperty("notification.outbound." + processName + ".subject");
-		String fromEmail = env.getProperty("notification.outbound." + processName + ".fromEmail");
-		String eventName = env.getProperty("notification.outbound." + processName + ".eventName");
-		String localDef = env.getProperty("notification.outbound." + processName + ".eventDefinition");
-		String systemSource = env.getProperty("notification.outbound." + processName + ".source");
+		String subject = env.getProperty("notification.outbound." + processName + ".subject") != null ? env.getProperty("notification.outbound." + processName + ".subject") : "";
+		String fromEmail = env.getProperty("notification.outbound." + processName + ".fromEmail") != null ? env.getProperty("notification.outbound." + processName + ".fromEmail") : "";
+		String eventName = env.getProperty("notification.outbound." + processName + ".eventName") != null ? env.getProperty("notification.outbound." + processName + ".eventName") : "";
+		String localDef = env.getProperty("notification.outbound." + processName + ".eventDefinition") != null ? env.getProperty("notification.outbound." + processName + ".eventDefinition") : "";
+		String systemSource = env.getProperty("notification.outbound." + processName + ".source") != null ? env.getProperty("notification.outbound." + processName + ".source") : "";
 		for (Counters counter : counters)
 		{
 			for (String email : result)
@@ -750,8 +750,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		body.setSourceName(Source);
 		notification.setTo(toList);
 
-		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(),
-				body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
+		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(), body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
 		notification.setEmailSubject(subject);
 		notification.setFromEmail(fromEmail);
 		notification.setEventId(id.toString());
