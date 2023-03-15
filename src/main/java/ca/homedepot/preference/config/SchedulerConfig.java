@@ -740,6 +740,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		List<EmailNotificationTo> toList = new ArrayList<EmailNotificationTo>();
 		toList.add(to);
 		EmailNotificationMessageBody body = new EmailNotificationMessageBody();
+		if(counter.fileName != null && !counter.fileName.isEmpty())
+		      counter.fileName = counter.fileName.substring(counter.fileName.lastIndexOf("/")+1);
 		body.setFileName(counter.fileName);
 		body.setEventDate(new Date().toString());
 		SimpleDateFormat formatter = new SimpleDateFormat("kk:mm:ss");
