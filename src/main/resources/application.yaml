@@ -150,7 +150,7 @@ logging:
       hibernate: ERROR
       springframework: ERROR
 
-version: PCAM-Solving Header Issue in SFMC
+version: PCAM-Additions to pcam daily count report
 
 notification:
   inbound:
