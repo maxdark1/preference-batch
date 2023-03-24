@@ -2,12 +2,12 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
     password:
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: public
+      schema: pcam
   batch:
     job:
       enabled: false
@@ -42,12 +42,12 @@ spring:
 #      enabled: false
 cron:
   job:
-    hybrisIngestion: 0 45 9 * * ?
+    hybrisIngestion: 0 30 22 * * ?
     crmIngestion: 0 30 22 * * ?
     fbsfmcIngestion: 0 0 3 * * ?
-    ingestSFMCOutlookUnsubscribed: 0 20 2 ? * FRI
-    sendPreferencesToCRM: 0 0 18 * * ?
-    sendPreferencesToCitiSuppresion: 0 40 17 ? * SUN
+    ingestSFMCOutlookUnsubscribed: 0 30 22 * * ?
+    sendPreferencesToCRM: 0 30 22 * * ?
+    sendPreferencesToCitiSuppresion: 30 * * * * *
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
     sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
@@ -111,7 +111,7 @@ folders:
     path:
 
 validation:
-  extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT
+  extension: .txt.AXOSTD|.TXT.THD.txt.gpg|.pgp|.txt|.TXT|.TXT.THD.txt|.THD
   email: ^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$
 
 preference:
@@ -150,4 +150,44 @@ logging:
       hibernate: ERROR
       springframework: ERROR
 
-version: PCAM-Solving Header Issue in SFMC
+version: PCAM-Additions to pcam daily count report
+
+notification:
+  inbound:
+    hybris:
+      email: HDCA_online_operations@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
+      name: HDCA Operations,Shirin Khoja,Jennifer Luo,Abida Savani
+      subject: Hybrids Inbound Notification Email
+      fromEmail: No-reply@homedepot.com
+      eventName: hybridsNotification
+      eventDefinition: pcamNotification
+      source: pcam
+    SFMC:
+      email: nishi_bagaria@homedepot.com,VENKATA_SESHA_SAI_BHARATH_MANNAVA@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
+      name: Nishi Bagaria,Venkata Mannava,Shirin Khoja,Jennifer Luo,Abida Savani
+      subject: SFMC Inbound Notification Email
+      fromEmail: No-reply@homedepot.com
+      eventName: hybridsNotification
+      eventDefinition: pcamNotification
+  outbound:
+    CRM:
+      email: biravi_sivanesan@homedepot.com,ashley_d_rosenberg@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
+      name: Biravi Sivanesan,Ashley Rosenberg,Shirin Khoja,Jennifer Luo,Abida Savani
+      subject: CRM Outbound Notification Email
+      fromEmail: No-reply@homedepot.com
+      eventName: hybridsNotification
+      eventDefinition: pcamNotification
+    SFMC:
+      email: nishi_bagaria@homedepot.com,VENKATA_SESHA_SAI_BHARATH_MANNAVA@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
+      name: Nishi Bagaria,Venkata Mannava,Shirin Khoja,Jennifer Luo,Abida Savani
+      subject: SFMC Outbound Notification Email
+      fromEmail: No-reply@homedepot.com
+      eventName: hybridsNotification
+      eventDefinition: pcamNotification
+    citi:
+      email: crs.nam.cards.canada.it@citi.com,nelson.olarte@citi.com,maria.scott@citi.com,sengodi.selvi.d@citi.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
+      name: Canada Citi,Nelson Olarte,Maria Scott,Sengodi Selvi,Shirin Khoja,Jennifer Luo,Abida Savani
+      subject: Citi Outbound Notification Email
+      fromEmail: No-reply@homedepot.com
+      eventName: hybridsNotification
+      eventDefinition: pcamNotification

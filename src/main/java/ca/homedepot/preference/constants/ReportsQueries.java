@@ -3,10 +3,26 @@ package ca.homedepot.preference.constants;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ReportsQueries
-{
+public class ReportsQueries {
 
-	public static String DAILY_COUNT_REPORT_EMAIL_PREFERENCES_QUERY = "SELECT *, '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM (\n"
+	public static String DAILY_COUNT_REPORT_EMAIL_PREFERENCES_QUERY = "\n" +
+			"SELECT 'Most recent files' as \"1\",'' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n" +
+			"UNION ALL\n" +
+			"SELECT 'Filename(Inbounds)' as \"1\",'# of records' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n" +
+			"UNION ALL\n" +
+			"SELECT file_name as \"1\", quantity_loaded as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM hdpc_email_notification\n" +
+			"WHERE (type_file like '%INBOUND%' OR type_file like '%inbound%')\n" +
+			"\t\tAND CAST(inserted_date as DATE) >= CAST(now() - '7 day'::INTERVAL as DATE) \n" +
+			"UNION ALL\n" +
+			"SELECT 'Filename(Outbounds)' as \"1\",'# of records' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n" +
+			"UNION ALL\n" +
+			"SELECT file_name as \"1\", quantity_loaded as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM hdpc_email_notification\n" +
+			"WHERE (type_file like '%OUTBOUND%' OR type_file like '%outbound%')\n" +
+			"       AND CAST(inserted_date as DATE) >= CAST(now() - '7 day'::INTERVAL as DATE) \n" +
+			"UNION ALL\n"
+			+ "SELECT '' as \"1\", '' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n"
+			+ "UNION ALL \n"
+			+ "SELECT *, '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM (\n"
 			+ "\t(SELECT 'SOURCE FILE EMAILS LOADED' as \"1\", ' ' as \"2\")\n" + "\tUNION ALL\n"
 			+ "\t(SELECT to_char(CAST(custem.updated_date as date), 'YYYYMMDD') as \"1\" , CAST(COUNT(*) as VARCHAR)  as \"2\" \n"
 			+ "\tFROM hdpc_customer customer\n"
@@ -42,9 +58,9 @@ public class ReportsQueries
 			+ "\t  SUM(CASE WHEN(permission_val is NULL) THEN 1 ELSE 0 END) as U\n" + "\tFROM hdpc_customer_preference custp\n"
 			+ "\tGROUP BY preference_type, CAST(custp.opt_in_date as DATE)\n" + "ORDER BY CAST(custp.opt_in_date as DATE) DESC),\n"
 			+ "sum_thd_compliant as \n" + "(SELECT CAST(custem.effective_date as DATE) as compliant_date,\n"
-			+ " COUNT(CASE WHEN custem.email_id IS NOT NULL AND custem.permission_val AND old_id = 0 THEN 1 END) as THD_Y,\n"
+			+ " COUNT(CASE WHEN custem.email_id IS NOT NULL AND (custem.permission_val OR old_id = 0) THEN 1 END) as THD_Y,\n"
 			+ " COUNT(CASE WHEN custem.email_id IS NOT NULL AND (custem.permission_val = false OR old_id != 0) THEN 1 END) as THD_N,\n"
-			+ " COUNT(CASE WHEN custem.email_id IS NULL THEN 1 END) as THD_U\n" + " FROM hdpc_customer custom\n"
+			+ " COUNT(CASE WHEN custem.permission_val IS NULL THEN 1 END) as THD_U\n" + " FROM hdpc_customer custom\n"
 			+ "LEFT JOIN hdpc_customer_email custem ON custem.customer_id = custom.customer_id\n"
 			+ "LEFT JOIN hdpc_email email ON email.email_id = custem.email_id\n"
 			+ "LEFT JOIN hdpc_master_id_rel idrel ON idrel.pcam_id = email.status_id\n"

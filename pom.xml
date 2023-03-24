@@ -287,6 +287,7 @@
                         <GOOGLE_CLOUD_PROJECT>test-project</GOOGLE_CLOUD_PROJECT>
                     </environmentVariables>
                     <reuseForks>false</reuseForks>
+                    <argLine>-Xmx5024m</argLine>
                 </configuration>
             </plugin>
             <plugin>

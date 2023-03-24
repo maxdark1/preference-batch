@@ -10,9 +10,9 @@ import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.mozilla.universalchardet.UniversalDetector;
 import org.springframework.cloud.gcp.storage.GoogleStorageResource;
 import org.springframework.core.io.Resource;
-
 
 import java.io.IOException;
 import java.nio.channels.Channels;
@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.INVALID;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
-import org.mozilla.universalchardet.UniversalDetector;
 
 @UtilityClass
 @Slf4j
