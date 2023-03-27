@@ -70,4 +70,10 @@ public interface PreferenceService
 	 * @return true if service is available, false the other cawse
 	 */
 	Response isServiceAvailable();
+
+	RegistrationResponse sendEmail(EmailNotificationRequest email);
+
+	int saveNotificationEvent(String filaName, String Quantity, String loaded, String failed, String sourceName, String type,
+			String insertedBy);
+
 }

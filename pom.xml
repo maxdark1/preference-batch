@@ -249,6 +249,10 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <jvmArguments>
+                        -Xms512m
+                        -Xmx4g
+                    </jvmArguments>
                 </configuration>
             </plugin>
             <plugin>
