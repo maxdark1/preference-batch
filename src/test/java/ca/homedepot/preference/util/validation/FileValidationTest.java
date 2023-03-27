@@ -27,7 +27,7 @@ class FileValidationTest
 		{ "STUFF1", "STUFF2" }, "\\|", "UTF-8");
 
 		ValidationException exception = assertThrows(ValidationException.class,
-				() -> lineCallbackHandler.handleLine("STUFF1|STUFF2"));
+				() -> lineCallbackHandler.handleLine("STUFF1..|STUFF2.."));
 		assertTrue(exception.getMessage().contains("Invalid"));
 	}
 
