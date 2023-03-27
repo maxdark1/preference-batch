@@ -2,12 +2,12 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/preference-centre-db
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password:
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: pcam
+      schema: public
   batch:
     job:
       enabled: false
@@ -46,8 +46,8 @@ cron:
     crmIngestion: 0 30 22 * * ?
     fbsfmcIngestion: 0 0 3 * * ?
     ingestSFMCOutlookUnsubscribed: 0 30 22 * * ?
-    sendPreferencesToCRM: 0 30 22 * * ?
-    sendPreferencesToCitiSuppresion: 30 * * * * *
+    sendPreferencesToCRM: 0 0 18 * * ?
+    sendPreferencesToCitiSuppresion: 0 0 10 ? * MON
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
     sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
@@ -122,16 +122,28 @@ preference:
     layoutc:
       chunk: 10
     outboundCRM:
+      pageSize: 2
+      fetchSize: 2
       chunk: 10
     outboundCiti:
+      pageSize: 100
+      fetchSize: 100
       chunk: 20
     outboundInternal:
+      pageSize: 100
+      fetchSize: 100
       chunk: 20
     outboundSalesforce:
+      pageSize: 100
+      fetchSize: 100
       chunk: 20
     outboundLoyalty:
+      pageSize: 100
+      fetchSize: 100
       chunk: 20
     outboundFlexAttributes:
+      pageSize: 100
+      fetchSize: 100
       chunk: 20
     dailyCountReport:
       chunk: 5
@@ -144,11 +156,11 @@ gcp:
 
 logging:
   level:
-    ca.homedepot.preference: ERROR
-    root: ERROR
+    ca.homedepot.preference: INFO
+    root: INFO
     org:
-      hibernate: ERROR
-      springframework: ERROR
+      hibernate: INFO
+      springframework: INFO
 
 version: PCAM-Additions to pcam daily count report
 
