@@ -122,8 +122,8 @@ preference:
     layoutc:
       chunk: 10
     outboundCRM:
-      pageSize: 2
-      fetchSize: 2
+      pageSize: 100
+      fetchSize: 100
       chunk: 10
     outboundCiti:
       pageSize: 100
