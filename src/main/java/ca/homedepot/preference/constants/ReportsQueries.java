@@ -3,23 +3,22 @@ package ca.homedepot.preference.constants;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ReportsQueries {
+public class ReportsQueries
+{
 
-	public static String DAILY_COUNT_REPORT_EMAIL_PREFERENCES_QUERY = "\n" +
-			"SELECT 'Most recent files' as \"1\",'' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n" +
-			"UNION ALL\n" +
-			"SELECT 'Filename(Inbounds)' as \"1\",'# of records' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n" +
-			"UNION ALL\n" +
-			"SELECT file_name as \"1\", quantity_loaded as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM hdpc_email_notification\n" +
-			"WHERE (type_file like '%INBOUND%' OR type_file like '%inbound%')\n" +
-			"\t\tAND CAST(inserted_date as DATE) >= CAST(now() - '7 day'::INTERVAL as DATE) \n" +
-			"UNION ALL\n" +
-			"SELECT 'Filename(Outbounds)' as \"1\",'# of records' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n" +
-			"UNION ALL\n" +
-			"SELECT file_name as \"1\", quantity_loaded as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM hdpc_email_notification\n" +
-			"WHERE (type_file like '%OUTBOUND%' OR type_file like '%outbound%')\n" +
-			"       AND CAST(inserted_date as DATE) >= CAST(now() - '7 day'::INTERVAL as DATE) \n" +
-			"UNION ALL\n"
+	public static String DAILY_COUNT_REPORT_EMAIL_PREFERENCES_QUERY = "\n"
+			+ "SELECT 'Most recent files' as \"1\",'' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n"
+			+ "UNION ALL\n"
+			+ "SELECT 'Filename(Inbounds)' as \"1\",'# of records' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n"
+			+ "UNION ALL\n"
+			+ "SELECT file_name as \"1\", quantity_loaded as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM hdpc_email_notification\n"
+			+ "WHERE (type_file like '%INBOUND%' OR type_file like '%inbound%')\n"
+			+ "\t\tAND CAST(inserted_date as DATE) >= CAST(now() - '7 day'::INTERVAL as DATE) \n" + "UNION ALL\n"
+			+ "SELECT 'Filename(Outbounds)' as \"1\",'# of records' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n"
+			+ "UNION ALL\n"
+			+ "SELECT file_name as \"1\", quantity_loaded as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM hdpc_email_notification\n"
+			+ "WHERE (type_file like '%OUTBOUND%' OR type_file like '%outbound%')\n"
+			+ "       AND CAST(inserted_date as DATE) >= CAST(now() - '7 day'::INTERVAL as DATE) \n" + "UNION ALL\n"
 			+ "SELECT '' as \"1\", '' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n"
 			+ "UNION ALL \n"
 			+ "SELECT *, '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM (\n"
@@ -63,7 +62,7 @@ public class ReportsQueries {
 			+ " COUNT(CASE WHEN custem.permission_val IS NULL THEN 1 END) as THD_U\n" + " FROM hdpc_customer custom\n"
 			+ "LEFT JOIN hdpc_customer_email custem ON custem.customer_id = custom.customer_id\n"
 			+ "LEFT JOIN hdpc_email email ON email.email_id = custem.email_id\n"
-			+ "LEFT JOIN hdpc_master_id_rel idrel ON idrel.pcam_id = email.status_id\n"
+			+ "LEFT JOIN hdpc_master_id_rel idrel ON idrel.pcam_id = email.status_id\n" + "WHERE custem.active = true\n"
 			+ "GROUP BY CAST(custem.effective_date as DATE) )\n" + "SELECT to_char(d.count_date, 'YYYYMMDD') as count_date,\n"
 			+ "\t   SUM(compliant.THD_Y) as \"THD_Y\",\n"
 			+ "\t   SUM(compliant.THD_Y) - lag(SUM(compliant.THD_Y)) OVER (ORDER BY d.count_date) as \"DIFF_THD_Y\",\n"
@@ -97,7 +96,7 @@ public class ReportsQueries {
 			+ "\t   SUM(CASE WHEN(custp2.preference_type = 6) THEN custp2.U END) - lag(SUM(CASE WHEN(custp2.preference_type = 6) THEN custp2.U END)) OVER (ORDER BY d.count_date) as \"DIFF_CA_U\"\n"
 			+ "\t   \n" + "\t   \t   \n" + "FROM dates d\n" + "LEFT JOIN sum_pref custp2 ON d.count_date >= custp2.sum_date\n"
 			+ "LEFT JOIN sum_thd_compliant compliant ON d.count_date >= compliant.compliant_date\n" + "group by d.count_date\n"
-			+ "ORDER BY count_date DESC;\n";
+			+ "ORDER BY count_date DESC;";
 
 
 

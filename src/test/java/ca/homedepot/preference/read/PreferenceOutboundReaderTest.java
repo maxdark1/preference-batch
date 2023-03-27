@@ -1,6 +1,5 @@
 package ca.homedepot.preference.read;
 
-import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
 import ca.homedepot.preference.service.impl.OutboundServiceImpl;
@@ -8,11 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
 
 import javax.sql.DataSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PreferenceOutboundReaderTest
@@ -27,6 +24,8 @@ class PreferenceOutboundReaderTest
 	@Mock
 	OutboundServiceImpl outboundService;
 
+	@Mock
+	PagingAttributes pagingAttributes;
 	@InjectMocks
 	@Spy
 	private PreferenceOutboundReader preferenceOutboundReader;
@@ -34,7 +33,24 @@ class PreferenceOutboundReaderTest
 	@BeforeEach
 	void setup()
 	{
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
+
+		preferenceOutboundReader.setOutboundService(outboundService);
+		preferenceOutboundReader.setDataSource(dataSource);
+		pagingAttributes = new PagingAttributes();
+		preferenceOutboundReader.setPagingAttributes(pagingAttributes);
+		pagingAttributes.setPageSizeFlexAttributes(1);
+		pagingAttributes.setPageSizeCiti(1);
+		pagingAttributes.setPageSizeCRM(1);
+		pagingAttributes.setPageSizeSFMC(1);
+		pagingAttributes.setPageSizeInternal(1);
+		pagingAttributes.setPageSizeLoyalty(1);
+		pagingAttributes.setFetchSizeFlexAttributes(1);
+		pagingAttributes.setFetchSizeCRM(1);
+		pagingAttributes.setFetchSizeCiti(1);
+		pagingAttributes.setFetchSizeSFMC(1);
+		pagingAttributes.setFetchSizeInternal(1);
+		pagingAttributes.setFetchSizeLoyalty(1);
 	}
 
 	@Test
@@ -44,28 +60,28 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
-	void testOutboundDBReader()
+	void testOutboundDBReader() throws Exception
 	{
-		JdbcCursorItemReader<PreferenceOutboundDto> test = preferenceOutboundReader.outboundDBReader();
-		assertEquals(OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND, test.getSql());
+		ItemReader<PreferenceOutboundDto> test = preferenceOutboundReader.outboundDBReader();
+		assertNotNull(test);
 	}
 
 	@Test
-	void testOutboundCitiSuppresionDBReader()
+	void testOutboundCitiSuppresionDBReader() throws Exception
 	{
-		JdbcCursorItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundReader.outboundCitiSuppresionDBReader();
-		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1, test.getSql());
+		ItemReader<CitiSuppresionOutboundDTO> test = preferenceOutboundReader.outboundCitiSuppresionDBReader();
+		assertNotNull(test);
 	}
 
 	@Test
-	void testSalesforceExtractOutboundDBReader()
+	void testSalesforceExtractOutboundDBReader() throws Exception
 	{
-		JdbcCursorItemReader<SalesforceExtractOutboundDTO> test = preferenceOutboundReader.salesforceExtractOutboundDBReader();
-		assertEquals(OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND, test.getSql());
+		ItemReader<SalesforceExtractOutboundDTO> test = preferenceOutboundReader.salesforceExtractOutboundDBReader();
+		assertNotNull(test);
 	}
 
 	@Test
-	void testPurgeSalesForceExtract()
+	void testPurgeSalesForceExtract() throws Exception
 	{
 		Mockito.doNothing().when(preferenceOutboundReader).purgeSalesforceExtractTable();
 
@@ -74,7 +90,7 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
-	void testPurgeCitiSuppresionTable()
+	void testPurgeCitiSuppresionTable() throws Exception
 	{
 		Mockito.doNothing().when(preferenceOutboundReader).purgeCitiSuppresionTable();
 
@@ -83,15 +99,15 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
-	void testOutboundInternalDBReader()
+	void testOutboundInternalDBReader() throws Exception
 	{
-		JdbcCursorItemReader<InternalOutboundDto> test = (JdbcCursorItemReader<InternalOutboundDto>) preferenceOutboundReader
+		ItemReader<InternalOutboundDto> test = (ItemReader<InternalOutboundDto>) preferenceOutboundReader
 				.outboundInternalDBReader();
-		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION, test.getSql());
+		assertNotNull(test);
 	}
 
 	@Test
-	void testPurgeProgramCompliant()
+	void testPurgeProgramCompliant() throws Exception
 	{
 		Mockito.doNothing().when(preferenceOutboundReader).purgeProgramCompliant();
 
@@ -100,7 +116,7 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
-	void purgeLoyaltyComplaint()
+	void purgeLoyaltyComplaint() throws Exception
 	{
 		Mockito.doNothing().when(preferenceOutboundReader).purgeLoyaltyComplaint();
 
@@ -109,7 +125,7 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
-	void purgeFlexAttributes()
+	void purgeFlexAttributes() throws Exception
 	{
 		Mockito.doNothing().when(preferenceOutboundReader).purgeFlexAttributes();
 
@@ -118,27 +134,27 @@ class PreferenceOutboundReaderTest
 	}
 
 	@Test
-	void outboundLoyaltyComplaintWeekly()
+	void outboundLoyaltyComplaintWeekly() throws Exception
 	{
-		JdbcCursorItemReader<InternalOutboundDto> test = preferenceOutboundReader.outboundLoyaltyComplaintWeekly();
-		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION, test.getSql());
+		ItemReader<InternalOutboundDto> test = preferenceOutboundReader.outboundLoyaltyComplaintWeekly();
+		assertNotNull(test);
 	}
 
 	@Test
-	void outboundInternalFlexDBReader()
+	void outboundInternalFlexDBReader() throws Exception
 	{
 		ItemReader<InternalFlexOutboundDTO> test = preferenceOutboundReader.outboundInternalFlexDBReader();
 		assertNotNull(test);
 	}
 
 	@Test
-	void testdailyCountReportStep1()
+	void testdailyCountReportStep1() throws Exception
 	{
 		assertNotNull(preferenceOutboundReader.dailyCountReportStep1());
 	}
 
 	@Test
-	void testdailyCountReportStep2()
+	void testdailyCountReportStep2() throws Exception
 	{
 		assertNotNull(preferenceOutboundReader.dailyCountReportStep2());
 	}

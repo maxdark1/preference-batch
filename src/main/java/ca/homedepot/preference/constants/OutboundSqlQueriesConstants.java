@@ -76,18 +76,18 @@ public class OutboundSqlQueriesConstants
 			+ "            ON cust.customer_id = cust_extn.customer_id\n" + "        LEFT JOIN hdpc_customer_address cust_addr\n"
 			+ "            ON cust_addr.active = true AND cust.customer_id = cust_addr.customer_id\n"
 			+ "        LEFT JOIN hdpc_address addr\n"
-			+ "            ON cust_addr.address_id = addr.address_id WHERE CND_COMPLIANT_FLAG = 'Y' AND email_pref_pro = 'Y' ;";
+			+ "            ON cust_addr.address_id = addr.address_id WHERE CND_COMPLIANT_FLAG = 'Y' AND email_pref_pro = 'Y'";
 
-	public static final String SQL_INSERT_STG_PREFERENCE_OUTBOUND = "INSERT INTO hdpc_out_daily_compliant(\n" + "\temail_addr, \n"
-			+ "\tcan_ptc_effective_date,\n" + "\tcan_ptc_source_id,\n" + "\temail_status, \n" + "\tcan_ptc_flag, \n"
-			+ "\tlanguage_preference,\n" + "\tearly_opt_in_date, \n" + "\tcnd_compliant_flag, \n" + "\thd_ca_flag, \n"
-			+ "\thd_ca_garden_club_flag,\n" + "\thd_ca_pro_flag, \n" + "\tpostal_cd, \n" + "\tcustomer_nbr,\n"
+	public static final String SQL_INSERT_STG_PREFERENCE_CRM_OUTBOUND = "INSERT INTO hdpc_out_daily_compliant(\n"
+			+ "\temail_addr, \n" + "\tcan_ptc_effective_date,\n" + "\tcan_ptc_source_id,\n" + "\temail_status, \n"
+			+ "\tcan_ptc_flag, \n" + "\tlanguage_preference,\n" + "\tearly_opt_in_date, \n" + "\tcnd_compliant_flag, \n"
+			+ "\thd_ca_flag, \n" + "\thd_ca_garden_club_flag,\n" + "\thd_ca_pro_flag, \n" + "\tpostal_cd, \n" + "\tcustomer_nbr,\n"
 			+ "\tphone_ptc_flag, \n" + "\tdncl_suppression_flag, \n" + "\tphone_number, \n" + "\tfirst_name, \n" + "\tlast_name, \n"
 			+ "\tbusiness_name, \n" + "\tindustry_code, city, \n" + "\tprovince, \n" + "\thd_ca_pro_src_id)\n" + "\tVALUES (\n"
 			+ "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n"
 			+ "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?\n" + ")";
 
-	public static final String SQL_SELECT_OUTBOUND_DB_READER_STEP2 = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, customer_nbr, phone_ptc_flag, dncl_suppression_flag, phone_number, first_name, last_name, business_name, industry_code, city, province, hd_ca_pro_src_id\n"
+	public static final String SQL_SELECT_OUTBOUND_DB_READER_CRM_STEP2 = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, customer_nbr, phone_ptc_flag, dncl_suppression_flag, phone_number, first_name, last_name, business_name, industry_code, city, province, hd_ca_pro_src_id\n"
 			+ "\tFROM hdpc_out_daily_compliant";
 
 	public static final String SQL_TRUNCATE_COMPLIANT_TABLE = "TRUNCATE TABLE hdpc_out_daily_compliant";
@@ -149,7 +149,7 @@ public class OutboundSqlQueriesConstants
 			+ "WHERE email_opt_out = 'Y' OR phone_opt_out = 'Y' OR sms_opt_out = 'Y' OR DM_OPT_OUT = 'Y'";
 
 	public static final String SQL_SELECT_CITI_SUPPRESION_TABLE = "SELECT first_name, middle_initial, last_name, addr_line_1, addr_line_2, city, state_cd, postal_cd, email_addr, phone, sms_mobile_phone, business_name, dm_opt_out, email_opt_out, phone_opt_out, sms_opt_out\n"
-			+ "\tFROM hdpc_out_citi_suppresion;";
+			+ "\tFROM hdpc_out_citi_suppresion";
 
 	public static final String SQL_INSERT_CITI_SUPPRESION = "INSERT INTO hdpc_out_citi_suppresion(\n"
 			+ "\tfirst_name, middle_initial, last_name, addr_line_1, addr_line_2, city, state_cd, postal_cd, email_addr, phone, sms_mobile_phone, business_name, dm_opt_out, email_opt_out, phone_opt_out, sms_opt_out)\n"
@@ -235,10 +235,10 @@ public class OutboundSqlQueriesConstants
 			+ "            , addr.postal_code\n" + "            , addr.province\n" + "            , addr.city            \n"
 			+ "            , customer_phone.phone_number\n" + "            , cust_extn.org_name \n"
 			+ "            , cust_extn.business_type \n" + "            , cust_extn.move_date\n"
-			+ "            , cust_extn.dwelling_type;";
+			+ "            , cust_extn.dwelling_type";
 
 	public static final String SQL_SELECT_SALESFORCE_EXTRACT_TABLE = "SELECT email_address, as_of_date, source_id, email_status, email_ptc, language_preference, earliest_opt_in_date, hd_canada_email_compliant_flag, hd_canada_flag, garden_club_flag, new_mover_flag, pro_flag, phone_ptc_flag, first_name, last_name, postal_code, province, city, phone_number, business_name, business_type, move_date, dwelling_type\n"
-			+ "\tFROM hdpc_out_salesforce_extract;";
+			+ "\tFROM hdpc_out_salesforce_extract";
 
 	public static final String SQL_INSERT_SALESFORCE_EXTRACT = "INSERT INTO hdpc_out_salesforce_extract(\n"
 			+ "\temail_address, as_of_date, source_id, email_status, email_ptc, language_preference, earliest_opt_in_date, hd_canada_email_compliant_flag, hd_canada_flag, garden_club_flag, new_mover_flag, pro_flag, phone_ptc_flag, first_name, last_name, postal_code, province, city, phone_number, business_name, business_type, move_date, dwelling_type)\n"
@@ -328,7 +328,7 @@ public class OutboundSqlQueriesConstants
 			+ "                                LEFT JOIN hdpc_customer_address cust_addr\n"
 			+ "                                                ON cust_addr.active = true AND cust.customer_id = cust_addr.customer_id\n"
 			+ "                                LEFT JOIN hdpc_address addr\n"
-			+ "                                                ON cust_addr.address_id = addr.address_id;\n";
+			+ "                                                ON cust_addr.address_id = addr.address_id\n";
 
 	public static final String SQL_TRUNCATE_PROGRAM_COMPLIANT = "TRUNCATE TABLE hdpc_out_program_compliant";
 
@@ -337,7 +337,7 @@ public class OutboundSqlQueriesConstants
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	public static final String SQL_SELECT_PROGRAM_COMPLIANT = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_new_mover_flag, hd_ca_new_mover_eff_date, hd_ca_pro_flag, phone_ptc_flag, first_name, last_name, postal_cd, province, city, phone_number, business_name, industry_code, dwelling_type, move_date\n"
-			+ "\tFROM hdpc_out_program_compliant;";
+			+ "\tFROM hdpc_out_program_compliant";
 
 	/**
 	 * Loyalty complaint queries
@@ -348,7 +348,7 @@ public class OutboundSqlQueriesConstants
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
 	public static final String SQL_SELECT_LOYALTY_COMPLAINT = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province\n"
-			+ "\tFROM hdpc_out_loyalty_compliant;";
+			+ "\tFROM hdpc_out_loyalty_compliant";
 	public static final String SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE = "TRUNCATE TABLE hdpc_out_loyalty_compliant";
 
 	public static final String SQL_TRUNCATE_FLEX_ATTRIBUTE = "TRUNCATE TABLE hdpc_out_flex_attributes";
@@ -374,10 +374,10 @@ public class OutboundSqlQueriesConstants
 			+ " group by hfc.sequence_nbr, he.email, ha.address_id, c.customer_id\n"
 			+ "       , cx.customer_nbr, cx.store_nbr, cx.org_name, cx.industry_code\n"
 			+ "       , custtype.old_id, idrel.old_id, ce.updated_date, cx.industry_code\n"
-			+ "       , cx.org_name, c.first_name, c.last_name;";
+			+ "       , cx.org_name, c.first_name, c.last_name";
 
 	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "SELECT file_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, "
 			+ "customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, "
-			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role " + "FROM hdpc_out_flex_attributes;";
+			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role " + "FROM hdpc_out_flex_attributes";
 
 }

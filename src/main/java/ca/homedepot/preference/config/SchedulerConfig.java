@@ -470,7 +470,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.hybrisIngestion}")
 	public void processRegistrationHybrisInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
 	{
 		log.info(" Registration Inbound Hybris : Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -494,7 +494,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.crmIngestion}")
 	public void processRegistrationCRMInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
 	{
 		log.info(" Registration Inbound CRM: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -517,7 +517,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
 	public void processFBSFMCInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
 	{
 		log.info(" Registration Inbound FB-SFMC: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -540,7 +540,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -560,7 +560,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
 	public void sendPreferencesToCRM() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
 	{
 		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -580,11 +580,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @throws IllegalArgumentException
 	 * @throws JobRestartException
 	 * @throws JobInstanceAlreadyCompleteException
-	 * @throws JobParametersInvalidException
+	 * @throws JobParametersInvalidException,
+	 *            Exception
 	 */
 	@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
 	public void sendPreferencesToInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
 	{
 		log.info(" Send Preferences To Internal Destination Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -597,7 +598,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Scheduled(cron = "${cron.job.sendPreferencesToFlexInternalDestination}")
 	public void sendPreferencesToFlexInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
 	{
 		log.info(" Send Preferences To Flex Internal Destination Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -610,7 +611,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
 	public void sendCitiSuppresionToCitiSuppresion() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception, Exception
 	{
 		log.info(" Send Citi Suppresion file to source started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -624,7 +625,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Scheduled(cron = "${cron.job.sendWeeklyLoyaltyComplaintToSource}")
 	public void sendLoyaltyComplaintToSourceScheduler() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
 	{
 		log.info(" Send Weekly Loyalty Complaint to Source started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -675,14 +676,28 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public void createEmailFile(List<Counters> counters, String processName)
 	{
-		String emails = env.getProperty("notification.inbound." + processName + ".email") != null ? env.getProperty("notification.inbound." + processName + ".email") : "";
-		String names = env.getProperty("notification.inbound." + processName + ".name") != null ? env.getProperty("notification.inbound." + processName + ".name") : "";
+		String emails = env.getProperty("notification.inbound." + processName + ".email") != null
+				? env.getProperty("notification.inbound." + processName + ".email")
+				: "";
+		String names = env.getProperty("notification.inbound." + processName + ".name") != null
+				? env.getProperty("notification.inbound." + processName + ".name")
+				: "";
 		String[] result = getEmails(emails, names);
-		String subject = env.getProperty("notification.inbound." + processName + ".subject") != null ? env.getProperty("notification.inbound." + processName + ".subject") : "";
-		String fromEmail = env.getProperty("notification.inbound." + processName + ".fromEmail") != null ? env.getProperty("notification.inbound." + processName + ".fromEmail") : "";
-		String eventName = env.getProperty("notification.inbound." + processName + ".eventName") != null ? env.getProperty("notification.inbound." + processName + ".eventName") : "";
-		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition") != null ? env.getProperty("notification.inbound." + processName + ".eventDefinition") : "";
-		String systemSource = env.getProperty("notification.inbound." + processName + ".source") != null ? env.getProperty("notification.inbound." + processName + ".source") : "";
+		String subject = env.getProperty("notification.inbound." + processName + ".subject") != null
+				? env.getProperty("notification.inbound." + processName + ".subject")
+				: "";
+		String fromEmail = env.getProperty("notification.inbound." + processName + ".fromEmail") != null
+				? env.getProperty("notification.inbound." + processName + ".fromEmail")
+				: "";
+		String eventName = env.getProperty("notification.inbound." + processName + ".eventName") != null
+				? env.getProperty("notification.inbound." + processName + ".eventName")
+				: "";
+		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition") != null
+				? env.getProperty("notification.inbound." + processName + ".eventDefinition")
+				: "";
+		String systemSource = env.getProperty("notification.inbound." + processName + ".source") != null
+				? env.getProperty("notification.inbound." + processName + ".source")
+				: "";
 		for (Counters counter : counters)
 		{
 			for (String email : result)
@@ -697,14 +712,28 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public void createEmailFileOutbound(List<Counters> counters, String processName)
 	{
-		String emails = env.getProperty("notification.outbound." + processName + ".email") != null ? env.getProperty("notification.outbound." + processName + ".email") : "";
-		String names = env.getProperty("notification.outbound." + processName + ".name") != null ? env.getProperty("notification.outbound." + processName + ".name") : "";
+		String emails = env.getProperty("notification.outbound." + processName + ".email") != null
+				? env.getProperty("notification.outbound." + processName + ".email")
+				: "";
+		String names = env.getProperty("notification.outbound." + processName + ".name") != null
+				? env.getProperty("notification.outbound." + processName + ".name")
+				: "";
 		String[] result = getEmails(emails, names);
-		String subject = env.getProperty("notification.outbound." + processName + ".subject") != null ? env.getProperty("notification.outbound." + processName + ".subject") : "";
-		String fromEmail = env.getProperty("notification.outbound." + processName + ".fromEmail") != null ? env.getProperty("notification.outbound." + processName + ".fromEmail") : "";
-		String eventName = env.getProperty("notification.outbound." + processName + ".eventName") != null ? env.getProperty("notification.outbound." + processName + ".eventName") : "";
-		String localDef = env.getProperty("notification.outbound." + processName + ".eventDefinition") != null ? env.getProperty("notification.outbound." + processName + ".eventDefinition") : "";
-		String systemSource = env.getProperty("notification.outbound." + processName + ".source") != null ? env.getProperty("notification.outbound." + processName + ".source") : "";
+		String subject = env.getProperty("notification.outbound." + processName + ".subject") != null
+				? env.getProperty("notification.outbound." + processName + ".subject")
+				: "";
+		String fromEmail = env.getProperty("notification.outbound." + processName + ".fromEmail") != null
+				? env.getProperty("notification.outbound." + processName + ".fromEmail")
+				: "";
+		String eventName = env.getProperty("notification.outbound." + processName + ".eventName") != null
+				? env.getProperty("notification.outbound." + processName + ".eventName")
+				: "";
+		String localDef = env.getProperty("notification.outbound." + processName + ".eventDefinition") != null
+				? env.getProperty("notification.outbound." + processName + ".eventDefinition")
+				: "";
+		String systemSource = env.getProperty("notification.outbound." + processName + ".source") != null
+				? env.getProperty("notification.outbound." + processName + ".source")
+				: "";
 		for (Counters counter : counters)
 		{
 			for (String email : result)
@@ -740,8 +769,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		List<EmailNotificationTo> toList = new ArrayList<EmailNotificationTo>();
 		toList.add(to);
 		EmailNotificationMessageBody body = new EmailNotificationMessageBody();
-		if(counter.fileName != null && !counter.fileName.isEmpty())
-		      counter.fileName = counter.fileName.substring(counter.fileName.lastIndexOf("/")+1);
+		if (counter.fileName != null && !counter.fileName.isEmpty())
+			counter.fileName = counter.fileName.substring(counter.fileName.lastIndexOf("/") + 1);
 		body.setFileName(counter.fileName);
 		body.setEventDate(new Date().toString());
 		SimpleDateFormat formatter = new SimpleDateFormat("kk:mm:ss");
@@ -752,7 +781,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		body.setSourceName(Source);
 		notification.setTo(toList);
 
-		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(), body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
+		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(),
+				body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
 		notification.setEmailSubject(subject);
 		notification.setFromEmail(fromEmail);
 		notification.setEventId(id.toString());
@@ -1193,7 +1223,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build().build();
 	}
 
-	public Step readSendPreferencesToFlexInternalStep1()
+	public Step readSendPreferencesToFlexInternalStep1() throws Exception
 	{
 		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step1")
 				.<InternalFlexOutboundDTO, InternalFlexOutboundDTO> chunk(chunkOutboundFlexAttributes)
@@ -1201,7 +1231,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
-	public Step readSendPreferencesToFlexInternalStep2()
+	public Step readSendPreferencesToFlexInternalStep2() throws Exception
 	{
 		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step2")
 				.<InternalFlexOutboundDTO, InternalFlexOutboundProcessorDTO> chunk(chunkOutboundFlexAttributes)
@@ -1216,7 +1246,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return
 	 */
-	public Step readSendPreferencesToInternalStep1()
+	public Step readSendPreferencesToInternalStep1() throws Exception
 	{
 		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step1")
 				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundInternal)
@@ -1228,7 +1258,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return
 	 */
-	public Step readSendPreferencesToInternalStep2()
+	public Step readSendPreferencesToInternalStep2() throws Exception
 	{
 		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step2")
 				.<InternalOutboundDto, InternalOutboundProcessorDto> chunk(chunkOutboundInternal)
@@ -1284,7 +1314,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Jon
 	 */
-	public Job sendCitiSuppresionToCiti(List<Counters> counters)
+	public Job sendCitiSuppresionToCiti(List<Counters> counters) throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_CITI_SUPPRESION).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(citiSuppresionDBReaderStep1()).on(COMPLETED_STATUS).to(citiSuppresionDBReaderFileWriterStep2(counters)).build()
@@ -1297,7 +1327,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Job
 	 */
 	@JobScope
-	public Job sendLoyaltyComplaintToSource()
+	public Job sendLoyaltyComplaintToSource() throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_LOYALTY_COMPLAINT).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(loyaltyComplaintDBReaderStep1()).on(COMPLETED_STATUS).to(loyaltyComplaintDBReaderFileWriterStep2()).build()
@@ -1309,7 +1339,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Job
 	 */
-	public Job sendPreferencesToSMFC(List<Counters> counters)
+	public Job sendPreferencesToSMFC(List<Counters> counters) throws Exception
 	{
 		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(salesforceExtractDBReaderStep1()).on(COMPLETED_STATUS).to(salesforceExtractDBReaderFileWriterStep2(counters))
@@ -1334,7 +1364,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * 
 	 * @return
 	 */
-	public Step readSendPreferencesToCRMStep1()
+	public Step readSendPreferencesToCRMStep1() throws Exception
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep1")
 				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
@@ -1346,12 +1376,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * 
 	 * @return
 	 */
-	public Step readSendPreferencesToCRMStep2(List<Counters> counters)
+	public Step readSendPreferencesToCRMStep2(List<Counters> counters) throws Exception
 	{
 		preferenceOutboundFileWriter.setCounters(counters);
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
 				.<PreferenceOutboundDto, PreferenceOutboundDtoProcessor> chunk(chunkOutboundCRM)
-				.reader(preferenceOutboundDBReader.outboundDBReader()).processor(preferenceOutboundProcessor)
+				.reader(preferenceOutboundDBReader.outboundDBCRMReader()).processor(preferenceOutboundProcessor)
 				.writer(preferenceOutboundFileWriter).build();
 	}
 
@@ -1490,7 +1520,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Step 1 for citi suppresion
 	 */
 	@JobScope
-	public Step citiSuppresionDBReaderStep1()
+	public Step citiSuppresionDBReaderStep1() throws Exception
 	{
 		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
@@ -1503,7 +1533,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Step 2 for citi suppresion
 	 */
 	@JobScope
-	public Step citiSuppresionDBReaderFileWriterStep2(List<Counters> counters)
+	public Step citiSuppresionDBReaderFileWriterStep2(List<Counters> counters) throws Exception
 	{
 		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
@@ -1515,7 +1545,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Step 1 for salesforce Extract
 	 */
-	public Step salesforceExtractDBReaderStep1()
+	public Step salesforceExtractDBReaderStep1() throws Exception
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderStep1")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
@@ -1529,7 +1559,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Step 2 for salesforce Extract
 	 */
-	public Step salesforceExtractDBReaderFileWriterStep2(List<Counters> counters)
+	public Step salesforceExtractDBReaderFileWriterStep2(List<Counters> counters) throws Exception
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
@@ -1538,7 +1568,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@JobScope
-	public Step loyaltyComplaintDBReaderStep1()
+	public Step loyaltyComplaintDBReaderStep1() throws Exception
 	{
 		return stepBuilderFactory.get("loyaltyComplaintDBReaderStep1")
 				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundLoyalty)
@@ -1546,7 +1576,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@JobScope
-	public Step loyaltyComplaintDBReaderFileWriterStep2()
+	public Step loyaltyComplaintDBReaderFileWriterStep2() throws Exception
 	{
 		return stepBuilderFactory.get("loyaltyComplaintDBReaderFileWriterStep2")
 				.<LoyaltyCompliantDTO, LoyaltyCompliantDTO> chunk(chunkOutboundLoyalty)
