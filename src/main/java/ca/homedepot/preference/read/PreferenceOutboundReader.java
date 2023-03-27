@@ -36,7 +36,7 @@ public class PreferenceOutboundReader
 	 * 
 	 * @return
 	 */
-	public ItemReader<PreferenceOutboundDto> outboundDBReader() throws Exception
+	public JdbcPagingItemReader<PreferenceOutboundDto> outboundDBReader() throws Exception
 	{
 		truncateTable();
 		log.info(" Preference Outbound : Preference Outbound Reader Starter :" + new Date());
@@ -52,7 +52,7 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
-	public ItemReader<CitiSuppresionOutboundDTO> outboundCitiSuppresionDBReader() throws Exception
+	public JdbcPagingItemReader<CitiSuppresionOutboundDTO> outboundCitiSuppresionDBReader() throws Exception
 	{
 		purgeCitiSuppresionTable();
 		log.info(" Preference Outbound : Preference Outbound Reader for Citi Suppresion Started at:" + new Date());
@@ -69,7 +69,7 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
-	public ItemReader<SalesforceExtractOutboundDTO> salesforceExtractOutboundDBReader() throws Exception
+	public JdbcPagingItemReader<SalesforceExtractOutboundDTO> salesforceExtractOutboundDBReader() throws Exception
 	{
 		purgeSalesforceExtractTable();
 		log.info(" Preference Outbound : Preference Outbound Reader for Salesforce Extract Started at:" + new Date());
@@ -90,7 +90,7 @@ public class PreferenceOutboundReader
 	 *
 	 * @return
 	 */
-	public ItemReader<InternalOutboundDto> outboundInternalDBReader() throws Exception
+	public JdbcPagingItemReader<InternalOutboundDto> outboundInternalDBReader() throws Exception
 	{
 		purgeProgramCompliant();
 		log.info(" Internal Program Outbound : Internal Program Outbound Reader Starter :" + new Date());
@@ -108,7 +108,7 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
-	public ItemReader<InternalFlexOutboundDTO> outboundInternalFlexDBReader() throws Exception
+	public JdbcPagingItemReader<InternalFlexOutboundDTO> outboundInternalFlexDBReader() throws Exception
 	{
 		purgeFlexAttributes();
 		log.info(" Internal Flex Outbound : Internal Flex Attributes Outbound Reader Starter :" + new Date());
@@ -126,7 +126,7 @@ public class PreferenceOutboundReader
 		return reader;
 	}
 
-	public ItemReader<InternalOutboundDto> outboundLoyaltyComplaintWeekly() throws Exception
+	public JdbcPagingItemReader<InternalOutboundDto> outboundLoyaltyComplaintWeekly() throws Exception
 	{
 		purgeLoyaltyComplaint();
 		log.info(" Loyalty Complaint Outbound : Loyalty Complaint Outbound Reader Starter :" + new Date());

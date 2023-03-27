@@ -505,7 +505,7 @@ class SchedulerConfigTest
 	@Test
 	void loyaltyComplaintDBReaderStep1() throws Exception
 	{
-		ItemReader<InternalOutboundDto> jdbcCursorItemReader = new JdbcPagingItemReader<>();
+		JdbcPagingItemReader<InternalOutboundDto> jdbcCursorItemReader = new JdbcPagingItemReader<>();
 
 		Mockito.when(preferenceOutboundReader.outboundLoyaltyComplaintWeekly()).thenReturn(jdbcCursorItemReader);
 
@@ -537,7 +537,7 @@ class SchedulerConfigTest
 	@Test
 	void salesforceExtractDBReaderStep1() throws Exception
 	{
-		ItemReader<SalesforceExtractOutboundDTO> jdbcCursorItemReader = new JdbcPagingItemReader<>();
+		JdbcPagingItemReader<SalesforceExtractOutboundDTO> jdbcCursorItemReader = new JdbcPagingItemReader<>();
 		schedulerConfig.salesforcefileNameFormat = "archive_YYYYMMDD.txt";
 		schedulerConfig.setChunkOutboundSalesforce(100);
 		Mockito.when(preferenceOutboundReader.salesforceExtractOutboundDBReader()).thenReturn(jdbcCursorItemReader);
@@ -571,7 +571,7 @@ class SchedulerConfigTest
 	@Test
 	void citiSuppresionDBReaderStep1() throws Exception
 	{
-		ItemReader<CitiSuppresionOutboundDTO> jdbcCursorItemReader = new JdbcPagingItemReader<>();
+		JdbcPagingItemReader<CitiSuppresionOutboundDTO> jdbcCursorItemReader = new JdbcPagingItemReader<>();
 		schedulerConfig.setChunkOutboundCiti(100);
 		Mockito.when(preferenceOutboundReader.outboundCitiSuppresionDBReader()).thenReturn(jdbcCursorItemReader);
 
@@ -652,7 +652,7 @@ class SchedulerConfigTest
 	@Test
 	void readSendPreferencesToInternalStep1() throws Exception
 	{
-		ItemReader<InternalOutboundDto> jdbcCursorItemReader = new JdbcPagingItemReader<>();
+		JdbcPagingItemReader<InternalOutboundDto> jdbcCursorItemReader = new JdbcPagingItemReader<>();
 
 		Mockito.when(preferenceOutboundReader.outboundInternalDBReader()).thenReturn(jdbcCursorItemReader);
 
@@ -725,7 +725,7 @@ class SchedulerConfigTest
 	void readSendPreferencesToFlexInternalStep1() throws Exception
 	{
 		schedulerConfig.setChunkOutboundFlexAttributes(100);
-		ItemReader<InternalFlexOutboundDTO> jdbcCursorItemReader = new JdbcPagingItemReader<>();
+		JdbcPagingItemReader<InternalFlexOutboundDTO> jdbcCursorItemReader = new JdbcPagingItemReader<>();
 		Mockito.when(preferenceOutboundReader.outboundInternalFlexDBReader()).thenReturn(jdbcCursorItemReader);
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
