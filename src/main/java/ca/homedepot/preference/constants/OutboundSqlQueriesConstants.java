@@ -16,9 +16,9 @@ public class OutboundSqlQueriesConstants
 			+ "        SELECT  customer_id\n" + "              , MIN(opt_in_date) opt_in_date\n"
 			+ "            FROM  hdpc_customer_pref_hist\n" + "            WHERE permission_val\n"
 			+ "        GROUP BY customer_id \n" + "    ) ,\n" + "    pref_per_cust AS\n" + "    (\n"
-			+ "        SELECT    cust.customer_id\n" + "                , cust.first_name first_name\n"
-			+ "                , cust.last_name last_name\n" + "                , email.email\n"
-			+ "                , cust_email.effective_date    effective_date\n"
+			+ "        SELECT   row_number() OVER (order by cust.customer_id, cust.first_name), cust.customer_id\n"
+			+ "                , cust.first_name first_name\n" + "                , cust.last_name last_name\n"
+			+ "                , email.email\n" + "                , cust_email.effective_date    effective_date\n"
 			+ "                , cust_email.effective_date early_opt_in_date\n"
 			+ "                , email_sou_id.old_id  source_id\n" + "                , rel_id.old_id    email_status\n"
 			+ "                                                , CASE\n"
@@ -87,7 +87,7 @@ public class OutboundSqlQueriesConstants
 			+ "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n"
 			+ "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?,\n" + "?\n" + ")";
 
-	public static final String SQL_SELECT_OUTBOUND_DB_READER_CRM_STEP2 = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, customer_nbr, phone_ptc_flag, dncl_suppression_flag, phone_number, first_name, last_name, business_name, industry_code, city, province, hd_ca_pro_src_id\n"
+	public static final String SQL_SELECT_OUTBOUND_DB_READER_CRM_STEP2 = "SELECT row_number() OVER (order by email_addr), email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, customer_nbr, phone_ptc_flag, dncl_suppression_flag, phone_number, first_name, last_name, business_name, industry_code, city, province, hd_ca_pro_src_id\n"
 			+ "\tFROM hdpc_out_daily_compliant";
 
 	public static final String SQL_TRUNCATE_COMPLIANT_TABLE = "TRUNCATE TABLE hdpc_out_daily_compliant";
@@ -145,10 +145,11 @@ public class OutboundSqlQueriesConstants
 			+ "FROM hdpc_customer customer\n"
 			+ "JOIN hdpc_customer_address custAdd ON custAdd.customer_id = customer.customer_id and custAdd.active = true\n"
 			+ "JOIN hdpc_address address ON address.address_id = custAdd.address_id\n"
-			+ "JOIN hdpc_customer_extn extn ON extn.customer_id = customer.customer_id)\n" + "\tSELECT * FROM citisuppresion\n"
+			+ "JOIN hdpc_customer_extn extn ON extn.customer_id = customer.customer_id)\n"
+			+ "\tSELECT row_number() OVER (order by first_name), * FROM citisuppresion\n"
 			+ "WHERE email_opt_out = 'Y' OR phone_opt_out = 'Y' OR sms_opt_out = 'Y' OR DM_OPT_OUT = 'Y'";
 
-	public static final String SQL_SELECT_CITI_SUPPRESION_TABLE = "SELECT first_name, middle_initial, last_name, addr_line_1, addr_line_2, city, state_cd, postal_cd, email_addr, phone, sms_mobile_phone, business_name, dm_opt_out, email_opt_out, phone_opt_out, sms_opt_out\n"
+	public static final String SQL_SELECT_CITI_SUPPRESION_TABLE = "SELECT row_number() OVER (order by first_name),first_name, middle_initial, last_name, addr_line_1, addr_line_2, city, state_cd, postal_cd, email_addr, phone, sms_mobile_phone, business_name, dm_opt_out, email_opt_out, phone_opt_out, sms_opt_out\n"
 			+ "\tFROM hdpc_out_citi_suppresion";
 
 	public static final String SQL_INSERT_CITI_SUPPRESION = "INSERT INTO hdpc_out_citi_suppresion(\n"
@@ -180,8 +181,8 @@ public class OutboundSqlQueriesConstants
 			+ "        from hdpc_customer_phone cust_phone\n" + "        join hdpc_phone phone\n"
 			+ "            on cust_phone.phone_id = phone.phone_id\n" + "        join phone_type\n"
 			+ "            on phone.phone_type = phone_type.master_id\n" + "\tWHERE cust_phone.active = true\n" + ")\n" + "\n"
-			+ "select email.email email_address\n" + "    , cust_email.effective_date as_of_date\n"
-			+ "    , source_id.old_id source_id\n"
+			+ "select row_number() OVER (order by email), email.email email_address\n"
+			+ "    , cust_email.effective_date as_of_date\n" + "    , source_id.old_id source_id\n"
 			+ "    , CASE WHEN email_stat.old_id = 0 THEN '00' ELSE CAST(email_stat.old_id AS TEXT) END email_status\n"
 			+ "    , CASE cust_email.permission_val\n" + "        WHEN TRUE   THEN 'Y'\n" + "        WHEN FALSE  THEN 'N'\n"
 			+ "        ELSE 'U' \n" + "        END email_ptc\n"
@@ -237,7 +238,7 @@ public class OutboundSqlQueriesConstants
 			+ "            , cust_extn.business_type \n" + "            , cust_extn.move_date\n"
 			+ "            , cust_extn.dwelling_type";
 
-	public static final String SQL_SELECT_SALESFORCE_EXTRACT_TABLE = "SELECT email_address, as_of_date, source_id, email_status, email_ptc, language_preference, earliest_opt_in_date, hd_canada_email_compliant_flag, hd_canada_flag, garden_club_flag, new_mover_flag, pro_flag, phone_ptc_flag, first_name, last_name, postal_code, province, city, phone_number, business_name, business_type, move_date, dwelling_type\n"
+	public static final String SQL_SELECT_SALESFORCE_EXTRACT_TABLE = "SELECT row_number() OVER (order by email_address), email_address, as_of_date, source_id, email_status, email_ptc, language_preference, earliest_opt_in_date, hd_canada_email_compliant_flag, hd_canada_flag, garden_club_flag, new_mover_flag, pro_flag, phone_ptc_flag, first_name, last_name, postal_code, province, city, phone_number, business_name, business_type, move_date, dwelling_type\n"
 			+ "\tFROM hdpc_out_salesforce_extract";
 
 	public static final String SQL_INSERT_SALESFORCE_EXTRACT = "INSERT INTO hdpc_out_salesforce_extract(\n"
@@ -256,9 +257,9 @@ public class OutboundSqlQueriesConstants
 			+ "        SELECT  customer_id\n" + "              , MIN(opt_in_date) opt_in_date\n"
 			+ "            FROM  hdpc_customer_pref_hist\n" + "            WHERE permission_val\n"
 			+ "        GROUP BY customer_id \n" + "    ) ,\n" + "    pref_per_cust AS\n" + "    (\n"
-			+ "        SELECT    cust.customer_id\n" + "                , cust.first_name first_name\n"
-			+ "                , cust.last_name last_name\n" + "                , email.email\n"
-			+ "                , cust_email.effective_date    effective_date\n"
+			+ "        SELECT   row_number() OVER (order by cust.customer_id), cust.first_name, cust.customer_id\n"
+			+ "                , cust.first_name first_name\n" + "                , cust.last_name last_name\n"
+			+ "                , email.email\n" + "                , cust_email.effective_date    effective_date\n"
 			+ "                                                                , cust_email.effective_date early_opt_in_date\n"
 			+ "                , email_sou_id.old_id source_id\n" + "                , rel_id.old_id    email_status\n"
 			+ "                                                , CASE\n"
@@ -336,7 +337,7 @@ public class OutboundSqlQueriesConstants
 			+ "\temail_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_new_mover_flag, hd_ca_new_mover_eff_date, hd_ca_pro_flag, phone_ptc_flag, first_name, last_name, postal_cd, province, city, phone_number, business_name, industry_code, dwelling_type, move_date)\n"
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	public static final String SQL_SELECT_PROGRAM_COMPLIANT = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_new_mover_flag, hd_ca_new_mover_eff_date, hd_ca_pro_flag, phone_ptc_flag, first_name, last_name, postal_cd, province, city, phone_number, business_name, industry_code, dwelling_type, move_date\n"
+	public static final String SQL_SELECT_PROGRAM_COMPLIANT = "SELECT row_number() OVER (order by email_addr),email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_new_mover_flag, hd_ca_new_mover_eff_date, hd_ca_pro_flag, phone_ptc_flag, first_name, last_name, postal_cd, province, city, phone_number, business_name, industry_code, dwelling_type, move_date\n"
 			+ "\tFROM hdpc_out_program_compliant";
 
 	/**
@@ -347,7 +348,7 @@ public class OutboundSqlQueriesConstants
 			+ "\temail_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province)\n"
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	public static final String SQL_SELECT_LOYALTY_COMPLAINT = "SELECT email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province\n"
+	public static final String SQL_SELECT_LOYALTY_COMPLAINT = "SELECT row_number() OVER (order by email_addr),email_addr, can_ptc_effective_date, can_ptc_source_id, email_status, can_ptc_flag, first_name, last_name, language_preference, early_opt_in_date, cnd_compliant_flag, hd_ca_flag, hd_ca_garden_club_flag, hd_ca_pro_flag, postal_cd, city, customer_nbr, province\n"
 			+ "\tFROM hdpc_out_loyalty_compliant";
 	public static final String SQL_TRUNCATE_LOYALTY_COMPLIANT_TABLE = "TRUNCATE TABLE hdpc_out_loyalty_compliant";
 
@@ -356,7 +357,7 @@ public class OutboundSqlQueriesConstants
 			+ "\tfile_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, industry_code, company_name, contact_first_name, contact_last_name, contact_role)\n"
 			+ "\tVALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	public static final String SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION = "select MAX(hfc.file_id) file_id\n"
+	public static final String SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION = "select row_number() OVER (order by hfc.sequence_nbr), MAX(hfc.file_id) file_id\n"
 			+ "     , hfc.sequence_nbr, he.email email_addr, ha.address_id hd_hh_id\n"
 			+ "     , c.customer_id hd_ind_id, cx.customer_nbr, cx.store_nbr, cx.org_name\n"
 			+ "     , cx.industry_code company_cd, custtype.old_id cust_type_cd, idrel.old_id source_id\n"
@@ -376,7 +377,7 @@ public class OutboundSqlQueriesConstants
 			+ "       , custtype.old_id, idrel.old_id, ce.updated_date, cx.industry_code\n"
 			+ "       , cx.org_name, c.first_name, c.last_name";
 
-	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "SELECT file_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, "
+	public static final String SQL_SELECT_FLEX_ATTRIBUTES = "SELECT row_number() OVER (order by file_id, sequence_nbr), file_id, sequence_nbr, email_addr, hd_hh_id, hd_ind_id, "
 			+ "customer_nbr, store_nbr, org_name, company_cd, cust_type_cd, source_id, effective_date, last_update_date, "
 			+ "industry_code, company_name, contact_first_name, contact_last_name, contact_role " + "FROM hdpc_out_flex_attributes";
 
