@@ -251,7 +251,7 @@
                     </excludes>
                     <jvmArguments>
                         -Xms512m
-                        -Xmx4g
+                        -Xmx1g
                     </jvmArguments>
                 </configuration>
             </plugin>
