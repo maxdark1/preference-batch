@@ -45,7 +45,7 @@ public class PreferenceOutboundReader
 		reader.setDataSource(dataSource);
 		reader.setFetchSize(pagingAttributes.getFetchSizeCRM());
 		reader.setPageSize(pagingAttributes.getPageSizeCRM());
-		reader.setQueryProvider(pagingAttributes.queryProvider("customer_id", OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND));
+		reader.setQueryProvider(pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND));
 		reader.setRowMapper(new PreferenceOutboundMapper());
 		reader.afterPropertiesSet();
 		log.info(" Preference Outbound : Preference Outbound Reader End :" + new Date());
@@ -62,7 +62,7 @@ public class PreferenceOutboundReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeCiti());
 		reader.setPageSize(pagingAttributes.getPageSizeCiti());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("First_name", OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1));
 		reader.setRowMapper(new CitiSuppresionOutboundMapper());
 		reader.afterPropertiesSet();
 
@@ -79,7 +79,7 @@ public class PreferenceOutboundReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeSFMC());
 		reader.setPageSize(pagingAttributes.getPageSizeSFMC());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("first_name", OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND));
 		reader.setRowMapper(new SalesforceExtractOutboundMapper());
 		reader.afterPropertiesSet();
 		return reader;
@@ -100,7 +100,7 @@ public class PreferenceOutboundReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeInternal());
 		reader.setPageSize(pagingAttributes.getPageSizeInternal());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("email", OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION));
 		reader.setRowMapper(new InternalOutboundStep1Mapper());
 		reader.afterPropertiesSet();
 
@@ -117,7 +117,7 @@ public class PreferenceOutboundReader
 		reader.setDataSource(dataSource);
 		reader.setFetchSize(pagingAttributes.getFetchSizeFlexAttributes());
 		reader.setPageSize(pagingAttributes.getPageSizeFlexAttributes());
-		reader.setQueryProvider(pagingAttributes.queryProvider("file_id",
+		reader.setQueryProvider(pagingAttributes.queryProvider("row_number",
 				OutboundSqlQueriesConstants.SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION));
 		reader.setRowMapper(new InternalFlexOutboundStep1Mapper());
 		reader.afterPropertiesSet();
@@ -136,7 +136,7 @@ public class PreferenceOutboundReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeLoyalty());
 		reader.setPageSize(pagingAttributes.getPageSizeLoyalty());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("email", OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION));
 		reader.setRowMapper(new InternalOutboundStep1Mapper());
 		reader.afterPropertiesSet();
 

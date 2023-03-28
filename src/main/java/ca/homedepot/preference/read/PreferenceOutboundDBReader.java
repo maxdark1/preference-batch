@@ -38,7 +38,7 @@ public class PreferenceOutboundDBReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeCRM());
 		reader.setPageSize(pagingAttributes.getPageSizeCRM());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("customer_nbr", OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_CRM_STEP2));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_CRM_STEP2));
 		reader.setRowMapper(new PreferenceOutboundMapperStep2());
 		reader.afterPropertiesSet();
 
@@ -60,7 +60,7 @@ public class PreferenceOutboundDBReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeInternal());
 		reader.setPageSize(pagingAttributes.getPageSizeInternal());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("email_addr", OutboundSqlQueriesConstants.SQL_SELECT_PROGRAM_COMPLIANT));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_PROGRAM_COMPLIANT));
 		reader.setRowMapper(new InternalOutboundStep2Mapper());
 		reader.afterPropertiesSet();
 
@@ -76,7 +76,8 @@ public class PreferenceOutboundDBReader
 		reader.setDataSource(dataSource);
 		reader.setFetchSize(pagingAttributes.getFetchSizeFlexAttributes());
 		reader.setPageSize(pagingAttributes.getPageSizeFlexAttributes());
-		reader.setQueryProvider(pagingAttributes.queryProvider("file_id", OutboundSqlQueriesConstants.SQL_SELECT_FLEX_ATTRIBUTES));
+		reader.setQueryProvider(
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_FLEX_ATTRIBUTES));
 		reader.setRowMapper(new InternalFlexOutboundStep2Mapper());
 		reader.afterPropertiesSet();
 
@@ -93,7 +94,7 @@ public class PreferenceOutboundDBReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeCiti());
 		reader.setPageSize(pagingAttributes.getPageSizeCiti());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("first_name", OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_CITI_SUPPRESION_TABLE));
 		reader.setRowMapper(new CitiSuppresionOutboundMapper());
 		reader.afterPropertiesSet();
 
@@ -111,7 +112,7 @@ public class PreferenceOutboundDBReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeLoyalty());
 		reader.setPageSize(pagingAttributes.getPageSizeLoyalty());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("email_addr", OutboundSqlQueriesConstants.SQL_SELECT_LOYALTY_COMPLAINT));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_LOYALTY_COMPLAINT));
 		reader.setRowMapper(new LoyaltyComplaintWeeklyMapper());
 		reader.afterPropertiesSet();
 
@@ -128,7 +129,7 @@ public class PreferenceOutboundDBReader
 		reader.setFetchSize(pagingAttributes.getFetchSizeSFMC());
 		reader.setPageSize(pagingAttributes.getPageSizeSFMC());
 		reader.setQueryProvider(
-				pagingAttributes.queryProvider("email_address", OutboundSqlQueriesConstants.SQL_SELECT_SALESFORCE_EXTRACT_TABLE));
+				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_SALESFORCE_EXTRACT_TABLE));
 		reader.setRowMapper(new SalesforceExtractOutboundMapper());
 		reader.afterPropertiesSet();
 
