@@ -135,7 +135,7 @@ public class FileValidation
 				}
 				else
 				{
-					converted = header[i];
+					converted = header[i] + ".";
 				}
 
 				if (converted.contains(headerFile[i] + "."))

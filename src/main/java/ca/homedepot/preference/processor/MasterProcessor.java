@@ -85,7 +85,7 @@ public class MasterProcessor
 
 		BigDecimal masterId = new BigDecimal("-400");
 
-		if (oldId == null)
+		if (oldId == null || oldId.equals("null"))
 			return masterId;
 		Optional<Master> optional = masterList.stream().filter(master -> master.getOldID() != null
 				&& master.getKeyValue().equals("SOURCE_ID") && master.getOldID().equals(new BigDecimal(oldId))).findFirst();

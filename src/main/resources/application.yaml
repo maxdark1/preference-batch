@@ -2,12 +2,12 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/preference-centre-db
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: sasa
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: pcam
+      schema: public
   batch:
     job:
       enabled: false
@@ -151,7 +151,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-Additions to pcam daily count report
+version: PCAM-Solving Header Issue in SFMC
 
 notification:
   inbound:

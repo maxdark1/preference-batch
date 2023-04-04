@@ -607,7 +607,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Triggers CRM Outbound Process in a determinated period of time
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	//@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
@@ -727,14 +727,28 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public void createEmailFile(List<Counters> counters, String processName)
 	{
-		String emails = env.getProperty("notification.inbound." + processName + ".email") != null ? env.getProperty("notification.inbound." + processName + ".email") : "";
-		String names = env.getProperty("notification.inbound." + processName + ".name") != null ? env.getProperty("notification.inbound." + processName + ".name") : "";
+		String emails = env.getProperty("notification.inbound." + processName + ".email") != null
+				? env.getProperty("notification.inbound." + processName + ".email")
+				: "";
+		String names = env.getProperty("notification.inbound." + processName + ".name") != null
+				? env.getProperty("notification.inbound." + processName + ".name")
+				: "";
 		String[] result = getEmails(emails, names);
-		String subject = env.getProperty("notification.inbound." + processName + ".subject") != null ? env.getProperty("notification.inbound." + processName + ".subject") : "";
-		String fromEmail = env.getProperty("notification.inbound." + processName + ".fromEmail") != null ? env.getProperty("notification.inbound." + processName + ".fromEmail") : "";
-		String eventName = env.getProperty("notification.inbound." + processName + ".eventName") != null ? env.getProperty("notification.inbound." + processName + ".eventName") : "";
-		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition") != null ? env.getProperty("notification.inbound." + processName + ".eventDefinition") : "";
-		String systemSource = env.getProperty("notification.inbound." + processName + ".source") != null ? env.getProperty("notification.inbound." + processName + ".source") : "";
+		String subject = env.getProperty("notification.inbound." + processName + ".subject") != null
+				? env.getProperty("notification.inbound." + processName + ".subject")
+				: "";
+		String fromEmail = env.getProperty("notification.inbound." + processName + ".fromEmail") != null
+				? env.getProperty("notification.inbound." + processName + ".fromEmail")
+				: "";
+		String eventName = env.getProperty("notification.inbound." + processName + ".eventName") != null
+				? env.getProperty("notification.inbound." + processName + ".eventName")
+				: "";
+		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition") != null
+				? env.getProperty("notification.inbound." + processName + ".eventDefinition")
+				: "";
+		String systemSource = env.getProperty("notification.inbound." + processName + ".source") != null
+				? env.getProperty("notification.inbound." + processName + ".source")
+				: "";
 		for (Counters counter : counters)
 		{
 			for (String email : result)
@@ -749,14 +763,28 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public void createEmailFileOutbound(List<Counters> counters, String processName)
 	{
-		String emails = env.getProperty("notification.outbound." + processName + ".email") != null ? env.getProperty("notification.outbound." + processName + ".email") : "";
-		String names = env.getProperty("notification.outbound." + processName + ".name") != null ? env.getProperty("notification.outbound." + processName + ".name") : "";
+		String emails = env.getProperty("notification.outbound." + processName + ".email") != null
+				? env.getProperty("notification.outbound." + processName + ".email")
+				: "";
+		String names = env.getProperty("notification.outbound." + processName + ".name") != null
+				? env.getProperty("notification.outbound." + processName + ".name")
+				: "";
 		String[] result = getEmails(emails, names);
-		String subject = env.getProperty("notification.outbound." + processName + ".subject") != null ? env.getProperty("notification.outbound." + processName + ".subject") : "";
-		String fromEmail = env.getProperty("notification.outbound." + processName + ".fromEmail") != null ? env.getProperty("notification.outbound." + processName + ".fromEmail") : "";
-		String eventName = env.getProperty("notification.outbound." + processName + ".eventName") != null ? env.getProperty("notification.outbound." + processName + ".eventName") : "";
-		String localDef = env.getProperty("notification.outbound." + processName + ".eventDefinition") != null ? env.getProperty("notification.outbound." + processName + ".eventDefinition") : "";
-		String systemSource = env.getProperty("notification.outbound." + processName + ".source") != null ? env.getProperty("notification.outbound." + processName + ".source") : "";
+		String subject = env.getProperty("notification.outbound." + processName + ".subject") != null
+				? env.getProperty("notification.outbound." + processName + ".subject")
+				: "";
+		String fromEmail = env.getProperty("notification.outbound." + processName + ".fromEmail") != null
+				? env.getProperty("notification.outbound." + processName + ".fromEmail")
+				: "";
+		String eventName = env.getProperty("notification.outbound." + processName + ".eventName") != null
+				? env.getProperty("notification.outbound." + processName + ".eventName")
+				: "";
+		String localDef = env.getProperty("notification.outbound." + processName + ".eventDefinition") != null
+				? env.getProperty("notification.outbound." + processName + ".eventDefinition")
+				: "";
+		String systemSource = env.getProperty("notification.outbound." + processName + ".source") != null
+				? env.getProperty("notification.outbound." + processName + ".source")
+				: "";
 		for (Counters counter : counters)
 		{
 			for (String email : result)
@@ -792,8 +820,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		List<EmailNotificationTo> toList = new ArrayList<EmailNotificationTo>();
 		toList.add(to);
 		EmailNotificationMessageBody body = new EmailNotificationMessageBody();
-		if(counter.fileName != null && !counter.fileName.isEmpty())
-		      counter.fileName = counter.fileName.substring(counter.fileName.lastIndexOf("/")+1);
+		if (counter.fileName != null && !counter.fileName.isEmpty())
+			counter.fileName = counter.fileName.substring(counter.fileName.lastIndexOf("/") + 1);
 		body.setFileName(counter.fileName);
 		body.setEventDate(new Date().toString());
 		SimpleDateFormat formatter = new SimpleDateFormat("kk:mm:ss");
@@ -804,7 +832,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		body.setSourceName(Source);
 		notification.setTo(toList);
 
-		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(), body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
+		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(),
+				body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
 		notification.setEmailSubject(subject);
 		notification.setFromEmail(fromEmail);
 		notification.setEventId(id.toString());
@@ -1198,7 +1227,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Crm outbound job process.
-	 * 
+	 *
 	 * @return
 	 */
 
@@ -1383,7 +1412,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 1 for Send Preferences to CRM Outbound
-	 * 
+	 *
 	 * @return
 	 */
 	public Step readSendPreferencesToCRMStep1()
@@ -1395,7 +1424,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 2 for Send Preferences to CRM Outbound
-	 * 
+	 *
 	 * @return
 	 */
 	public Step readSendPreferencesToCRMStep2(List<Counters> counters)
@@ -1403,7 +1432,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		preferenceOutboundFileWriter.setCounters(counters);
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
 				.<PreferenceOutboundDto, PreferenceOutboundDtoProcessor> chunk(chunkOutboundCRM)
-				.reader(preferenceOutboundDBReader.outboundDBReader()).processor(preferenceOutboundProcessor)
+				.reader(preferenceOutboundDBReader.outboundDBCRMReader()).processor(preferenceOutboundProcessor)
 				.writer(preferenceOutboundFileWriter).build();
 	}
 
