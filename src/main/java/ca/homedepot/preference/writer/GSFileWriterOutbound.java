@@ -22,7 +22,7 @@ import static ca.homedepot.preference.config.StorageApplicationGCS.*;
 @Setter
 @Slf4j
 
-public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
+public class  GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 {
 
 
