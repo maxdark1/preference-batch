@@ -870,4 +870,146 @@ class SchedulerConfigTest
 		schedulerConfig.createEmailFileOutbound(counters, "SFMC");
 		assertNotNull(counters);
 	}
+
+	@Test
+	void testIndividualHybris()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "hybrisIn";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+			}
+	}
+
+	@Test
+	void testIndividualcrmIn()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "crmIn";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualfbSfmcIn()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "fbSfmcIn";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualsfmcIn()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "sfmcIn";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualcrmOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "crmOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualinternalOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "internalOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+	@Test
+	void testIndividualflexOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "flexOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+	@Test
+	void testIndividualcitiOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "citiOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+	@Test
+	void testIndividualsfmcOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "sfmcOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
 }

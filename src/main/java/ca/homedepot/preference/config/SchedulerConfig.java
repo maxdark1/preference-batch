@@ -401,7 +401,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private Environment env;
 
-	public static String individualJob;
+	@Value("${process}")
+	public String individualJob;
+
+	@Value("${exitAfter}")
+	public Boolean exitAfter;
 
 	@Autowired
 	public void setUpListener()
@@ -462,49 +466,67 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@Scheduled(cron = "${cron.job.individualProcess}")
-	public void individualExecution()  {
+	public void individualExecution()
+	{
 		log.error("Individual Job Starts: " + individualJob);
-		try {
-			switch (individualJob) {
+		try
+		{
+			switch (individualJob)
+			{
 				case "hybrisIn":
 					processRegistrationHybrisInbound();
-					System.exit(0);
+					if(exitAfter)
+						System.exit(0);
 					break;
 				case "crmIn":
 					processRegistrationCRMInbound();
-					System.exit(0);
+					if(exitAfter)
+						System.exit(0);
 					break;
 				case "fbSfmcIn":
 					processFBSFMCInbound();
-					System.exit(0);
+					if(exitAfter)
+						System.exit(0);
 					break;
 				case "sfmcIn":
 					processSFMCOptOutsEmail();
-					System.exit(0);
+					if(exitAfter)
+						System.exit(0);
 					break;
 				case "crmOut":
 					sendPreferencesToCRM();
-					System.exit(0);
+					if(exitAfter)
+						System.exit(0);
 					break;
 				case "internalOut":
 					sendPreferencesToInternal();
-					System.exit(0);
+					if(exitAfter)
+						System.exit(0);
 					break;
 				case "flexOut":
 					sendPreferencesToFlexInternal();
-					System.exit(0);
+					if(exitAfter)
+						System.exit(0);
 					break;
 				case "citiOut":
 					sendCitiSuppresionToCitiSuppresion();
-					System.exit(0);
+					if(exitAfter)
+						System.exit(0);
 					break;
 				case "sfmcOut":
 					sendEmailMarketingPreferencesToSMFC();
+					if(exitAfter)
+						System.exit(0);
+					break;
+				default:
 					System.exit(0);
 					break;
 			}
-		} catch (Exception ex){
+		}
+		catch (Exception ex)
+		{
 			log.error("Error procesing the job: " + ex.getMessage());
+			if(exitAfter)
 			System.exit(0);
 		}
 	}
