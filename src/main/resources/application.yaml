@@ -46,8 +46,8 @@ cron:
     crmIngestion: 0 30 22 * * ?
     fbsfmcIngestion: 0 0 3 * * ?
     ingestSFMCOutlookUnsubscribed: 0 30 22 * * ?
-    sendPreferencesToCRM: 0 0 18 * * ?
-    sendPreferencesToCitiSuppresion: 0 0 10 ? * MON
+    sendPreferencesToCRM: 0 30 22 * * ?
+    sendPreferencesToCitiSuppresion: 30 * * * * *
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
     sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
@@ -122,28 +122,16 @@ preference:
     layoutc:
       chunk: 10
     outboundCRM:
-      pageSize: 100
-      fetchSize: 100
       chunk: 10
     outboundCiti:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     outboundInternal:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     outboundSalesforce:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     outboundLoyalty:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     outboundFlexAttributes:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     dailyCountReport:
       chunk: 5
@@ -156,13 +144,13 @@ gcp:
 
 logging:
   level:
-    ca.homedepot.preference: INFO
-    root: INFO
+    ca.homedepot.preference: ERROR
+    root: ERROR
     org:
-      hibernate: INFO
-      springframework: INFO
+      hibernate: ERROR
+      springframework: ERROR
 
-version: PCAM-Outbound Pagination
+version: PCAM-Solving Header Issue in SFMC
 
 notification:
   inbound:
