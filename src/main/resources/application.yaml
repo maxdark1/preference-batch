@@ -7,7 +7,7 @@ spring:
     password: sasa
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: public
+      schema: pcam
   batch:
     job:
       enabled: false
@@ -40,6 +40,7 @@ spring:
 #  h2:
 #    console:
 #      enabled: false
+process: citiOut
 cron:
   job:
     hybrisIngestion: 0 30 22 * * ?
