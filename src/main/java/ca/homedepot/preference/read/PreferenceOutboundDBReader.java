@@ -24,13 +24,13 @@ public class PreferenceOutboundDBReader
 	 * 
 	 * @return
 	 */
-	public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBReader()
+	public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBCRMReader()
 	{
 		log.info(" Preference Outbound : Preference Outbound Step 2 Reader Starter :" + new Date());
 		JdbcCursorItemReader<PreferenceOutboundDto> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_STEP2);
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_CRM_STEP2);
 		reader.setRowMapper(new PreferenceOutboundMapperStep2());
 
 		log.info(" Preference Outbound : Preference Outbound Step 2 Reader End :" + new Date());

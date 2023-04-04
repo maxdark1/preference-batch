@@ -60,7 +60,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@TestPropertySource(locations = {"/resources/application.yaml"})
+@TestPropertySource(locations =
+{ "/resources/application.yaml" })
 class SchedulerConfigTest
 {
 	@Mock
@@ -621,7 +622,7 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<PreferenceOutboundDto> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.setChunkOutboundCRM(100);
-		Mockito.when(preferenceOutboundDBReader.outboundDBReader()).thenReturn(jdbcCursorItemReader);
+		Mockito.when(preferenceOutboundDBReader.outboundDBCRMReader()).thenReturn(jdbcCursorItemReader);
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
@@ -837,9 +838,10 @@ class SchedulerConfigTest
 
 	@Test
 
-	void testCreateEmailFile() {
+	void testCreateEmailFile()
+	{
 		List<Counters> counters = new ArrayList<>();
-		Counters counter = new Counters(10,10,0);
+		Counters counter = new Counters(10, 10, 0);
 		counter.fileName = "fileName";
 		counters.add(counter);
 		env = mock(Environment.class);
@@ -847,15 +849,16 @@ class SchedulerConfigTest
 		when(env.getProperty("notification.inbound.hybris.name")).thenReturn("Juan Lara");
 		schedulerConfig.setEnv(env);
 		schedulerConfig.setService(service);
-		when(service.saveNotificationEvent("","","","","","","")).thenReturn(1);
-		schedulerConfig.createEmailFile(counters,"hybris");
+		when(service.saveNotificationEvent("", "", "", "", "", "", "")).thenReturn(1);
+		schedulerConfig.createEmailFile(counters, "hybris");
 		assertNotNull(counters);
 	}
 
 	@Test
-	void testCreateEmailFileOutbound() {
+	void testCreateEmailFileOutbound()
+	{
 		List<Counters> counters = new ArrayList<>();
-		Counters counter = new Counters(10,10,0);
+		Counters counter = new Counters(10, 10, 0);
 		counter.fileName = "fileName";
 		counters.add(counter);
 		env = mock(Environment.class);
@@ -863,8 +866,8 @@ class SchedulerConfigTest
 		when(env.getProperty("notification.outbound.SFMC.name")).thenReturn("Juan Lara");
 		schedulerConfig.setEnv(env);
 		schedulerConfig.setService(service);
-		when(service.saveNotificationEvent("","","","","","","")).thenReturn(1);
-		schedulerConfig.createEmailFileOutbound(counters,"SFMC");
+		when(service.saveNotificationEvent("", "", "", "", "", "", "")).thenReturn(1);
+		schedulerConfig.createEmailFileOutbound(counters, "SFMC");
 		assertNotNull(counters);
 	}
 }

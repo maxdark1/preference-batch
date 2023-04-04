@@ -2,12 +2,12 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/preference-centre-db
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password:
+    password: sasa
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: pcam
+      schema: public
   batch:
     job:
       enabled: false
@@ -47,12 +47,13 @@ cron:
     fbsfmcIngestion: 0 0 3 * * ?
     ingestSFMCOutlookUnsubscribed: 0 30 22 * * ?
     sendPreferencesToCRM: 0 30 22 * * ?
-    sendPreferencesToCitiSuppresion: 30 * * * * *
+    sendPreferencesToCitiSuppresion: 0 30 22 * * ?
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
     sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
     sendPreferencesToSFMC: 0 0 18 * * ?
     createDailyCountReport: 0 0 7 * * ?
+    individualProcess: 30 * * * * *
 server:
   port: 8080
 
@@ -144,13 +145,13 @@ gcp:
 
 logging:
   level:
-    ca.homedepot.preference: ERROR
+    ca.homedepot.preference: INFO
     root: ERROR
     org:
-      hibernate: ERROR
-      springframework: ERROR
+      hibernate: INFO
+      springframework: INFO
 
-version: PCAM-Additions to pcam daily count report
+version: PCAM-Solving Header Issue in SFMC
 
 notification:
   inbound:

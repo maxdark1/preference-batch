@@ -33,8 +33,8 @@ class PreferenceOutboundDBReaderTest
 	@Test
 	void outboundDBReader()
 	{
-		JdbcCursorItemReader<PreferenceOutboundDto> test = preferenceOutboundDBReader.outboundDBReader();
-		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_STEP2, test.getSql());
+		JdbcCursorItemReader<PreferenceOutboundDto> test = preferenceOutboundDBReader.outboundDBCRMReader();
+		assertEquals(OutboundSqlQueriesConstants.SQL_SELECT_OUTBOUND_DB_READER_CRM_STEP2, test.getSql());
 	}
 
 	@Test
