@@ -401,7 +401,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private Environment env;
 
-	public static String individualJob;
+	@Value("${process}")
+	private String individualJob;
 
 	@Autowired
 	public void setUpListener()
