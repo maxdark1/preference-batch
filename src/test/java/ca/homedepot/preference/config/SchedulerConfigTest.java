@@ -870,4 +870,11 @@ class SchedulerConfigTest
 		schedulerConfig.createEmailFileOutbound(counters, "SFMC");
 		assertNotNull(counters);
 	}
+
+	@Test
+	void testIndividual()
+	{
+		schedulerConfig.individualExecution();
+		assertNotNull(schedulerConfig);
+	}
 }
