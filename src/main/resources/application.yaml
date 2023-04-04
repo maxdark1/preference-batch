@@ -41,6 +41,7 @@ spring:
 #    console:
 #      enabled: false
 process: citiOut
+exitAfter: true
 cron:
   job:
     hybrisIngestion: 0 30 22 * * ?
