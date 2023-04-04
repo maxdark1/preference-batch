@@ -463,10 +463,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@Scheduled(cron = "${cron.job.individualProcess}")
-	public void individualExecution()  {
+	public void individualExecution()
+	{
 		log.error("Individual Job Starts: " + individualJob);
-		try {
-			switch (individualJob) {
+		try
+		{
+			switch (individualJob)
+			{
 				case "hybrisIn":
 					processRegistrationHybrisInbound();
 					System.exit(0);
@@ -504,7 +507,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 					System.exit(0);
 					break;
 			}
-		} catch (Exception ex){
+		}
+		catch (Exception ex)
+		{
 			log.error("Error procesing the job: " + ex.getMessage());
 			System.exit(0);
 		}
