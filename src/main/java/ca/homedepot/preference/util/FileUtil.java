@@ -23,7 +23,6 @@ import java.util.*;
 @Slf4j
 @UtilityClass
 @Generated
-
 public final class FileUtil
 {
 	private static String registrationFile;
