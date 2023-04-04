@@ -401,6 +401,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@Autowired
 	private Environment env;
 
+	public static String individualJob;
+
 	@Autowired
 	public void setUpListener()
 	{
@@ -459,6 +461,54 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		internalFlexOutboundFileWriter.setJobListener(jobListener);
 	}
 
+	@Scheduled(cron = "${cron.job.individualProcess}")
+	public void individualExecution()  {
+		log.error("Individual Job Starts: " + individualJob);
+		try {
+			switch (individualJob) {
+				case "hybrisIn":
+					processRegistrationHybrisInbound();
+					System.exit(0);
+					break;
+				case "crmIn":
+					processRegistrationCRMInbound();
+					System.exit(0);
+					break;
+				case "fbSfmcIn":
+					processFBSFMCInbound();
+					System.exit(0);
+					break;
+				case "sfmcIn":
+					processSFMCOptOutsEmail();
+					System.exit(0);
+					break;
+				case "crmOut":
+					sendPreferencesToCRM();
+					System.exit(0);
+					break;
+				case "internalOut":
+					sendPreferencesToInternal();
+					System.exit(0);
+					break;
+				case "flexOut":
+					sendPreferencesToFlexInternal();
+					System.exit(0);
+					break;
+				case "citiOut":
+					sendCitiSuppresionToCitiSuppresion();
+					System.exit(0);
+					break;
+				case "sfmcOut":
+					sendEmailMarketingPreferencesToSMFC();
+					System.exit(0);
+					break;
+			}
+		} catch (Exception ex){
+			log.error("Error procesing the job: " + ex.getMessage());
+			System.exit(0);
+		}
+	}
+
 	/**
 	 * Triggers hybris job in a determinated period of time
 	 *
@@ -468,7 +518,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.hybrisIngestion}")
+
+
+	//@Scheduled(cron = "${cron.job.hybrisIngestion}")
 	public void processRegistrationHybrisInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -492,7 +544,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.crmIngestion}")
+	//@Scheduled(cron = "${cron.job.crmIngestion}")
 	public void processRegistrationCRMInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -515,7 +567,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
+	//@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
 	public void processFBSFMCInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -538,7 +590,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
+	//@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -558,7 +610,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * 
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
 	public void sendPreferencesToCRM() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -582,7 +634,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @throws JobInstanceAlreadyCompleteException
 	 * @throws JobParametersInvalidException
 	 */
-	@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
 	public void sendPreferencesToInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -595,7 +647,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To Internal Destination Job finished with status : " + execution.getStatus());
 	}
 
-	@Scheduled(cron = "${cron.job.sendPreferencesToFlexInternalDestination}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToFlexInternalDestination}")
 	public void sendPreferencesToFlexInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -608,7 +660,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To Flex Internal Destination Job finished with status : " + execution.getStatus());
 	}
 
-	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
 	public void sendCitiSuppresionToCitiSuppresion() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -622,7 +674,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Citi Suppresion file to source finished with status : " + execution.getStatus());
 	}
 
-	@Scheduled(cron = "${cron.job.sendWeeklyLoyaltyComplaintToSource}")
+	//@Scheduled(cron = "${cron.job.sendWeeklyLoyaltyComplaintToSource}")
 	public void sendLoyaltyComplaintToSourceScheduler() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
 			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
@@ -639,7 +691,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.sendPreferencesToSFMC}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToSFMC}")
 	public void sendEmailMarketingPreferencesToSMFC() throws Exception
 	{
 		log.info(" Send Email Marketing Preferences To SMFC Job started at: {} ", new Date());
@@ -657,7 +709,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.createDailyCountReport}")
+	//@Scheduled(cron = "${cron.job.createDailyCountReport}")
 	public void triggeringCreationOfDailyCountReport() throws Exception
 	{
 		log.info(" Creation of Daily Count Report Job started at: {} ", new Date());
@@ -1015,7 +1067,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@JobScope
 	@StepScope
-	public FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter(List<Counters> counters)
+	public GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter(List<Counters> counters)
 	{
 
 		GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new GSFileWriterOutbound<>();
