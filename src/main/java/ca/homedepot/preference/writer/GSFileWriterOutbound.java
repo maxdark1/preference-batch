@@ -79,10 +79,13 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	public void close()
 	{
 		super.close();
-
-		if (!stringBuilder.toString().equalsIgnoreCase(getHeader() + "\n"))
+		String value = stringBuilder.toString();
+		log.info("PREFERENCE-BATCH-INFO Saving content to GCP Bucket with the size of - " + value.length());
+		/* We placed one position more to the length to include the return character */
+		int contentLength = getHeader().length() + 1;
+		if (value.length() > contentLength)
 		{
-			byte[] content = stringBuilder.toString().getBytes();
+			byte[] content = value.getBytes();
 			createFileOnGCS(CloudStorageUtils.generatePath(getFolderSource(), getFileName()), getJobName(), content);
 			counter.quantityRecords = quantityRecords;
 			counter.fileName = getFileName();
