@@ -119,6 +119,8 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 	@Override
 	public void write(List<? extends T> items) throws Exception
 	{
+		//TO DO: Delete this overwrite method and make some test
+		log.debug("Writing item");
 		super.write(items);
 	}
 
