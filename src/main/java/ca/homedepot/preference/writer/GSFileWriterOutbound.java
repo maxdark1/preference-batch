@@ -60,15 +60,19 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 	@Override
 	public void write(List<? extends T> items) throws Exception
 	{
-		super.write(items);
-		if (quantityRecords == 0)
-		{
-			String headers = getHeader().isBlank() ? "" : getHeader() + "\n";
-			stringBuilder.append(headers);
+		try {
+			super.write(items);
+			if (quantityRecords == 0) {
+				String headers = getHeader().isBlank() ? "" : getHeader() + "\n";
+				stringBuilder.append(headers);
+			}
+			String line = super.doWrite(items);
+			stringBuilder.append(line);
+			quantityRecords += items.size();
+		} catch (Exception ex){
+			log.error("GSFILE ERROR - " + ex.getMessage());
+			throw ex;
 		}
-		String line = super.doWrite(items);
-		stringBuilder.append(line);
-		quantityRecords += items.size();
 
 	}
 
@@ -93,6 +97,7 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 			counters.add(counter);
 			quantityRecords = 0;
 		}
+		super.saveFileRecord();
 	}
 
 	/**
