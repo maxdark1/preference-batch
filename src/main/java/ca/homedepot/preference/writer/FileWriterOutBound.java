@@ -119,7 +119,6 @@ public class FileWriterOutBound<T> extends FlatFileItemWriter<T>
 	@Override
 	public void write(List<? extends T> items) throws Exception
 	{
-		saveFileRecord();
 		super.write(items);
 	}
 
