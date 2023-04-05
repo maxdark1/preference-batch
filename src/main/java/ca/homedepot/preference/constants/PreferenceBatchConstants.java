@@ -378,4 +378,6 @@ public class PreferenceBatchConstants
 
 	public static final String DAILY_COUNT_REPORT_HEADER = "\ncount_date,THD_Y,DIFF_THD_Y,THD_N,DIFF_THD_N,THD_U,DIFF_THD_U,GC_Y,DIFF_GC_Y,GC_N,DIFF_GC_N,GC_U,DIFF_GC_U,NM_Y,DIFF_NM_Y,NM_N,DIFF_NM_N,NM_U,DIFF_NM_U,PRO_Y,DIFF_PRO_Y,PRO_N,DIFF_PRO_N,PRO_U,DIFF_PRO_U,CA_Y,DIFF_CA_Y,CA_N,DIFF_CA_N,CA_U,DIFF_CA_U";
 	public static final String FLEX_INTERNAL_HEADERS = "";
+
+	public static final String ENGLISH = "E";
 }

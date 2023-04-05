@@ -153,6 +153,7 @@ logging:
 version: PCAM-Solving Header Issue in SFMC
 
 notification:
+  eventId: 5001
   inbound:
     hybris:
       email: HDCA_online_operations@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
@@ -169,6 +170,7 @@ notification:
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
+      source: pcam
   outbound:
     CRM:
       email: biravi_sivanesan@homedepot.com,ashley_d_rosenberg@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
@@ -177,6 +179,7 @@ notification:
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
+      source: pcam
     SFMC:
       email: nishi_bagaria@homedepot.com,VENKATA_SESHA_SAI_BHARATH_MANNAVA@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Nishi Bagaria,Venkata Mannava,Shirin Khoja,Jennifer Luo,Abida Savani
@@ -184,6 +187,7 @@ notification:
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
+      source: pcam
     citi:
       email: crs.nam.cards.canada.it@citi.com,nelson.olarte@citi.com,maria.scott@citi.com,sengodi.selvi.d@citi.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Canada Citi,Nelson Olarte,Maria Scott,Sengodi Selvi,Shirin Khoja,Jennifer Luo,Abida Savani
@@ -191,3 +195,4 @@ notification:
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
+      source: pcam
