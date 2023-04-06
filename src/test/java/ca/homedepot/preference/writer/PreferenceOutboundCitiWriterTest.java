@@ -3,11 +3,9 @@ package ca.homedepot.preference.writer;
 import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,6 @@ import org.springframework.batch.item.ExecutionContext;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.CITI_SUP;
@@ -27,9 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 class PreferenceOutboundCitiWriterTest
 {
-
-	@Mock
-	FileServiceImpl fileService;
 
 	@Mock
 	Storage storage;
@@ -115,8 +109,10 @@ class PreferenceOutboundCitiWriterTest
 	}
 
 	@Test
-	void close() {
-		try {
+	void close()
+	{
+		try
+		{
 			Counters counter = new Counters(0, 0, 0);
 			List<Counters> counters = new ArrayList<>();
 			counters.add(counter);
@@ -127,7 +123,8 @@ class PreferenceOutboundCitiWriterTest
 			preferenceOutboundCitiWriter.close();
 			Mockito.verify(preferenceOutboundCitiWriter).close();
 		}
-		catch (Exception ex){
+		catch (Exception ex)
+		{
 			assertNotNull(preferenceOutboundCitiWriter);
 		}
 	}

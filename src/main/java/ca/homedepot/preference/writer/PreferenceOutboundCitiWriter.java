@@ -8,7 +8,6 @@ import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.CloudStorageUtils;
-import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.ExecutionContext;
@@ -73,29 +72,32 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	@Override
 	public void write(List<? extends CitiSuppresionOutboundDTO> items) throws Exception
 	{
-		if(items.size() > 0)
+		if (items.size() > 0)
 		{
-		for (CitiSuppresionOutboundDTO citi : items) {
-			fileBuilder.append(String.format("%-30s", citi.getFirstName() != null ? citi.getFirstName() : ""))
-					.append(String.format("%-1s", citi.getMiddleInitial() != null ? citi.getMiddleInitial() : ""))
-					.append(String.format("%-30s", citi.getLastName() != null ? citi.getLastName() : ""))
-					.append(String.format("%-60s", citi.getAddrLine1() != null ? citi.getAddrLine1() : ""))
-					.append(String.format("%-60s", citi.getAddrLine2() != null ? citi.getAddrLine2() : ""))
-					.append(String.format("%-40s", citi.getCity() != null ? citi.getCity() : ""))
-					.append(String.format("%-2s", citi.getStateCd() != null ? citi.getStateCd() : ""))
-					.append(String.format("%-7s", citi.getPostalCd() != null ? citi.getPostalCd() : ""))
-					.append(String.format("%-150s", citi.getEmailAddr() != null ? citi.getEmailAddr() : ""))
-					.append(String.format("%-10s", citi.getPhone() != null ? citi.getPhone() : ""))
-					.append(String.format("%-10s", citi.getSmsMobilePhone() != null ? citi.getSmsMobilePhone() : ""))
-					.append(String.format("%-30s", citi.getBusinessName() != null ? citi.getBusinessName() : ""))
-					.append(String.format("%-1s", citi.getDmOptOut() != null ? citi.getDmOptOut() : ""))
-					.append(String.format("%-1s", citi.getEmailOptOut() != null ? citi.getEmailOptOut() : ""))
-					.append(String.format("%-1s", citi.getPhoneOptOut() != null ? citi.getPhoneOptOut() : ""))
-					.append(String.format("%-1s", citi.getSmsOptOut() != null ? citi.getSmsOptOut() : "")).append("\n");
-			quantityRecords++;
-			log.info(citi.toString());
+			for (CitiSuppresionOutboundDTO citi : items)
+			{
+				fileBuilder.append(String.format("%-30s", citi.getFirstName() != null ? citi.getFirstName() : ""))
+						.append(String.format("%-1s", citi.getMiddleInitial() != null ? citi.getMiddleInitial() : ""))
+						.append(String.format("%-30s", citi.getLastName() != null ? citi.getLastName() : ""))
+						.append(String.format("%-60s", citi.getAddrLine1() != null ? citi.getAddrLine1() : ""))
+						.append(String.format("%-60s", citi.getAddrLine2() != null ? citi.getAddrLine2() : ""))
+						.append(String.format("%-40s", citi.getCity() != null ? citi.getCity() : ""))
+						.append(String.format("%-2s", citi.getStateCd() != null ? citi.getStateCd() : ""))
+						.append(String.format("%-7s", citi.getPostalCd() != null ? citi.getPostalCd() : ""))
+						.append(String.format("%-150s", citi.getEmailAddr() != null ? citi.getEmailAddr() : ""))
+						.append(String.format("%-10s", citi.getPhone() != null ? citi.getPhone() : ""))
+						.append(String.format("%-10s", citi.getSmsMobilePhone() != null ? citi.getSmsMobilePhone() : ""))
+						.append(String.format("%-30s", citi.getBusinessName() != null ? citi.getBusinessName() : ""))
+						.append(String.format("%-1s", citi.getDmOptOut() != null ? citi.getDmOptOut() : ""))
+						.append(String.format("%-1s", citi.getEmailOptOut() != null ? citi.getEmailOptOut() : ""))
+						.append(String.format("%-1s", citi.getPhoneOptOut() != null ? citi.getPhoneOptOut() : ""))
+						.append(String.format("%-1s", citi.getSmsOptOut() != null ? citi.getSmsOptOut() : "")).append("\n");
+				quantityRecords++;
+				log.info(citi.toString());
+			}
 		}
-		} else {
+		else
+		{
 			log.info("Nothing to Write in Citi Supression Outbound File");
 		}
 	}
