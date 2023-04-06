@@ -74,8 +74,9 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	@Override
 	public void write(List<? extends CitiSuppresionOutboundDTO> items) throws Exception
 	{
-		for (CitiSuppresionOutboundDTO citi : items)
+		if(items.size() > 0)
 		{
+		for (CitiSuppresionOutboundDTO citi : items) {
 			fileBuilder.append(String.format("%-30s", citi.getFirstName() != null ? citi.getFirstName() : ""))
 					.append(String.format("%-1s", citi.getMiddleInitial() != null ? citi.getMiddleInitial() : ""))
 					.append(String.format("%-30s", citi.getLastName() != null ? citi.getLastName() : ""))
@@ -94,6 +95,9 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 					.append(String.format("%-1s", citi.getSmsOptOut() != null ? citi.getSmsOptOut() : "")).append("\n");
 			quantityRecords++;
 			log.info(citi.toString());
+		}
+		} else {
+			log.info("Nothing to Write in Citi Supression Outbound File");
 		}
 	}
 
