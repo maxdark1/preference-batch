@@ -93,6 +93,7 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 					.append(String.format("%-1s", citi.getPhoneOptOut() != null ? citi.getPhoneOptOut() : ""))
 					.append(String.format("%-1s", citi.getSmsOptOut() != null ? citi.getSmsOptOut() : "")).append("\n");
 			quantityRecords++;
+			log.info(citi.toString());
 		}
 	}
 
