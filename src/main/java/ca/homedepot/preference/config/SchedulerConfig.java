@@ -1122,28 +1122,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@JobScope
 	@StepScope
-	public GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter(List<Counters> counters)
-	{
-
-		GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new GSFileWriterOutbound<>();
-		citiSupressionFileWriter.setName("citiSupressionFileWriter");
-		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
-		citiSupressionFileWriter.setFolderSource(folderOutbound);
-		citiSupressionFileWriter.setRepositorySource(citiPath);
-		citiSupressionFileWriter.setSource(CITI_BANK);
-		citiSupressionFileWriter.setIsCiti(true);
-		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
-		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
-		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
-		citiSupressionFileWriter.setResource();
-		citiSupressionFileWriter.setCounters(counters);
-		jobListener.setFiles(citiSupressionFileWriter.getFileName());
-
-		return citiSupressionFileWriter;
-	}
-
-	@JobScope
-	@StepScope
 	public FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter()
 	{
 		GSFileWriterOutbound<LoyaltyCompliantDTO> loyaltyComplaintWriter = new GSFileWriterOutbound<>();

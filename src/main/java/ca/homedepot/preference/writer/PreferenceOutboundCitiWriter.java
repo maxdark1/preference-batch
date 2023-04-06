@@ -32,7 +32,6 @@ import static ca.homedepot.preference.writer.GSFileWriterOutbound.createFileOnGC
 
 @Slf4j
 @Component
-@Generated
 public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOutboundDTO>, ItemStream
 {
 	@Value("${folders.citi.path}")
