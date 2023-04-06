@@ -1,7 +1,6 @@
 package ca.homedepot.preference.mapper;
 
 import ca.homedepot.preference.dto.InternalOutboundDto;
-import lombok.Generated;
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 
 import java.sql.PreparedStatement;
