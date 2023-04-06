@@ -884,7 +884,7 @@ class SchedulerConfigTest
 		catch (Exception ex)
 		{
 			assertNotNull(schedulerConfig);
-			}
+		}
 	}
 
 	@Test
@@ -966,6 +966,7 @@ class SchedulerConfigTest
 			assertNotNull(schedulerConfig);
 		}
 	}
+
 	@Test
 	void testIndividualflexOut()
 	{
@@ -981,6 +982,7 @@ class SchedulerConfigTest
 			assertNotNull(schedulerConfig);
 		}
 	}
+
 	@Test
 	void testIndividualcitiOut()
 	{
@@ -996,6 +998,7 @@ class SchedulerConfigTest
 			assertNotNull(schedulerConfig);
 		}
 	}
+
 	@Test
 	void testIndividualsfmcOut()
 	{
