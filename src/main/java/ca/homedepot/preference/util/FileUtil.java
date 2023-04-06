@@ -1,7 +1,6 @@
 package ca.homedepot.preference.util;
 
 import ca.homedepot.preference.util.validation.FileValidation;
-import lombok.Generated;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
