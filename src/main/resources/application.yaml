@@ -153,7 +153,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-Solving Header Issue in SFMC
+version: PCAM-Changing Citi Writer
 
 notification:
   inbound:
