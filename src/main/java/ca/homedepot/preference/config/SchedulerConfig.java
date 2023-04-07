@@ -94,7 +94,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 
-	private static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
+	public static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
 
 	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
 
@@ -369,6 +369,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private PreferenceOutboundProcessor preferenceOutboundProcessor;
 	@Autowired
 	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
+
+	@Autowired
+	private PreferenceOutboundCitiWriter preferenceOutboundCitiWriter;
 	@Autowired
 	private PreferenceOutboundReader preferenceOutboundReader;
 
@@ -461,6 +464,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		MasterProcessor.getMasterInfo();
 		stepListener.setJobListener(jobListener);
 		preferenceOutboundFileWriter.setJobListener(jobListener);
+		preferenceOutboundCitiWriter.setJobListener(jobListener);
 		internalOutboundFileWriter.setJobListener(jobListener);
 		internalFlexOutboundFileWriter.setJobListener(jobListener);
 	}
@@ -475,47 +479,47 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 			{
 				case "hybrisIn":
 					processRegistrationHybrisInbound();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				case "crmIn":
 					processRegistrationCRMInbound();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				case "fbSfmcIn":
 					processFBSFMCInbound();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				case "sfmcIn":
 					processSFMCOptOutsEmail();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				case "crmOut":
 					sendPreferencesToCRM();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				case "internalOut":
 					sendPreferencesToInternal();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				case "flexOut":
 					sendPreferencesToFlexInternal();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				case "citiOut":
 					sendCitiSuppresionToCitiSuppresion();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				case "sfmcOut":
 					sendEmailMarketingPreferencesToSMFC();
-					if(exitAfter)
+					if (exitAfter)
 						System.exit(0);
 					break;
 				default:
@@ -526,8 +530,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		catch (Exception ex)
 		{
 			log.error("Error procesing the job: " + ex.getMessage());
-			if(exitAfter)
-			System.exit(0);
+			if (exitAfter)
+				System.exit(0);
 		}
 	}
 
@@ -1118,28 +1122,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@JobScope
 	@StepScope
-	public GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter(List<Counters> counters)
-	{
-
-		GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new GSFileWriterOutbound<>();
-		citiSupressionFileWriter.setName("citiSupressionFileWriter");
-		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
-		citiSupressionFileWriter.setFolderSource(folderOutbound);
-		citiSupressionFileWriter.setRepositorySource(citiPath);
-		citiSupressionFileWriter.setSource(CITI_BANK);
-		citiSupressionFileWriter.setIsCiti(true);
-		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
-		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
-		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
-		citiSupressionFileWriter.setResource();
-		citiSupressionFileWriter.setCounters(counters);
-		jobListener.setFiles(citiSupressionFileWriter.getFileName());
-
-		return citiSupressionFileWriter;
-	}
-
-	@JobScope
-	@StepScope
 	public FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter()
 	{
 		GSFileWriterOutbound<LoyaltyCompliantDTO> loyaltyComplaintWriter = new GSFileWriterOutbound<>();
@@ -1608,9 +1590,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@JobScope
 	public Step citiSuppresionDBReaderFileWriterStep2(List<Counters> counters)
 	{
+		preferenceOutboundCitiWriter.setCounters(counters);
+		preferenceOutboundCitiWriter.source = CITI_SUP;
 		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
-				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter(counters)).build();
+				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(preferenceOutboundCitiWriter).build();
 	}
 
 	/**
