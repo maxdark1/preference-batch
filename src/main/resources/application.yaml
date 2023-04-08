@@ -88,7 +88,6 @@ outbound:
   salesforce:
     extract: ET_YYYYMMDD.TXT.PGP
 
-
 folders:
   inbound: inbound/
   error: error/
@@ -153,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-Solving Header Issue in SFMC
+version: PCAM-Changing Citi Writer
 
 notification:
   inbound:
