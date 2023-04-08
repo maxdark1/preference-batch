@@ -94,7 +94,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 
-	public static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
+	public static final String JOB_NAME_CITI_SUPPRESION = "newCitiSuppresionToCiti";
 
 	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
 
@@ -1577,7 +1577,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@JobScope
 	public Step citiSuppresionDBReaderStep1()
 	{
-		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
+		return stepBuilderFactory.get("citiSuppresionStep1")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundReader.outboundCitiSuppresionDBReader()).writer(outboundDTOJdbcBatchItemWriter()).build();
 	}
@@ -1592,7 +1592,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		preferenceOutboundCitiWriter.setCounters(counters);
 		preferenceOutboundCitiWriter.source = CITI_SUP;
-		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
+		return stepBuilderFactory.get("citiSuppresionStep2")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(preferenceOutboundCitiWriter).build();
 	}
