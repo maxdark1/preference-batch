@@ -170,7 +170,7 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 		{
 			throw new RuntimeException(e);
 		}
-		log.error(" PREFERENCE-BATCH: file: {} going to be write on DataBase");
+		log.error(" PREFERENCE-BATCH: file: {} going to be write on DataBase", fileNameFormat.replace("YYYYMMDD", formatter.format(new Date())));
 		setFileRecord(fileNameFormat.replace("YYYYMMDD", formatter.format(new Date())));
 		counter.quantityRecords = quantityRecords;
 		counter.fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
