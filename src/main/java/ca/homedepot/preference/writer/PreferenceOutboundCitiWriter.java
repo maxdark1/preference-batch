@@ -8,6 +8,7 @@ import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.CloudStorageUtils;
+import com.google.cloud.storage.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.item.ExecutionContext;
@@ -20,14 +21,16 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_CITI_SUPPRESION;
+import static ca.homedepot.preference.config.StorageApplicationGCS.*;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
-import static ca.homedepot.preference.writer.GSFileWriterOutbound.createFileOnGCS;
 
 @Slf4j
 @Component
@@ -43,9 +46,6 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	protected String sourceId;
 	@Autowired
 	private FileService fileService;
-
-	private JobListener jobListener;
-
 	private final Format formatter = new SimpleDateFormat("yyyyMMdd");
 
 	private int quantityRecords = 0;
@@ -61,6 +61,11 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	{
 		this.counters = counters;
 	}
+
+	public Storage storage;
+	public BlobId blobId;
+	public Blob blob;
+	public WritableByteChannel writer;
 
 	/**
 	 * Method used to generate a plain text file
@@ -93,6 +98,8 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 						.append(String.format("%-1s", citi.getPhoneOptOut() != null ? citi.getPhoneOptOut() : ""))
 						.append(String.format("%-1s", citi.getSmsOptOut() != null ? citi.getSmsOptOut() : "")).append("\n");
 				quantityRecords++;
+				writer.write(ByteBuffer.wrap(fileBuilder.toString().getBytes()));
+				fileBuilder = new StringBuilder();
 				log.info(quantityRecords + citi.toString());
 			}
 		}
@@ -137,6 +144,12 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	public void open(ExecutionContext executionContext) throws ItemStreamException
 	{
 		log.info("Daily Compliant Writer Start");
+		this.storage = StorageOptions.getDefaultInstance().getService();
+		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+		fileName = CloudStorageUtils.generatePath("outbound/", fileName);
+		BlobId blobId = BlobId.of(getBucketName(), fileName);
+		BlobInfo file = BlobInfo.newBuilder(blobId).build();
+		writer = storage().create(file).writer();
 	}
 
 	@Override
@@ -148,22 +161,22 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	@Override
 	public void close() throws ItemStreamException
 	{
-		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-		jobListener.setFiles(fileName);
-		createFileOnGCS(CloudStorageUtils.generatePath(folderSource, fileName), JOB_NAME_CITI_SUPPRESION,
-				fileBuilder.toString().getBytes());
-		fileBuilder = new StringBuilder();
-		log.error(" PREFERENCE-BATCH: file: {} going to be write on DataBase", fileName);
-		setFileRecord(fileName);
+		try
+		{
+			writer.close();
+			log.info("Writter Closed");
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+		log.error(" PREFERENCE-BATCH: file: {} going to be write on DataBase", fileNameFormat.replace("YYYYMMDD", formatter.format(new Date())));
+		setFileRecord(fileNameFormat.replace("YYYYMMDD", formatter.format(new Date())));
 		counter.quantityRecords = quantityRecords;
-		counter.fileName = fileName;
+		counter.fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 		counter.date = new Date().toString();
 		counters.add(counter);
 		quantityRecords = 0;
 	}
 
-	public void setJobListener(JobListener jobListener)
-	{
-		this.jobListener = jobListener;
-	}
 }

@@ -464,7 +464,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		MasterProcessor.getMasterInfo();
 		stepListener.setJobListener(jobListener);
 		preferenceOutboundFileWriter.setJobListener(jobListener);
-		preferenceOutboundCitiWriter.setJobListener(jobListener);
 		internalOutboundFileWriter.setJobListener(jobListener);
 		internalFlexOutboundFileWriter.setJobListener(jobListener);
 	}

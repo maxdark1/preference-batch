@@ -80,7 +80,6 @@ class PreferenceOutboundCitiWriterTest
 		MasterProcessor.setMasterList(masterList);
 
 		executionContext = new ExecutionContext();
-		preferenceOutboundCitiWriter.setJobListener(jobListener);
 	}
 
 
@@ -119,7 +118,6 @@ class PreferenceOutboundCitiWriterTest
 			preferenceOutboundCitiWriter.source = CITI_SUP;
 			preferenceOutboundCitiWriter.setCounters(counters);
 			preferenceOutboundCitiWriter.sourceId = BigDecimal.TEN.toString();
-			preferenceOutboundCitiWriter.setJobListener(jobListener);
 			preferenceOutboundCitiWriter.close();
 			Mockito.verify(preferenceOutboundCitiWriter).close();
 		}
