@@ -117,7 +117,6 @@ public class GSFileWriterOutbound<T> extends FileWriterOutBound<T>
 			BlobId blobId = BlobId.of(getBucketName(), filename);
 			BlobInfo file = BlobInfo.newBuilder(blobId).build();
 			storage().create(file, content);
-
 		}
 		catch (StorageException e)
 		{
