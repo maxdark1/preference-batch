@@ -102,7 +102,7 @@ folders:
   sfmc:
     path: sfmc/
   citi:
-    path:
+    path: outbound/citi/
   internal:
     path:
   salesforce:
