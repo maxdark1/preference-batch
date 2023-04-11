@@ -521,6 +521,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 					if (exitAfter)
 						System.exit(0);
 					break;
+				case "dailyOut":
+					triggeringCreationOfDailyCountReport();
+					if (exitAfter)
+						System.exit(0);
+					break;
 				default:
 					System.exit(0);
 					break;
