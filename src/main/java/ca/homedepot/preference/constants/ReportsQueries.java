@@ -16,7 +16,7 @@ public class ReportsQueries
 			+ "\t\tAND CAST(inserted_date as DATE) >= CAST(now() - '7 day'::INTERVAL as DATE) \n" + "UNION ALL\n"
 			+ "SELECT 'Filename(Outbounds)' as \"1\",'# of records' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n"
 			+ "UNION ALL\n"
-			+ "SELECT file_name as \"1\", quantity_loaded as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM hdpc_email_notification\n"
+			+ "SELECT file_name as \"1\", quantity_in_file as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\" FROM hdpc_email_notification\n"
 			+ "WHERE (type_file like '%OUTBOUND%' OR type_file like '%outbound%')\n"
 			+ "       AND CAST(inserted_date as DATE) >= CAST(now() - '7 day'::INTERVAL as DATE) \n" + "UNION ALL\n"
 			+ "SELECT '' as \"1\", '' as \"2\", '' as \"3\", '' as \"4\", '' as \"5\", '' as \"6\", '' as \"7\", '' as \"8\", '' as \"9\"\n"
