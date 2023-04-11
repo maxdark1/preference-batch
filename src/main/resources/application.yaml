@@ -4,10 +4,10 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password:
+    password: sasa
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: public
+      schema: pcam
   batch:
     job:
       enabled: false
@@ -40,19 +40,22 @@ spring:
 #  h2:
 #    console:
 #      enabled: false
+process: citiOut
+exitAfter: true
 cron:
   job:
     hybrisIngestion: 0 30 22 * * ?
     crmIngestion: 0 30 22 * * ?
     fbsfmcIngestion: 0 0 3 * * ?
     ingestSFMCOutlookUnsubscribed: 0 30 22 * * ?
-    sendPreferencesToCRM: 0 0 18 * * ?
-    sendPreferencesToCitiSuppresion: 0 0 10 ? * MON
+    sendPreferencesToCRM: 0 30 22 * * ?
+    sendPreferencesToCitiSuppresion: 0 30 22 * * ?
     sendPreferencesToInternalDestination: 0 0 10 ? * MON
     sendWeeklyLoyaltyComplaintToSource: 0 0 10 ? * SUN
     sendPreferencesToFlexInternalDestination: 0 0 18 * * ?
     sendPreferencesToSFMC: 0 0 18 * * ?
     createDailyCountReport: 0 0 7 * * ?
+    individualProcess: 30 * * * * *
 server:
   port: 8080
 
@@ -85,7 +88,6 @@ outbound:
   salesforce:
     extract: ET_YYYYMMDD.TXT.PGP
 
-
 folders:
   inbound: inbound/
   error: error/
@@ -100,7 +102,7 @@ folders:
   sfmc:
     path: sfmc/
   citi:
-    path:
+    path: outbound/citi/
   internal:
     path:
   salesforce:
@@ -122,28 +124,16 @@ preference:
     layoutc:
       chunk: 10
     outboundCRM:
-      pageSize: 100
-      fetchSize: 100
       chunk: 10
     outboundCiti:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     outboundInternal:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     outboundSalesforce:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     outboundLoyalty:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     outboundFlexAttributes:
-      pageSize: 100
-      fetchSize: 100
       chunk: 20
     dailyCountReport:
       chunk: 5
@@ -157,12 +147,12 @@ gcp:
 logging:
   level:
     ca.homedepot.preference: INFO
-    root: INFO
+    root: ERROR
     org:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-Outbound Pagination
+version: PCAM-Changing Citi Writer
 
 notification:
   inbound:

@@ -94,7 +94,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	public static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
 
-	private static final String JOB_NAME_CITI_SUPPRESION = "sendCitiSuppresionToCiti";
+	public static final String JOB_NAME_CITI_SUPPRESION = "newCitiSuppresionToCiti";
 
 	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
 
@@ -369,6 +369,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	private PreferenceOutboundProcessor preferenceOutboundProcessor;
 	@Autowired
 	private PreferenceOutboundFileWriter preferenceOutboundFileWriter;
+
+	@Autowired
+	private PreferenceOutboundCitiWriter preferenceOutboundCitiWriter;
 	@Autowired
 	private PreferenceOutboundReader preferenceOutboundReader;
 
@@ -400,6 +403,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Autowired
 	private Environment env;
+
+	@Value("${process}")
+	public String individualJob;
+
+	@Value("${exitAfter}")
+	public Boolean exitAfter;
 
 	@Autowired
 	public void setUpListener()
@@ -459,6 +468,72 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		internalFlexOutboundFileWriter.setJobListener(jobListener);
 	}
 
+	@Scheduled(cron = "${cron.job.individualProcess}")
+	public void individualExecution()
+	{
+		log.error("Individual Job Starts: " + individualJob);
+		try
+		{
+			switch (individualJob)
+			{
+				case "hybrisIn":
+					processRegistrationHybrisInbound();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				case "crmIn":
+					processRegistrationCRMInbound();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				case "fbSfmcIn":
+					processFBSFMCInbound();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				case "sfmcIn":
+					processSFMCOptOutsEmail();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				case "crmOut":
+					sendPreferencesToCRM();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				case "internalOut":
+					sendPreferencesToInternal();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				case "flexOut":
+					sendPreferencesToFlexInternal();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				case "citiOut":
+					sendCitiSuppresionToCitiSuppresion();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				case "sfmcOut":
+					sendEmailMarketingPreferencesToSMFC();
+					if (exitAfter)
+						System.exit(0);
+					break;
+				default:
+					System.exit(0);
+					break;
+			}
+		}
+		catch (Exception ex)
+		{
+			log.error("Error procesing the job: " + ex.getMessage());
+			if (exitAfter)
+				System.exit(0);
+		}
+	}
+
 	/**
 	 * Triggers hybris job in a determinated period of time
 	 *
@@ -468,9 +543,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.hybrisIngestion}")
+
+
+	//@Scheduled(cron = "${cron.job.hybrisIngestion}")
 	public void processRegistrationHybrisInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Registration Inbound Hybris : Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -492,9 +569,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.crmIngestion}")
+	//@Scheduled(cron = "${cron.job.crmIngestion}")
 	public void processRegistrationCRMInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Registration Inbound CRM: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -515,9 +592,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return void
 	 *
 	 */
-	@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
+	//@Scheduled(cron = "${cron.job.fbsfmcIngestion}")
 	public void processFBSFMCInbound() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Registration Inbound FB-SFMC: Registration Job started at :" + new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -538,9 +615,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
+	//@Scheduled(cron = "${cron.job.ingestSFMCOutlookUnsubscribed}")
 	public void processSFMCOptOutsEmail() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Ingest SFMC Opt-Outs Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -555,12 +632,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Triggers CRM Outbound Process in a determinated period of time
-	 * 
+	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToCRM}")
 	public void sendPreferencesToCRM() throws JobExecutionAlreadyRunningException, IllegalArgumentException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
+			JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To CRM Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -580,12 +657,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @throws IllegalArgumentException
 	 * @throws JobRestartException
 	 * @throws JobInstanceAlreadyCompleteException
-	 * @throws JobParametersInvalidException,
-	 *            Exception
+	 * @throws JobParametersInvalidException
 	 */
-	@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToInternalDestination}")
 	public void sendPreferencesToInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To Internal Destination Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -596,9 +672,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To Internal Destination Job finished with status : " + execution.getStatus());
 	}
 
-	@Scheduled(cron = "${cron.job.sendPreferencesToFlexInternalDestination}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToFlexInternalDestination}")
 	public void sendPreferencesToFlexInternal() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Preferences To Flex Internal Destination Job started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -609,9 +685,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Preferences To Flex Internal Destination Job finished with status : " + execution.getStatus());
 	}
 
-	@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToCitiSuppresion}")
 	public void sendCitiSuppresionToCitiSuppresion() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception, Exception
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Citi Suppresion file to source started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -623,9 +699,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		log.info(" Send Citi Suppresion file to source finished with status : " + execution.getStatus());
 	}
 
-	@Scheduled(cron = "${cron.job.sendWeeklyLoyaltyComplaintToSource}")
+	//@Scheduled(cron = "${cron.job.sendWeeklyLoyaltyComplaintToSource}")
 	public void sendLoyaltyComplaintToSourceScheduler() throws JobExecutionAlreadyRunningException, IllegalArgumentException,
-			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException, Exception
+			JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException
 	{
 		log.info(" Send Weekly Loyalty Complaint to Source started at: {} ", new Date());
 		JobParameters param = new JobParametersBuilder()
@@ -640,7 +716,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.sendPreferencesToSFMC}")
+	//@Scheduled(cron = "${cron.job.sendPreferencesToSFMC}")
 	public void sendEmailMarketingPreferencesToSMFC() throws Exception
 	{
 		log.info(" Send Email Marketing Preferences To SMFC Job started at: {} ", new Date());
@@ -658,7 +734,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @throws Exception
 	 */
-	@Scheduled(cron = "${cron.job.createDailyCountReport}")
+	//@Scheduled(cron = "${cron.job.createDailyCountReport}")
 	public void triggeringCreationOfDailyCountReport() throws Exception
 	{
 		log.info(" Creation of Daily Count Report Job started at: {} ", new Date());
@@ -1045,28 +1121,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@JobScope
 	@StepScope
-	public FileWriterOutBound<CitiSuppresionOutboundDTO> citiSupressionFileWriter(List<Counters> counters)
-	{
-
-		GSFileWriterOutbound<CitiSuppresionOutboundDTO> citiSupressionFileWriter = new GSFileWriterOutbound<>();
-		citiSupressionFileWriter.setName("citiSupressionFileWriter");
-		citiSupressionFileWriter.setFileService(hybrisWriterListener.getFileService());
-		citiSupressionFileWriter.setFolderSource(folderOutbound);
-		citiSupressionFileWriter.setRepositorySource(citiPath);
-		citiSupressionFileWriter.setSource(CITI_BANK);
-		citiSupressionFileWriter.setIsCiti(true);
-		citiSupressionFileWriter.setFileNameFormat(citiFileNameFormat);
-		citiSupressionFileWriter.setJobName(JOB_NAME_CITI_SUPPRESION);
-		citiSupressionFileWriter.setNames(CITI_SUPRESSION_NAMES);
-		citiSupressionFileWriter.setResource();
-		citiSupressionFileWriter.setCounters(counters);
-		jobListener.setFiles(citiSupressionFileWriter.getFileName());
-
-		return citiSupressionFileWriter;
-	}
-
-	@JobScope
-	@StepScope
 	public FileWriterOutBound<LoyaltyCompliantDTO> loyaltyComplaintWriter()
 	{
 		GSFileWriterOutbound<LoyaltyCompliantDTO> loyaltyComplaintWriter = new GSFileWriterOutbound<>();
@@ -1176,7 +1230,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Crm outbound job process.
-	 * 
+	 *
 	 * @return
 	 */
 
@@ -1223,7 +1277,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build().build();
 	}
 
-	public Step readSendPreferencesToFlexInternalStep1() throws Exception
+	public Step readSendPreferencesToFlexInternalStep1()
 	{
 		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step1")
 				.<InternalFlexOutboundDTO, InternalFlexOutboundDTO> chunk(chunkOutboundFlexAttributes)
@@ -1231,7 +1285,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.build();
 	}
 
-	public Step readSendPreferencesToFlexInternalStep2() throws Exception
+	public Step readSendPreferencesToFlexInternalStep2()
 	{
 		return stepBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION + "Step2")
 				.<InternalFlexOutboundDTO, InternalFlexOutboundProcessorDTO> chunk(chunkOutboundFlexAttributes)
@@ -1246,7 +1300,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return
 	 */
-	public Step readSendPreferencesToInternalStep1() throws Exception
+	public Step readSendPreferencesToInternalStep1()
 	{
 		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step1")
 				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundInternal)
@@ -1258,7 +1312,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return
 	 */
-	public Step readSendPreferencesToInternalStep2() throws Exception
+	public Step readSendPreferencesToInternalStep2()
 	{
 		return stepBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION + "Step2")
 				.<InternalOutboundDto, InternalOutboundProcessorDto> chunk(chunkOutboundInternal)
@@ -1314,7 +1368,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Jon
 	 */
-	public Job sendCitiSuppresionToCiti(List<Counters> counters) throws Exception
+	public Job sendCitiSuppresionToCiti(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_CITI_SUPPRESION).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(citiSuppresionDBReaderStep1()).on(COMPLETED_STATUS).to(citiSuppresionDBReaderFileWriterStep2(counters)).build()
@@ -1327,7 +1381,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Job
 	 */
 	@JobScope
-	public Job sendLoyaltyComplaintToSource() throws Exception
+	public Job sendLoyaltyComplaintToSource()
 	{
 		return jobBuilderFactory.get(JOB_NAME_LOYALTY_COMPLAINT).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(loyaltyComplaintDBReaderStep1()).on(COMPLETED_STATUS).to(loyaltyComplaintDBReaderFileWriterStep2()).build()
@@ -1339,7 +1393,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Job
 	 */
-	public Job sendPreferencesToSMFC(List<Counters> counters) throws Exception
+	public Job sendPreferencesToSMFC(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(salesforceExtractDBReaderStep1()).on(COMPLETED_STATUS).to(salesforceExtractDBReaderFileWriterStep2(counters))
@@ -1361,10 +1415,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 1 for Send Preferences to CRM Outbound
-	 * 
+	 *
 	 * @return
 	 */
-	public Step readSendPreferencesToCRMStep1() throws Exception
+	public Step readSendPreferencesToCRMStep1()
 	{
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep1")
 				.<PreferenceOutboundDto, PreferenceOutboundDto> chunk(chunkOutboundCRM)
@@ -1373,10 +1427,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	/**
 	 * Step 2 for Send Preferences to CRM Outbound
-	 * 
+	 *
 	 * @return
 	 */
-	public Step readSendPreferencesToCRMStep2(List<Counters> counters) throws Exception
+	public Step readSendPreferencesToCRMStep2(List<Counters> counters)
 	{
 		preferenceOutboundFileWriter.setCounters(counters);
 		return stepBuilderFactory.get("readSendPreferencesToCRMStep2")
@@ -1520,9 +1574,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Step 1 for citi suppresion
 	 */
 	@JobScope
-	public Step citiSuppresionDBReaderStep1() throws Exception
+	public Step citiSuppresionDBReaderStep1()
 	{
-		return stepBuilderFactory.get("citiSuppresionDBReaderStep1")
+		return stepBuilderFactory.get("citiSuppresionStep1")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
 				.reader(preferenceOutboundReader.outboundCitiSuppresionDBReader()).writer(outboundDTOJdbcBatchItemWriter()).build();
 	}
@@ -1533,11 +1587,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 * @return Step 2 for citi suppresion
 	 */
 	@JobScope
-	public Step citiSuppresionDBReaderFileWriterStep2(List<Counters> counters) throws Exception
+	public Step citiSuppresionDBReaderFileWriterStep2(List<Counters> counters)
 	{
-		return stepBuilderFactory.get("citiSuppresionDBReaderFileWriterStep2")
+		preferenceOutboundCitiWriter.setCounters(counters);
+		preferenceOutboundCitiWriter.source = CITI_SUP;
+		return stepBuilderFactory.get("citiSuppresionStep2")
 				.<CitiSuppresionOutboundDTO, CitiSuppresionOutboundDTO> chunk(chunkOutboundCiti)
-				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(citiSupressionFileWriter(counters)).build();
+				.reader(preferenceOutboundDBReader.citiSuppressionDBTableReader()).writer(preferenceOutboundCitiWriter).build();
 	}
 
 	/**
@@ -1545,7 +1601,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Step 1 for salesforce Extract
 	 */
-	public Step salesforceExtractDBReaderStep1() throws Exception
+	public Step salesforceExtractDBReaderStep1()
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderStep1")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
@@ -1559,7 +1615,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 *
 	 * @return Step 2 for salesforce Extract
 	 */
-	public Step salesforceExtractDBReaderFileWriterStep2(List<Counters> counters) throws Exception
+	public Step salesforceExtractDBReaderFileWriterStep2(List<Counters> counters)
 	{
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
@@ -1568,7 +1624,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@JobScope
-	public Step loyaltyComplaintDBReaderStep1() throws Exception
+	public Step loyaltyComplaintDBReaderStep1()
 	{
 		return stepBuilderFactory.get("loyaltyComplaintDBReaderStep1")
 				.<InternalOutboundDto, InternalOutboundDto> chunk(chunkOutboundLoyalty)
@@ -1576,7 +1632,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	}
 
 	@JobScope
-	public Step loyaltyComplaintDBReaderFileWriterStep2() throws Exception
+	public Step loyaltyComplaintDBReaderFileWriterStep2()
 	{
 		return stepBuilderFactory.get("loyaltyComplaintDBReaderFileWriterStep2")
 				.<LoyaltyCompliantDTO, LoyaltyCompliantDTO> chunk(chunkOutboundLoyalty)

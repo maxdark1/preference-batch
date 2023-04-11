@@ -6,11 +6,9 @@ import ca.homedepot.preference.constants.ReportsQueries;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.mapper.*;
 import ca.homedepot.preference.service.OutboundService;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +17,8 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@Setter
+
+
 public class PreferenceOutboundReader
 {
 	@Autowired
@@ -28,60 +27,48 @@ public class PreferenceOutboundReader
 	@Autowired
 	private OutboundService outboundService;
 
-	@Autowired
-	private PagingAttributes pagingAttributes;
-
 	/**
 	 * This method is used to read the necessary data from DB
 	 * 
 	 * @return
 	 */
-	public JdbcPagingItemReader<PreferenceOutboundDto> outboundDBReader() throws Exception
+	public JdbcCursorItemReader<PreferenceOutboundDto> outboundDBReader()
 	{
 		truncateTable();
 		log.info(" Preference Outbound : Preference Outbound Reader Starter :" + new Date());
-		JdbcPagingItemReader<PreferenceOutboundDto> reader = new JdbcPagingItemReader<>();
+		JdbcCursorItemReader<PreferenceOutboundDto> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setFetchSize(pagingAttributes.getFetchSizeCRM());
-		reader.setPageSize(pagingAttributes.getPageSizeCRM());
-		reader.setQueryProvider(pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND));
+		reader.setSql(OutboundSqlQueriesConstants.SQL_GET_CRM_OUTBOUND);
 		reader.setRowMapper(new PreferenceOutboundMapper());
-		reader.afterPropertiesSet();
+
 		log.info(" Preference Outbound : Preference Outbound Reader End :" + new Date());
 		return reader;
 	}
 
-	public JdbcPagingItemReader<CitiSuppresionOutboundDTO> outboundCitiSuppresionDBReader() throws Exception
+	public JdbcCursorItemReader<CitiSuppresionOutboundDTO> outboundCitiSuppresionDBReader()
 	{
 		purgeCitiSuppresionTable();
 		log.info(" Preference Outbound : Preference Outbound Reader for Citi Suppresion Started at:" + new Date());
-		JdbcPagingItemReader<CitiSuppresionOutboundDTO> reader = new JdbcPagingItemReader<>();
+		JdbcCursorItemReader<CitiSuppresionOutboundDTO> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setFetchSize(pagingAttributes.getFetchSizeCiti());
-		reader.setPageSize(pagingAttributes.getPageSizeCiti());
-		reader.setQueryProvider(
-				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1));
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_PREFERENCES_FOR_CITI_SUP_STEP_1);
 		reader.setRowMapper(new CitiSuppresionOutboundMapper());
-		reader.afterPropertiesSet();
 
 		return reader;
 	}
 
-	public JdbcPagingItemReader<SalesforceExtractOutboundDTO> salesforceExtractOutboundDBReader() throws Exception
+	public JdbcCursorItemReader<SalesforceExtractOutboundDTO> salesforceExtractOutboundDBReader()
 	{
 		purgeSalesforceExtractTable();
 		log.info(" Preference Outbound : Preference Outbound Reader for Salesforce Extract Started at:" + new Date());
-		JdbcPagingItemReader<SalesforceExtractOutboundDTO> reader = new JdbcPagingItemReader<>();
+		JdbcCursorItemReader<SalesforceExtractOutboundDTO> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setFetchSize(pagingAttributes.getFetchSizeSFMC());
-		reader.setPageSize(pagingAttributes.getPageSizeSFMC());
-		reader.setQueryProvider(
-				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND));
+		reader.setSql(OutboundSqlQueriesConstants.SQL_GET_EMAIL_PREFERENCES_OUTBOUND);
 		reader.setRowMapper(new SalesforceExtractOutboundMapper());
-		reader.afterPropertiesSet();
+
 		return reader;
 	}
 
@@ -90,61 +77,49 @@ public class PreferenceOutboundReader
 	 *
 	 * @return
 	 */
-	public JdbcPagingItemReader<InternalOutboundDto> outboundInternalDBReader() throws Exception
+	public ItemReader<InternalOutboundDto> outboundInternalDBReader()
 	{
 		purgeProgramCompliant();
 		log.info(" Internal Program Outbound : Internal Program Outbound Reader Starter :" + new Date());
-		JdbcPagingItemReader<InternalOutboundDto> reader = new JdbcPagingItemReader<>();
+		JdbcCursorItemReader<InternalOutboundDto> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setFetchSize(pagingAttributes.getFetchSizeInternal());
-		reader.setPageSize(pagingAttributes.getPageSizeInternal());
-		reader.setQueryProvider(
-				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION));
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION);
 		reader.setRowMapper(new InternalOutboundStep1Mapper());
-		reader.afterPropertiesSet();
 
 		log.info(" Internal Program Outbound : Internal Program Outbound Reader End :" + new Date());
 		return reader;
 	}
 
-	public JdbcPagingItemReader<InternalFlexOutboundDTO> outboundInternalFlexDBReader() throws Exception
+	public ItemReader<InternalFlexOutboundDTO> outboundInternalFlexDBReader()
 	{
 		purgeFlexAttributes();
 		log.info(" Internal Flex Outbound : Internal Flex Attributes Outbound Reader Starter :" + new Date());
-		JdbcPagingItemReader<InternalFlexOutboundDTO> reader = new JdbcPagingItemReader<>();
+		JdbcCursorItemReader<InternalFlexOutboundDTO> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setFetchSize(pagingAttributes.getFetchSizeFlexAttributes());
-		reader.setPageSize(pagingAttributes.getPageSizeFlexAttributes());
-		reader.setQueryProvider(pagingAttributes.queryProvider("row_number",
-				OutboundSqlQueriesConstants.SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION));
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_FOR_FLEX_ATTRIBUTES_INTERNAL_DESTINATION);
 		reader.setRowMapper(new InternalFlexOutboundStep1Mapper());
-		reader.afterPropertiesSet();
 
 		log.info(" Internal flex Outbound : Internal Flex Attributes Outbound Reader End :" + new Date());
 		return reader;
 	}
 
-	public JdbcPagingItemReader<InternalOutboundDto> outboundLoyaltyComplaintWeekly() throws Exception
+	public JdbcCursorItemReader<InternalOutboundDto> outboundLoyaltyComplaintWeekly()
 	{
 		purgeLoyaltyComplaint();
 		log.info(" Loyalty Complaint Outbound : Loyalty Complaint Outbound Reader Starter :" + new Date());
-		JdbcPagingItemReader<InternalOutboundDto> reader = new JdbcPagingItemReader<>();
+		JdbcCursorItemReader<InternalOutboundDto> reader = new JdbcCursorItemReader<>();
 
 		reader.setDataSource(dataSource);
-		reader.setFetchSize(pagingAttributes.getFetchSizeLoyalty());
-		reader.setPageSize(pagingAttributes.getPageSizeLoyalty());
-		reader.setQueryProvider(
-				pagingAttributes.queryProvider("row_number", OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION));
+		reader.setSql(OutboundSqlQueriesConstants.SQL_SELECT_FOR_INTERNAL_DESTINATION);
 		reader.setRowMapper(new InternalOutboundStep1Mapper());
-		reader.afterPropertiesSet();
 
 		log.info(" Loyalty Complaint Outbound : Loyalty Complaint Outbound Reader End :" + new Date());
 		return reader;
 	}
 
-	public ItemReader<DailyCountReportDTOStep1> dailyCountReportStep1()
+	public JdbcCursorItemReader<DailyCountReportDTOStep1> dailyCountReportStep1()
 	{
 		JdbcCursorItemReader<DailyCountReportDTOStep1> reader = new JdbcCursorItemReader<>();
 
