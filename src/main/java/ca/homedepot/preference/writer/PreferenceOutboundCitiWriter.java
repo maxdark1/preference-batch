@@ -146,7 +146,7 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 		log.info("Daily Compliant Writer Start");
 		this.storage = StorageOptions.getDefaultInstance().getService();
 		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-		fileName = CloudStorageUtils.generatePath("outbound/", fileName);
+		fileName = CloudStorageUtils.generatePath(repositorySource, fileName);
 		BlobId blobId = BlobId.of(getBucketName(), fileName);
 		BlobInfo file = BlobInfo.newBuilder(blobId).build();
 		writer = storage().create(file).writer();
