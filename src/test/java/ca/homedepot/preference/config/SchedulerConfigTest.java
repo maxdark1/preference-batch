@@ -166,6 +166,9 @@ class SchedulerConfigTest
 	@Mock
 	CloudStorageUtils cloudStorageUtils;
 
+	@Mock
+	PreferenceOutboundCitiWriter preferenceOutboundCitiWriter;
+
 	@InjectMocks
 	@Spy
 	GSFileWriterOutbound<CitiSuppresionOutboundDTO> gsFileWriterOutbound;
@@ -261,6 +264,7 @@ class SchedulerConfigTest
 		schedulerConfig.setDailyCompliantNameFormat("dailyCompliantYYYYMMDD.csv");
 		schedulerConfig.setInternalFlexOutboundFileWriter(new InternalFlexOutboundFileWriter());
 		schedulerConfig.setInternalFlexOutboundProcessor(new InternalFlexOutboundProcessor());
+		schedulerConfig.setPreferenceOutboundCitiWriter(preferenceOutboundCitiWriter);
 		//setFinalStaticField(schedulerConfig.getClass(), "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
 
 
@@ -594,7 +598,7 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(PreferenceOutboundCitiWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.citiSuppresionDBReaderFileWriterStep2(new ArrayList<>()));

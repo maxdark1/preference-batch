@@ -7,7 +7,8 @@ import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.util.CloudStorageUtils;
-import com.google.cloud.storage.Storage;
+import com.google.cloud.WriteChannel;
+import com.google.cloud.storage.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,11 +16,14 @@ import org.mockito.*;
 import org.springframework.batch.item.ExecutionContext;
 
 import java.math.BigDecimal;
+import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ca.homedepot.preference.config.StorageApplicationGCS.getBucketName;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.CITI_SUP;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 
 @Slf4j
 class PreferenceOutboundCitiWriterTest
@@ -65,7 +69,7 @@ class PreferenceOutboundCitiWriterTest
 		Master sourceId = new Master();
 		sourceId.setMasterId(BigDecimal.ONE);
 		sourceId.setKeyValue("SOURCE");
-		sourceId.setValueVal("citi_bank");
+		sourceId.setValueVal("citisup");
 
 		Master fileStatus = new Master();
 		fileStatus.setMasterId(BigDecimal.TEN);
@@ -87,7 +91,7 @@ class PreferenceOutboundCitiWriterTest
 	@Test
 	void write() throws Exception
 	{
-
+		preferenceOutboundCitiWriter.writer = Mockito.mock(WriteChannel.class);
 		preferenceOutboundCitiWriter.write(items);
 		Mockito.verify(preferenceOutboundCitiWriter).write(items);
 
@@ -96,6 +100,9 @@ class PreferenceOutboundCitiWriterTest
 	@Test
 	void open()
 	{
+		Blob blob = Mockito.mock(Blob.class);
+		Mockito.when(storage.create(any(BlobInfo.class))).thenReturn(blob);
+		Mockito.when(blob.writer()).thenReturn(Mockito.mock(WriteChannel.class));
 		preferenceOutboundCitiWriter.open(executionContext);
 		Mockito.verify(preferenceOutboundCitiWriter).open(executionContext);
 	}
