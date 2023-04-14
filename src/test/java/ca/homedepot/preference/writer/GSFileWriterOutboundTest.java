@@ -2,7 +2,9 @@ package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.config.StorageApplicationGCS;
 import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
+import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.Counters;
+import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
@@ -13,6 +15,7 @@ import org.mockito.*;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +65,24 @@ class GSFileWriterOutboundTest
 		citi.setPhone("phone");
 
 		citiSuppresionOutboundDTOList.add(citi);
+
+		List<Master> masterList = new ArrayList<>();
+		Master sourceId = new Master();
+		sourceId.setMasterId(BigDecimal.ONE);
+		sourceId.setKeyValue("SOURCE_ID");
+		sourceId.setValueVal("citisup");
+
+		Master fileStatus = new Master();
+		fileStatus.setMasterId(BigDecimal.TEN);
+		fileStatus.setKeyValue("STATUS");
+		fileStatus.setValueVal("VALID");
+		masterList.add(sourceId);
+		masterList.add(fileStatus);
+
+		masterList.add(new Master(new BigDecimal("16"), new BigDecimal("5"), "JOB_STATUS", "IN PROGRESS", true, null));
+		masterList.add(new Master(new BigDecimal("10"), new BigDecimal("10"), "SOURCE_ID", "IN PROGRESS", true, BigDecimal.TEN));
+
+		MasterProcessor.setMasterList(masterList);
 	}
 
 	@Test
@@ -70,6 +91,7 @@ class GSFileWriterOutboundTest
 		Counters counter = new Counters(0, 0, 0);
 		List<Counters> counters = new ArrayList<>();
 		counters.add(counter);
+		gsFileWriterOutbound.setSource("citisup");
 		gsFileWriterOutbound.setCounters(counters);
 		gsFileWriterOutbound.close();
 		Mockito.verify(gsFileWriterOutbound).close();

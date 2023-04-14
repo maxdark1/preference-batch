@@ -27,5 +27,6 @@ public class CitiSuppresionPreparedStatement implements ItemPreparedStatementSet
 		ps.setString(14, item.getEmailOptOut());
 		ps.setString(15, item.getPhoneOptOut());
 		ps.setString(16, item.getSmsOptOut());
+
 	}
 }

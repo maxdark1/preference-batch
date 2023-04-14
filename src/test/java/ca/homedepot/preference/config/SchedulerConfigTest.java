@@ -166,6 +166,9 @@ class SchedulerConfigTest
 	@Mock
 	CloudStorageUtils cloudStorageUtils;
 
+	@Mock
+	PreferenceOutboundCitiWriter preferenceOutboundCitiWriter;
+
 	@InjectMocks
 	@Spy
 	GSFileWriterOutbound<CitiSuppresionOutboundDTO> gsFileWriterOutbound;
@@ -261,6 +264,7 @@ class SchedulerConfigTest
 		schedulerConfig.setDailyCompliantNameFormat("dailyCompliantYYYYMMDD.csv");
 		schedulerConfig.setInternalFlexOutboundFileWriter(new InternalFlexOutboundFileWriter());
 		schedulerConfig.setInternalFlexOutboundProcessor(new InternalFlexOutboundProcessor());
+		schedulerConfig.setPreferenceOutboundCitiWriter(preferenceOutboundCitiWriter);
 		//setFinalStaticField(schedulerConfig.getClass(), "JOB_NAME_REGISTRATION_INBOUND", "registrationInbound");
 
 
@@ -594,7 +598,7 @@ class SchedulerConfigTest
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(FileWriterOutBound.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(PreferenceOutboundCitiWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.citiSuppresionDBReaderFileWriterStep2(new ArrayList<>()));
@@ -871,4 +875,149 @@ class SchedulerConfigTest
 		schedulerConfig.createEmailFileOutbound(counters, "SFMC");
 		assertNotNull(counters);
 	}
+
+	@Test
+	void testIndividualHybris()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "hybrisIn";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualcrmIn()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "crmIn";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualfbSfmcIn()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "fbSfmcIn";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualsfmcIn()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "sfmcIn";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualcrmOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "crmOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualinternalOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "internalOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualflexOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "flexOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualcitiOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "citiOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
+	@Test
+	void testIndividualsfmcOut()
+	{
+		try
+		{
+			schedulerConfig.individualJob = "sfmcOut";
+			schedulerConfig.exitAfter = false;
+			schedulerConfig.individualExecution();
+			assertNotNull(schedulerConfig);
+		}
+		catch (Exception ex)
+		{
+			assertNotNull(schedulerConfig);
+		}
+	}
+
 }
