@@ -1,7 +1,7 @@
 package ca.homedepot.preference.writer;
 
 import ca.homedepot.preference.dto.InternalOutboundDto;
-import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.OutboundServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;

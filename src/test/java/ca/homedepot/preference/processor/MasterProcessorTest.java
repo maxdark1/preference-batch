@@ -1,7 +1,7 @@
 package ca.homedepot.preference.processor;
 
 import ca.homedepot.preference.dto.Master;
-import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.PreferenceServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

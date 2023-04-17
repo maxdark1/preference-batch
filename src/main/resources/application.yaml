@@ -40,7 +40,7 @@ spring:
 #  h2:
 #    console:
 #      enabled: false
-process: citiOut
+process: hybrisIn
 exitAfter: true
 cron:
   job:
@@ -57,7 +57,7 @@ cron:
     createDailyCountReport: 0 0 7 * * ?
     individualProcess: 30 * * * * *
 server:
-  port: 8080
+  port: 8081
 
 feign:
   retry:
@@ -65,7 +65,7 @@ feign:
     maxPeriod: 3000
     maxAttempts: 3
   restapi:
-    baseurl: http://localhost:8081/hdpc/v1/
+    baseurl: http://127.0.0.1:8080/hdpc/v1/
 
 #
 inbound:
@@ -152,9 +152,10 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-Changing Citi Writer
+version: PCAM-435 Daily Count report
 
 notification:
+  eventId: 5001
   inbound:
     hybris:
       email: HDCA_online_operations@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
@@ -171,6 +172,7 @@ notification:
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
+      source: pcam
   outbound:
     CRM:
       email: biravi_sivanesan@homedepot.com,ashley_d_rosenberg@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
@@ -179,6 +181,7 @@ notification:
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
+      source: pcam
     SFMC:
       email: nishi_bagaria@homedepot.com,VENKATA_SESHA_SAI_BHARATH_MANNAVA@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Nishi Bagaria,Venkata Mannava,Shirin Khoja,Jennifer Luo,Abida Savani
@@ -186,6 +189,7 @@ notification:
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
+      source: pcam
     citi:
       email: crs.nam.cards.canada.it@citi.com,nelson.olarte@citi.com,maria.scott@citi.com,sengodi.selvi.d@citi.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Canada Citi,Nelson Olarte,Maria Scott,Sengodi Selvi,Shirin Khoja,Jennifer Luo,Abida Savani
@@ -193,3 +197,4 @@ notification:
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
+      source: pcam

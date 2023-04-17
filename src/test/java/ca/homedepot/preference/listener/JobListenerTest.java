@@ -2,7 +2,7 @@ package ca.homedepot.preference.listener;
 
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.impl.PreferenceServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.PreferenceServiceImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
