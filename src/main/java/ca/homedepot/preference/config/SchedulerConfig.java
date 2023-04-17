@@ -952,7 +952,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
 				.lineTokenizer(lineTokenizer(SINGLE_PIPE, InboundValidator.FIELD_OBJ_NAMES_INBOUND_REGISTRATION))
 				.targetType(InboundRegistration.class).linesToSkip(1)
-				/* Validation file's header */
 				.skippedLinesCallback(
 						FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, DELIMITER_PIPELINE, encoding))
 				.encoding(encoding).build();
@@ -970,7 +969,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.lineTokenizer(
 						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
 				.targetType(EmailOptOuts.class).linesToSkip(1)
-				/* Validation file's header */
 				.skippedLinesCallback(FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS,
 						DELIMITER_TAB, encoding))
 				.encoding(encoding).build();

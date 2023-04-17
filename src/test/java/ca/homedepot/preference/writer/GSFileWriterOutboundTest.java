@@ -5,7 +5,7 @@ import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
 import com.google.cloud.storage.Storage;

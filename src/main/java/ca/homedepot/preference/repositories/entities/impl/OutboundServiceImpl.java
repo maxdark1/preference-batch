@@ -1,4 +1,4 @@
-package ca.homedepot.preference.service.impl;
+package ca.homedepot.preference.repositories.entities.impl;
 
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.InternalFlexOutboundDTO;

@@ -5,7 +5,7 @@ import ca.homedepot.preference.dto.InternalOutboundProcessorDto;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
