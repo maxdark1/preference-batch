@@ -17,7 +17,7 @@ import ca.homedepot.preference.read.PreferenceOutboundDBReader;
 import ca.homedepot.preference.read.PreferenceOutboundReader;
 import ca.homedepot.preference.service.OutboundService;
 import ca.homedepot.preference.service.PreferenceService;
-import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.OutboundServiceImpl;
 import ca.homedepot.preference.tasklet.BatchTasklet;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import ca.homedepot.preference.util.FileUtil;
@@ -263,6 +263,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	@Value("${outbound.salesforce.extract}")
 	String salesforcefileNameFormat;
+
+	@Value("${notification.eventId}")
+	private String eventId;
 
 	/**
 	 * Patterns for validations
@@ -776,6 +779,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition") != null
 				? env.getProperty("notification.inbound." + processName + ".eventDefinition")
 				: "";
+		System.out.println(processName);
 		String systemSource = env.getProperty("notification.inbound." + processName + ".source") != null
 				? env.getProperty("notification.inbound." + processName + ".source")
 				: "";
@@ -861,14 +865,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		body.setQuantityLoaded(String.valueOf(counter.quantityLoaded));
 		body.setSourceName(Source);
 		notification.setTo(toList);
+		notification.setLangCd(ENGLISH);
 
 		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(),
 				body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
 		notification.setEmailSubject(subject);
 		notification.setFromEmail(fromEmail);
-		notification.setEventId(id.toString());
+		notification.setEventId(eventId);
 		notification.setEventName(eventName);
-		notification.setLocalEventDefinitionId(localDefinition);
+		notification.setLocalEventDefinitionId(id.toString());
 		notification.setSourceSystemId(systemSource);
 		notification.setMessageBody(body);
 
@@ -947,7 +952,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return new FlatFileItemReaderBuilder<InboundRegistration>().name("inboundFileReader")
 				.lineTokenizer(lineTokenizer(SINGLE_PIPE, InboundValidator.FIELD_OBJ_NAMES_INBOUND_REGISTRATION))
 				.targetType(InboundRegistration.class).linesToSkip(1)
-				/* Validation file's header */
 				.skippedLinesCallback(
 						FileValidation.lineCallbackHandler(InboundValidator.FIELD_NAMES_REGISTRATION, DELIMITER_PIPELINE, encoding))
 				.encoding(encoding).build();
@@ -965,7 +969,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				.lineTokenizer(
 						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
 				.targetType(EmailOptOuts.class).linesToSkip(1)
-				/* Validation file's header */
 				.skippedLinesCallback(FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS,
 						DELIMITER_TAB, encoding))
 				.encoding(encoding).build();
