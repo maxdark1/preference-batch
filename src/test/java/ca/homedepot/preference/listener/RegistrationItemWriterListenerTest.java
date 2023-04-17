@@ -3,7 +3,7 @@ package ca.homedepot.preference.listener;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;

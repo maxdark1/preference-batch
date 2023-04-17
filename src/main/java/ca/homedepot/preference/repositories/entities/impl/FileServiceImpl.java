@@ -1,4 +1,4 @@
-package ca.homedepot.preference.service.impl;
+package ca.homedepot.preference.repositories.entities.impl;
 
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.FileDTO;

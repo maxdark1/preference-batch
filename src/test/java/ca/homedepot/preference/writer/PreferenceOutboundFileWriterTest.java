@@ -6,7 +6,7 @@ import ca.homedepot.preference.dto.PreferenceOutboundDtoProcessor;
 import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.FileServiceImpl;
 import ca.homedepot.preference.util.CloudStorageUtils;
 import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;

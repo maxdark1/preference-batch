@@ -3,7 +3,7 @@ package ca.homedepot.preference.writer;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.FileServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

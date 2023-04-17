@@ -3,7 +3,7 @@ package ca.homedepot.preference.read;
 import ca.homedepot.preference.constants.OutboundSqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
 import ca.homedepot.preference.mapper.PreferenceOutboundMapper;
-import ca.homedepot.preference.service.impl.OutboundServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.OutboundServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;

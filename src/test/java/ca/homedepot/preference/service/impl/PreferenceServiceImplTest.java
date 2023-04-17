@@ -3,6 +3,7 @@ package ca.homedepot.preference.service.impl;
 import ca.homedepot.preference.config.feign.PreferenceRegistrationClient;
 import ca.homedepot.preference.constants.SqlQueriesConstants;
 import ca.homedepot.preference.dto.*;
+import ca.homedepot.preference.repositories.entities.impl.PreferenceServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
