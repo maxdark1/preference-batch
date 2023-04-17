@@ -18,10 +18,7 @@ import static ca.homedepot.preference.constants.SourceDelimitersConstants.SFMC;
 
 public class FileValidation
 {
-	public final String formatDate = "yyyyMMdd";
-	/**
-	 * The extension regex
-	 */
+
 	private static String extensionRegex;
 	/**
 	 * The hybris base name
@@ -126,7 +123,7 @@ public class FileValidation
 					try
 					{
 						byte[] toConvert = header[i].getBytes(encoding);
-						converted = new String(toConvert, "UTF-8");
+						converted = new String(toConvert, "UTF-8").toLowerCase();
 					}
 					catch (UnsupportedEncodingException e)
 					{
@@ -135,10 +132,10 @@ public class FileValidation
 				}
 				else
 				{
-					converted = header[i] + ".";
+					converted = header[i].toLowerCase();
 				}
-
-				if (converted.contains(headerFile[i] + "."))
+				String tmp = headerFile[i].toLowerCase();
+				if (converted.length() != tmp.length())
 				{
 					invalid = true;
 				}
@@ -159,8 +156,6 @@ public class FileValidation
 	{
 		String baseName = getFileName(fileName);
 		boolean isfileNameWrong = baseName.contains(getBaseName(source));
-		//int start = getBaseName(source).length();
-		//int end = start + formatDate.length();
 		boolean isNotAValidExtension = !validateExtension(getExtension(fileName, baseName));
 		if (isNotAValidExtension || !isfileNameWrong)
 		{

@@ -5,7 +5,7 @@ import ca.homedepot.preference.listener.JobListener;
 import ca.homedepot.preference.model.FileInboundStgTable;
 import ca.homedepot.preference.model.InboundRegistration;
 import ca.homedepot.preference.processor.MasterProcessor;
-import ca.homedepot.preference.service.impl.FileServiceImpl;
+import ca.homedepot.preference.repositories.entities.impl.FileServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;

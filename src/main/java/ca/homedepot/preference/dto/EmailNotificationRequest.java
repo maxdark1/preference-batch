@@ -34,7 +34,10 @@ public class EmailNotificationRequest
 	@JsonProperty("localEventDefinitionId")
 	private String localEventDefinitionId;
 
-	@JsonProperty("messageBody")
+	@JsonProperty("langCd")
+	private String langCd;
+
+	@JsonProperty("MessageBody")
 	private EmailNotificationMessageBody messageBody;
 
 }
