@@ -152,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-435 additions on daily count report
+version: PCAM-435 Daily Count report
 
 notification:
   eventId: 5001
