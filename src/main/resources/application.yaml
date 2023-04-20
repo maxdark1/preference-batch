@@ -152,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-435 Daily Count report
+version: PCAM-433 Fix on Citi column
 
 notification:
   eventId: 5001
