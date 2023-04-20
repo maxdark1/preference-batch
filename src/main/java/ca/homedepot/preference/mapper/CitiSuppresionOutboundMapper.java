@@ -25,7 +25,14 @@ public class CitiSuppresionOutboundMapper implements RowMapper<CitiSuppresionOut
 		suppression.setEmailAddr(rs.getString("email_addr"));
 		suppression.setPhone(rs.getString("phone"));
 		suppression.setSmsMobilePhone(rs.getString("sms_mobile_phone"));
-		suppression.setBusinessName(rs.getString("business_name"));
+		String businessName = rs.getString("business_name");
+		if (businessName != null)
+		{
+			businessName = businessName.trim();
+			if (businessName.length() >= 30)
+				businessName = businessName.substring(0, 29);
+		}
+		suppression.setBusinessName(businessName);
 		suppression.setDmOptOut(rs.getString("dm_opt_out"));
 		suppression.setEmailOptOut(rs.getString("email_opt_out"));
 		suppression.setPhoneOptOut(rs.getString("phone_opt_out"));
