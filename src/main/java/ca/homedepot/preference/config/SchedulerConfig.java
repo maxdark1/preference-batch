@@ -469,6 +469,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		preferenceOutboundFileWriter.setJobListener(jobListener);
 		internalOutboundFileWriter.setJobListener(jobListener);
 		internalFlexOutboundFileWriter.setJobListener(jobListener);
+		preferenceOutboundCitiWriter.setJobListener(jobListener);
 	}
 
 	@Scheduled(cron = "${cron.job.individualProcess}")

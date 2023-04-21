@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: sasa
+    password:
     driverClassName: org.postgresql.Driver
     hikari:
       schema: pcam
@@ -40,7 +40,7 @@ spring:
 #  h2:
 #    console:
 #      enabled: false
-process: hybrisIn
+process: citiOut
 exitAfter: true
 cron:
   job:
@@ -152,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-433 Fix on Citi column
+version: PCAM-433 Citi trim over all columns
 
 notification:
   eventId: 5001
