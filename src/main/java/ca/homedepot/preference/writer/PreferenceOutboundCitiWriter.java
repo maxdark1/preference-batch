@@ -53,6 +53,8 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 
 	private List<Counters> counters;
 
+	private JobListener jobListener;
+
 	public String source;
 
 	private Counters counter = new Counters(0, 0, 0);
@@ -66,6 +68,10 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	public BlobId blobId;
 	public Blob blob;
 	public WritableByteChannel writer;
+
+	public void setJobListener(JobListener jobListener) {
+		this.jobListener = jobListener;
+	}
 
 	/**
 	 * Method used to generate a plain text file
@@ -134,6 +140,7 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 				? MasterProcessor.getSourceID("SOURCE_ID", "database").getOldID()
 				: sourceId;
 		log.error(" PREFERENCE-BATCH: SOURCE_TYPE to insert: {}", sourceIdBD);
+		jobListener.setFiles(fileName);
 		FileDTO file = new FileDTO(null, fileName, jobId, sourceIdBD, fileStatus.getValueVal(), fileStatus.getMasterId(),
 				new Date(), new Date(), INSERTEDBY, new Date(), null, null);
 

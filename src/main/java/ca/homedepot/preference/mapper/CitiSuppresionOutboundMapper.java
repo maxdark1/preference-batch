@@ -13,7 +13,6 @@ public class CitiSuppresionOutboundMapper implements RowMapper<CitiSuppresionOut
 	{
 
 		CitiSuppresionOutboundDTO suppression = new CitiSuppresionOutboundDTO();
-
 		suppression.setFirstName(rs.getString("first_name"));
 		suppression.setMiddleInitial(rs.getString("middle_initial"));
 		suppression.setLastName(rs.getString("last_name"));
@@ -25,18 +24,13 @@ public class CitiSuppresionOutboundMapper implements RowMapper<CitiSuppresionOut
 		suppression.setEmailAddr(rs.getString("email_addr"));
 		suppression.setPhone(rs.getString("phone"));
 		suppression.setSmsMobilePhone(rs.getString("sms_mobile_phone"));
-		String businessName = rs.getString("business_name");
-		if (businessName != null)
-		{
-			businessName = businessName.trim();
-			if (businessName.length() >= 30)
-				businessName = businessName.substring(0, 29);
-		}
-		suppression.setBusinessName(businessName);
+		suppression.setBusinessName(rs.getString("business_name"));
 		suppression.setDmOptOut(rs.getString("dm_opt_out"));
 		suppression.setEmailOptOut(rs.getString("email_opt_out"));
 		suppression.setPhoneOptOut(rs.getString("phone_opt_out"));
 		suppression.setSmsOptOut(rs.getString("sms_opt_out"));
 		return suppression;
 	}
+
+
 }
