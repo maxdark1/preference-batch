@@ -45,7 +45,7 @@ public class FormatUtil
 
 	public static String columnTrim(String column)
 	{
-		return column != null  ? column.replaceAll("\\s+", " ").trim() : null;
+		return column != null ? column.replaceAll("\\s+", " ").trim() : null;
 	}
 
 
@@ -59,7 +59,7 @@ public class FormatUtil
 
 	public static String businessNameJust30(String value)
 	{
-		return (value != null && value.length() > 30) ?  value.substring(0,29) : value;
+		return value != null && value.length() > 30 ? value.substring(0, 29) : value;
 	}
 }
 
