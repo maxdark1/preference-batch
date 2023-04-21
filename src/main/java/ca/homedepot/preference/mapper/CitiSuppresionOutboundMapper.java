@@ -6,8 +6,6 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static ca.homedepot.preference.util.validation.FormatUtil.columnTrim;
-import static ca.homedepot.preference.util.validation.FormatUtil.businessNameJust30;
 public class CitiSuppresionOutboundMapper implements RowMapper<CitiSuppresionOutboundDTO>
 {
 	@Override
