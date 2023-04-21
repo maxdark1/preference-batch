@@ -34,5 +34,32 @@ public class FormatUtil
 		return null;
 	}
 
+	/**
+	 * Trim the String value
+	 *
+	 * @param column
+	 *
+	 * @return String
+	 *
+	 */
 
+	public static String columnTrim(String column)
+	{
+		return column != null  ? column.replaceAll("\\s+", " ").trim() : null;
+	}
+
+
+	/**
+	 * Business name - org name processing
+	 *
+	 * Extracts just the first 30 charcters of the column
+	 *
+	 * @return String
+	 */
+
+	public static String businessNameJust30(String value)
+	{
+		return (value != null && value.length() > 30) ?  value.substring(0,29) : value;
+	}
 }
+

@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FormatUtilTest
 {
@@ -36,5 +35,24 @@ class FormatUtilTest
 
 		assertEquals(dateStr, currentDateStr);
 		assertNull(wrongCurrentDate);
+	}
+
+	@Test
+	void columnTrim()
+	{
+		String column = "     toTrim     something";
+		String result = FormatUtil.columnTrim(column);
+		assertNotEquals(column, result);
+		assertNull(FormatUtil.columnTrim(null));
+	}
+
+	@Test
+	void businesOnlyFirst30Characters()
+	{
+		String orgName = "A big org name that I can imagine right now to be there in a column";
+		String equalsTobe = "equals company";
+		String orgNameShorter = FormatUtil.businessNameJust30(orgName);
+		assertNotEquals(orgName, orgNameShorter);
+		assertEquals(equalsTobe, FormatUtil.businessNameJust30(equalsTobe));
 	}
 }
