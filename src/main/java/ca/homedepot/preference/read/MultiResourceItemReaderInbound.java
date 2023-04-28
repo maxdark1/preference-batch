@@ -5,6 +5,7 @@ import ca.homedepot.preference.constants.SourceDelimitersConstants;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.listener.JobListener;
+import ca.homedepot.preference.model.Counters;
 import ca.homedepot.preference.processor.MasterProcessor;
 import ca.homedepot.preference.service.FileService;
 import ca.homedepot.preference.util.FileUtil;
@@ -16,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.VALID;
 
@@ -53,6 +51,8 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	 */
 	private Map<String, Boolean> canResourceBeWriting;
 
+	private List<Counters> counters;
+
 
 
 	/**
@@ -61,6 +61,17 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 	public MultiResourceItemReaderInbound(String source)
 	{
 		this.source = source;
+		counters = new ArrayList<>();
+	}
+
+	/**
+	 * Set Counters
+	 * 
+	 * @param counters
+	 */
+	public void setCounters(List<Counters> counters)
+	{
+		this.counters = counters;
 	}
 
 	/**
@@ -161,6 +172,11 @@ public class MultiResourceItemReaderInbound<T> extends MultiResourceItemReader<T
 					StorageApplicationGCS.moveObject(filename, blobToCopy, blobWhereToCopy);
 					log.error("PREFERENCE BATCH ERROR - An exception has occurred reading file: {} \n {}", resource.getFilename(),
 							e.getCause().getMessage());
+					String cause = e.getCause().getMessage().toUpperCase().contains("HEADER") ? "bad header" : "bad structure";
+					String message = filename + " FAILED because of " + cause + " on source ";
+					Counters counter = new Counters(0, 0, 0);
+					counter.fileName = message;
+					counters.add(counter);
 				}
 			}
 		}

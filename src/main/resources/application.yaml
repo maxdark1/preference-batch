@@ -152,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-433 Citi trim over all columns
+version: PCAM-412 Email Notification
 
 notification:
   eventId: 5001
