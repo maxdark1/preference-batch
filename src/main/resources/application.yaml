@@ -160,7 +160,7 @@ notification:
     hybris:
       email: HDCA_online_operations@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: HDCA Operations,Shirin Khoja,Jennifer Luo,Abida Savani
-      subject: Hybrids Inbound Notification Email
+      subject: Daily Hybris Inbound preference file notification
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
@@ -168,7 +168,7 @@ notification:
     SFMC:
       email: nishi_bagaria@homedepot.com,VENKATA_SESHA_SAI_BHARATH_MANNAVA@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Nishi Bagaria,Venkata Mannava,Shirin Khoja,Jennifer Luo,Abida Savani
-      subject: SFMC Inbound Notification Email
+      subject: Weekly SFMC Inbound preference file notification
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
@@ -177,7 +177,7 @@ notification:
     CRM:
       email: biravi_sivanesan@homedepot.com,ashley_d_rosenberg@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Biravi Sivanesan,Ashley Rosenberg,Shirin Khoja,Jennifer Luo,Abida Savani
-      subject: CRM Outbound Notification Email
+      subject: Daily SFMC Outbound preference file notification
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
@@ -185,7 +185,7 @@ notification:
     SFMC:
       email: nishi_bagaria@homedepot.com,VENKATA_SESHA_SAI_BHARATH_MANNAVA@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Nishi Bagaria,Venkata Mannava,Shirin Khoja,Jennifer Luo,Abida Savani
-      subject: SFMC Outbound Notification Email
+      subject: Daily SFMC Outbound preference file notification
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
@@ -193,7 +193,7 @@ notification:
     citi:
       email: crs.nam.cards.canada.it@citi.com,nelson.olarte@citi.com,maria.scott@citi.com,sengodi.selvi.d@citi.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Canada Citi,Nelson Olarte,Maria Scott,Sengodi Selvi,Shirin Khoja,Jennifer Luo,Abida Savani
-      subject: Citi Outbound Notification Email
+      subject: Weekly Citi Outbound preference file notification
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification

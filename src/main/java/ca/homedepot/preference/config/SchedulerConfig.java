@@ -855,10 +855,12 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		toList.add(to);
 		EmailNotificationMessageBody body = new EmailNotificationMessageBody();
 		boolean isFailure = false;
+		String successError = "";
 		if (counter.fileName != null && !counter.fileName.isEmpty())
 		{
 			counter.fileName = counter.fileName.substring(counter.fileName.lastIndexOf("/") + 1);
 			isFailure = counter.fileName.toUpperCase().contains("FAILED");
+			successError = (isFailure || counter.quantityFailed != 0) ? "ERROR" : successError;
 		}
 		body.setFileName(counter.fileName);
 		body.setEventDate(new Date().toString());
@@ -873,7 +875,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 		Integer id = service.saveNotificationEvent(body.getFileName(), body.getQuantityInFile(), body.getQuantityLoaded(),
 				body.getQuantityFailed(), body.getSourceName(), type, "BATCH");
-		notification.setEmailSubject(subject);
+		notification.setEmailSubject(subject + " " + successError);
 		notification.setFromEmail(fromEmail);
 		notification.setEventId(eventId);
 		notification.setEventName(eventName);
