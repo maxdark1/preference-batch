@@ -780,7 +780,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		String localDef = env.getProperty("notification.inbound." + processName + ".eventDefinition") != null
 				? env.getProperty("notification.inbound." + processName + ".eventDefinition")
 				: "";
-		System.out.println(processName);
 		String systemSource = env.getProperty("notification.inbound." + processName + ".source") != null
 				? env.getProperty("notification.inbound." + processName + ".source")
 				: "";
@@ -855,15 +854,19 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		List<EmailNotificationTo> toList = new ArrayList<EmailNotificationTo>();
 		toList.add(to);
 		EmailNotificationMessageBody body = new EmailNotificationMessageBody();
+		boolean isFailure = false;
 		if (counter.fileName != null && !counter.fileName.isEmpty())
+		{
 			counter.fileName = counter.fileName.substring(counter.fileName.lastIndexOf("/") + 1);
+			isFailure = counter.fileName.toUpperCase().contains("FAILED");
+		}
 		body.setFileName(counter.fileName);
 		body.setEventDate(new Date().toString());
 		SimpleDateFormat formatter = new SimpleDateFormat("kk:mm:ss");
 		body.setEventTime(formatter.format(new Date()));
-		body.setQuantityInFile(String.valueOf(counter.quantityRecords));
-		body.setQuantityFailed(String.valueOf(counter.quantityFailed));
-		body.setQuantityLoaded(String.valueOf(counter.quantityLoaded));
+		body.setQuantityInFile(quantityValue(isFailure, counter.quantityRecords));
+		body.setQuantityFailed(quantityValue(isFailure, counter.quantityFailed));
+		body.setQuantityLoaded(quantityValue(isFailure, counter.quantityLoaded));
 		body.setSourceName(Source);
 		notification.setTo(toList);
 		notification.setLangCd(ENGLISH);
@@ -879,6 +882,11 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		notification.setMessageBody(body);
 
 		return notification;
+	}
+
+	public String quantityValue(boolean isFailure, int value)
+	{
+		return isFailure ? "-" : String.valueOf(value);
 	}
 
 	/**
@@ -897,12 +905,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public MultiResourceItemReaderInbound<InboundRegistration> multiResourceItemReaderInboundFileReader(
 			@Value("#{jobParameters['directory']}") String directory, @Value("#{jobParameters['source']}") String source,
-			@Value("#{jobParameters['job_name']}") String jobName)
+			@Value("#{jobParameters['job_name']}") String jobName, List<Counters> counter)
 	{
 		MultiResourceItemReaderInbound<InboundRegistration> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(
 				source);
 		multiReaderResourceInbound.setName("multiResourceItemReaderInboundFileReader");
 		multiReaderResourceInbound.setJobName(jobName);
+		multiReaderResourceInbound.setCounters(counter);
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 		log.info("Bucket Path: Source:" + source + " Directory: " + directory);
 		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(source, directory));
@@ -927,12 +936,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	@StepScope
 	public MultiResourceItemReader<EmailOptOuts> multiResourceItemReaderSFMCUnsubcribed(
 			@Value("#{jobParameters['directory']}") String directory, @Value("#{jobParameters['source']}") String source,
-			@Value("#{jobParameters['job_name']}") String jobName)
+			@Value("#{jobParameters['job_name']}") String jobName, List<Counters> counter)
 	{
 		MultiResourceItemReaderInbound<EmailOptOuts> multiReaderResourceInbound = new MultiResourceItemReaderInbound<>(source);
 		multiReaderResourceInbound.setJobName(jobName);
 		multiReaderResourceInbound.setFileService(hybrisWriterListener.getFileService());
 		multiReaderResourceInbound.setName("multiResourceItemReaderSFMCUnsubcribed");
+		multiReaderResourceInbound.setCounters(counter);
 
 		multiReaderResourceInbound.setResources(StorageApplicationGCS.getsGCPResourceMap(source, directory));
 		multiReaderResourceInbound.setDelegate(inboundEmailPreferencesSMFCReader(StorageApplicationGCS.Encoding));
@@ -969,9 +979,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return new FlatFileItemReaderBuilder<EmailOptOuts>().name("inboundEmailPreferencesSMFCReader")
 				.lineTokenizer(
 						lineTokenizer(DelimitedLineTokenizer.DELIMITER_TAB, ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS))
-				.targetType(EmailOptOuts.class).linesToSkip(1)
-				.skippedLinesCallback(FileValidation.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS,
-						DELIMITER_TAB, encoding))
+				.targetType(EmailOptOuts.class).linesToSkip(1).skippedLinesCallback(FileValidation
+						.lineCallbackHandler(ExactTargetEmailValidation.FIELD_NAMES_SFMC_OPTOUTS, DELIMITER_TAB, encoding))
 				.encoding(encoding).build();
 	}
 
@@ -1465,7 +1474,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		processor.setCount(0);
 		processor.setCounters(counters);
 		return stepBuilderFactory.get("readInboundCSVFileStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(hybrisPath + folderInbound, HYBRIS, jobName)) // change source to constants
+				.reader(multiResourceItemReaderInboundFileReader(hybrisPath + folderInbound, HYBRIS, jobName, counters)) // change source to constants
 				.processor(processor).faultTolerant().processorNonTransactional().skip(ValidationException.class)
 				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(hybrisWriterListener)
 				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
@@ -1489,10 +1498,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		processor.setCount(0);
 		processor.setCounters(counters);
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(crmPath + folderInbound, CRM, jobName)).processor(processor)
-				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
-				.listener(skipListenerLayoutC).listener(crmWriterListener).writer(inboundRegistrationDBWriter())
-				.listener(stepListener).listener(invalidFileListener).build();
+				.reader(multiResourceItemReaderInboundFileReader(crmPath + folderInbound, CRM, jobName, counters))
+				.processor(processor).faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(crmWriterListener)
+				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
@@ -1513,10 +1522,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		processor.setCount(0);
 		processor.setCounters(counters);
 		return stepBuilderFactory.get("readInboundCSVFileCRMStep").<InboundRegistration, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath + folderInbound, FB_SFMC, jobName)).processor(processor)
-				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
-				.listener(skipListenerLayoutC).listener(fbsfmcWriterListener).writer(inboundRegistrationDBWriter())
-				.listener(stepListener).listener(invalidFileListener).build();
+				.reader(multiResourceItemReaderInboundFileReader(fbSFMCPath + folderInbound, FB_SFMC, jobName, counters))
+				.processor(processor).faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutC).listener(fbsfmcWriterListener)
+				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
@@ -1537,10 +1546,10 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		processor.setCount(0);
 		processor.setCounters(counters);
 		return stepBuilderFactory.get("readSFMCOptOutsStep1").<EmailOptOuts, FileInboundStgTable> chunk(chunkValue)
-				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath + folderInbound, SFMC, jobName)).processor(processor)
-				.faultTolerant().processorNonTransactional().skip(ValidationException.class).skipLimit(Integer.MAX_VALUE)
-				.listener(skipListenerLayoutB).listener(exactTargetEmailWriterListener).writer(inboundRegistrationDBWriter())
-				.listener(stepListener).listener(invalidFileListener).build();
+				.reader(multiResourceItemReaderSFMCUnsubcribed(sfmcPath + folderInbound, SFMC, jobName, counters))
+				.processor(processor).faultTolerant().processorNonTransactional().skip(ValidationException.class)
+				.skipLimit(Integer.MAX_VALUE).listener(skipListenerLayoutB).listener(exactTargetEmailWriterListener)
+				.writer(inboundRegistrationDBWriter()).listener(stepListener).listener(invalidFileListener).build();
 	}
 
 	/**
