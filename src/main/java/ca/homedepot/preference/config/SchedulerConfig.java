@@ -860,7 +860,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		{
 			counter.fileName = counter.fileName.substring(counter.fileName.lastIndexOf("/") + 1);
 			isFailure = counter.fileName.toUpperCase().contains("FAILED");
-			successError = (isFailure || counter.quantityFailed != 0) ? "ERROR" : successError;
+			successError = isFailure || counter.quantityFailed != 0 ? "ERROR" : successError;
 		}
 		body.setFileName(counter.fileName);
 		body.setEventDate(new Date().toString());
