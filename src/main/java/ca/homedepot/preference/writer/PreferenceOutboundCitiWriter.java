@@ -69,7 +69,8 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	public Blob blob;
 	public WritableByteChannel writer;
 
-	public void setJobListener(JobListener jobListener) {
+	public void setJobListener(JobListener jobListener)
+	{
 		this.jobListener = jobListener;
 	}
 

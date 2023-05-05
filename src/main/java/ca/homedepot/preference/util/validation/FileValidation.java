@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.LineCallbackHandler;
 import org.springframework.batch.item.validator.ValidationException;
 
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -115,7 +114,6 @@ public class FileValidation
 		return line -> {
 			boolean invalid = false;
 			String[] header = line.split(separator);
-			String converted = null;
 			for (int i = 0; i < header.length; i++)
 			{
 				if (encoding != "UTF-8")
