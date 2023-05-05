@@ -2,7 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
     password:
     driverClassName: org.postgresql.Driver
@@ -40,7 +40,7 @@ spring:
 #  h2:
 #    console:
 #      enabled: false
-process: citiOut
+process: sfmcIn
 exitAfter: true
 cron:
   job:
@@ -152,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-412 Email Notification
+version: SFMC Header Validation Encoding Fix
 
 notification:
   eventId: 5001

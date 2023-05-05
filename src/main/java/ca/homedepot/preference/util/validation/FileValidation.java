@@ -120,25 +120,18 @@ public class FileValidation
 			{
 				if (encoding != "UTF-8")
 				{
-					try
-					{
-						byte[] toConvert = header[i].getBytes(encoding);
-						converted = new String(toConvert, "UTF-8").toLowerCase();
-					}
-					catch (UnsupportedEncodingException e)
-					{
-						throw new RuntimeException(e);
-					}
+					invalid = false;
 				}
 				else
 				{
-					converted = header[i].toLowerCase();
+					int iFile = headerFile[i].trim().length();
+					int iComp = header[i].trim().length();
+					if (iFile != iComp)
+					{
+						invalid = true;
+					}
 				}
-				String tmp = headerFile[i].toLowerCase();
-				if (converted.length() != tmp.length())
-				{
-					invalid = true;
-				}
+
 			}
 			if (invalid)
 				throw new ValidationException(" Invalid header {} : " + Arrays.toString(header));
