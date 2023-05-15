@@ -27,6 +27,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_CITI_SUPPRESION;
 import static ca.homedepot.preference.config.StorageApplicationGCS.*;
@@ -155,8 +156,7 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	{
 		log.info("Daily Compliant Writer Start");
 		this.storage = StorageOptions.getDefaultInstance().getService();
-		fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-		fileName = CloudStorageUtils.generatePath(repositorySource, fileName + ".temp");
+		fileName = CloudStorageUtils.generatePath(repositorySource, UUID.randomUUID().toString());
 		blobId = BlobId.of(getBucketName(), fileName);
 		BlobInfo file = BlobInfo.newBuilder(blobId).build();
 		writer = storage().create(file).writer();
@@ -176,7 +176,7 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 		{
 			writer.close();
 			log.info("Writter Closed");
-			String fileDestination = fileName.replace(".temp", "");
+			String fileDestination = repositorySource + fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 			BlobId rename = BlobId.of(getBucketName(), fileDestination);
 			storage().copy(Storage.CopyRequest.newBuilder().setSource(blobId).setTarget(rename).build());
 			storage().get(blobId).delete();
