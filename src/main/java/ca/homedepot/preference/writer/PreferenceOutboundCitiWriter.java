@@ -66,8 +66,10 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 
 	public Storage storage;
 	public BlobId blobId;
-	public Blob blob;
+
 	public WritableByteChannel writer;
+
+	public String fileName;
 
 	public void setJobListener(JobListener jobListener)
 	{
@@ -153,11 +155,12 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 	{
 		log.info("Daily Compliant Writer Start");
 		this.storage = StorageOptions.getDefaultInstance().getService();
-		String fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
-		fileName = CloudStorageUtils.generatePath(repositorySource, fileName);
-		BlobId blobId = BlobId.of(getBucketName(), fileName);
+		fileName = fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
+		fileName = CloudStorageUtils.generatePath(repositorySource, fileName + ".temp");
+		blobId = BlobId.of(getBucketName(), fileName);
 		BlobInfo file = BlobInfo.newBuilder(blobId).build();
 		writer = storage().create(file).writer();
+		log.error("PREFERENCE-BATCH: Temporary File Created: " + fileName);
 	}
 
 	@Override
@@ -173,10 +176,16 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 		{
 			writer.close();
 			log.info("Writter Closed");
+			String fileDestination = fileName.replace(".temp", "");
+			BlobId rename = BlobId.of(getBucketName(), fileDestination);
+			storage().copy(Storage.CopyRequest.newBuilder().setSource(blobId).setTarget(rename).build());
+			storage().get(blobId).delete();
+			log.error("PREFERENCE-BATCH: File Renamed to: " + fileDestination);
 		}
 		catch (IOException e)
 		{
 			throw new RuntimeException(e);
+
 		}
 		log.error(" PREFERENCE-BATCH: file: {} going to be write on DataBase",
 				fileNameFormat.replace("YYYYMMDD", formatter.format(new Date())));
