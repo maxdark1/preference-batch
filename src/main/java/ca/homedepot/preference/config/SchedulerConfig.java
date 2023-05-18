@@ -92,17 +92,17 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 
 	private static final String JOB_NAME_EXTACT_TARGET_EMAIL = "ingestSFMCOptOuts";
 
-	public static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesToCRM";
+	public static final String JOB_NAME_SEND_PREFERENCES_TO_CRM = "sendPreferencesCRMJob";
 
-	public static final String JOB_NAME_CITI_SUPPRESION = "newCitiSuppresionToCiti";
+	public static final String JOB_NAME_CITI_SUPPRESION = "CitiSuppresionToCitiJob";
 
-	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFC";
+	private static final String JOB_NAME_SALESFORCE_EXTRACT = "sendPreferencesToSMFCJob";
 
-	public static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestination";
+	public static final String JOB_NAME_INTERNAL_DESTINATION = "SendPreferencesToInternalDestinationJob";
 
-	public static final String JOB_NAME_FLEX_INTERNAL_DESTINATION = "SendPreferencesToInternalFlexDestination";
+	public static final String JOB_NAME_FLEX_INTERNAL_DESTINATION = "SendPreferencesToInternalFlexDestinationJob";
 
-	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSource";
+	private static final String JOB_NAME_LOYALTY_COMPLAINT = "sendLoyaltyComplaintToSourceJob";
 
 	private static final String JOB_NAME_DAILY_COUNT_REPORT = "createDailyCountReport";
 	/**
@@ -1258,7 +1258,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job crmSendPreferencesToCRM(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2(counters)).build()
+				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2(counters)).build().preventRestart()
 				.build();
 	}
 
@@ -1272,7 +1272,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_INTERNAL_DESTINATION).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSendPreferencesToInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToInternalStep2()).build()
-				.build();
+				.preventRestart().build();
 	}
 
 	@SneakyThrows
@@ -1294,7 +1294,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		//Execute the Job
 		return jobBuilderFactory.get(JOB_NAME_FLEX_INTERNAL_DESTINATION).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(readSendPreferencesToFlexInternalStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToFlexInternalStep2())
-				.build().build();
+				.build().preventRestart().build();
 	}
 
 	public Step readSendPreferencesToFlexInternalStep1()
@@ -1392,7 +1392,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_CITI_SUPPRESION).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(citiSuppresionDBReaderStep1()).on(COMPLETED_STATUS).to(citiSuppresionDBReaderFileWriterStep2(counters)).build()
-				.build();
+				.preventRestart().build();
 	}
 
 	/**
@@ -1417,7 +1417,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	{
 		return jobBuilderFactory.get(JOB_NAME_SALESFORCE_EXTRACT).incrementer(new RunIdIncrementer()).listener(jobListener)
 				.start(salesforceExtractDBReaderStep1()).on(COMPLETED_STATUS).to(salesforceExtractDBReaderFileWriterStep2(counters))
-				.build().build();
+				.build().preventRestart().build();
 	}
 
 	public Job createDailyCountReport()
@@ -1429,7 +1429,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				((GSFileWriterOutbound) writer).getStringBuilder());
 		((GSFileWriterOutbound) writerStep2).setStringBuilder(stringBuilder);
 		return jobBuilderFactory.get(JOB_NAME_DAILY_COUNT_REPORT).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(dailyCountReportStep1(writer)).on(COMPLETED_STATUS).to(dailyCountReportStep2(writerStep2)).build().build();
+				.start(dailyCountReportStep1(writer)).on(COMPLETED_STATUS).to(dailyCountReportStep2(writerStep2)).build().preventRestart().build();
 	}
 
 
