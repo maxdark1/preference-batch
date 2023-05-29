@@ -114,7 +114,6 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 				quantityRecords++;
 				writer.write(ByteBuffer.wrap(fileBuilder.toString().getBytes()));
 				fileBuilder = new StringBuilder();
-				log.info("{} has been written", quantityRecords);
 			}
 		}
 		else
@@ -159,7 +158,8 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 	public void open(ExecutionContext executionContext) throws ItemStreamException
 	{
 		log.info("Daily Compliant Writer Start");
-		fileBuilder.append(header);
+		if(!header.equals(""))
+			fileBuilder.append(header).append("\n");
 		this.storage = StorageOptions.getDefaultInstance().getService();
 		fileName = CloudStorageUtils.generatePath(repositorySource, UUID.randomUUID().toString());
 		blobId = BlobId.of(getBucketName(), fileName);
@@ -187,6 +187,7 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 			storage().copy(Storage.CopyRequest.newBuilder().setSource(blobId).setTarget(rename).build());
 			storage().get(blobId).delete();
 			log.error("PREFERENCE-BATCH: File Renamed to: " + fileDestination);
+			log.info(" {} items were written on file {}" ,quantityRecords,newFileName);
 		}
 		catch (IOException e)
 		{
