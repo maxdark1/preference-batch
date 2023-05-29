@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
-    password:
+    password: postgres
     driverClassName: org.postgresql.Driver
     hikari:
       schema: pcam
@@ -106,7 +106,7 @@ folders:
   internal:
     path:
   salesforce:
-    path:
+    path: outbound/
   loyaltyCompliant:
     path:
   flexAttributes:

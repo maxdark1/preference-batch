@@ -414,6 +414,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Boolean exitAfter;
 
 	@Autowired
+	public PreferenceOutboundItemWriter<SalesforceExtractOutboundDTO> sfmcWriter;
+
+	@Autowired
 	public void setUpListener()
 	{
 		jobListener.setPreferenceService(batchTasklet.getPreferenceService());
@@ -1215,20 +1218,13 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
-	public GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter(List<Counters> counters)
+	public PreferenceOutboundItemWriter<SalesforceExtractOutboundDTO> salesforceExtractFileWriter(List<Counters> counters)
 	{
-		GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter = new GSFileWriterOutbound<>();
-		salesforceExtractFileWriter.setName("salesforceExtractFileWriter");
-		salesforceExtractFileWriter.setFileService(hybrisWriterListener.getFileService());
-		salesforceExtractFileWriter.setHeader(SALESFORCE_EXTRACT_HEADERS);
-		salesforceExtractFileWriter.setSource(CITI_SUP);
-		salesforceExtractFileWriter.setFolderSource(folderOutbound);
-		salesforceExtractFileWriter.setRepositorySource(salesforcePath);
-		salesforceExtractFileWriter.setFileNameFormat(salesforcefileNameFormat);
+		PreferenceOutboundItemWriter<SalesforceExtractOutboundDTO> salesforceExtractFileWriter = new PreferenceOutboundItemWriter<>();
+		//salesforceExtractFileWriter.setName("salesforceExtractFileWriter");
+		// salesforceExtractFileWriter.setFileService(hybrisWriterListener.getFileService());
+
 		salesforceExtractFileWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
-		salesforceExtractFileWriter.setDelimiter(SINGLE_DELIMITER_TAB);
-		salesforceExtractFileWriter.setNames(SALESFORCE_EXTRACT_NAMES);
-		salesforceExtractFileWriter.setResource();
 		salesforceExtractFileWriter.setCounters(counters);
 		jobListener.setFiles(salesforceExtractFileWriter.getFileName());
 		return salesforceExtractFileWriter;
@@ -1637,9 +1633,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	public Step salesforceExtractDBReaderFileWriterStep2(List<Counters> counters)
 	{
+		sfmcWriter.header = SALESFORCE_EXTRACT_HEADERS;
+		sfmcWriter.source = CITI_SUP;
+		sfmcWriter.sourceFile = "SFMC";
+		sfmcWriter.setCounters(counters);
+		sfmcWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
+		sfmcWriter.setJobListener(jobListener);
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
-				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(salesforceExtractFileWriter(counters))
+				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(sfmcWriter)
 				.build();
 	}
 
