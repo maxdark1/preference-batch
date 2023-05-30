@@ -1218,18 +1218,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
-	public PreferenceOutboundItemWriter<SalesforceExtractOutboundDTO> salesforceExtractFileWriter(List<Counters> counters)
-	{
-		PreferenceOutboundItemWriter<SalesforceExtractOutboundDTO> salesforceExtractFileWriter = new PreferenceOutboundItemWriter<>();
-		//salesforceExtractFileWriter.setName("salesforceExtractFileWriter");
-		// salesforceExtractFileWriter.setFileService(hybrisWriterListener.getFileService());
-
-		salesforceExtractFileWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
-		salesforceExtractFileWriter.setCounters(counters);
-		jobListener.setFiles(salesforceExtractFileWriter.getFileName());
-		return salesforceExtractFileWriter;
-	}
-
 	/**
 	 * Hybris job process.
 	 *
