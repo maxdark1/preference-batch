@@ -1,6 +1,5 @@
 package ca.homedepot.preference.writer;
 
-import ca.homedepot.preference.dto.CitiSuppresionOutboundDTO;
 import ca.homedepot.preference.dto.FileDTO;
 import ca.homedepot.preference.dto.Master;
 import ca.homedepot.preference.listener.JobListener;
@@ -32,7 +31,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_CITI_SUPPRESION;
 import static ca.homedepot.preference.config.StorageApplicationGCS.getBucketName;
 import static ca.homedepot.preference.config.StorageApplicationGCS.storage;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
@@ -87,7 +85,8 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 		this.jobListener = jobListener;
 	}
 
-	public void setJobName(String jobName) {
+	public void setJobName(String jobName)
+	{
 		this.jobName = jobName;
 	}
 
@@ -95,6 +94,7 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 	{
 		return fileNameFormat.replace("YYYYMMDD", formatter.format(new Date()));
 	}
+
 	/**
 	 * Method used to generate a plain text file
 	 *
@@ -106,9 +106,9 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 	@Override
 	public void write(List<? extends T> items) throws Exception
 	{
-		if(!items.isEmpty())
+		if (!items.isEmpty())
 		{
-			for(T item: items)
+			for (T item : items)
 			{
 				fileBuilder.append(item.toString()).append("\n");
 				quantityRecords++;
@@ -118,7 +118,7 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 		}
 		else
 		{
-			log.info("Nothing to Write in {} Outbound File",sourceFile);
+			log.info("Nothing to Write in {} Outbound File", sourceFile);
 		}
 	}
 
@@ -158,7 +158,7 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 	public void open(ExecutionContext executionContext) throws ItemStreamException
 	{
 		log.info("Daily Compliant Writer Start");
-		if(!header.equals(""))
+		if (!header.equals(""))
 			fileBuilder.append(header).append("\n");
 		this.storage = StorageOptions.getDefaultInstance().getService();
 		fileName = CloudStorageUtils.generatePath(repositorySource, UUID.randomUUID().toString());
@@ -187,7 +187,7 @@ public class PreferenceOutboundItemWriter<T> implements ItemWriter<T>, ItemStrea
 			storage().copy(Storage.CopyRequest.newBuilder().setSource(blobId).setTarget(rename).build());
 			storage().get(blobId).delete();
 			log.error("PREFERENCE-BATCH: File Renamed to: " + fileDestination);
-			log.info(" {} items were written on file {}" ,quantityRecords,newFileName);
+			log.info(" {} items were written on file {}", quantityRecords, newFileName);
 		}
 		catch (IOException e)
 		{

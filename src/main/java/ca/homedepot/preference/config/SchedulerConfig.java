@@ -1254,8 +1254,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job crmSendPreferencesToCRM(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2(counters)).build().preventRestart()
-				.build();
+				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2(counters)).build()
+				.preventRestart().build();
 	}
 
 	/**
@@ -1425,7 +1425,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				((GSFileWriterOutbound) writer).getStringBuilder());
 		((GSFileWriterOutbound) writerStep2).setStringBuilder(stringBuilder);
 		return jobBuilderFactory.get(JOB_NAME_DAILY_COUNT_REPORT).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(dailyCountReportStep1(writer)).on(COMPLETED_STATUS).to(dailyCountReportStep2(writerStep2)).build().preventRestart().build();
+				.start(dailyCountReportStep1(writer)).on(COMPLETED_STATUS).to(dailyCountReportStep2(writerStep2)).build()
+				.preventRestart().build();
 	}
 
 
@@ -1641,8 +1642,7 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		sfmcWriter.setJobListener(jobListener);
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
-				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(sfmcWriter)
-				.build();
+				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(sfmcWriter).build();
 	}
 
 	@JobScope
