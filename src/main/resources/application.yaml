@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/preference-centre-db
     username: postgres
-    password: postgres
+    password:
     driverClassName: org.postgresql.Driver
     hikari:
       schema: pcam
@@ -152,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: SFMC Header Validation Encoding Fix
+version: SFMC Outbound New Writer
 
 notification:
   eventId: 5001
@@ -177,7 +177,7 @@ notification:
     CRM:
       email: biravi_sivanesan@homedepot.com,ashley_d_rosenberg@homedepot.com,shirin_khoja@homedepot.com,jennifer_luo@homedepot.com,abida_savani@homedepot.com
       name: Biravi Sivanesan,Ashley Rosenberg,Shirin Khoja,Jennifer Luo,Abida Savani
-      subject: Daily SFMC Outbound preference file notification
+      subject: Daily CRM Outbound preference file notification
       fromEmail: No-reply@homedepot.com
       eventName: hybridsNotification
       eventDefinition: pcamNotification
