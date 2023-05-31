@@ -414,6 +414,9 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Boolean exitAfter;
 
 	@Autowired
+	public PreferenceOutboundItemWriter<SalesforceExtractOutboundDTO> sfmcWriter;
+
+	@Autowired
 	public void setUpListener()
 	{
 		jobListener.setPreferenceService(batchTasklet.getPreferenceService());
@@ -1215,25 +1218,6 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 		return writer;
 	}
 
-	public GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter(List<Counters> counters)
-	{
-		GSFileWriterOutbound<SalesforceExtractOutboundDTO> salesforceExtractFileWriter = new GSFileWriterOutbound<>();
-		salesforceExtractFileWriter.setName("salesforceExtractFileWriter");
-		salesforceExtractFileWriter.setFileService(hybrisWriterListener.getFileService());
-		salesforceExtractFileWriter.setHeader(SALESFORCE_EXTRACT_HEADERS);
-		salesforceExtractFileWriter.setSource(CITI_SUP);
-		salesforceExtractFileWriter.setFolderSource(folderOutbound);
-		salesforceExtractFileWriter.setRepositorySource(salesforcePath);
-		salesforceExtractFileWriter.setFileNameFormat(salesforcefileNameFormat);
-		salesforceExtractFileWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
-		salesforceExtractFileWriter.setDelimiter(SINGLE_DELIMITER_TAB);
-		salesforceExtractFileWriter.setNames(SALESFORCE_EXTRACT_NAMES);
-		salesforceExtractFileWriter.setResource();
-		salesforceExtractFileWriter.setCounters(counters);
-		jobListener.setFiles(salesforceExtractFileWriter.getFileName());
-		return salesforceExtractFileWriter;
-	}
-
 	/**
 	 * Hybris job process.
 	 *
@@ -1258,8 +1242,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	public Job crmSendPreferencesToCRM(List<Counters> counters)
 	{
 		return jobBuilderFactory.get(JOB_NAME_SEND_PREFERENCES_TO_CRM).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2(counters)).build().preventRestart()
-				.build();
+				.start(readSendPreferencesToCRMStep1()).on(COMPLETED_STATUS).to(readSendPreferencesToCRMStep2(counters)).build()
+				.preventRestart().build();
 	}
 
 	/**
@@ -1429,7 +1413,8 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 				((GSFileWriterOutbound) writer).getStringBuilder());
 		((GSFileWriterOutbound) writerStep2).setStringBuilder(stringBuilder);
 		return jobBuilderFactory.get(JOB_NAME_DAILY_COUNT_REPORT).incrementer(new RunIdIncrementer()).listener(jobListener)
-				.start(dailyCountReportStep1(writer)).on(COMPLETED_STATUS).to(dailyCountReportStep2(writerStep2)).build().preventRestart().build();
+				.start(dailyCountReportStep1(writer)).on(COMPLETED_STATUS).to(dailyCountReportStep2(writerStep2)).build()
+				.preventRestart().build();
 	}
 
 
@@ -1637,10 +1622,15 @@ public class SchedulerConfig extends DefaultBatchConfigurer
 	 */
 	public Step salesforceExtractDBReaderFileWriterStep2(List<Counters> counters)
 	{
+		sfmcWriter.header = SALESFORCE_EXTRACT_HEADERS;
+		sfmcWriter.source = CITI_SUP;
+		sfmcWriter.sourceFile = "SFMC";
+		sfmcWriter.setCounters(counters);
+		sfmcWriter.setJobName(JOB_NAME_SALESFORCE_EXTRACT);
+		sfmcWriter.setJobListener(jobListener);
 		return stepBuilderFactory.get("salesforceExtractDBReaderFileWriterStep2")
 				.<SalesforceExtractOutboundDTO, SalesforceExtractOutboundDTO> chunk(chunkOutboundSalesforce)
-				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(salesforceExtractFileWriter(counters))
-				.build();
+				.reader(preferenceOutboundDBReader.salesforceExtractDBTableReader()).writer(sfmcWriter).build();
 	}
 
 	@JobScope

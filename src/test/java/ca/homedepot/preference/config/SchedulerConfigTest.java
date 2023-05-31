@@ -34,6 +34,7 @@ import org.springframework.batch.core.step.builder.FaultTolerantStepBuilder;
 import org.springframework.batch.core.step.builder.SimpleStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.MultiResourceItemReader;
@@ -558,13 +559,14 @@ class SchedulerConfigTest
 	{
 		JdbcCursorItemReader<SalesforceExtractOutboundDTO> jdbcCursorItemReader = new JdbcCursorItemReader<>();
 		schedulerConfig.salesforcefileNameFormat = "archive_YYYYMMDD.txt";
+		schedulerConfig.sfmcWriter = new PreferenceOutboundItemWriter<>();
 		schedulerConfig.setChunkOutboundSalesforce(100);
 		Mockito.when(preferenceOutboundDBReader.salesforceExtractDBTableReader()).thenReturn(jdbcCursorItemReader);
 
 		Mockito.when(stepBuilderFactory.get(anyString())).thenReturn(stepBuilder);
 		Mockito.when(stepBuilder.chunk(100)).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.reader(any(JdbcCursorItemReader.class))).thenReturn(simpleStepBuilder);
-		Mockito.when(simpleStepBuilder.writer(any(GSFileWriterOutbound.class))).thenReturn(simpleStepBuilder);
+		Mockito.when(simpleStepBuilder.writer(any(ItemWriter.class))).thenReturn(simpleStepBuilder);
 		Mockito.when(simpleStepBuilder.build()).thenReturn(step);
 
 		assertNotNull(schedulerConfig.salesforceExtractDBReaderFileWriterStep2(new ArrayList<>()));
