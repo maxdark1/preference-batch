@@ -32,6 +32,7 @@ import java.util.UUID;
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_CITI_SUPPRESION;
 import static ca.homedepot.preference.config.StorageApplicationGCS.*;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
+import static ca.homedepot.preference.util.validation.FormatUtil.*;
 
 @Slf4j
 @Component
@@ -91,22 +92,23 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 		{
 			for (CitiSuppresionOutboundDTO citi : items)
 			{
-				fileBuilder.append(String.format("%-30s", citi.getFirstName() != null ? citi.getFirstName() : ""))
-						.append(String.format("%-1s", citi.getMiddleInitial() != null ? citi.getMiddleInitial() : ""))
-						.append(String.format("%-30s", citi.getLastName() != null ? citi.getLastName() : ""))
-						.append(String.format("%-60s", citi.getAddrLine1() != null ? citi.getAddrLine1() : ""))
-						.append(String.format("%-60s", citi.getAddrLine2() != null ? citi.getAddrLine2() : ""))
-						.append(String.format("%-40s", citi.getCity() != null ? citi.getCity() : ""))
-						.append(String.format("%-2s", citi.getStateCd() != null ? citi.getStateCd() : ""))
-						.append(String.format("%-7s", citi.getPostalCd() != null ? citi.getPostalCd() : ""))
-						.append(String.format("%-150s", citi.getEmailAddr() != null ? citi.getEmailAddr() : ""))
-						.append(String.format("%-10s", citi.getPhone() != null ? citi.getPhone() : ""))
-						.append(String.format("%-10s", citi.getSmsMobilePhone() != null ? citi.getSmsMobilePhone() : ""))
-						.append(String.format("%-30s", citi.getBusinessName() != null ? citi.getBusinessName() : ""))
-						.append(String.format("%-1s", citi.getDmOptOut() != null ? citi.getDmOptOut() : ""))
-						.append(String.format("%-1s", citi.getEmailOptOut() != null ? citi.getEmailOptOut() : ""))
-						.append(String.format("%-1s", citi.getPhoneOptOut() != null ? citi.getPhoneOptOut() : ""))
-						.append(String.format("%-1s", citi.getSmsOptOut() != null ? citi.getSmsOptOut() : "")).append("\n");
+				fileBuilder.append(String.format("%-30s", citi.getFirstName() != null ? columnTrim(citi.getFirstName()) : ""))
+						.append(String.format("%-1s", citi.getMiddleInitial() != null ? columnTrim(citi.getMiddleInitial()) : ""))
+						.append(String.format("%-30s", citi.getLastName() != null ? columnTrim(citi.getLastName()) : ""))
+						.append(String.format("%-60s", citi.getAddrLine1() != null ? columnTrim(citi.getAddrLine1()) : ""))
+						.append(String.format("%-60s", citi.getAddrLine2() != null ? columnTrim(citi.getAddrLine2()) : ""))
+						.append(String.format("%-40s", citi.getCity() != null ? columnTrim(citi.getCity()) : ""))
+						.append(String.format("%-2s", citi.getStateCd() != null ? columnTrim(citi.getStateCd()) : ""))
+						.append(String.format("%-7s", citi.getPostalCd() != null ? columnTrim(citi.getPostalCd()) : ""))
+						.append(String.format("%-150s", citi.getEmailAddr() != null ? columnTrim(citi.getEmailAddr()) : ""))
+						.append(String.format("%-10s", citi.getPhone() != null ? columnTrim(citi.getPhone()) : ""))
+						.append(String.format("%-10s", citi.getSmsMobilePhone() != null ? columnTrim(citi.getSmsMobilePhone()) : ""))
+						.append(String.format("%-30s",
+								citi.getBusinessName() != null ? businessNameJust30(columnTrim(citi.getBusinessName())) : ""))
+						.append(String.format("%-1s", citi.getDmOptOut() != null ? columnTrim(citi.getDmOptOut()) : ""))
+						.append(String.format("%-1s", citi.getEmailOptOut() != null ? columnTrim(citi.getEmailOptOut()) : ""))
+						.append(String.format("%-1s", citi.getPhoneOptOut() != null ? columnTrim(citi.getPhoneOptOut()) : ""))
+						.append(String.format("%-1s", citi.getSmsOptOut() != null ? columnTrim(citi.getSmsOptOut()) : "")).append("\n");
 				quantityRecords++;
 				writer.write(ByteBuffer.wrap(fileBuilder.toString().getBytes()));
 				fileBuilder = new StringBuilder();
