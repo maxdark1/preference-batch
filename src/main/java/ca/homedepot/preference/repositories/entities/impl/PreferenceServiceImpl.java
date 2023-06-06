@@ -91,7 +91,17 @@ public class PreferenceServiceImpl implements PreferenceService
 	public RegistrationResponse sendEmail(EmailNotificationRequest email)
 	{
 		log.error("PREFERENCE-BATCH-LOG: Calling Notification Email Endpoint");
-		return preferenceRegistrationClient.sendEmail(email);
+		RegistrationResponse response;
+		try
+		{
+			response = preferenceRegistrationClient.sendEmail(email);
+		}
+		catch (Exception ex)
+		{
+			log.error("PREFERENCE-BATCH-ERROR: Error Sending Email to Endpoint" + ex.getMessage());
+			response = null;
+		}
+		return response;
 	}
 
 

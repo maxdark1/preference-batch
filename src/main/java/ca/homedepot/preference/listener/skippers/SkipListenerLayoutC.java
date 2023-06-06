@@ -104,7 +104,14 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 		/**
 		 * Insertion to staging error on failed item
 		 */
-		fileService.insertInboundStgError(fileInboundStgTable);
+		try
+		{
+			fileService.insertInboundStgError(fileInboundStgTable);
+		}
+		catch (Exception ex)
+		{
+			log.error("Invalid Value to save in StgError Table: " + ex.getMessage());
+		}
 	}
 
 	public Date getDateToInsert(String date, Throwable t) throws ParseException

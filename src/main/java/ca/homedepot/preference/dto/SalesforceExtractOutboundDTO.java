@@ -42,19 +42,23 @@ public class SalesforceExtractOutboundDTO
 
 	public String toString()
 	{
-		return new StringBuilder().append(emptyString(emailAddress)).append(SINGLE_DELIMITER_TAB).append(emptyString(asOfDate)).append(SINGLE_DELIMITER_TAB)
-				.append(emptyString(sourceId)).append(SINGLE_DELIMITER_TAB).append(emptyString(emailStatus)).append(SINGLE_DELIMITER_TAB).append(emptyString(emailPtc))
-				.append(SINGLE_DELIMITER_TAB).append(emptyString(languagePreference)).append(SINGLE_DELIMITER_TAB).append(emptyString(earliestOptInDate))
-				.append(SINGLE_DELIMITER_TAB).append(emptyString(hdCanadaEmailCompliantFlag)).append(SINGLE_DELIMITER_TAB).append(emptyString(hdCanadaFlag))
-				.append(SINGLE_DELIMITER_TAB).append(emptyString(gardenClubFlag)).append(SINGLE_DELIMITER_TAB).append(emptyString(newMoverFlag))
-				.append(SINGLE_DELIMITER_TAB).append(emptyString(proFlag)).append(SINGLE_DELIMITER_TAB).append(emptyString(phonePtcFlag))
-				.append(SINGLE_DELIMITER_TAB).append(emptyString(firstName)).append(SINGLE_DELIMITER_TAB).append(emptyString(lastName))
-				.append(SINGLE_DELIMITER_TAB).append(emptyString(postalCode)).append(SINGLE_DELIMITER_TAB).append(emptyString(province))
+		return new StringBuilder().append(emptyString(emailAddress)).append(SINGLE_DELIMITER_TAB).append(emptyString(asOfDate))
+				.append(SINGLE_DELIMITER_TAB).append(emptyString(sourceId)).append(SINGLE_DELIMITER_TAB)
+				.append(emptyString(emailStatus)).append(SINGLE_DELIMITER_TAB).append(emptyString(emailPtc))
+				.append(SINGLE_DELIMITER_TAB).append(emptyString(languagePreference)).append(SINGLE_DELIMITER_TAB)
+				.append(emptyString(earliestOptInDate)).append(SINGLE_DELIMITER_TAB).append(emptyString(hdCanadaEmailCompliantFlag))
+				.append(SINGLE_DELIMITER_TAB).append(emptyString(hdCanadaFlag)).append(SINGLE_DELIMITER_TAB)
+				.append(emptyString(gardenClubFlag)).append(SINGLE_DELIMITER_TAB).append(emptyString(newMoverFlag))
+				.append(SINGLE_DELIMITER_TAB).append(emptyString(proFlag)).append(SINGLE_DELIMITER_TAB)
+				.append(emptyString(phonePtcFlag)).append(SINGLE_DELIMITER_TAB).append(emptyString(firstName))
+				.append(SINGLE_DELIMITER_TAB).append(emptyString(lastName)).append(SINGLE_DELIMITER_TAB)
+				.append(emptyString(postalCode)).append(SINGLE_DELIMITER_TAB).append(emptyString(province))
 				.append(SINGLE_DELIMITER_TAB).append(emptyString(city)).append(SINGLE_DELIMITER_TAB).append(emptyString(phoneNumber))
-				.append(SINGLE_DELIMITER_TAB).append(emptyString(businessName)).append(SINGLE_DELIMITER_TAB).append(emptyString(businessType))
-				.append(SINGLE_DELIMITER_TAB).append(emptyString(moveDate)).append(SINGLE_DELIMITER_TAB).append(emptyString(dwellingType)).toString();
+				.append(SINGLE_DELIMITER_TAB).append(emptyString(businessName)).append(SINGLE_DELIMITER_TAB)
+				.append(emptyString(businessType)).append(SINGLE_DELIMITER_TAB).append(emptyString(moveDate))
+				.append(SINGLE_DELIMITER_TAB).append(emptyString(dwellingType)).toString();
 	}
-	
+
 	private String emptyString(Object text)
 	{
 		return text == null ? "" : text.toString();
