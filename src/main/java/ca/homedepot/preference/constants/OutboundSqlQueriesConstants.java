@@ -26,7 +26,7 @@ public class OutboundSqlQueriesConstants
 			+ "                   WHEN cust_email.permission_val = true then 'Y'\n"
 			+ "                 WHEN cust_email.permission_val = false then 'N' end email_permission\n"
 			+ "                               , cust.language_pref language_preference\n"
-			+ "            , CASE WHEN cust_email.permission_val\n" + "                  AND rel_id.old_id = 0 \n"
+			+ "            , CASE WHEN cust_email.permission_val is null OR cust_email.permission_val = true\n" + "                  AND rel_id.old_id = 0 \n"
 			+ "                         then 'Y' \n" + "                  else 'N' \n"
 			+ "                    end cnd_compliant_flag\n" + "            , MAX(CASE WHEN mast.value_val = 'hd_ca'\n"
 			+ "                   AND pref.permission_val \n" + "                        then 'Y'\n"
