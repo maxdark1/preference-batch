@@ -46,7 +46,10 @@ public class FormatUtil
 	public static String columnTrim(String column)
 	{
 		char value = 0x20;
-		return column != null ? column.replaceAll("\\s+|\u00A0+|[^\\x00-\\x7F]+", " ").replaceAll(String.valueOf(value), " ").trim() : null;
+		return column != null
+				? column.replaceAll("\\s+", " ").replaceAll(String.valueOf(value), " ").replaceAll("\u00A0", " ")
+						.replaceAll("[^\\x00-\\x7F]", " ").trim()
+				: null;
 	}
 
 
