@@ -152,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: SFMC Outbound New Writer
+version: PCAM-460 Hybris Inbound Bug Fix
 
 notification:
   eventId: 5001
