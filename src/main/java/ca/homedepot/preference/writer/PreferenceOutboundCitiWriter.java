@@ -32,8 +32,7 @@ import java.util.UUID;
 import static ca.homedepot.preference.config.SchedulerConfig.JOB_NAME_CITI_SUPPRESION;
 import static ca.homedepot.preference.config.StorageApplicationGCS.*;
 import static ca.homedepot.preference.constants.SourceDelimitersConstants.*;
-import static ca.homedepot.preference.util.validation.FormatUtil.businessNameJust30;
-import static ca.homedepot.preference.util.validation.FormatUtil.columnTrim;
+import static ca.homedepot.preference.util.validation.FormatUtil.*;
 
 @Slf4j
 @Component
@@ -104,7 +103,8 @@ public class PreferenceOutboundCitiWriter implements ItemWriter<CitiSuppresionOu
 						.append(String.format("%-150s", citi.getEmailAddr() != null ? columnTrim(citi.getEmailAddr()) : ""))
 						.append(String.format("%-10s", citi.getPhone() != null ? columnTrim(citi.getPhone()) : ""))
 						.append(String.format("%-10s", citi.getSmsMobilePhone() != null ? columnTrim(citi.getSmsMobilePhone()) : ""))
-						.append(String.format("%-30s", citi.getBusinessName() != null ? businessNameJust30(columnTrim(citi.getBusinessName())) : ""))
+						.append(String.format("%-30s",
+								citi.getBusinessName() != null ? businessNameJust30(columnTrim(citi.getBusinessName())) : ""))
 						.append(String.format("%-1s", citi.getDmOptOut() != null ? columnTrim(citi.getDmOptOut()) : ""))
 						.append(String.format("%-1s", citi.getEmailOptOut() != null ? columnTrim(citi.getEmailOptOut()) : ""))
 						.append(String.format("%-1s", citi.getPhoneOptOut() != null ? columnTrim(citi.getPhoneOptOut()) : ""))
