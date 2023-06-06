@@ -152,7 +152,7 @@ logging:
       hibernate: INFO
       springframework: INFO
 
-version: PCAM-460 Hybris Inbound Bug Fix
+version: Citi adding more trimming
 
 notification:
   eventId: 5001
