@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -105,9 +104,12 @@ public class SkipListenerLayoutC extends SkipFileService implements SkipListener
 		/**
 		 * Insertion to staging error on failed item
 		 */
-		try {
+		try
+		{
 			fileService.insertInboundStgError(fileInboundStgTable);
-		} catch (Exception ex){
+		}
+		catch (Exception ex)
+		{
 			log.error("Invalid Value to save in StgError Table: " + ex.getMessage());
 		}
 	}
