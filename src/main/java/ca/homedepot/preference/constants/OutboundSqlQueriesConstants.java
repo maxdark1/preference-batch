@@ -62,7 +62,7 @@ public class OutboundSqlQueriesConstants
 			+ "            and email_sou_id.type = 'source_id'\n" + "        WHERE mast_key.key_value = 'PREFERENCE_FLAG' \n"
 			+ "    GROUP BY cust.customer_id\n" + "            , email.email\n" + "            , cust_email.effective_date\n"
 			+ "            , email_sou_id.old_id \n" + "            , email.status_id  \n" + "            , cust.first_name \n"
-			+ "            , cust.last_name                                                                                     \n"
+			+ "            , cust.last_name, cust_email.permission_val                                                                                     \n"
 			+ "            , CASE\n" + "                WHEN cust_email.permission_val is null then 'U'  \n"
 			+ "                 WHEN cust_email.permission_val = true then 'Y'\n"
 			+ "                 WHEN cust_email.permission_val = false then 'N' end \n"
